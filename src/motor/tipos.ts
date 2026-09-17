@@ -2,7 +2,8 @@
 import type { Especie } from '../../datos/juego/especies';
 
 export type { Especie };
-export type ZonaId = 'suelo' | 'elevado' | 'macetas' | 'almacigo';
+/** id de una zona del patio de la partida (ver `datos/juego/patio.ts`) */
+export type ZonaId = string;
 export type CeldaId = string; // "x,y"
 export type Etapa = 'semilla' | 'plantin' | 'creciendo' | 'cosechable' | 'pasada' | 'semillando';
 export type Plaga = 'pulgon' | 'oruga' | 'babosa';
@@ -30,9 +31,11 @@ export interface Evento { turno: number; dec: number; tipo: TipoEvento; texto: s
 
 export interface Estado {
   /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
-  v: 1;
+  v: 2;
+  /** id del patio en el que se juega (`datos/juego/patios`) */
+  patio: string;
   semilla: number; rng: number; dec: number; turno: number; anio: number; caracter: CaracterId;
-  ratosGastados: number; riego: Record<ZonaId, NivelRiego>; tunel: boolean; manta: Partial<Record<ZonaId, boolean>>; goteo: boolean;
+  ratosGastados: number; riego: Record<ZonaId, NivelRiego>; /** zonas con el microtúnel armado */ tunel: Partial<Record<ZonaId, boolean>>; manta: Partial<Record<ZonaId, boolean>>; goteo: boolean;
   celdas: Record<CeldaId, Celda>; plantas: Record<string, Planta>; nextId: number;
   sobres: Record<string, number>; gen: Record<string, number>;
   compost: { dosis: number; carga: number; tandas: { avance: number }[] };
@@ -49,6 +52,6 @@ export type Accion =
   | { tipo: 'mulch'; celda: CeldaId } | { tipo: 'compost'; celda: CeldaId }
   | { tipo: 'riego'; zona: ZonaId; nivel: number }
   | { tipo: 'manta'; zona: ZonaId }
-  | { tipo: 'tunel' }
+  | { tipo: 'tunel'; /** si falta, la primera zona del patio que lo admite */ zona?: ZonaId }
   | { tipo: 'seguir' };
 export type Resultado = { ok: true; eventos: Evento[] } | { ok: false; error: string };

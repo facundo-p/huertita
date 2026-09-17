@@ -4,15 +4,17 @@
  * Hay helada para la planta si mínima + abrigo ≤ 3 °C (el umbral agrometeorológico de FAUBA).
  */
 import { ESPECIES } from './catalogo';
+import { zona as zonaDelPatio } from './patio';
 import type { Estado, ZonaId } from './tipos';
 import { clamp, phi } from './util';
 
-export const ABRIGO = { manta: 4, tunel: 5, alero: 5 };
+/** El reparo fijo de cada zona (alero, pared, techo) está en los datos del patio. */
+export const ABRIGO = { manta: 4, tunel: 5 };
 export interface Abrigo { grados: number; partes: string[]; /** mínima más baja sin daño (exclusiva) */ aguanta: number }
 export function abrigo(E: Estado, zona: ZonaId): Abrigo {
-  let g = 0; const partes: string[] = [];
-  if (zona === 'almacigo') { g += ABRIGO.alero; partes.push('alero y pared'); }
-  if (zona === 'elevado' && E.tunel) { g += ABRIGO.tunel; partes.push('microtúnel'); }
+  let g = 0; const partes: string[] = [], fijo = zonaDelPatio(E, zona).abrigo;
+  if (fijo) { g += fijo.grados; partes.push(fijo.nombre); }
+  if (E.tunel[zona]) { g += ABRIGO.tunel; partes.push('microtúnel'); }
   if (E.manta[zona]) { g += ABRIGO.manta; partes.push('manta'); }
   return { grados: g, partes, aguanta: 3 - g };
 }

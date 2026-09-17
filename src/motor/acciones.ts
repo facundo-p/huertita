@@ -2,9 +2,9 @@
 import { ABRIGO, abrigo } from './abrigo';
 import { BIENALES, ESPECIES, RALEO_SE_COME, objetivoCosecha, semillasPorSiembra, ventana } from './catalogo';
 import { anotar, gastar, quitarPlanta, ratosLibres } from './estado';
-import { fMaceta, floresAbiertas } from './factores';
+import { bajoTunel as estaBajoTunel, fMaceta, floresAbiertas } from './factores';
 import { cumplir } from './misiones';
-import { ZONAS } from './patio';
+import { zona, zonaDeTunel } from './patio';
 import type { Accion, Estado, Evento, NivelRiego, Planta, Resultado } from './tipos';
 import { clamp, r1 } from './util';
 
@@ -21,10 +21,10 @@ const sembrar: Hacer<De<'sembrar'>> = (E, a, evs) => {
   E.sobres[a.slug]--;
   const vent = ventana(a.slug, E.dec), gen = E.gen[a.slug] || 0;
   const vigor = (vent === 'ideal' ? 1 : vent === 'posible' ? 0.85 : 0.6) * (1 + 0.05 * Math.min(gen, 3)) * (c.fam === sp.familia ? 0.85 : 1);
-  const id = 'p' + (E.nextId++), ns = semillasPorSiembra(a.slug, c.zona === 'almacigo');
-  E.plantas[id] = { id, slug: a.slug, celda: a.celda, etapa: 'semilla', edad: 0, prog: 0, germ: 0, salud: 100, vigor: r1(vigor * 100) / 100, gen, cosechas: 0, listoHace: 0, plaga: null, tutor: false, shock: 0, dulce: false, semillar: 0, pote: fMaceta(sp, a.celda), reserva: 0, n: 0, semillas: ns };
+  const id = 'p' + (E.nextId++), cria = !!zona(E, c.zona).cria, ns = semillasPorSiembra(a.slug, cria);
+  E.plantas[id] = { id, slug: a.slug, celda: a.celda, etapa: 'semilla', edad: 0, prog: 0, germ: 0, salud: 100, vigor: r1(vigor * 100) / 100, gen, cosechas: 0, listoHace: 0, plaga: null, tutor: false, shock: 0, dulce: false, semillar: 0, pote: fMaceta(E, sp, a.celda), reserva: 0, n: 0, semillas: ns };
   c.planta = id;
-  let txt = 'Sembraste ' + sp.nombre.toLowerCase() + ' en ' + ZONAS[c.zona].nombre.toLowerCase() + (ns > 1 ? (c.zona === 'almacigo' ? ': una tanda de ' + ns + ' celdas.' : ': ' + ns + ' semillas juntas.') : '.');
+  let txt = 'Sembraste ' + sp.nombre.toLowerCase() + ' en ' + zona(E, c.zona).nombre.toLowerCase() + (ns > 1 ? (cria ? ': una tanda de ' + ns + ' celdas.' : ': ' + ns + ' semillas juntas.') : '.');
   if (vent === 'fuera') txt += ' Está fuera de época: va a venir floja.';
   if (c.fam === sp.familia) txt += ' Repetís familia en la misma tierra: rinde menos y junta plagas.';
   evs.push(anotar(E, 'info', txt, a.celda));
@@ -34,11 +34,11 @@ const trasplantar: Hacer<De<'trasplantar'>> = (E, a, evs) => {
   let pl: Planta | undefined = E.plantas[a.planta]; const dest = E.celdas[a.celda];
   if (!pl || !dest) return 'No se puede trasplantar ahí.';
   if (dest.planta) return 'Esa celda está ocupada.';
-  if (dest.zona === 'almacigo') return 'La almaciguera es para criar plantines, no para recibirlos.';
+  if (zona(E, dest.zona).cria) return 'La almaciguera es para criar plantines, no para recibirlos.';
   if (pl.etapa === 'semilla') return 'Todavía no germinó.';
-  const sp = ESPECIES[pl.slug], zo = E.celdas[pl.celda].zona;
-  if (zo !== 'almacigo' && !sp.dt) return sp.nombre + ' no tolera el trasplante: si salieron varias juntas, raleá.';
-  if (zo !== 'almacigo' && !((pl.n || 1) > 1) && !(sp.dt && pl.prog < sp.dt.max + 40)) return 'Ya está grande para moverla.';
+  const sp = ESPECIES[pl.slug], deCria = !!zona(E, E.celdas[pl.celda].zona).cria;
+  if (!deCria && !sp.dt) return sp.nombre + ' no tolera el trasplante: si salieron varias juntas, raleá.';
+  if (!deCria && !((pl.n || 1) > 1) && !(sp.dt && pl.prog < sp.dt.max + 40)) return 'Ya está grande para moverla.';
   if (!gastar(E, 1)) return SIN_RATOS;
   let suelto = false;
   if ((pl.n || 1) > 1) { // del grupo sale un plantín; el resto queda esperando
@@ -50,7 +50,7 @@ const trasplantar: Hacer<De<'trasplantar'>> = (E, a, evs) => {
   else if (pl.prog < sp.dt.min) { pl.salud -= 15; tipo = 'mal'; txt += ' Era muy chico todavía (se trasplanta a los ' + sp.dt.min + '–' + sp.dt.max + ' días).'; }
   else if (ventana(pl.slug, E.dec, 'trasplante') === 'fuera') { pl.vigor = r1(pl.vigor * 88) / 100; txt += ' Está fuera de la ventana de trasplante.'; }
   if (!suelto) origen.planta = null;
-  dest.planta = pl.id; pl.celda = a.celda; pl.shock = 1; pl.pote = fMaceta(sp, a.celda);
+  dest.planta = pl.id; pl.celda = a.celda; pl.shock = 1; pl.pote = fMaceta(E, sp, a.celda);
   if (pl.etapa === 'plantin') pl.etapa = 'creciendo';
   if (dest.fam === sp.familia) { pl.vigor = r1(pl.vigor * 85) / 100; txt += ' Repetís familia en esa tierra.'; }
   evs.push(anotar(E, tipo, txt, a.celda));
@@ -61,7 +61,7 @@ const cosechar: Hacer<De<'cosechar'>> = (E, a, evs) => {
   const pl = E.plantas[a.planta]; if (!pl || pl.etapa !== 'cosechable') return 'Todavía no está para cosechar.';
   const sp = ESPECIES[pl.slug], c = E.celdas[pl.celda];
   if (sp.flor) return 'Las flores se dejan: trabajan atrayendo polinizadores. Podés dejarla semillar.';
-  const bajoTunel = c.zona === 'elevado' && E.tunel;
+  const bajoTunel = estaBajoTunel(E, pl.celda);
   const pol = sp.fruto ? (bajoTunel ? 0.45 : clamp(0.55 + 0.12 * floresAbiertas(E), 0, 1)) : 1;
   const tut = sp.cuidados.includes('tutorado') && !pl.tutor ? 0.8 : 1;
   const apret = (pl.n || 1) > 1 ? 0.7 : 1;
@@ -115,7 +115,7 @@ const tratar: Hacer<De<'tratar'>> = (E, a, evs) => {
   const como = COMO_TRATAR[pl.plaga]; pl.plaga = null; evs.push(anotar(E, 'bien', como, pl.celda));
 };
 const mulch: Hacer<De<'mulch'>> = (E, a, evs) => {
-  const c = E.celdas[a.celda]; if (!c || c.zona === 'almacigo') return 'Ahí no va mulch.'; if (c.mulch) return 'Ya tiene mulch.';
+  const c = E.celdas[a.celda]; if (!c || zona(E, c.zona).cria) return 'Ahí no va mulch.'; if (c.mulch) return 'Ya tiene mulch.';
   if (!gastar(E, 1)) return SIN_RATOS;
   c.mulch = true; evs.push(anotar(E, 'info', 'Cubriste el suelo con pasto seco. Guarda humedad, frena yuyos y de a poco se hace tierra.', a.celda));
 };
@@ -129,15 +129,18 @@ const riego: Hacer<De<'riego'>> = (E, a) => {
   const antes = E.riego[a.zona]; E.riego[a.zona] = a.nivel as NivelRiego;
   if (ratosLibres(E) < 0) { E.riego[a.zona] = antes; return 'No te alcanzan los ratos para regar tanto esta década.'; }
 };
-const tunel: Hacer<De<'tunel'>> = (E, _a, evs) => {
+const tunel: Hacer<De<'tunel'>> = (E, a, evs) => {
+  const z = a.zona ?? zonaDeTunel(E);
+  if (!z || !(z in E.riego) || !zona(E, z).admiteTunel) return 'Ahí no se puede armar un microtúnel.';
   if (!gastar(E, 2)) return 'Armar o sacar el microtúnel lleva 2 ratos.';
-  E.tunel = !E.tunel; evs.push(anotar(E, 'info', E.tunel ? 'Armaste el microtúnel sobre el bancal elevado: unos ' + ABRIGO.tunel + ' °C de abrigo contra heladas y +3 °C de día, pero no entra lluvia ni polinizadores.' : 'Sacaste el microtúnel.'));
+  if (E.tunel[z]) delete E.tunel[z]; else E.tunel[z] = true;
+  evs.push(anotar(E, 'info', E.tunel[z] ? 'Armaste el microtúnel sobre ' + zona(E, z).conArticulo + ': unos ' + ABRIGO.tunel + ' °C de abrigo contra heladas y +3 °C de día, pero no entra lluvia ni polinizadores.' : 'Sacaste el microtúnel.'));
 };
 const manta: Hacer<De<'manta'>> = (E, a, evs) => {
   if (!(a.zona in E.riego)) return 'Ahí no hay nada que tapar.'; if (E.manta[a.zona]) return 'Ya está tapado.';
   if (!gastar(E, 1)) return SIN_RATOS;
   E.manta[a.zona] = true;
-  evs.push(anotar(E, 'info', 'Dejaste lista la manta antihelada para ' + ZONAS[a.zona].nombre.toLowerCase() + '. Suma unos ' + ABRIGO.manta + ' °C de abrigo y dura esta década: con lo que tiene puesto, ese cantero aguanta hasta ' + (abrigo(E, a.zona).aguanta + 0.1).toFixed(0) + ' °C de mínima.'));
+  evs.push(anotar(E, 'info', 'Dejaste lista la manta antihelada para ' + zona(E, a.zona).nombre.toLowerCase() + '. Suma unos ' + ABRIGO.manta + ' °C de abrigo y dura esta década: con lo que tiene puesto, ese cantero aguanta hasta ' + (abrigo(E, a.zona).aguanta + 0.1).toFixed(0) + ' °C de mínima.'));
 };
 
 export function despachar(E: Estado, accion: Accion): Resultado {

@@ -14,7 +14,7 @@ import { fechaDe, generarTiempo } from './clima';
 import { anotar, quitarPlanta, ratosLibres } from './estado';
 import { aliadosCerca, factoresPlanta, fVecinos, floresAbiertas, humedad, tempEfectiva, type Factores } from './factores';
 import { cumplir } from './misiones';
-import { MACETAS, ZONAS, ZONA_IDS } from './patio';
+import { idsDeZonas, macetaDe, zona } from './patio';
 import type { CeldaId, Especie, Estado, Evento, Planta, Tiempo, TipoEvento, ZonaId } from './tipos';
 import { cap, clamp, r1 } from './util';
 
@@ -29,7 +29,7 @@ type Sigue = boolean; // false = la planta ya no sigue este turno (murió, se pe
 function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): void {
   const tg = sp.tg, nom = sp.nombre, t = tempEfectiva(E, pl.celda, w), H = humedad(E, pl.celda, w);
   if (H < 1.2) { if (pl.edad === DIAS) ev('mal', nom + ': la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar.', pl.celda); }
-  else if (t < tg.min || t > tg.max) { if (pl.edad === DIAS) ev('mal', nom + ' no germina: el suelo está a ~' + Math.round(t) + ' °C y necesita entre ' + tg.min + ' y ' + tg.max + ' °C.' + (z !== 'almacigo' && t < tg.min ? ' En la almaciguera reparada habría arrancado.' : ''), pl.celda); }
+  else if (t < tg.min || t > tg.max) { if (pl.edad === DIAS) ev('mal', nom + ' no germina: el suelo está a ~' + Math.round(t) + ' °C y necesita entre ' + tg.min + ' y ' + tg.max + ' °C.' + (!zona(E, z).cria && t < tg.min ? ' En la almaciguera reparada habría arrancado.' : ''), pl.celda); }
   else pl.germ += DIAS * (t >= tg.ideal_min && t <= tg.ideal_max ? 1 : 0.6);
   const necesita = (sp.dg.min + sp.dg.max) / 2;
   if (pl.germ >= necesita) {
@@ -38,7 +38,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
     for (let si = 0; si < S; si++) if (azar(E) < pg) nacieron++;
     if (S === 1) nacieron = 1;
     if (!nacieron) { ev('mal', 'No germinó ninguna de las ' + S + ' semillas de ' + nom.toLowerCase() + '. ' + (ideal ? 'A veces pasa: por eso se siembra de más.' : 'El suelo a ~' + Math.round(t) + ' °C está fuera del rango ideal (' + tg.ideal_min + '–' + tg.ideal_max + ' °C).'), pl.celda); quitarPlanta(E, pl, false); return; }
-    pl.n = nacieron; pl.etapa = z === 'almacigo' ? 'plantin' : 'creciendo'; pl.prog = Math.round(necesita);
+    pl.n = nacieron; pl.etapa = zona(E, z).cria ? 'plantin' : 'creciendo'; pl.prog = Math.round(necesita);
     ev('bien', '¡Germinó ' + nom.toLowerCase() + '!' + (S > 1 ? ' Nacieron ' + nacieron + ' de ' + S + (ideal ? '.' : ': con el suelo fuera del rango ideal nacen menos.') : ''), pl.celda); cumplir(E, 'germina', evs);
   } else if (pl.edad >= 30) { ev('mal', 'La semilla de ' + nom.toLowerCase() + ' se perdió: pasaron 30 días sin condiciones para germinar.', pl.celda); quitarPlanta(E, pl, false); }
 }
@@ -48,9 +48,9 @@ function helar({ E, w, ev, salvadas }: Ctx, pl: Planta, sp: Especie, z: ZonaId, 
   const nom = sp.nombre, hiela = w.helada && w.tmin + ab.grados <= 3;
   if (w.helada && !hiela && (sp.helada === 'muere' || sp.helada === 'sensible')) (salvadas[z] = salvadas[z] || []).push(nom);
   if (!hiela) return true;
-  let falta: string;
-  if (!(ab.grados > 0)) falta = w.tmin + ABRIGO.manta > 3 ? 'Una manta antihelada (+' + ABRIGO.manta + ' °C) la habría salvado.' : z === 'elevado' && w.tmin + ABRIGO.manta + ABRIGO.tunel > 3 ? 'Fue una helada fuerte: hacían falta manta y microtúnel juntos.' : 'Fue una helada muy fuerte: con ' + w.tmin + ' °C una manta sola no alcanzaba.';
-  else falta = 'Estaba con ' + ab.partes.join(' y ') + ', que abriga unos ' + ab.grados + ' °C y aguanta hasta ' + (ab.aguanta + 0.1).toFixed(0) + ' °C. ' + (z === 'elevado' && !(E.tunel && E.manta[z]) ? 'Manta y microtúnel juntos suman ' + (ABRIGO.manta + ABRIGO.tunel) + ' °C.' : z !== 'almacigo' && !E.manta[z] ? 'Con una manta encima sumaba ' + ABRIGO.manta + ' °C más.' : 'En pleno invierno esta especie no tiene lugar afuera.');
+  let falta: string; const Z = zona(E, z);
+  if (!(ab.grados > 0)) falta = w.tmin + ABRIGO.manta > 3 ? 'Una manta antihelada (+' + ABRIGO.manta + ' °C) la habría salvado.' : Z.admiteTunel && w.tmin + ABRIGO.manta + ABRIGO.tunel > 3 ? 'Fue una helada fuerte: hacían falta manta y microtúnel juntos.' : 'Fue una helada muy fuerte: con ' + w.tmin + ' °C una manta sola no alcanzaba.';
+  else falta = 'Estaba con ' + ab.partes.join(' y ') + ', que abriga unos ' + ab.grados + ' °C y aguanta hasta ' + (ab.aguanta + 0.1).toFixed(0) + ' °C. ' + (Z.admiteTunel && !(E.tunel[z] && E.manta[z]) ? 'Manta y microtúnel juntos suman ' + (ABRIGO.manta + ABRIGO.tunel) + ' °C.' : !Z.cria && !E.manta[z] ? 'Con una manta encima sumaba ' + ABRIGO.manta + ' °C más.' : 'En pleno invierno esta especie no tiene lugar afuera.');
   if (sp.helada === 'muere') { ev('mal', nom + ' murió: heló (mín ' + w.tmin + ' °C) y no tolera heladas. ' + falta, pl.celda); quitarPlanta(E, pl, true); return false; }
   if (sp.helada === 'sensible') { pl.salud -= 45; ev('mal', nom + ' se quemó con la helada (mín ' + w.tmin + ' °C). ' + falta, pl.celda); }
   if (sp.helada === 'mejora' && !pl.dulce) { pl.dulce = true; ev('bien', nom + ': la helada le concentra azúcares. Va a estar más rica.', pl.celda); }
@@ -72,8 +72,8 @@ function semillarOSecarse({ E, ev, evs }: Ctx, pl: Planta, sp: Especie): Sigue {
 }
 
 /** Devuelve el factor de crecimiento g de esta década, que después usan salud y plagas. */
-function crecer({ ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores): number {
-  const nom = sp.nombre, enAlm = z === 'almacigo';
+function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores): number {
+  const nom = sp.nombre, enAlm = !!zona(E, z).cria;
   let g = F.luz.f * F.agua.f * F.temp.f * F.suelo.f * F.vecinos.f * pl.vigor * (pl.plaga ? 0.8 : 1) * (pl.shock ? 0.5 : 1);
   if (sp.cuidados.includes('tutorado') && !pl.tutor && pl.prog > objetivoCosecha(sp) * 0.45) g *= 0.85;
   if (!enAlm && (pl.n || 1) > 1) { g *= Math.max(0.4, 1 - 0.15 * (pl.n - 1)); if (!pl.avisoRaleo) { pl.avisoRaleo = true; ev('info', nom + ': salieron ' + pl.n + ' juntas y compiten por luz y agua. ' + (sp.dt ? 'Podés repicar las que sobran a otro lugar o ralear.' : 'Hay que ralear y dejar una.'), pl.celda); } }
@@ -85,8 +85,8 @@ function crecer({ ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores): n
 }
 
 function estresar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores, ab: Abrigo, g: number): void {
-  const nom = sp.nombre, bajoTunel = z === 'elevado' && E.tunel;
-  if (F.agua.estado === 'seco' && F.agua.f < 0.75) { pl.salud -= (1 - F.agua.f) * 35; if (F.agua.f < 0.5) ev('mal', nom + ' pasa sed' + (MACETAS[pl.celda] ? ': las macetas se secan mucho más rápido que la tierra.' : ': subí el riego o poné mulch.'), pl.celda); }
+  const nom = sp.nombre, bajoTunel = !!E.tunel[z];
+  if (F.agua.estado === 'seco' && F.agua.f < 0.75) { pl.salud -= (1 - F.agua.f) * 35; if (F.agua.f < 0.5) ev('mal', nom + ' pasa sed' + (macetaDe(E, pl.celda) ? ': las macetas se secan mucho más rápido que la tierra.' : ': subí el riego o poné mulch.'), pl.celda); }
   if (F.agua.estado === 'exceso' && F.agua.diff > 1.4) { pl.salud -= 14; ev('mal', nom + ' tiene exceso de agua: pide riego ' + sp.riego + '. Con los pies mojados aparecen hongos y se pudre la raíz.', pl.celda); }
   if (w.tmax + (bajoTunel ? 5 : 0) > sp.tc.tolera_max + 2) { pl.salud -= 6 + (w.tmax - sp.tc.tolera_max) * 3; ev('mal', nom + ' sufrió el calor (máx ' + w.tmax + ' °C' + (bajoTunel ? ', y bajo el microtúnel es peor' : '') + ').', pl.celda); }
   if (!w.helada && w.tmin + ab.grados < sp.tc.tolera_min) { pl.salud -= 12; ev('mal', nom + ' sufrió el frío (mín ' + w.tmin + ' °C).', pl.celda); }
@@ -101,7 +101,7 @@ function plagas({ E, w, ev, flores }: Ctx, pl: Planta, sp: Especie): void {
     const prot = clamp(1 - 0.22 * aliadosCerca(E, pl.celda), 0.25, 1), joven = pl.prog < objetivoCosecha(sp) * 0.4;
     const rot = c.fam === sp.familia ? 1.5 : 1, d = w.dec, p = azar(E);
     if (sp.familia === 'brasicacea' && (d >= 31 || d <= 12) && p < 0.10 * prot * rot) { pl.plaga = 'oruga'; ev('mal', 'Orugas en ' + nom.toLowerCase() + ': la mariposa blanca pone en las brasicáceas. ' + (prot === 1 ? 'Sin flores ni aromáticas cerca no hay quien las controle.' : ''), pl.celda); }
-    else if (joven && w.lluvia > 40 && !MACETAS[pl.celda] && p < 0.15 * prot) { pl.plaga = 'babosa'; ev('mal', 'Babosas en ' + nom.toLowerCase() + ': con tanta lluvia salen de noche y se comen lo tierno.', pl.celda); }
+    else if (joven && w.lluvia > 40 && !macetaDe(E, pl.celda) && p < 0.15 * prot) { pl.plaga = 'babosa'; ev('mal', 'Babosas en ' + nom.toLowerCase() + ': con tanta lluvia salen de noche y se comen lo tierno.', pl.celda); }
     else if (/hoja|fruto|Legumbre/.test(sp.grupo) && ((d >= 25 && d <= 33) || (d >= 7 && d <= 12)) && p < 0.06 * prot * rot) { pl.plaga = 'pulgon'; ev('mal', 'Pulgones en ' + nom.toLowerCase() + '. ' + (prot === 1 ? 'Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen.' : ''), pl.celda); }
   } else {
     pl.salud -= 12;
@@ -125,7 +125,7 @@ function madurar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId): void {
     if (sp.pasadas > 1) pl.reserva = Math.min(2, pl.reserva + 1);
     else if (!sp.flor && pl.listoHace > (w.tmed > 22 ? 2 : 4)) { pl.etapa = 'pasada'; pl.listoHace = 0; ev('mal', nom + ' se pasó: había que cosecharla antes. ' + sp.listo, pl.celda); }
     if (sp.flor && pl.listoHace > 12) { ev('info', nom + ' terminó de florecer.', pl.celda); if (sp.perenne) { pl.etapa = 'creciendo'; pl.prog = objetivoCosecha(sp) * 0.5; } else quitarPlanta(E, pl, true); }
-  } else if (z !== 'almacigo' && pl.prog >= objetivoCosecha(sp)) {
+  } else if (!zona(E, z).cria && pl.prog >= objetivoCosecha(sp)) {
     pl.etapa = 'cosechable'; pl.listoHace = 0; pl.reserva = 1;
     ev('bien', sp.flor ? nom + ' abrió sus flores: empiezan a llegar polinizadores.' : nom + ' está para cosechar. ' + sp.listo, pl.celda);
   }
@@ -169,7 +169,7 @@ export function pasarDecada(E: Estado): Evento[] {
     madurar(ctx, pl, sp, z);
   }
 
-  for (const zz of Object.keys(ctx.salvadas) as ZonaId[]) { const u = [...new Set(ctx.salvadas[zz])]; ctx.ev('bien', 'Heló (mín ' + w.tmin + ' °C) pero ' + abrigo(E, zz).partes.join(' y ') + ' en ' + ZONAS[zz].nombre.toLowerCase() + ' aguantó: se salvaron ' + u.join(', ').toLowerCase() + '.'); }
+  for (const zz of Object.keys(ctx.salvadas) as ZonaId[]) { const u = [...new Set(ctx.salvadas[zz])]; ctx.ev('bien', 'Heló (mín ' + w.tmin + ' °C) pero ' + abrigo(E, zz).partes.join(' y ') + ' en ' + zona(E, zz).nombre.toLowerCase() + ' aguantó: se salvaron ' + u.join(', ').toLowerCase() + '.'); }
   volcar();
   for (const id in E.plantas) { const a = E.plantas[id]; if (a.etapa !== 'semilla' && fVecinos(E, a.slug, a.celda, a.id).buenas.length) { cumplir(E, 'socios', evs); break; } }
   suelosYCompost(ctx);
@@ -179,6 +179,6 @@ export function pasarDecada(E: Estado): Evento[] {
   if (E.turno % 36 === 0) { E.terminado = true; ctx.ev('logro', 'Pasó un año entero en la huerta. Mirá el balance.'); }
   volcar();
   E.prox = generarTiempo(E, E.dec);
-  while (ratosLibres(E) < 0) for (const zz of ZONA_IDS) if (E.riego[zz] > 0 && ratosLibres(E) < 0) E.riego[zz]--;
+  while (ratosLibres(E) < 0) for (const zz of idsDeZonas(E)) if (E.riego[zz] > 0 && ratosLibres(E) < 0) E.riego[zz]--;
   return evs;
 }
