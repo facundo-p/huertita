@@ -1,6 +1,7 @@
 /** Todo lo que puede hacer el jugador. Cada acción valida, cobra ratos, cambia el estado y cuenta qué pasó. */
 import { ABRIGO, abrigo } from './abrigo';
 import { BIENALES, ESPECIES, RALEO_SE_COME, objetivoCosecha, semillasPorSiembra, ventana } from './catalogo';
+import { apuntar } from './diario';
 import { anotar, gastar, quitarPlanta, ratosLibres } from './estado';
 import { bajoTunel as estaBajoTunel, fMaceta, floresAbiertas } from './factores';
 import { cumplir } from './misiones';
@@ -163,5 +164,8 @@ export function despachar(E: Estado, accion: Accion): Resultado {
     case 'manta': err = manta(E, accion, evs); break;
     default: return { ok: false, error: 'Acción desconocida: ' + (accion as { tipo: string }).tipo };
   }
-  return err ? { ok: false, error: err } : { ok: true, eventos: evs };
+  if (err) return { ok: false, error: err };
+  // lo que el jugador le hizo a una planta queda también en el diario de esa planta
+  for (const e of evs) { const id = e.celda && E.celdas[e.celda]?.planta, pl = id ? E.plantas[id] : null; if (pl) apuntar(E, pl, e.tipo, e.texto); }
+  return { ok: true, eventos: evs };
 }

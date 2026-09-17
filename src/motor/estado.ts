@@ -17,6 +17,12 @@ export function anotar(E: Estado, tipo: TipoEvento, texto: string, celda?: Celda
 export function moMedia(E: Estado): number { let t = 0, n = 0; for (const c in E.celdas) if (!zonaDe(E, c).cria) { t += E.celdas[c].mo; n++; } return t / n; }
 export function plantaEn(E: Estado, celda: CeldaId): Planta | null { const c = E.celdas[celda]; return c && c.planta ? E.plantas[c.planta] : null; }
 
+/** En qué punto está un plantín respecto del trasplante. `faltan` son días de buen crecimiento, no de calendario. */
+export function puntoDeTrasplante(pl: Planta): { punto: 'chico' | 'listo' | 'pasado'; faltan: number; min: number; max: number } | null {
+  const dt = ESPECIES[pl.slug].dt; if (pl.etapa !== 'plantin' || !dt) return null;
+  return { punto: pl.prog < dt.min ? 'chico' : pl.prog < dt.max ? 'listo' : 'pasado', faltan: Math.max(0, Math.ceil(dt.min - pl.prog)), min: dt.min, max: dt.max };
+}
+
 export function costoRiego(E: Estado): number {
   let t = 0;
   for (const z of zonasDe(E)) { const costo = z.riegoCosto[E.riego[z.id]]; t += Math.max(0, costo - (E.goteo && costo > 0 ? 1 : 0)); }

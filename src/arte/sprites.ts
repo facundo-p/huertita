@@ -143,7 +143,8 @@ import { AZ, CANA, ESTILO, GR, MADERA, OS, PAJA, TIERRA, V, estiloDe } from './e
     t = t || 0; fase = fase || 0;
     var e = estiloDe(p), a = Math.max(0.1, Math.min(1, p.avance || 0)), salud = p.salud == null ? 100 : p.salud;
     var pal = e.pal || V;
-    if (salud < 55) { var k = (55 - salud) / 55 * 0.75; pal = { v: mezcla(pal.v, '#c9a74a', k), c: mezcla(pal.c, '#e6cf6a', k), o: mezcla(pal.o, '#8a6a3a', k), oo: mezcla(pal.oo || pal.o, '#6b4a2a', k) }; }
+    if (salud < 80) { var k = Math.min(0.85, (80 - salud) / 80 * 1.1); // amarillea desde temprano: a salud 60 ya se nota, a 30 está pajiza
+ pal = { v: mezcla(pal.v, '#c9a74a', k), c: mezcla(pal.c, '#e6cf6a', k), o: mezcla(pal.o, '#8a6a3a', k), oo: mezcla(pal.oo || pal.o, '#6b4a2a', k) }; }
     if (!pal.oo) pal.oo = pal.o;
     var viento = Math.sin(t * 0.55 + fase) * (0.6 + 0.4 * Math.sin(t * 0.13 + fase * 2));
     var st = { madura: p.etapa === 'cosechable', tutor: p.tutor, dx: function (y) { return Math.round(viento * Math.min(2.2, -y / 11)); } };

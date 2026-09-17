@@ -99,7 +99,7 @@ body{background:var(--anil);color:var(--tiza);font-family:var(--txt);font-size:1
 .hz-tcelda{aspect-ratio:1;display:grid;place-items:center;font-size:clamp(14px,4.4vw,24px);border:0;padding:0;background:transparent;min-width:0}
 button.hz-tcelda{background:#8f5d38} .hz-tcelda.z-cajon{background:#b5793a} .hz-tcelda.z-macetas{background:#e0673a;border-radius:50%} .hz-tcelda.z-almaciguera{background:#3b3a8a}
 .hz-tcelda.t-bien{box-shadow:inset 0 0 0 4px #50ff78} .hz-tcelda.t-regular{box-shadow:inset 0 0 0 4px #ffd23c} .hz-tcelda.t-mal{box-shadow:inset 0 0 0 4px #ff463c}
-.hz-tcelda.sel{outline:3px solid var(--tiza)} .hz-tcelda.lista{background:var(--maiz)} .hz-tcelda.plaga{filter:hue-rotate(40deg)}
+.hz-tcelda.sel{outline:3px solid var(--tiza)} .hz-tcelda.lista{background:var(--maiz)} .hz-tcelda.plaga{filter:hue-rotate(40deg)} .hz-tcelda.floja{box-shadow:inset 0 -4px 0 var(--rosa)}
 @media (prefers-reduced-motion:reduce){.hz-barra button:active,.hz-btn:active{transform:none}}
 
 .hz-zonas{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
@@ -145,3 +145,15 @@ button.hz-tcelda{background:#8f5d38} .hz-tcelda.z-cajon{background:#b5793a} .hz-
 @media (max-width:480px){.hz-ranura{grid-template-columns:1fr 1fr} .hz-ranura div{grid-column:1/-1}}
 
 .hz-guardada{background:none;border:1px dashed var(--anil-3);color:var(--tiza-2)!important;font-family:var(--pix)!important;font-size:12px;padding:3px 8px}
+/* diario de una planta */
+.hz-diario{margin-top:12px;background:var(--anil);border-left:8px solid var(--acequia)}
+.hz-diario summary{font-family:var(--pix);padding:8px 10px;cursor:pointer;list-style-position:inside}
+.hz-diario summary:focus-visible{outline:3px solid var(--maiz);outline-offset:-3px}
+.hz-diario[open] summary{border-bottom:2px dotted var(--anil-3)}
+.hz-diario ol{list-style:none;margin:0;padding:6px 10px 10px;display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+.hz-diario ol>li>b{font-family:var(--pix);font-weight:400;font-size:14px}
+.hz-dsalud{font-family:var(--pix);font-size:12px;margin-left:8px;color:var(--tiza-2)} .hz-dsalud.baja{color:var(--rosa)} .hz-dsalud.sube{color:var(--hoja)}
+.hz-diario ul{list-style:none;margin:2px 0 0;padding:0;font-size:14px;display:flex;flex-direction:column;gap:2px}
+.hz-diario ul li{display:grid;grid-template-columns:14px 1fr;gap:4px}
+.hz-diario ul li i{font-style:normal;font-family:var(--pix);color:var(--tiza-2)} .hz-diario li.t-mal i{color:var(--rosa)} .hz-diario li.t-bien i{color:var(--hoja)}
+.hz-diario p{padding:0 10px 8px;margin:0}

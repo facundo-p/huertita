@@ -26,6 +26,8 @@
         b.title = c.nombreZona + (p ? ' · ' + p.nombre + ' · ' + p.etapa : '');
         if (p && p.etapa === 'cosechable') b.className += ' lista';
         if (p && p.plaga) b.className += ' plaga';
+        if (p && p.trasplante) { t = '⤴' + t; b.textContent = t; }
+        if (p && p.salud < 60 && p.etapa !== 'semilla') b.className += ' floja';
         (function (k) { b.addEventListener('click', function () { if (self.cb) self.cb(k); }); })(k);
       }
       this.grid.appendChild(b);

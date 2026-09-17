@@ -19,6 +19,7 @@ Tres reglas sostienen todo lo demás.
 | `abrigo.ts` | Manta, microtúnel y el reparo fijo de cada zona: grados de abrigo y riesgo de helada |
 | `acciones.ts` | `despachar(estado, accion)`: todo lo que hace el jugador |
 | `tiempo.ts` | `pasarDecada`: germinar → helar → semillar → crecer → estresar → plagas → espigar → madurar |
+| `diario.ts` | El diario de cada planta: lo que le pasó y por qué tiene la salud que tiene |
 | `misiones.ts`, `balance.ts`, `migraciones.ts` | Logros, puntaje, partidas viejas |
 
 ## El patio es un dato

@@ -2,10 +2,11 @@
 export * from './tipos';
 export { ABRIGO, abrigo, enRiesgo, riesgoHelada } from './abrigo';
 export { despachar } from './acciones';
+export { apuntar } from './diario';
 export { balance } from './balance';
 export { ESPECIES, META, metodoDe, objetivoCosecha, semillasPorSiembra, ventana } from './catalogo';
 export { CARACTERES, estacionDe, fechaDe, invierno, pTemporadaHelada } from './clima';
-export { RATOS, RIEGOS, costoRiego, crearPartida, plantaEn, ratosLibres } from './estado';
+export { RATOS, RIEGOS, costoRiego, crearPartida, plantaEn, puntoDeTrasplante, ratosLibres } from './estado';
 export { bajoTunel, evaluarCelda, factoresPlanta, floresAbiertas, sueloDeCelda } from './factores';
 export { MISIONES } from './misiones';
 export { PATIOS, PATIO_INICIAL, celdasDe, horasSol, idsDeZonas, macetaDe, patioDe, zona, zonaDe, zonaDeCelda, zonaDeTunel, zonasDe } from './patio';

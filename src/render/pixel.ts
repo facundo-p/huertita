@@ -183,6 +183,10 @@ import * as SP from '../arte/sprites';
         self._txt(g, q.bx + Math.round(q.w / 2) - 9, (G.cam === 'cerca' ? by + 4 : q.y + 2), String(nn), C.blanco, 1); 
       } else SP.planta(SP.pincel(g, q.bx, by - Math.round(salto), chico ? 0.8 : esc), vista, t, q.bx * 0.13 + by * 0.07);
       if (p.etapa === 'cosechable' && !p.flor) { var yy = by - Math.round((8 + a * 22) * esc) - 6 + Math.round(Math.sin(t * 0.4 + q.bx) * 1.5); r(q.bx - 3, yy, 7, 7, C.anil); r(q.bx - 2, yy + 1, 5, 5, C.maiz); r(q.bx - 1, yy + 2, 1, 2, C.blanco); r(q.bx, yy + 7, 1, 2, C.anil); }
+      // plantín en su punto: flecha verde (listo) o ladrillo (se está pasando)
+      if (p.trasplante) { var ty = by - Math.round((chico ? 14 : 20) * (G.cam === 'cerca' ? 1.6 : 1)) + Math.round(Math.sin(t * 0.4 + q.bx) * 1.5), tc = p.trasplante === 'listo' ? '#3fc25a' : '#e0502f'; r(q.bx - 4, ty, 9, 9, C.anil); r(q.bx - 3, ty + 1, 7, 7, tc); r(q.bx, ty + 2, 1, 5, C.blanco); r(q.bx - 1, ty + 3, 3, 1, C.blanco); r(q.bx - 2, ty + 4, 5, 1, C.blanco); }
+      // salud baja: barrita bajo la planta, para verla sin abrir la ficha
+      if (p.salud < 60 && p.etapa !== 'semilla') { var sw2 = 12, sx = q.bx - 6, sy2 = by + 2; r(sx - 1, sy2 - 1, sw2 + 2, 4, C.anil); r(sx, sy2, sw2, 2, '#4a2030'); r(sx, sy2, Math.max(1, Math.round(sw2 * p.salud / 100)), 2, p.salud < 30 ? '#ff5a4a' : '#ffc233'); }
       if (p.plaga && G.cam !== 'cerca') { var py2 = by - Math.round((8 + a * 20) * esc) - 5; r(q.bx + 6, py2, 7, 7, '#e0502f'); r(q.bx + 9, py2 + 1, 1, 3, C.blanco); r(q.bx + 9, py2 + 5, 1, 1, C.blanco); }
       // abejas en las flores abiertas
       if (p.flor && p.etapa === 'cosechable') for (var bb = 0; bb < 2; bb++) { var ax = q.bx + Math.round(Math.sin(t * 0.37 + bb * 3 + q.bx) * 11 * esc), ay = by - Math.round(16 * esc) + Math.round(Math.cos(t * 0.53 + bb * 2) * 6 * esc); r(ax, ay, 3, 2, '#ffd23f'); r(ax + 1, ay, 1, 2, '#16161a'); r(ax + (Math.floor(t * 2) % 2), ay - 1, 2, 1, 'rgba(255,255,255,0.85)'); }

@@ -71,7 +71,7 @@ import { RenderTexto } from '../render/texto';
     var E = ui.E, celdas = {}, fantasma = ui.sobre || (ui.moviendo && E.plantas[ui.moviendo] ? E.plantas[ui.moviendo].slug : null);
     Object.keys(E.celdas).forEach(function (k) {
       var c = E.celdas[k], Z = M.zona(E, c.zona), pl = M.plantaEn(E, k), p = k.split(','), x = +p[0], y = +p[1], planta = null, tinte = null;
-      if (pl) { var sp = ESP[pl.slug]; planta = { slug: pl.slug, nombre: corto(sp.nombre), emoji: sp.emoji, grupo: sp.grupo, familia: sp.familia, etapa: pl.etapa, n: pl.n || 1, salud: pl.salud, plaga: pl.plaga, tutor: pl.tutor, flor: sp.flor, dulce: pl.dulce, avance: pl.etapa === 'plantin' && sp.dt ? pl.prog / sp.dt.min : pl.prog / M.objetivoCosecha(sp) }; }
+      if (pl) { var sp = ESP[pl.slug]; planta = { slug: pl.slug, nombre: corto(sp.nombre), emoji: sp.emoji, grupo: sp.grupo, familia: sp.familia, etapa: pl.etapa, n: pl.n || 1, salud: pl.salud, plaga: pl.plaga, tutor: pl.tutor, flor: sp.flor, dulce: pl.dulce, trasplante: (function () { var pt = M.puntoDeTrasplante(pl); return pt && pt.punto !== 'chico' ? pt.punto : null; })(), avance: pl.etapa === 'plantin' && sp.dt ? pl.prog / sp.dt.min : pl.prog / M.objetivoCosecha(sp) }; }
       if (fantasma && !pl && !(ui.moviendo && Z.cria)) tinte = M.evaluarCelda(E, fantasma, k).nivel;
       celdas[k] = { zona: c.zona, tipo: Z.tipo, nombreZona: Z.nombre, mo: c.mo, mulch: c.mulch, humedo: E.riego[c.zona], maceta: M.macetaDe(E, k), sol: M.horasSol(E, k), planta: planta, tinte: tinte, seleccion: ui.sel === k,
         borde: { n: M.zonaDeCelda(E, x + ',' + (y - 1)) !== c.zona, s: M.zonaDeCelda(E, x + ',' + (y + 1)) !== c.zona, o: x === 0 || M.zonaDeCelda(E, (x - 1) + ',' + y) !== c.zona, e: M.zonaDeCelda(E, (x + 1) + ',' + y) !== c.zona } };
@@ -193,6 +193,19 @@ import { RenderTexto } from '../render/texto';
     return h + '</div>';
   }
 
+  // diario de una planta: lo más nuevo arriba, con la salud de cada década y cuánto cambió
+  function diarioHTML(pl) {
+    var hist = pl.hist || [], ICONO = { bien: '+', mal: '−', info: '·', clima: '·', logro: '★' };
+    if (!hist.length) return '<details class="hz-diario"><summary>Diario de esta planta</summary><p class="hz-dim">Todavía no le pasó nada. Se va llenando a medida que pasan los días.</p></details>';
+    var ultimaMala = null; for (var i = hist.length - 1; i >= 0 && !ultimaMala; i--) hist[i].n.forEach(function (x) { if (x[0] === 'mal' && !ultimaMala) ultimaMala = x[1]; });
+    var h = '<details class="hz-diario"' + (pl.salud < 70 ? ' open' : '') + '><summary>Diario de esta planta' + (pl.salud < 70 && ultimaMala ? ' · por qué está así' : '') + '</summary><ol>';
+    for (var j = hist.length - 1; j >= 0; j--) {
+      var r = hist[j], antes = j > 0 ? hist[j - 1].s : hist.length >= 16 ? r.s : 100, d = r.s - antes;
+      h += '<li><b>' + esc(cap(M.fechaDe(r.dec))) + '</b><span class="hz-dsalud' + (d < 0 ? ' baja' : d > 0 ? ' sube' : '') + '">salud ' + r.s + (d ? ' (' + (d > 0 ? '+' : '−') + Math.abs(d) + ')' : '') + '</span><ul>' + r.n.map(function (x) { return '<li class="t-' + x[0] + '"><i>' + ICONO[x[0]] + '</i>' + esc(x[1]) + '</li>'; }).join('') + '</ul></li>';
+    }
+    return h + '</ol>' + (hist.length >= 16 ? '<p class="hz-dim">Se guardan las últimas 16 anotaciones.</p>' : '') + '</details>';
+  }
+
   function panelCelda() {
     var E = ui.E, k = ui.sel, c = E.celdas[k]; if (!c) return panelInicio();
     var z = M.zona(E, c.zona), pl = M.plantaEn(E, k), mac = M.macetaDe(E, k);
@@ -202,9 +215,12 @@ import { RenderTexto } from '../render/texto';
 
     var sp = ESP[pl.slug], F = M.factoresPlanta(E, pl), obj = M.objetivoCosecha(sp);
     var etapa = { semilla: 'semilla sin germinar', plantin: 'plantín', creciendo: 'creciendo', cosechable: sp.flor ? 'en flor' : 'para cosechar', pasada: 'pasada', semillando: 'semillando' }[pl.etapa];
-    var h = '<h2>' + esc(sp.nombre) + '</h2><p class="hz-sub">' + etapa + ' · ' + pl.edad + ' días' + ((pl.n || 1) > 1 ? ' · <b>' + pl.n + ' plantines</b>' : '') + (pl.gen ? ' · semilla propia gen ' + pl.gen : '') + (pl.plaga ? ' · <b class="hz-mal">' + { pulgon: 'pulgones', oruga: 'orugas', babosa: 'babosas' }[pl.plaga] + '</b>' : '') + '</p>';
+    var pt = M.puntoDeTrasplante(pl);
+    if (pt) etapa = pt.punto === 'listo' ? '<b class="hz-bien">plantín listo para trasplantar</b>' : pt.punto === 'pasado' ? '<b class="hz-mal">plantín que se está pasando: trasplantalo ya</b>' : 'plantín, todavía chico';
+    var h = '<h2>' + esc(sp.nombre) + '</h2><p class="hz-sub">' + etapa + ' · sembrada hace ' + pl.edad + ' días' + ((pl.n || 1) > 1 ? ' · <b>' + pl.n + ' plantines</b>' : '') + (pl.gen ? ' · semilla propia gen ' + pl.gen : '') + (pl.plaga ? ' · <b class="hz-mal">' + { pulgon: 'pulgones', oruga: 'orugas', babosa: 'babosas' }[pl.plaga] + '</b>' : '') + '</p>';
     var vistaPl = vistaDe(k); h += tiraHTML(pl.slug, vistaPl ? SP.etapaDeTira(vistaPl) : null);
-    h += '<div class="hz-medidor"><span>Avance</span>' + barra(Math.min(1, pl.prog / obj), 'avance') + '<span>Salud</span>' + barra(pl.salud / 100) + '</div>';
+    h += '<div class="hz-medidor"><span>' + (pt ? 'Hacia el trasplante' : 'Avance') + '</span>' + barra(Math.min(1, pl.prog / (pt ? pt.min : obj)), 'avance') + '<span>Salud ' + Math.round(pl.salud) + '</span>' + barra(pl.salud / 100) + '</div>';
+    if (pt && pt.punto === 'chico') h += '<p class="hz-dim">Le faltan unos ' + pt.faltan + ' días de buen crecimiento para el trasplante. Con frío o poca luz crece más lento y tarda más que eso.</p>';
     if (pl.etapa !== 'semilla') {
       h += '<table class="hz-factores"><tr><th>Luz</th><td>' + escLuz(sp, F.luz.horas, F.luz.f) + '</td><td>' + F.luz.horas + ' h · pide ' + F.luz.pide + '</td></tr>' +
         '<tr><th>Agua</th><td>' + escAgua(sp, F.agua.H, F.agua.f) + '</td><td>' + { bien: 'bien', seco: 'le falta', exceso: 'le sobra' }[F.agua.estado] + ' · pide riego ' + F.agua.pide + '</td></tr>' +
@@ -223,7 +239,9 @@ import { RenderTexto } from '../render/texto';
     if (pl.plaga) b += '<button class="hz-btn pri" data-acc="tratar">Tratar plaga · 1</button>';
     b += '<button class="hz-btn sec" data-acc="arrancar">Arrancar</button>';
     h += '<div class="hz-fila">' + b + '</div>';
-    if (deCria && sp.dt) h += '<p class="hz-dim">Trasplante a los ' + sp.dt.min + '–' + sp.dt.max + ' días. ' + vent(pl.slug, 'trasplante') + '</p>';
+    if (deCria && sp.dt) h += '<p class="hz-dim">Se trasplanta con ' + sp.dt.min + '–' + sp.dt.max + ' días de crecimiento. ' + vent(pl.slug, 'trasplante') + '</p>';
+    if (deCria && !sp.dt) h += '<p class="hz-dim">' + esc(corto(sp.nombre)) + ' no tolera el trasplante: va de siembra directa. Si lo movés, la raíz sufre.</p>';
+    h += diarioHTML(pl);
     h += '<div class="hz-fila"><button class="hz-btn sec" data-acc="ficha" data-slug="' + pl.slug + '">Ficha completa</button></div>';
     if (sp.truco) h += '<p class="hz-cita"><span>Del catálogo</span>' + esc(sp.truco) + '</p>';
     if (sp.sup.length) h += '<p class="hz-dim">Dato supuesto por el juego (el catálogo no lo trae): ' + sp.sup.join(', ') + '.</p>';

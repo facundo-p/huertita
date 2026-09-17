@@ -15,11 +15,15 @@ const Viejo = createRequire(import.meta.url)('./legado/motor-v04.cjs') as MotorJ
 const canon = (v: unknown): string => JSON.stringify(v, (_k, x) => (x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.entries(x).sort(([a], [b]) => (a < b ? -1 : 1))) : x));
 
 /**
- * Desde la 0.6 el estado guarda en qué patio se juega y el microtúnel por zona. El prototipo tenía un
+ * Desde la 0.6 el estado guarda en qué patio se juega y el microtúnel por zona, y desde la 0.7 cada planta lleva su diario. El prototipo tenía un
  * solo patio y un solo túnel: para comparar, se lleva el estado nuevo a la forma vieja. Todo lo demás
  * (plantas, suelo, cuaderno, azar) se compara tal cual.
  */
-function aFormaV04(E: any): any { const { patio, ...resto } = E; expect(patio).toBe('fondo'); return { ...resto, v: 1, tunel: !!E.tunel.elevado }; }
+function aFormaV04(E: any): any {
+  const { patio, ...resto } = E; expect(patio).toBe('fondo');
+  const plantas = Object.fromEntries(Object.entries<any>(E.plantas).map(([id, { hist, ...pl }]) => [id, pl])); // el diario por planta es nuevo (0.7) y no cambia ninguna regla
+  return { ...resto, plantas, v: 1, tunel: !!E.tunel.elevado };
+}
 
 describe('el motor en TypeScript juega igual que el prototipo', () => {
   for (const semilla of [1, 2, 3, 4, 5, 6, 7, 8]) {

@@ -6,7 +6,7 @@
 import type { TipoZona } from '../../datos/juego/patio';
 import type { CeldaId, Etapa, Plaga, ZonaId } from '../motor';
 
-export interface PlantaDeEscena { slug: string; nombre: string; emoji: string; grupo: string; familia: string; etapa: Etapa; n: number; salud: number; plaga: Plaga | null; tutor: boolean; flor: boolean; dulce: boolean; /** 0..1 hacia la cosecha (o hacia el trasplante, si es plantín) */ avance: number }
+export interface PlantaDeEscena { slug: string; nombre: string; emoji: string; grupo: string; familia: string; etapa: Etapa; n: number; salud: number; plaga: Plaga | null; tutor: boolean; flor: boolean; dulce: boolean; /** plantín en su punto de trasplante, o ya pasándose */ trasplante: 'listo' | 'pasado' | null; /** 0..1 hacia la cosecha (o hacia el trasplante, si es plantín) */ avance: number }
 export interface CeldaDeEscena { /** id de la zona: sirve para agrupar, nunca para decidir cómo se dibuja */ zona: ZonaId; /** cómo se dibuja */ tipo: TipoZona; nombreZona: string; mo: number; mulch: boolean; humedo: number; maceta: { litros: number; prof: number } | null; sol: number; planta: PlantaDeEscena | null; tinte: 'bien' | 'regular' | 'mal' | null; seleccion: boolean; borde: { n: boolean; s: boolean; e: boolean; o: boolean } }
 export interface Escena {
   camara: string;

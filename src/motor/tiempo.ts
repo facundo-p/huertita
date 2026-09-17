@@ -14,6 +14,7 @@ import { fechaDe, generarTiempo } from './clima';
 import { anotar, quitarPlanta, ratosLibres } from './estado';
 import { aliadosCerca, factoresPlanta, fVecinos, floresAbiertas, humedad, tempEfectiva, type Factores } from './factores';
 import { cumplir } from './misiones';
+import { apuntar, cerrar } from './diario';
 import { idsDeZonas, macetaDe, zona } from './patio';
 import type { CeldaId, Especie, Estado, Evento, Planta, Tiempo, TipoEvento, ZonaId } from './tipos';
 import { cap, clamp, r1 } from './util';
@@ -22,6 +23,8 @@ const DIAS = 10;
 interface Ctx {
   E: Estado; w: Tiempo; evs: Evento[]; flores: number; salvadas: Partial<Record<ZonaId, string[]>>;
   ev: (tipo: TipoEvento, txt: string, celda?: CeldaId | null) => void;
+  /** anota solo en el diario de la planta que se está procesando: lo que no amerita un aviso en el cuaderno */
+  nota: (tipo: TipoEvento, txt: string) => void;
 }
 type Sigue = boolean; // false = la planta ya no sigue este turno (murió, se perdió o terminó su parte)
 
@@ -84,18 +87,19 @@ function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores)
   return g;
 }
 
-function estresar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores, ab: Abrigo, g: number): void {
+function estresar({ E, w, ev, nota }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores, ab: Abrigo, g: number): void {
   const nom = sp.nombre, bajoTunel = !!E.tunel[z];
-  if (F.agua.estado === 'seco' && F.agua.f < 0.75) { pl.salud -= (1 - F.agua.f) * 35; if (F.agua.f < 0.5) ev('mal', nom + ' pasa sed' + (macetaDe(E, pl.celda) ? ': las macetas se secan mucho más rápido que la tierra.' : ': subí el riego o poné mulch.'), pl.celda); }
+  if (F.agua.estado === 'seco' && F.agua.f < 0.75) { pl.salud -= (1 - F.agua.f) * 35; if (F.agua.f >= 0.5) nota('mal', 'Le faltó agua: pide riego ' + sp.riego + ' y tuvo menos. Perdió salud.'); else ev('mal', nom + ' pasa sed' + (macetaDe(E, pl.celda) ? ': las macetas se secan mucho más rápido que la tierra.' : ': subí el riego o poné mulch.'), pl.celda); }
   if (F.agua.estado === 'exceso' && F.agua.diff > 1.4) { pl.salud -= 14; ev('mal', nom + ' tiene exceso de agua: pide riego ' + sp.riego + '. Con los pies mojados aparecen hongos y se pudre la raíz.', pl.celda); }
   if (w.tmax + (bajoTunel ? 5 : 0) > sp.tc.tolera_max + 2) { pl.salud -= 6 + (w.tmax - sp.tc.tolera_max) * 3; ev('mal', nom + ' sufrió el calor (máx ' + w.tmax + ' °C' + (bajoTunel ? ', y bajo el microtúnel es peor' : '') + ').', pl.celda); }
   if (!w.helada && w.tmin + ab.grados < sp.tc.tolera_min) { pl.salud -= 12; ev('mal', nom + ' sufrió el frío (mín ' + w.tmin + ' °C).', pl.celda); }
   if (F.luz.f < 0.5 && pl.edad % 30 === 0) ev('mal', nom + ' recibe ' + F.luz.horas + ' h de sol y pide ' + F.luz.pide + '. ' + sp.luzNo, pl.celda);
-  if (g > 0.85 && !pl.plaga) pl.salud = Math.min(100, pl.salud + 5);
+  if (g > 0.85 && !pl.plaga) { if (pl.salud < 100) nota('bien', 'Creció a gusto y recuperó salud.'); pl.salud = Math.min(100, pl.salud + 5); }
+  else if (g < 0.6) { const fs: [string, number][] = [['poca luz (' + F.luz.horas + ' h, pide ' + F.luz.pide + ')', F.luz.f], ['el agua', F.agua.f], ['la temperatura (media ' + F.temp.t + ' °C, ideal ' + F.temp.pide + ')', F.temp.f], ['el suelo' + (F.suelo.maceta < 1 ? ' y la maceta chica' : ''), F.suelo.f], ['los vecinos', F.vecinos.f]]; fs.sort((a, b) => a[1] - b[1]); nota('info', 'Creció lento: lo que más la frenó fue ' + fs[0][0] + (pl.plaga ? ', además de la plaga' : '') + '.'); }
 }
 
 /** [REPO] el texto de plagas de cada ficha. [SUPUESTO] las probabilidades. */
-function plagas({ E, w, ev, flores }: Ctx, pl: Planta, sp: Especie): void {
+function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void {
   const nom = sp.nombre, c = E.celdas[pl.celda];
   if (!pl.plaga) {
     const prot = clamp(1 - 0.22 * aliadosCerca(E, pl.celda), 0.25, 1), joven = pl.prog < objetivoCosecha(sp) * 0.4;
@@ -104,7 +108,7 @@ function plagas({ E, w, ev, flores }: Ctx, pl: Planta, sp: Especie): void {
     else if (joven && w.lluvia > 40 && !macetaDe(E, pl.celda) && p < 0.15 * prot) { pl.plaga = 'babosa'; ev('mal', 'Babosas en ' + nom.toLowerCase() + ': con tanta lluvia salen de noche y se comen lo tierno.', pl.celda); }
     else if (/hoja|fruto|Legumbre/.test(sp.grupo) && ((d >= 25 && d <= 33) || (d >= 7 && d <= 12)) && p < 0.06 * prot * rot) { pl.plaga = 'pulgon'; ev('mal', 'Pulgones en ' + nom.toLowerCase() + '. ' + (prot === 1 ? 'Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen.' : ''), pl.celda); }
   } else {
-    pl.salud -= 12;
+    pl.salud -= 12; nota('mal', 'Sigue con ' + (pl.plaga === 'pulgon' ? 'pulgones' : pl.plaga === 'oruga' ? 'orugas' : 'babosas') + ': pierde salud cada década hasta que la trates o lleguen aliados.');
     if (flores >= 2 && azar(E) < 0.35) { ev('bien', 'Llegaron vaquitas de San Antonio atraídas por tus flores: limpiaron ' + nom.toLowerCase() + ' de ' + (pl.plaga === 'pulgon' ? 'pulgones' : 'plaga') + '.', pl.celda); pl.plaga = null; }
   }
 }
@@ -150,23 +154,31 @@ export function pasarDecada(E: Estado): Evento[] {
     for (const p of pend) if (p.n) evs.push(anotar(E, p.tipo, p.texto + (p.n > 1 ? ' (×' + p.n + ')' : ''), p.celda));
     pend = [];
   };
-  const ctx: Ctx = { E, w, evs, flores: floresAbiertas(E), salvadas: {}, ev: (tipo, texto, celda) => { pend.push({ tipo, texto, celda: celda || null }); } };
+  let actual: Planta | null = null; // la planta que se está procesando: sus avisos van también a su diario
+  const ctx: Ctx = { E, w, evs, flores: floresAbiertas(E), salvadas: {},
+    ev: (tipo, texto, celda) => { pend.push({ tipo, texto, celda: celda || null }); if (actual && celda === actual.celda) apuntar(E, actual, tipo, texto); },
+    nota: (tipo, texto) => { if (actual) apuntar(E, actual, tipo, texto); } };
   ctx.ev('clima', cap(fechaDe(w.dec)) + ': máx ' + w.tmax + ' °C, mín ' + w.tmin + ' °C, ' + (w.lluvia < 8 ? 'casi sin lluvia' : w.lluvia + ' mm de lluvia') + (w.helada ? '. HELÓ.' : w.ola ? '. Ola de calor.' : '.'));
 
   for (const id of Object.keys(E.plantas)) {
     const pl = E.plantas[id]; if (!pl) continue;
-    const sp = ESPECIES[pl.slug], z = E.celdas[pl.celda].zona;
-    pl.edad += DIAS;
-    if (pl.etapa === 'semilla') { germinar(ctx, pl, sp, z); continue; }
-    const ab = abrigo(E, z);
-    if (!helar(ctx, pl, sp, z, ab)) continue;
-    if (!semillarOSecarse(ctx, pl, sp)) continue;
-    const F = factoresPlanta(E, pl, w);
-    const g = crecer(ctx, pl, sp, z, F);
-    estresar(ctx, pl, sp, z, F, ab, g);
-    plagas(ctx, pl, sp);
-    if (!espigar(ctx, pl, sp, F)) continue;
-    madurar(ctx, pl, sp, z);
+    const sp = ESPECIES[pl.slug], z = E.celdas[pl.celda].zona, saludAntes = pl.salud;
+    pl.edad += DIAS; actual = pl;
+    const sigue = ((): boolean => {
+      if (pl.etapa === 'semilla') { germinar(ctx, pl, sp, z); return true; }
+      const ab = abrigo(E, z);
+      if (!helar(ctx, pl, sp, z, ab)) return false;
+      if (!semillarOSecarse(ctx, pl, sp)) return true;
+      const F = factoresPlanta(E, pl, w);
+      const g = crecer(ctx, pl, sp, z, F);
+      estresar(ctx, pl, sp, z, F, ab, g);
+      plagas(ctx, pl, sp);
+      if (!espigar(ctx, pl, sp, F)) return true;
+      madurar(ctx, pl, sp, z);
+      return true;
+    })();
+    if (sigue && E.plantas[id]) cerrar(E, pl, saludAntes);
+    actual = null;
   }
 
   for (const zz of Object.keys(ctx.salvadas) as ZonaId[]) { const u = [...new Set(ctx.salvadas[zz])]; ctx.ev('bien', 'Heló (mín ' + w.tmin + ' °C) pero ' + abrigo(E, zz).partes.join(' y ') + ' en ' + zona(E, zz).nombre.toLowerCase() + ' aguantó: se salvaron ' + u.join(', ').toLowerCase() + '.'); }

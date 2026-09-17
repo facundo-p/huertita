@@ -23,7 +23,11 @@ export interface Planta {
   /** plantines vivos en esta siembra */ n: number;
   /** semillas que se pusieron */ semillas: number;
   avisoRaleo?: boolean; avisoPasado?: boolean; avisoListo?: boolean;
+  /** diario de esta planta: lo que le fue pasando, década por década. Lo más nuevo al final; se guardan las últimas 16 entradas */
+  hist?: Registro[];
 }
+/** Una entrada del diario de una planta. `s` es la salud con la que cerró; `n`, lo que le pasó: [tipo, texto]. */
+export interface Registro { dec: number; turno: number; s: number; n: [TipoEvento, string][] }
 export interface Celda { zona: ZonaId; mo: number; mulch: boolean; fam: string | null; planta: string | null }
 export interface Tiempo { dec: number; tmed: number; tmax: number; tmin: number; lluvia: number; helada: boolean; ola: boolean; estacion: string }
 export interface Pronostico { tmin: number; tmax: number; pHelada: number; lluvia: 'seca' | 'normal' | 'llovedora' }
