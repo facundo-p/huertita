@@ -1,0 +1,10 @@
+{
+  "repo": "facundo-p/huertapp",
+  "ref": "main",
+  "archivo": "data/huerta_gba_enriquecido.json",
+  "sha256": "f0825cd2e88855f90634b64a73962e131b8f0c40249fe00d12d2911cdce55825",
+  "bytes": 1267461,
+  "generado_en_huertapp": "2026-08-06",
+  "sincronizado": "2026-09-17",
+  "especies": 55
+}

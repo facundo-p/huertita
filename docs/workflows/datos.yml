@@ -1,0 +1,26 @@
+name: Datos de huertapp
+on:
+  schedule: [{ cron: '0 12 * * 1' }]   # lunes 9:00 de Buenos Aires
+  workflow_dispatch:
+permissions: { contents: write, pull-requests: write }
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run datos:sync
+      - id: tests
+        run: npm test
+        continue-on-error: true
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: datos/sync
+          title: 'Datos: cambios traídos de huertapp'
+          commit-message: 'datos: sync con huertapp'
+          body: |
+            Sync automático con `facundo-p/huertapp`. El detalle de qué cambió y qué sistema del juego toca está en `datos/CAMBIOS.md`.
+
+            Tests con los datos nuevos: **${{ steps.tests.outcome }}**. Si fallaron, algún valor nuevo rompe una regla del juego: mirar `tests/catalogo.test.ts`.

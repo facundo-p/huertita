@@ -1,0 +1,214 @@
+<title>Mapa de ideas Huertita</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Mismo mundo visual que el juego, a propósito: añil de noche, maíz, ladrillo, acequia, hoja. */
+:root{--anil:#1d1b4b;--anil-2:#2a2869;--anil-3:#3b3a8a;--tiza:#fff1d0;--tiza-2:#cfc6e8;--maiz:#ffc233;--ladrillo:#e0502f;--hoja:#3fc25a;--acequia:#1fc2b8;--rosa:#ff7aa8;
+  --pix:'Pixelify Sans','Courier New',monospace;--txt:'Atkinson Hyperlegible','Trebuchet MS',Verdana,sans-serif}
+*{box-sizing:border-box}
+body{background:var(--anil);color:var(--tiza);font-family:var(--txt);font-size:16px;line-height:1.5}
+.pg{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:34px}
+h1{font-family:var(--pix);font-size:clamp(30px,6vw,46px);line-height:1;margin:0;color:var(--maiz);text-shadow:3px 3px 0 var(--ladrillo);text-wrap:balance}
+h2{font-family:var(--pix);font-size:26px;margin:0 0 4px;color:var(--maiz);font-weight:600;text-wrap:balance}
+h3{font-family:var(--pix);font-size:18px;margin:0;font-weight:400}
+p{margin:6px 0;max-width:68ch} .dim{color:var(--tiza-2);font-size:14px}
+header p{font-size:18px}
+nav{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--anil);padding-block:8px}
+nav a{font-family:var(--pix);color:var(--tiza);text-decoration:none;background:var(--anil-2);padding:6px 10px;box-shadow:3px 3px 0 #0e0d2e;font-size:15px}
+nav a:hover,nav a:focus-visible{background:var(--acequia);color:var(--anil);outline:none}
+button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3px solid var(--maiz);outline-offset:2px}
+
+/* cuadro 2x2 */
+.mapa{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.mapa{grid-template-columns:minmax(0,1fr)}}
+.lienzo{background:var(--anil-2);box-shadow:6px 6px 0 #0e0d2e;padding:8px}
+.lienzo svg{display:block;width:100%;height:auto}
+.q-nombre{font-family:var(--pix);font-size:17px;font-weight:600} .q-sub{font-family:var(--txt);font-size:10.5px;fill:var(--tiza-2)}
+.eje{font-family:var(--pix);font-size:12px;fill:var(--tiza-2);letter-spacing:1px}
+.punto{cursor:pointer} .punto text{font-family:var(--pix);font-size:11px;font-weight:600;pointer-events:none}
+.punto circle{stroke:var(--anil);stroke-width:2} .punto.on circle{stroke:var(--tiza);stroke-width:3} .punto.apagado{opacity:.18}
+.filtros{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.filtros button{font-family:var(--pix);font-size:14px;background:var(--anil-2);border:0;padding:6px 10px;box-shadow:3px 3px 0 #0e0d2e} .filtros button.on{background:var(--acequia);color:var(--anil)}
+.leyenda{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--tiza-2);font-family:var(--pix)} .leyenda i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.detalle{background:var(--anil-2);padding:14px 16px;box-shadow:6px 6px 0 #0e0d2e;min-height:170px}
+.detalle .num{font-family:var(--pix);color:var(--anil);background:var(--maiz);padding:0 7px;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0} .chip{font-family:var(--pix);font-size:13px;padding:1px 8px;background:var(--anil);white-space:nowrap}
+.chip.rab{background:var(--hoja);color:#0c2a14} .chip.zap{background:var(--maiz);color:var(--anil)} .chip.aro{background:var(--acequia);color:var(--anil)} .chip.yuy{background:var(--anil-3)} .chip.hecho{background:var(--tiza);color:var(--anil)}
+.lista{list-style:none;padding:0;margin:12px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 14px}
+.lista button{display:grid;grid-template-columns:26px 1fr;gap:6px;width:100%;text-align:left;background:none;border:0;padding:3px 0;font-size:14.5px;align-items:baseline}
+.lista button b{font-family:var(--pix);text-align:center;color:var(--anil);font-size:12px;padding:1px 0} .lista button.on span{color:var(--maiz)} .lista button.hecho span{text-decoration:line-through;text-decoration-color:var(--tiza-2);color:var(--tiza-2)}
+.lista .grupo{grid-column:1/-1;font-family:var(--pix);color:var(--tiza-2);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-top:10px}
+
+/* cuadrantes como tarjetas de referencia */
+.cuadrantes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} @media (max-width:560px){.cuadrantes{grid-template-columns:1fr}}
+.cuad{padding:12px 14px;border-left:8px solid;background:var(--anil-2)} .cuad p{font-size:14.5px;margin:2px 0 0}
+.cuad.rab{border-color:var(--hoja)} .cuad.zap{border-color:var(--maiz)} .cuad.aro{border-color:var(--acequia)} .cuad.yuy{border-color:var(--anil-3)}
+
+.propuestas{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;counter-reset:p}
+.prop{background:var(--anil-2);padding:14px 16px;box-shadow:5px 5px 0 #0e0d2e;display:flex;flex-direction:column;gap:6px}
+.prop h3{color:var(--tiza);font-size:19px} .prop p{font-size:15px;margin:0} .prop .ens{border-left:3px solid var(--acequia);padding-left:10px;color:var(--tiza-2);font-size:14px}
+
+.evs{width:100%;border-collapse:collapse;font-size:14.5px} .evs th{font-family:var(--pix);font-weight:400;text-align:left;color:var(--tiza-2);padding:6px 10px 6px 0;border-bottom:2px dotted var(--anil-3)}
+.evs td{padding:7px 10px 7px 0;vertical-align:top;border-bottom:1px solid var(--anil-2)} .evs td:first-child{font-family:var(--pix);font-size:15px;white-space:normal;min-width:130px}
+.evs tr.cab td{font-family:var(--pix);font-size:17px;color:var(--acequia);padding-top:18px;border-bottom:0}
+.evs .r{font-family:var(--pix);font-size:11px;background:var(--hoja);color:#0c2a14;padding:0 5px;margin-left:4px;white-space:nowrap}
+.tabla-w{overflow-x:auto}
+
+.pasos{display:flex;flex-direction:column;gap:0;margin-top:10px}
+.paso{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:10px 0;border-left:0}
+.paso .n{font-family:var(--pix);font-size:18px;width:34px;height:34px;display:grid;place-items:center;background:var(--anil-3)} .paso.cim .n{background:var(--ladrillo)} .paso.rab .n{background:var(--hoja);color:#0c2a14} .paso.zap .n{background:var(--maiz);color:var(--anil)}
+.paso h3{font-size:17px} .paso p{font-size:14.5px;margin:2px 0 0}
+</style>
+
+<div class="pg">
+  <header>
+    <h1>Mapa de ideas de Huertita</h1>
+    <p>Todo lo que se podría hacer, ordenado por cuánto cuesta y cuánto le suma al juego. Tocá un punto o un nombre para ver de qué se trata.</p>
+    <p class="dim">Al 17 de septiembre de 2026, con el juego en la versión 0.4. Costo e impacto son estimaciones mías, de 1 a 10; el costo supone los cimientos ya hechos.</p>
+  </header>
+  <nav aria-label="Secciones"><a href="#mapa">El cuadro</a><a href="#cuadrantes">Los 4 cuadrantes</a><a href="#propuestas">Mis 5 propuestas</a><a href="#eventos">Eventos sorpresa</a><a href="#orden">En qué orden</a></nav>
+
+  <section id="mapa">
+    <h2>El cuadro</h2>
+    <div class="filtros" id="filtros" role="group" aria-label="Filtrar ideas"></div>
+    <div class="mapa">
+      <div>
+        <div class="lienzo"><svg id="svg" viewBox="0 0 600 600" role="img" aria-label="Ideas ubicadas por costo e impacto"></svg></div>
+        <p class="leyenda"><span><i style="background:var(--maiz)"></i>idea tuya</span><span><i style="background:var(--acequia)"></i>idea mía</span><span><i style="background:var(--tiza)"></i>ya está hecha</span></p>
+      </div>
+      <div>
+        <div class="detalle" id="detalle" aria-live="polite"></div>
+        <ul class="lista" id="lista"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="cuadrantes">
+    <h2>Los cuatro cuadrantes</h2>
+    <p>Nombres de huerta, para poder decir "eso es un rabanito" y entendernos.</p>
+    <div class="cuadrantes">
+      <div class="cuad rab"><h3>Rabanitos</h3><p>Cuestan poco y rinden mucho. Se hacen ya, en tanda.</p></div>
+      <div class="cuad zap"><h3>Zapallos</h3><p>Tardan y ocupan lugar, pero llenan la mesa. Se planifican de a uno.</p></div>
+      <div class="cuad aro"><h3>Aromáticas</h3><p>Fáciles, dan sabor, no llenan la olla. Se intercalan cuando hay un hueco.</p></div>
+      <div class="cuad yuy"><h3>Yuyos</h3><p>Consumen recursos y dan poco. Se dejan, por ahora.</p></div>
+    </div>
+  </section>
+
+  <section id="propuestas">
+    <h2>Mis cinco propuestas</h2>
+    <p>Las cinco buscan lo mismo: que cada regla real se vuelva una decisión con consecuencias que se ven. Van en el orden en que las haría.</p>
+    <div class="propuestas" id="props"></div>
+  </section>
+
+  <section id="eventos">
+    <h2>Eventos sorpresa</h2>
+    <p>Hoy no existen como tales: los regalos de la vecina son el premio fijo de los 8 logros, y lo único azaroso es el clima y las plagas. Este es el catálogo posible. Regla: todo evento tiene una respuesta que es una práctica real, y los malos se anuncian o se pueden prevenir.</p>
+    <p class="dim">La marca <span class="r" style="font-family:var(--pix);background:var(--hoja);color:#0c2a14;padding:0 5px">repo</span> indica que se apoya en datos de huertapp. El resto es conocimiento general de huerta y necesita tu revisión antes de entrar al juego.</p>
+    <div class="tabla-w"><table class="evs" id="evs"></table></div>
+  </section>
+
+  <section id="orden">
+    <h2>En qué orden</h2>
+    <p>Primero los cimientos, porque sin ellos varios rabanitos se vuelven zapallos. Cada paso termina con el juego andando.</p>
+    <div class="pasos" id="pasos"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // costo e impacto: 1 a 10. de: 'vos' | 'yo'. hecho: versión en que entró.
+  var IDEAS = [
+    { n: 1, t: 'Almaciguera con varios plantines, raleo y repique', de: 'vos', c: 3, i: 8, hecho: 'v0.3', por: 'Cada siembra son varias semillas; nacen más o menos según el suelo y la época; se ralea o se repica de a un plantín. Enseña una práctica real con un cambio de modelo chico.' },
+    { n: 2, t: 'Indicadores con el rango que pide cada especie', de: 'vos', c: 2, i: 7, hecho: 'v0.3', por: 'La banda es lo que pide el catálogo, la marca lo que tiene la planta. La barra ahora explica el porqué.' },
+    { n: 3, t: 'Almanaque de siembra y ficha completa', de: 'vos', c: 3, i: 7.5, hecho: 'v0.3', por: 'Las 36 décadas por especie y todos los datos del catálogo, a un toque.' },
+    { n: 4, t: 'Guardar y cargar la huerta', de: 'vos', c: 2.5, i: 6.5, hecho: 'v0.4', por: 'Autoguardado visible, tres ranuras, nube privada para seguir en otro dispositivo, archivo y código.' },
+    { n: 5, t: 'Protección de heladas que cumple lo que dice', de: 'vos', c: 1.5, i: 6, hecho: 'v0.4', por: 'Cada abrigo suma grados y el juego dice hasta qué mínima aguanta. El cuaderno cuenta cuándo salvó y cuándo no alcanzó.' },
+    { n: 6, t: 'Eventos sorpresa', de: 'vos', c: 4, i: 9, por: 'Regalos, clima, bichos, barrio. Con los eventos como tabla de datos, cada uno nuevo cuesta minutos. Es la mayor fuente de sorpresa por peso invertido.' },
+    { n: 7, t: 'Césped y poda como secos y verdes del compost', de: 'vos', c: 3.5, i: 6.5, por: 'La receta de 2 secos por 1 verde ya está en el repo. Suma un recurso finito más para administrar.' },
+    { n: 8, t: 'Pedidos de vecinos con fecha', de: 'yo', c: 4.5, i: 9, por: 'Dan objetivo de corto plazo, que hoy falta después del octavo logro. Obligan a contar días hacia atrás: eso es planificar una huerta.' },
+    { n: 9, t: 'Sonido y ambiente', de: 'yo', c: 3, i: 7, por: 'Lluvia, pájaros, el pop de la cosecha. Mucho disfrute por poco código.' },
+    { n: 10, t: 'Patios prediseñados: balcón, terraza, fondo grande', de: 'vos', c: 4.8, i: 7.5, por: 'Si el patio es un dato, cada patio nuevo es un archivo. Cada uno plantea un problema distinto de luz y espacio.' },
+    { n: 11, t: 'Vacaciones de enero y otros desafíos anunciados', de: 'yo', c: 2.5, i: 8, por: 'Dos décadas sin tocar nada, avisadas un mes antes. Obliga a preparar mulch, sombra y goteo.' },
+    { n: 12, t: 'Jugar de a 1 a 10 días', de: 'vos', c: 8, i: 8.5, por: 'El motor simula día por día y vos elegís el salto. Toca el corazón del motor y obliga a rebalancear todo.' },
+    { n: 13, t: 'Feria vecinal: vender o trocar verdura', de: 'vos', c: 7.5, i: 8, por: 'Necesita economía, precios, tienda y balance. Le da sentido al excedente y abre las mejoras comprables.' },
+    { n: 14, t: 'Editor del espacio', de: 'vos', c: 9, i: 7, por: 'Interfaz de edición más sombras calculadas por geometría. Llega casi gratis después de "patio como dato" y los patios prediseñados.' },
+    { n: 15, t: 'Tamaño real de cada planta y marcos de plantación', de: 'yo', c: 7, i: 9, por: 'Un zapallo ocupa 4 celdas, en una entran 9 rabanitos, el choclo sombrea al sur. El bancal se vuelve rompecabezas.' },
+    { n: 16, t: 'Diagnóstico por síntomas', de: 'yo', c: 8, i: 8, por: 'La planta muestra el problema y vos elegís la causa. Pide dibujar síntomas por especie. Entrena el ojo.' },
+    { n: 17, t: 'Modo "mi patio" y puente con huertapp', de: 'yo', c: 8.5, i: 7.5, por: 'Cargás tu patio real y el juego pasa a ser un simulador de tu huerta. Comparte datos y décadas con la app.' },
+    { n: 18, t: 'Fauna viva y álbum de bichos', de: 'yo', c: 4, i: 5, por: 'Vaquitas, crisopas, sapo, picaflor. La mecánica ya existe; suma disfrute y colección.' },
+    { n: 19, t: 'Preparados agroecológicos', de: 'yo', c: 2.5, i: 4, por: 'Purín de ortiga, jabón potásico, trampa de cerveza como recetas. Variante de "tratar plaga".' },
+    { n: 20, t: 'Tanque de lluvia y goteo como mejoras', de: 'yo', c: 3, i: 4.5, por: 'Pesa sobre todo en años Niña y en las vacaciones.' },
+    { n: 21, t: 'Recetas veganas de estación y conservas', de: 'yo', c: 3.5, i: 3, por: 'Cierra el ciclo de la semilla al plato. No cambia cómo se juega.' },
+    { n: 22, t: 'Variedades del repo', de: 'yo', c: 4.5, i: 4, por: 'Tomate determinado, zanahoria corta, coliflor temprana. El dato existe; suma opciones, no mecánicas.' },
+    { n: 23, t: 'Árboles frutales', de: 'vos', c: 8.5, i: 4.5, por: 'No hay datos con fuente y su escala es de años. Atajo: un solo frutal ya plantado en algún patio, cuando investigues esas fichas.' },
+    { n: 24, t: 'Fotoperíodo detallado', de: 'yo', c: 7, i: 3, por: 'Es lo que de verdad hace espigar a la lechuga, pero el jugador casi no lo vería y falta investigarlo.' },
+    { n: 25, t: 'Cámara isométrica o 3D', de: 'yo', c: 9.5, i: 3.5, por: 'La vista de cerca ya da el disfrute. Esto sería un renderer entero.' },
+    { n: 26, t: 'Feria de semillas en línea entre jugadores', de: 'yo', c: 9, i: 2.5, por: 'Requiere servidor y moderación. Se puede simular con códigos más adelante.' }
+  ];
+  var Q = { rab: ['Rabanito', 'Costo bajo · impacto alto'], zap: ['Zapallo', 'Costo alto · impacto alto'], aro: ['Aromática', 'Costo bajo · impacto bajo'], yuy: ['Yuyo', 'Costo alto · impacto bajo'] };
+  function cuad(d) { return d.i >= 5.5 ? (d.c <= 5.5 ? 'rab' : 'zap') : (d.c <= 5.5 ? 'aro' : 'yuy'); }
+  var est = { sel: 8, filtro: 'todas' };
+  var FILTROS = [['todas', 'Todas'], ['pend', 'Pendientes'], ['vos', 'Tuyas'], ['yo', 'Mías'], ['rab', 'Rabanitos'], ['zap', 'Zapallos'], ['aro', 'Aromáticas'], ['yuy', 'Yuyos']];
+  function pasa(d) { var f = est.filtro; return f === 'todas' || (f === 'pend' && !d.hecho) || f === d.de || f === cuad(d); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // separar puntos que quedarían encimados
+  var pos = IDEAS.map(function (d) { return { x: 50 + (d.c - 0.5) / 9.5 * 520, y: 560 - (d.i - 1) / 9 * 520 }; });
+  for (var it = 0; it < 60; it++) for (var a = 0; a < pos.length; a++) for (var b = a + 1; b < pos.length; b++) { var dx = pos[b].x - pos[a].x, dy = pos[b].y - pos[a].y, dd = Math.sqrt(dx * dx + dy * dy) || 0.1; if (dd < 30) { var k = (30 - dd) / 2 / dd; pos[a].x -= dx * k; pos[a].y -= dy * k; pos[b].x += dx * k; pos[b].y += dy * k; } }
+
+  function dibujar() {
+    var mx = 50 + (5.5 - 0.5) / 9.5 * 520, my = 560 - (5.5 - 1) / 9 * 520, s = '';
+    s += '<rect x="30" y="20" width="' + (mx - 30) + '" height="' + (my - 20) + '" fill="rgba(63,194,90,.16)"/><rect x="' + mx + '" y="20" width="' + (580 - mx) + '" height="' + (my - 20) + '" fill="rgba(255,194,51,.12)"/>';
+    s += '<rect x="30" y="' + my + '" width="' + (mx - 30) + '" height="' + (580 - my) + '" fill="rgba(31,194,184,.10)"/><rect x="' + mx + '" y="' + my + '" width="' + (580 - mx) + '" height="' + (580 - my) + '" fill="rgba(59,58,138,.35)"/>';
+    s += '<line x1="' + mx + '" y1="20" x2="' + mx + '" y2="580" stroke="#3b3a8a" stroke-width="2" stroke-dasharray="4 4"/><line x1="30" y1="' + my + '" x2="580" y2="' + my + '" stroke="#3b3a8a" stroke-width="2" stroke-dasharray="4 4"/>';
+    [['rab', 40, 42, '#3fc25a', 'start'], ['zap', 570, 42, '#ffc233', 'end'], ['aro', 40, 562, '#1fc2b8', 'start'], ['yuy', 570, 562, '#cfc6e8', 'end']].forEach(function (q) { s += '<text class="q-nombre" x="' + q[1] + '" y="' + q[2] + '" fill="' + q[3] + '" text-anchor="' + q[4] + '">' + Q[q[0]][0].toUpperCase() + 'S</text><text class="q-sub" x="' + q[1] + '" y="' + (q[2] + 13) + '" text-anchor="' + q[4] + '">' + Q[q[0]][1].toLowerCase() + '</text>'; });
+    s += '<text class="eje" x="305" y="597" text-anchor="middle">CUESTA MÁS →</text><text class="eje" transform="translate(16 300) rotate(-90)" text-anchor="middle">SUMA MÁS AL JUEGO →</text>';
+    IDEAS.forEach(function (d, k) {
+      var col = d.hecho ? '#fff1d0' : d.de === 'vos' ? '#ffc233' : '#1fc2b8', on = est.sel === d.n;
+      s += '<g class="punto' + (on ? ' on' : '') + (pasa(d) ? '' : ' apagado') + '" data-n="' + d.n + '" tabindex="0" role="button" aria-label="' + esc(d.t) + '"><circle cx="' + pos[k].x.toFixed(1) + '" cy="' + pos[k].y.toFixed(1) + '" r="' + (on ? 15 : 13) + '" fill="' + col + '"/><text x="' + pos[k].x.toFixed(1) + '" y="' + (pos[k].y + 4).toFixed(1) + '" text-anchor="middle" fill="#1d1b4b">' + d.n + '</text></g>';
+    });
+    document.getElementById('svg').innerHTML = s;
+
+    var d = IDEAS.filter(function (x) { return x.n === est.sel; })[0], q = cuad(d);
+    document.getElementById('detalle').innerHTML = '<h3><span class="num">' + d.n + '</span>' + esc(d.t) + '</h3><p class="chips"><span class="chip ' + q + '">' + Q[q][0] + '</span><span class="chip">' + (d.de === 'vos' ? 'idea tuya' : 'idea mía') + '</span>' + (d.hecho ? '<span class="chip hecho">hecha en ' + d.hecho + '</span>' : '') + '<span class="chip">costo ' + d.c + ' · impacto ' + d.i + '</span></p><p>' + esc(d.por) + '</p>';
+
+    var h = '';
+    ['rab', 'zap', 'aro', 'yuy'].forEach(function (qq) {
+      var xs = IDEAS.filter(function (x) { return cuad(x) === qq && pasa(x); }).sort(function (x, y) { return (x.hecho ? 1 : 0) - (y.hecho ? 1 : 0) || (y.i - y.c) - (x.i - x.c); }); if (!xs.length) return;
+      h += '<li class="grupo">' + Q[qq][0] + 's</li>' + xs.map(function (x) { var col = x.hecho ? 'var(--tiza)' : x.de === 'vos' ? 'var(--maiz)' : 'var(--acequia)'; return '<li><button data-n="' + x.n + '" class="' + (x.n === est.sel ? 'on ' : '') + (x.hecho ? 'hecho' : '') + '"><b style="background:' + col + '">' + x.n + '</b><span>' + esc(x.t) + '</span></button></li>'; }).join('');
+    });
+    document.getElementById('lista').innerHTML = h || '<li class="dim">Nada con ese filtro.</li>';
+    document.getElementById('filtros').innerHTML = FILTROS.map(function (f) { return '<button data-f="' + f[0] + '" class="' + (est.filtro === f[0] ? 'on' : '') + '" aria-pressed="' + (est.filtro === f[0]) + '">' + f[1] + '</button>'; }).join('');
+  }
+  document.addEventListener('click', function (e) { var t = e.target.closest('[data-n],[data-f]'); if (!t) return; if (t.hasAttribute('data-f')) est.filtro = t.getAttribute('data-f'); else est.sel = +t.getAttribute('data-n'); dibujar(); });
+  document.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('g[data-n]')) { e.preventDefault(); est.sel = +e.target.closest('g[data-n]').getAttribute('data-n'); dibujar(); } });
+
+  var PROPS = [
+    ['Pedidos de vecinos con fecha', 'rab', '"Doña Rosa necesita 3 lechugas para fines de octubre." Hoy, después del octavo logro, el juego se queda sin objetivos de corto plazo. Pagan con sobres raros, compost o herramientas, y son la semilla de la feria vecinal.', 'Contar días hacia atrás con la ficha en la mano: planificar.'],
+    ['Vacaciones de enero', 'rab', 'Dos décadas sin poder tocar nada, avisadas con un mes de anticipación. Quien puso mulch, agrupó macetas a la sombra y dejó goteo vuelve a una huerta viva.', 'Preparar la huerta para la ausencia, el mejor uso de los recursos finitos.'],
+    ['Tamaño real de planta y marcos de plantación', 'zap', 'Hoy una celda aloja igual a un zapallo que a un rabanito. Con tamaños, un zapallo invade 4 celdas, en una entran 9 rabanitos o 4 lechugas, y el choclo le hace sombra a lo que tiene al sur.', 'Distancias de siembra y aprovechamiento del espacio.'],
+    ['Diagnóstico por síntomas', 'zap', 'En vez de decirte "le falta agua", la planta lo muestra: hojas amarillas desde abajo, tallo ahilado, puntas quemadas, fruto con la punta podrida. Elegís la causa entre tres; si acertás, el tratamiento cuesta menos.', 'Leer la planta, que es lo más difícil de enseñar en huerta.'],
+    ['Patio vivo: sonido y fauna', 'rab', 'Lluvia que suena, benteveo a la mañana, el pop de la cosecha. Y bichos con nombre que llegan si hay flores, agua y refugio, con un álbum para completarlos.', 'Control biológico, y ganas de abrir el juego.']
+  ];
+  document.getElementById('props').innerHTML = PROPS.map(function (p, k) { return '<article class="prop"><p class="chips" style="margin:0"><span class="chip ' + p[1] + '">' + Q[p[1]][0] + '</span><span class="chip">' + (k + 1) + ' de 5</span></p><h3>' + esc(p[0]) + '</h3><p>' + esc(p[2]) + '</p><p class="ens">Enseña: ' + esc(p[3]) + '</p></article>'; }).join('');
+
+  var EVS = [
+    ['Regalos', [['Kit de semillas de temporada', 'Marzo y septiembre', 'Llegan sobres de otoño-invierno o de primavera-verano', 'Sembrar en fecha', 1], ['La vecina trae plantines', 'Octubre', '3 plantines de tomate o morrón listos', 'Trasplantar en ventana, después de la última helada', 1], ['Esqueje de aromática', 'Cualquier momento', 'Romero, menta o lavanda para plantar', 'Las perennes se multiplican por esqueje', 0], ['Bolsas de hojas secas', 'Otoño', 'Secos para el compost o mulch gratis', 'Relación entre secos y verdes', 1], ['Lombrices de regalo', 'Primavera', 'La compostera madura más rápido', 'Lombricompuesto', 0], ['Cajón de verdulería', 'Cualquier momento', 'Un contenedor nuevo para ubicar', 'Reutilizar; profundidad según especie', 1], ['Cañas del vecino', 'Primavera', 'Tutores gratis por una temporada', 'Tutorado', 1]]],
+    ['Clima', [['Granizo', 'Primavera y verano', 'Daña hojas y frutos descubiertos', 'Manta o microtúnel', 0], ['Sudestada o viento fuerte', 'Todo el año', 'Voltea plantas altas sin tutor', 'Tutorar a tiempo', 1], ['Helada fuera de pronóstico', 'Septiembre y octubre', 'Cae sin aviso, con baja probabilidad', 'No adelantar el trasplante', 1], ['Semana de lluvia', 'Otoño y primavera', 'Babosas, hongos y suelo encharcado', 'Trampas, drenaje, no regar de más', 1], ['Corte de agua', 'Verano', 'Una década sin riego', 'Mulch y tanque de lluvia', 0]]],
+    ['Bichos y animales', [['Hormigas cortadoras', 'Primavera y verano', 'Pelan una planta en una noche', 'Barreras y cebos caseros', 0], ['Pájaros', 'Tras sembrar o con frutilla madura', 'Se comen semillas o frutos', 'Red, ramas sobre el surco', 0], ['El gato escarba', 'Tras sembrar', 'Desarma un almácigo o un surco', 'Cubrir con ramas o malla', 0], ['Mariposa blanca', 'Verano y otoño', 'Orugas en todas las brasicáceas a la vez', 'Revisar el envés; flores cerca', 1], ['Llegan las vaquitas', 'Con flores abiertas', 'Limpian los pulgones del patio', 'Flores que atraen aliados', 1], ['Se instala un sapo', 'Con agua y refugio', 'Bajan las babosas por una temporada', 'Dejar rincones sin tocar', 0]]],
+    ['Espontáneos', [['Planta guacha', 'Primavera', 'Nace un tomate o un zapallo del compost', 'Las semillas sobreviven al compost frío; decidir si se deja', 0], ['Se resiembra sola', 'Otoño', 'Caléndula o borraja nacen donde florecieron', 'Dejar semillar tiene premio', 0], ['Ortiga en el fondo', 'Primavera', 'Yuyo cosechable para hacer purín', 'No todo yuyo es maleza', 0]]],
+    ['Barrio', [['Vacaciones', 'Enero', 'Dos décadas sin tocar la huerta, avisadas', 'Preparar la huerta para la ausencia', 0], ['Visita de la escuela', 'Primavera', 'Puntúa la diversidad del patio', 'Policultivo', 0], ['Una vecina pide consejo', 'Cualquier momento', 'Pregunta con tres respuestas; acertar da premio', 'Repasa una ficha', 1], ['Propuesta de trueque', 'Con excedente', 'Te cambian tu cosecha por algo que falta', 'El valor del excedente', 0], ['Concurso del barrio', 'Fin de verano', 'Premio al mejor tomate: cuenta salud y cuaje', 'Polinizadores y riego parejo', 1]]]
+  ];
+  document.getElementById('evs').innerHTML = '<thead><tr><th>Evento</th><th>Cuándo</th><th>Qué pasa</th><th>Respuesta que enseña</th></tr></thead><tbody>' + EVS.map(function (g) { return '<tr class="cab"><td colspan="4">' + g[0] + '</td></tr>' + g[1].map(function (e) { return '<tr><td>' + esc(e[0]) + (e[4] ? '<span class="r">repo</span>' : '') + '</td><td>' + esc(e[1]) + '</td><td>' + esc(e[2]) + '</td><td>' + esc(e[3]) + '</td></tr>'; }).join(''); }).join('') + '</tbody>';
+
+  var PASOS = [
+    ['cim', 'Cimientos · 1 a 2 semanas', 'TypeScript y tests. El patio como dato. Plantas con tamaño propio. Tiempo por día. Eventos, logros y pedidos como tablas. Interfaz por componentes. Conviene hacerlo en Claude Code con repo propio, como huertapp.'],
+    ['rab', 'Tanda de rabanitos', 'Eventos sorpresa, pedidos de vecinos, vacaciones de enero, césped y poda para el compost, sonido, patios prediseñados.'],
+    ['zap', 'Primer zapallo: jugar de a 1 a 10 días', 'Va primero porque condiciona el balance de todo lo demás: ratos por día con tope, pronóstico de 5 días, salto "hasta que pase algo".'],
+    ['zap', 'Un zapallo por vez', 'Tamaño real de planta, después feria vecinal, después diagnóstico por síntomas. Editor y "mi patio" al final, apoyados en el patio como dato.'],
+    ['', 'Aromáticas, cuando haya un hueco', 'Bichos, preparados, tanque de lluvia, variedades, recetas.']
+  ];
+  document.getElementById('pasos').innerHTML = PASOS.map(function (p, k) { return '<div class="paso ' + p[0] + '"><span class="n">' + (k + 1) + '</span><div><h3>' + esc(p[1]) + '</h3><p>' + esc(p[2]) + '</p></div></div>'; }).join('');
+  dibujar();
+})();
+</script>

@@ -1,0 +1,5927 @@
+{
+ "meta": {
+  "fuente": "facundo-p/huertapp · data/huerta_gba_enriquecido.json",
+  "generado": "2026-08-06",
+  "n": 55,
+  "suelos": {
+   "ARENOSO_DRENANTE": {
+    "emoji": "🟫",
+    "nombre": "Arenoso / drenante",
+    "desc": "Suelto, arenoso-franco, drenaje libre, no encharcable."
+   },
+   "FRANCO_FERTIL": {
+    "emoji": "🟩",
+    "nombre": "Franco fértil",
+    "desc": "Franco equilibrado, fértil, con materia orgánica, retención media."
+   },
+   "HUMEDO_RICO": {
+    "emoji": "🟦",
+    "nombre": "Húmedo y rico",
+    "desc": "Muy rico en materia orgánica, retiene bien la humedad (no se seca)."
+   },
+   "PROFUNDO_SUELTO": {
+    "emoji": "🟧",
+    "nombre": "Profundo y suelto",
+    "desc": "Profundo, mullido y sin piedras/terrones; clave para raíces."
+   },
+   "RUSTICO_TOLERANTE": {
+    "emoji": "⬜",
+    "nombre": "Rústico / tolerante",
+    "desc": "Se adapta a suelos pobres o poco exigentes."
+   }
+  },
+  "luces": {
+   "PLENO_SOL": {
+    "emoji": "☀️",
+    "nombre": "Pleno sol",
+    "desc": "Necesita ≥6 h de sol directo."
+   },
+   "SOL_PARCIAL": {
+    "emoji": "🌤️",
+    "nombre": "Sol parcial",
+    "desc": "4–6 h de sol directo."
+   },
+   "MEDIA_SOMBRA": {
+    "emoji": "⛅",
+    "nombre": "Media sombra",
+    "desc": "2–4 h de sol directo / tolera media sombra."
+   },
+   "TOLERA_SOMBRA": {
+    "emoji": "🌑",
+    "nombre": "Tolera sombra",
+    "desc": "Crece con luz indirecta / sin sol directo."
+   }
+  }
+ },
+ "especies": {
+  "lechuga": {
+   "nombre": "Lechuga",
+   "cient": "Lactuca sativa",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "SOL_PARCIAL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 15,
+    "litros_min": 4,
+    "plantas_por_contenedor": 2
+   },
+   "metodo": {
+    "2": "directa|almacigo",
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "almacigo_protegido",
+    "7": "almacigo_protegido",
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29
+    ],
+    "siembra_posible": [
+     4,
+     5,
+     6,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_ideal": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_posible": [
+     7,
+     8,
+     9,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ]
+   },
+   "dg": {
+    "min": 4,
+    "max": 10
+   },
+   "dc": {
+    "min": 50,
+    "max": 120
+   },
+   "dt": {
+    "min": 25,
+    "max": 35
+   },
+   "buenas": [
+    "zanahoria",
+    "rabanito",
+    "remolacha"
+   ],
+   "malas": [
+    "repollo",
+    "brocoli"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 4,
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 13,
+    "ideal_max": 18,
+    "tolera_min": -6,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Si la sembrás en pleno verano la semilla se duerme por el calor del suelo: hacé almácigo a la sombra y trasplantá cuando afloje, que además con calor y poca luz no te acogolla.",
+   "listo": "Hojas de tamaño de consumo o cabeza compacta y firme; cosechar antes de que la planta 'suba a flor' (emisión del tallo floral).",
+   "luzNo": "Con poca luz se ahíla (se estira), forma hojas laxas y no acogolla bien; las cabezas quedan flojas.",
+   "sueloNo": "En suelos pesados y encharcados aparecen podredumbres de cuello y raíz (Sclerotinia, Rhizoctonia, Botrytis);",
+   "truco": "Sembrar de forma escalonada cada 15-20 días para cosecha continua; no enterrar la semilla (menos de 1,5 cm); en verano dar media sombra y mantener humedad para retrasar la subida a flor;",
+   "plagas": "Plagas: pulgones (vectores de virus), gusanos grises (Agrotis sp.), larvas de lepidópteros, babosas y caracoles. Enfermedades: Sclerotinia sclerotiorum, Botrytis cinerea, Rhizoctonia solani, mildiu (Bremia lactucae) y virus del mosaico de…",
+   "riesgos": "Subida a flor prematura (espigado) con calor y días largos, que amarga las hojas; encharcamiento que favorece podredumbres de cuello y raíz. Suspender siembras en pleno verano.",
+   "vida": "Anual; se cosecha una vez (cabeza) o por cortes sucesivos de hojas externas en los tipos de hoja. No rebrota tras espigar.",
+   "siembra": "Almácigo y trasplante, o siembra directa (al voleo o en líneas, a menos de 1,5 cm de profundidad). En huerta familiar suele preferirse almácigo y trasplante para aprovechar mejor el espacio y ralear;",
+   "cuidados": [
+    "proteger",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "espinaca": {
+   "nombre": "Espinaca",
+   "cient": "Spinacia oleracea",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "HUMEDO_RICO",
+   "luz": "MEDIA_SOMBRA",
+   "hmin": 3,
+   "hideal": 5,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 15,
+    "litros_min": 4,
+    "plantas_por_contenedor": 2
+   },
+   "metodo": {
+    "2": "almacigo",
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "directa|almacigo",
+    "7": "directa|almacigo",
+    "8": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     18
+    ],
+    "siembra_posible": [
+     4,
+     5,
+     6,
+     13,
+     14,
+     15,
+     16,
+     17,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "trasplante_ideal": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21
+    ],
+    "trasplante_posible": [
+     7,
+     8,
+     9,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ]
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": {
+    "min": 45,
+    "max": 100
+   },
+   "dt": {
+    "min": 28,
+    "max": 42
+   },
+   "buenas": [
+    "rabanito",
+    "zanahoria",
+    "frutilla"
+   ],
+   "malas": [
+    "acelga"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 2,
+    "ideal_min": 10,
+    "ideal_max": 20,
+    "max": 26
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 18,
+    "tolera_min": -5,
+    "tolera_max": 24
+   },
+   "helada": "tolera",
+   "nota": "Sembrala de otoño y olvidate del verano: en cuanto los días se alargan y sube el termómetro se va a flor, las hojas se achican y el tallo se estira.",
+   "listo": "Hojas de tamaño suficiente para consumo (roseta desarrollada); cosechar hojas externas o la planta entera antes de que emita el tallo floral.",
+   "luzNo": "Con calor y días largos se espiga muy rápido; en sombra muy densa el crecimiento se enlentece.",
+   "sueloNo": "En suelo pobre o que se seca produce hojas chicas y se espiga (sube a flor) rápidamente; sin drenaje sufre enfermedades de raíz.",
+   "truco": "Sembrar en épocas frescas; mantener riegos frecuentes y regulares; cosechar hojas externas de forma escalonada para prolongar la producción; sembrar de forma escalonada.",
+   "plagas": "Pulgones, babosas y caracoles; entre las enfermedades es común el mildiu (Peronospora). Dato parcialmente adaptado de bibliografía general para hortalizas de hoja.",
+   "riesgos": "Se espiga (sube a flor) rápidamente con calor y días largos, perdiendo calidad. Contiene oxalatos: no se recomienda consumir el agua de cocción.",
+   "vida": "Anual. Permite corte selectivo de hojas externas durante 1 a 2 meses, con un rendimiento aproximado de 1 kg de hojas por mes por metro lineal;",
+   "siembra": "Siembra directa (al voleo o en líneas separadas 0,20 m; INTA la llama 'directa a golpe') o almácigo. En huerta familiar suele preferirse la siembra directa por su rapidez, con raleo posterior a 5-8…",
+   "cuidados": [
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "acelga": {
+   "nombre": "Acelga",
+   "cient": "Beta vulgaris var. cicla",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "SOL_PARCIAL",
+   "hmin": 3,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "1": "directa|almacigo",
+    "2": "directa|almacigo",
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "directa|almacigo",
+    "7": "directa|almacigo",
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo",
+    "12": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ]
+   },
+   "dg": {
+    "min": 7,
+    "max": 15
+   },
+   "dc": {
+    "min": 60,
+    "max": 130
+   },
+   "dt": {
+    "min": 30,
+    "max": 40
+   },
+   "buenas": [
+    "zanahoria",
+    "rabanito",
+    "lechuga"
+   ],
+   "malas": [
+    "espinaca"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 5,
+    "ideal_min": 18,
+    "ideal_max": 22,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 22,
+    "tolera_min": -5,
+    "tolera_max": 35
+   },
+   "helada": "tolera",
+   "nota": "Es la más rústica de las de hoja y te la bancás casi todo el año, pero si viene un golpe de frío justo después de una racha calurosa se te sube a flor.",
+   "listo": "Hojas grandes y desarrolladas; se cortan las hojas externas dejando el cogollo central para que rebrote.",
+   "luzNo": "En sombra densa produce hojas más chicas, laxas y de pencas finas; tarda más.",
+   "sueloNo": "Tolera suelos pobres o pesados mejor que otras hojas, pero con poca materia orgánica produce menos hojas y más chicas.",
+   "truco": "Cosechar siempre las hojas externas dejando el cogollo central para prolongar la producción; ralear para dar espacio; prevenir la 'viruela' (Cercospora) con caldo bordelés; mantener riego regular.",
+   "plagas": "Pájaros, babosas y caracoles; 'viruela' (mancha por Cercospora beticola); también pulgones y minador de la hoja (parcialmente adaptado de bibliografía general).",
+   "riesgos": "Ataque de pájaros, babosas y caracoles sobre plantas jóvenes; la 'viruela' o mancha foliar (Cercospora); se espiga con el calor o en el segundo año.",
+   "vida": "Bianual, cultivada como anual de ciclo largo: una misma planta produce hojas por cortes sucesivos (3 a 5 cortes o más) durante varios meses.",
+   "siembra": "Siembra directa 'a chorrillo' con raleo posterior (INTA/ProHuerta), o almácigo y trasplante. Cada 'semilla' es un glomérulo del que nacen varias plantitas juntas, por eso se ralea.",
+   "cuidados": [
+    "raleo"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "rucula": {
+   "nombre": "Rúcula",
+   "cient": "Eruca sativa",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "RUSTICO_TOLERANTE",
+   "luz": "MEDIA_SOMBRA",
+   "hmin": 2,
+   "hideal": 4,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "2": "directa",
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa",
+    "8": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     4,
+     5,
+     6
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 4,
+    "max": 8
+   },
+   "dc": {
+    "min": 20,
+    "max": 60
+   },
+   "dt": null,
+   "buenas": [
+    "tomate",
+    "pimiento",
+    "berenjena"
+   ],
+   "malas": [
+    "repollo",
+    "brocoli",
+    "coliflor",
+    "kale",
+    "repollitos-de-bruselas",
+    "rabanito",
+    "nabo"
+   ],
+   "confB": 7,
+   "confM": 7,
+   "tg": {
+    "min": 5,
+    "ideal_min": 25,
+    "ideal_max": 27,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 10,
+    "ideal_max": 20,
+    "tolera_min": -3,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Nace rápido con el suelo tibio pero la hoja tierna te la da el fresco: con calor sale amarga y se va a flor enseguida.",
+   "listo": "Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas).",
+   "luzNo": "Con exceso de sol y calor amarga y se va a flor rápido; con muy poca luz crece más lento y las hojas quedan laxas.",
+   "sueloNo": "Es muy rústica y crece igual; en suelos pobres o secos las hojas quedan más chicas, duras y tienden a amargar/florecer antes.",
+   "truco": "Cosechar joven y hacer cortes sucesivos para prolongar la producción; sembrar de forma escalonada; en verano darle media sombra y buen riego para retrasar la floración y el amargor.",
+   "plagas": "Presencia de pulgones; entre las enfermedades, oídio y roya. Por ser crucífera también suele sufrir 'pulguilla' o vaquita de las coles (adaptado de bibliografía general para la familia).",
+   "riesgos": "El exceso de calor y sol provoca sabor excesivamente amargo y favorece la floración (espigado) prematura, que corta la vida útil de la planta.",
+   "vida": "Anual, de ciclo corto; una misma siembra permite 4 a 5 cortes sucesivos antes de que suba a flor.",
+   "siembra": "Siembra directa de asiento en líneas separadas entre 20 y 40 cm, a 5 cm entre plantas y a una profundidad menor a 1 cm. No se hace almácigo.",
+   "cuidados": [
+    "proteger",
+    "raleo"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 7,
+    "cal": 7,
+    "asoc": 7
+   }
+  },
+  "kale": {
+   "nombre": "Kale (col rizada)",
+   "cient": "Brassica oleracea var. sabellica (grupo Acephala)",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "2": "almacigo",
+    "3": "almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "directa|almacigo",
+    "7": "directa|almacigo",
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "siembra_posible": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "trasplante_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "trasplante_posible": [
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ]
+   },
+   "dg": {
+    "min": 4,
+    "max": 7
+   },
+   "dc": {
+    "min": 30,
+    "max": 70
+   },
+   "dt": {
+    "min": 28,
+    "max": 42
+   },
+   "buenas": [
+    "remolacha",
+    "apio",
+    "pepino",
+    "cebolla",
+    "espinaca",
+    "acelga",
+    "papa",
+    "menta",
+    "tomillo",
+    "salvia",
+    "eneldo"
+   ],
+   "malas": [
+    "chaucha",
+    "arveja",
+    "haba",
+    "tomate",
+    "frutilla"
+   ],
+   "confB": 6,
+   "confM": 5,
+   "tg": {
+    "min": 4,
+    "ideal_min": 10,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 10,
+    "ideal_max": 20,
+    "tolera_min": -10,
+    "tolera_max": 30
+   },
+   "helada": "mejora",
+   "nota": "Cuanto más frío pase, mejor: después de las primeras heladas la hoja se pone dulce y pierde el amargor, así que no lo saques apurado.",
+   "listo": "La planta supera las 5 hojas verdaderas; las hojas externas alcanzan buen tamaño. Se cortan las externas y se deja el cogollo central.",
+   "luzNo": "Con poca luz las plantas se ahílan (tallos largos y débiles) y las hojas quedan más laxas y menos productivas;",
+   "sueloNo": "En suelos pobres o con poco nitrógeno las plantas crecen poco y las hojas quedan pequeñas y de menor calidad;",
+   "truco": "Cosechar solo hojas externas conservando la yema central para producción prolongada; escalonar siembras cada 2-3 semanas; las heladas suaves mejoran el sabor de las hojas;",
+   "plagas": "Pulgones, caracoles y babosas; como crucífera también la afectan orugas/lagartas de la col. Se recomiendan estrategias de control ecológico promovidas por INTA.",
+   "riesgos": "Evitar períodos de heladas extremas y el encharcamiento del suelo (pudre raíces). Como crucífera, no conviene repetirla en el mismo cantero año tras año para prevenir enfermedades del suelo.",
+   "vida": "Bienal, pero se cultiva como anual. Produce hojas de manera escalonada durante varios meses cosechando siempre las externas; se descarta al espigar/subir a flor.",
+   "siembra": "Se puede hacer en almácigo (recomendado, para trasplantar) o siembra directa. En directa aprox. 40 cm entre plantas y 60 cm entre hileras; en trasplante 20-25 cm entre plantas según variedad.",
+   "cuidados": [
+    "riego",
+    "rotacion"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 8,
+    "cal": 6,
+    "asoc": 6
+   }
+  },
+  "repollo": {
+   "nombre": "Repollo",
+   "cient": "Brassica oleracea var. capitata",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 3,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": null,
+   "metodo": {
+    "2": "almacigo",
+    "3": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 90,
+    "max": 130
+   },
+   "dt": {
+    "min": 28,
+    "max": 42
+   },
+   "buenas": [
+    "eneldo",
+    "menta",
+    "tomillo",
+    "salvia",
+    "zanahoria",
+    "remolacha",
+    "lechuga"
+   ],
+   "malas": [
+    "frutilla",
+    "tomate"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 5,
+    "ideal_min": 18,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "tolera_min": -6,
+    "tolera_max": 27
+   },
+   "helada": "tolera",
+   "nota": "Nace bien con el suelo tibio pero recién arma cabeza compacta con el fresco: sembralo a fin de verano para que cierre en otoño-invierno.",
+   "listo": "Cabeza (pella) bien formada, compacta y firme al tacto; se corta antes de que se abra o suba a flor.",
+   "luzNo": "Con poca luz las plantas se ahílan y forman cabezas flojas o no llegan a acogollar; en verano el exceso de calor y días largos favorece que suban a flor.",
+   "sueloNo": "En suelos pobres o compactados las cabezas quedan chicas y sueltas; el déficit hídrico y la fertilidad baja reducen el tamaño y la compacidad de la pella.",
+   "truco": "Mantener riego regular y parejo para evitar el rajado de la cabeza; aporcar y controlar malezas; asociar con aromáticas (eneldo, menta, tomillo, salvia) para reducir plagas de las coles.",
+   "plagas": "Pulgones (áfidos), orugas y lagartas de la col (incluida la polilla Plutella xylostella), y moscas. Se controlan con manejo ecológico y plantas repelentes.",
+   "riesgos": "El riego irregular o el exceso de nitrógeno hacen que la cabeza se raje; conviene rotar y no repetir crucíferas en el mismo lugar para evitar la hernia de la col (Plasmodiophora) y otras enfermedades del suelo.",
+   "vida": "Bienal cultivada como anual; cada planta produce una sola cabeza (aunque algunas variedades pueden dar rebrotes menores tras el corte principal).",
+   "siembra": "Almácigo y posterior trasplante (no se recomienda siembra directa). Distancia de plantación: aprox. 40 cm entre plantas y 50-70 cm entre hileras (35x70 en otra edición del mismo calendario).",
+   "cuidados": [
+    "aporque",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 5,
+    "temp": 7,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "radicchio": {
+   "nombre": "Radicchio / Achicoria",
+   "cient": "Cichorium intybus",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 3,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "1": "directa",
+    "2": "directa|almacigo",
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "directa",
+    "7": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": {
+    "min": 65,
+    "max": 90
+   },
+   "dt": null,
+   "buenas": [
+    "lechuga",
+    "calendula",
+    "rabanito",
+    "zanahoria",
+    "remolacha"
+   ],
+   "malas": [],
+   "confB": 6,
+   "confM": 2,
+   "tg": {
+    "min": 5,
+    "ideal_min": 20,
+    "ideal_max": 28,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "tolera_min": -8,
+    "tolera_max": null
+   },
+   "helada": "mejora",
+   "nota": "Sembralo con el suelo todavía tibio de fin de verano: la semilla necesita calor para nacer, pero la cabeza recién cierra y se pone bien colorada cuando entra el frío.",
+   "listo": "Radicheta: hojas de tamaño para corte. Radicchio: cabezas firmes y compactas al tacto, de color rojo intenso con nervaduras blancas marcadas.",
+   "luzNo": "Con poca luz las plantas se ahílan y las cabezas quedan flojas; con calor y días largos, sumado a estrés, tienden a espigar (subir a flor) y a amargar.",
+   "sueloNo": "En suelos muy secos o pobres las plantas quedan chicas, con hojas más duras y amargas y mayor tendencia a subir a flor.",
+   "truco": "Para el radicchio, el forzado/blanqueo (tapar o atar las plantas para que acogollen sin luz) reduce el amargor y mejora la cabeza; cosechar tras las primeras heladas endulza el sabor;",
+   "plagas": "Rara vez afectada seriamente por plagas y enfermedades; pueden aparecer pulgones y babosas/caracoles.",
+   "riesgos": "Sabor muy amargo en cabezas viejas o cultivadas con calor; con altas temperaturas y días largos tiende a subir a flor (bolting), perdiendo calidad. Cosechar joven y en clima fresco.",
+   "vida": "Especie perenne en estado silvestre, cultivada como anual o bienal. La radicheta permite varios cortes en una misma temporada; el radicchio de cabeza se cosecha una vez.",
+   "siembra": "Siembra directa a chorrillo (en línea) y posterior raleo; también puede sembrarse a golpes. La radicheta se maneja para cortes sucesivos; el radicchio de cabeza puede ir en almácigo y trasplante.",
+   "cuidados": [
+    "blanqueo",
+    "raleo"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 5,
+    "temp": 6,
+    "cal": 6,
+    "asoc": 6
+   }
+  },
+  "berro": {
+   "nombre": "Berro",
+   "cient": "Nasturtium officinale",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "HUMEDO_RICO",
+   "luz": "SOL_PARCIAL",
+   "hmin": 3,
+   "hideal": 4,
+   "riego": "constante",
+   "maceta": null,
+   "metodo": {
+    "1": "directa|almacigo",
+    "2": "directa|almacigo",
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "directa|almacigo",
+    "7": "directa|almacigo",
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo",
+    "12": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 30,
+    "max": 45
+   },
+   "dt": null,
+   "buenas": [
+    "menta",
+    "perejil"
+   ],
+   "malas": [],
+   "confB": 4,
+   "confM": 2,
+   "tg": {
+    "min": 8,
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 10,
+    "ideal_max": 20,
+    "tolera_min": -10,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Quiere fresco y agua permanente todo el tiempo; apenas aprieta el calor la hoja se endurece, se pone picante y la planta se va a flor, por eso rinde mucho más en invierno.",
+   "listo": "Tallos y hojas jóvenes, tiernos y todavía sin flor; se cosecha antes de la floración para que no amargue.",
+   "luzNo": "A pleno sol de verano florece antes de tiempo y las hojas se vuelven amargas; con sombra muy profunda el crecimiento es débil y ahilado.",
+   "sueloNo": "Si el sustrato se seca la planta se marchita y muere rápidamente: la humedad constante es el factor crítico del cultivo.",
+   "truco": "Mantener el sustrato o el agua siempre húmedos (nunca dejar secar); usar agua limpia sin cloro; dar sombra en verano y cosechar antes de la floración para evitar el amargor;",
+   "plagas": "Pulguilla/escarabajo del berro, mildiu velloso (Peronospora), pulgones y caracoles/babosas.",
+   "riesgos": "No consumir crudo berro silvestre de arroyos, zanjas o acequias sin control: puede transmitir la duela/distomatosis hepática (Fasciola hepatica). Cultivar con agua limpia.",
+   "vida": "Planta perenne acuática/semiacuática; rebrota de los nudos incluso tras florecer y continúa creciendo en la siguiente estación fresca, permitiendo cosechas repetidas.",
+   "siembra": "Dos formas: por semilla, esparcida en superficie sobre sustrato húmedo (necesita luz para germinar, no se cubre) y presionando suavemente;",
+   "cuidados": [
+    "proteger",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 6,
+    "cal": 5,
+    "asoc": 4
+   }
+  },
+  "apio": {
+   "nombre": "Apio",
+   "cient": "Apium graveolens var. dulce",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "HUMEDO_RICO",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "1": "almacigo",
+    "2": "almacigo",
+    "3": "almacigo",
+    "9": "almacigo",
+    "10": "almacigo",
+    "11": "almacigo",
+    "12": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     34,
+     35,
+     36
+    ],
+    "trasplante_posible": [
+     31,
+     32,
+     33
+    ]
+   },
+   "dg": {
+    "min": 15,
+    "max": 20
+   },
+   "dc": {
+    "min": 120,
+    "max": 150
+   },
+   "dt": {
+    "min": 70,
+    "max": 90
+   },
+   "buenas": [
+    "repollo",
+    "coliflor",
+    "brocoli",
+    "puerro",
+    "tomate"
+   ],
+   "malas": [],
+   "confB": 3,
+   "confM": 1,
+   "tg": {
+    "min": 4,
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 18,
+    "tolera_min": -2,
+    "tolera_max": 28
+   },
+   "helada": "sensible",
+   "nota": "Es lento y desparejo para nacer, y si el plantín chico se come varias semanas de frío se te va derecho a flor; con calor, en cambio, se ahíla y los tallos salen finitos y fibrosos.",
+   "listo": "Plantas bien desarrolladas, peciolos de buen tamaño; se corta al ras del suelo. En variedades verdes se realiza blanqueo (fajado del peciolo) 15-20 días antes.",
+   "luzNo": "Con poca luz se ahíla, produce peciolos delgados y débiles y menor desarrollo.",
+   "sueloNo": "En suelo pobre o seco los peciolos salen delgados, fibrosos y amargos; con drenaje deficiente/encharcamiento las raíces se pudren.",
+   "truco": "Blanqueo: fajar el peciolo (dejando libres las hojas) cuando la planta llega a ~30 cm, 15-20 días antes de cosechar, para peciolos tiernos y menos amargos.",
+   "plagas": "sin dato confiable en las fuentes argentinas consultadas (comúnmente pulgones, babosas y septoriosis, pero no verificado en fuente citada)",
+   "riesgos": "No tolera encharcamientos (pudrición). Cultivo de clima fresco (óptimo 15-18 °C): con calor y estrés hídrico se ahíla, se pone fibroso o se adelanta a flor.",
+   "vida": "Bianual, cultivada como anual (se cosecha en el primer año antes de florecer).",
+   "siembra": "Almácigo, luego trasplante (no conviene siembra directa). Semilla muy fina (1 g ~3.000 semillas); no cubrir en exceso porque requiere algo de luz para germinar. Densidad 1-2 g/m2 en almácigo.",
+   "cuidados": [
+    "aporque",
+    "blanqueo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 3
+   }
+  },
+  "brocoli": {
+   "nombre": "Brócoli",
+   "cient": "Brassica oleracea var. italica",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": 8,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "2": "almacigo",
+    "3": "almacigo",
+    "4": "almacigo",
+    "9": "almacigo",
+    "10": "almacigo",
+    "11": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "siembra_posible": [
+     31,
+     32,
+     33
+    ],
+    "trasplante_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_posible": [
+     1,
+     2,
+     3,
+     34,
+     35,
+     36
+    ]
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 90,
+    "max": 160
+   },
+   "dt": {
+    "min": 30,
+    "max": 45
+   },
+   "buenas": [
+    "menta",
+    "tomillo",
+    "salvia",
+    "eneldo"
+   ],
+   "malas": [
+    "tomate",
+    "frutilla"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 5,
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 16,
+    "ideal_max": 18,
+    "tolera_min": -2,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "De chico aguanta bien las heladitas, pero apuntá a que la pella se arme en pleno fresco: con calor se te abre en flores amarillas antes de que la puedas cortar.",
+   "listo": "Se cosecha cuando la inflorescencia (cabeza) está bien desarrollada, compacta y con las yemas/florcitas aún cerradas, antes de que amarilleen o abran.",
+   "luzNo": "Con poca luz se ahíla, hace mucha hoja y poca inflorescencia, con cabezas laxas.",
+   "sueloNo": "En suelo pobre o compactado la planta crece poco y forma pellas/cabezas chicas; con exceso de agua hay pudriciones.",
+   "truco": "Cosechar la cabeza central con tallo largo para estimular brotes laterales y prolongar la cosecha. Mantener humedad pareja; asociar con menta/mostaza cercana para ahuyentar plagas.",
+   "plagas": "Comunes en crucíferas: pulgones, orugas (isoca/gusanos de la col), babosas y caracoles; enfermedad de podredumbre negra. (Verificado para el grupo de coles en fuente de coliflor.)",
+   "riesgos": "Cultivo de clima fresco: con calor (>30 °C) o estrés las cabezas se abren y florecen prematuramente. Evitar exceso de nitrógeno tardío y encharcamientos.",
+   "vida": "Anual (bianual botánica cultivada como anual). Da una cabeza principal y luego rebrotes laterales durante varias semanas.",
+   "siembra": "Almácigo y luego trasplante (no siembra directa). Trasplante a 70 cm entre surcos y 40-50 cm entre plantas.",
+   "cuidados": [
+    "abonado"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 6,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "coliflor": {
+   "nombre": "Coliflor",
+   "cient": "Brassica oleracea var. botrytis",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "2": "almacigo",
+    "3": "almacigo",
+    "4": "almacigo",
+    "9": "almacigo",
+    "10": "almacigo",
+    "11": "almacigo",
+    "12": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "siembra_posible": [
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [
+     1,
+     2,
+     3,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_posible": [
+     4,
+     5,
+     6
+    ]
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 90,
+    "max": 200
+   },
+   "dt": {
+    "min": 30,
+    "max": 45
+   },
+   "buenas": [
+    "menta",
+    "tomillo",
+    "salvia",
+    "eneldo"
+   ],
+   "malas": [
+    "tomate",
+    "frutilla"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 5,
+    "ideal_min": 18,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 21,
+    "tolera_min": -2,
+    "tolera_max": 26
+   },
+   "helada": "sensible",
+   "nota": "Es la más delicada de las coles: no le banca ni el calor fuerte ni el frío duro, así que calculá la siembra para que la pella caiga justo en pleno otoño.",
+   "listo": "La pella alcanza su máximo tamaño pero se mantiene firme y compacta a la presión de los dedos, antes de aflojarse o amarillear.",
+   "luzNo": "Con poca luz la planta se ahíla y no forma pella; el exceso de sol directo sobre la pella la torna amarillenta.",
+   "sueloNo": "En suelo pobre o desbalanceado forma pellas chicas, sueltas o no forma cabeza; con encharcamiento aparece podredumbre negra.",
+   "truco": "Blanqueo: atar o quebrar las hojas sobre la pella unos 3 días antes de cosechar para que no se ponga amarilla por el sol. Aporcar a los ~25 cm. Menta/mostaza cercana como repelentes de plagas.",
+   "plagas": "Pulgones (control biológico por parásitos), orugas (controlables con tierra de diatomeas) y podredumbre negra (oxicloruro de cobre y evitar encharcamientos).",
+   "riesgos": "Muy sensible a cambios (calor, sequía, frío intenso, trasplante tardío): forma pellas chicas, sueltas o granulosas ('arroz') o florece. Evitar encharcamientos (podredumbre negra).",
+   "vida": "Anual (bianual botánica cultivada como anual). Produce una única pella por planta.",
+   "siembra": "Almácigo y luego trasplante (no siembra directa).",
+   "cuidados": [
+    "aporque",
+    "blanqueo"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "repollitos-de-bruselas": {
+   "nombre": "Repollitos de Bruselas",
+   "cient": "Brassica oleracea var. gemmifera",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": null,
+   "metodo": {
+    "1": "almacigo",
+    "2": "almacigo",
+    "3": "almacigo",
+    "12": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     34,
+     35,
+     36
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9
+    ],
+    "trasplante_ideal": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "trasplante_posible": [
+     10,
+     11,
+     12
+    ]
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 90,
+    "max": 160
+   },
+   "dt": {
+    "min": 35,
+    "max": 45
+   },
+   "buenas": [
+    "menta",
+    "tomillo",
+    "salvia",
+    "eneldo"
+   ],
+   "malas": [
+    "tomate",
+    "frutilla"
+   ],
+   "confB": 5,
+   "confM": 3,
+   "tg": {
+    "min": 6,
+    "ideal_min": 18,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 14,
+    "ideal_max": 18,
+    "tolera_min": -10,
+    "tolera_max": 30
+   },
+   "helada": "mejora",
+   "nota": "Es la col que más frío aguanta y conviene cosecharla después de las primeras heladas: el frío le convierte el almidón en azúcar y los repollitos dejan de amargar.",
+   "listo": "Repollitos firmes y compactos de ~2,5-4 cm de diámetro; se cosechan de abajo hacia arriba del tallo cuando aún están tiernos, apenas madurados.",
+   "luzNo": "Con poca luz la planta se ahíla, forma repollitos flojos, abiertos y de menor tamaño.",
+   "sueloNo": "En suelo poco profundo o suelto la planta alta se cae/tumba y forma repollitos flojos; con exceso de nitrógeno hace mucha hoja y repollitos abiertos y laxos.",
+   "truco": "Aporcar cada ~15 días amontonando tierra alrededor del tallo para dar sostén. Entutorar en zonas de vientos fuertes. Riego regular sin saturar.",
+   "plagas": "Como toda crucífera: pulgones, orugas (gusanos de la col), babosas y caracoles.",
+   "riesgos": "Planta alta que se tumba con viento si no se aporca/entutora. El exceso de nitrógeno y el calor dan repollitos abiertos y flojos. Ciclo muy largo: requiere planificación y paciencia. Evitar encharcamientos.",
+   "vida": "Planta bianual, cultivada como anual; una misma planta produce repollitos de forma escalonada a lo largo del tallo durante varias semanas del invierno.",
+   "siembra": "Almácigo bajo cubierta y luego trasplante (no siembra directa). Semilla a 0,5-1 cm de profundidad; ~5 semanas hasta trasplante (dato hemisferio norte).",
+   "cuidados": [
+    "aporque",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 3,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 4,
+    "asoc": 5
+   }
+  },
+  "nabo": {
+   "nombre": "Nabo",
+   "cient": "Brassica rapa subsp. rapa",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": 8,
+    "plantas_por_contenedor": 2
+   },
+   "metodo": {
+    "2": "directa",
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "8": "directa",
+    "9": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "siembra_posible": [
+     12,
+     13,
+     14,
+     15,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 4,
+    "max": 7
+   },
+   "dc": {
+    "min": 60,
+    "max": 90
+   },
+   "dt": null,
+   "buenas": [
+    "arveja",
+    "espinaca",
+    "chaucha",
+    "puerro",
+    "tomate",
+    "apio",
+    "menta",
+    "tomillo"
+   ],
+   "malas": [
+    "rabanito",
+    "coliflor",
+    "brocoli",
+    "ajo",
+    "cebolla"
+   ],
+   "confB": 5,
+   "confM": 3,
+   "tg": {
+    "min": 4,
+    "ideal_min": 16,
+    "ideal_max": 29,
+    "max": 40
+   },
+   "tc": {
+    "ideal_min": 16,
+    "ideal_max": 20,
+    "tolera_min": -4,
+    "tolera_max": null
+   },
+   "helada": "mejora",
+   "nota": "Dejalo para otoño-invierno: con calor se pone fibroso y picante, y en cambio el frío fuerte le sube el azúcar y lo deja más dulce.",
+   "listo": "Cuando la raíz asoma sobre el suelo y alcanza tamaño de consumo (aprox. 5-8 cm de diámetro); conviene cosechar tierno, antes de que se ponga fibroso o leñoso.",
+   "luzNo": "Con poca luz la planta desarrolla mucha hoja y poca raíz, se ahíla y el nabo queda pequeño.",
+   "sueloNo": "En suelos compactos, pedregosos o con mal drenaje la raíz se deforma, se bifurca o se pudre, y el engrosamiento es pobre.",
+   "truco": "Mantener el suelo húmedo sin encharcar para un engrosamiento parejo; ralear a tiempo (15 cm) para dar espacio a la raíz; cosechar joven para que quede tierno.",
+   "plagas": "Como brasicácea sufre pulgones, oruga/gusano y mosca de las coles; entre las flea beetles (vaquitas saltonas) que perforan las hojas. Fuentes argentinas específicas de plagas del nabo escasas; dato general de brasicáceas.",
+   "riesgos": "Evitar suelos encharcados (pudre la raíz) y la falta de raleo (nabos pequeños). El calor y los días largos inducen el espigado (floración prematura) que endurece la raíz; por eso conviene sembrarlo en épocas frescas.",
+   "vida": "Planta bianual, cultivada como anual: se cosecha la raíz en la primera temporada (60-90 días). Una sola cosecha por planta.",
+   "siembra": "Siembra directa en el lugar definitivo (no conviene almácigo/trasplante por ser raíz). En líneas separadas 40 cm, a 2 cm de profundidad; a las ~2 semanas se ralea dejando las plantas a 15 cm entre sí.",
+   "cuidados": [
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 3,
+    "suelo": 5,
+    "temp": 5,
+    "cal": 4,
+    "asoc": 5
+   }
+  },
+  "tomate": {
+   "nombre": "Tomate",
+   "cient": "Solanum lycopersicum",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": 19,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "1": "directa",
+    "8": "almacigo_protegido",
+    "9": "almacigo_protegido",
+    "10": "directa|almacigo",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_posible": [
+     29,
+     34,
+     35,
+     36
+    ]
+   },
+   "dg": {
+    "min": 6,
+    "max": 10
+   },
+   "dc": {
+    "min": 80,
+    "max": 100
+   },
+   "dt": {
+    "min": 30,
+    "max": 60
+   },
+   "buenas": [
+    "albahaca",
+    "copete",
+    "calendula",
+    "zanahoria",
+    "apio",
+    "cebolla",
+    "ajo",
+    "puerro",
+    "lechuga",
+    "espinaca"
+   ],
+   "malas": [
+    "papa",
+    "brocoli",
+    "coliflor",
+    "arveja",
+    "remolacha",
+    "zapallito-de-tronco",
+    "zapallo"
+   ],
+   "confB": 6,
+   "confM": 6,
+   "tg": {
+    "min": 10,
+    "ideal_min": 18,
+    "ideal_max": 27,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 25,
+    "tolera_min": 2,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Si adelantás el trasplante con las noches todavía frescas la planta te florece pero no cuaja, y con las olas de calor del verano se le muere el polen igual: apuntá a que florezca en tiempo templado.",
+   "listo": "Fruto de color rojo (o el color de la variedad) uniforme, firme pero que cede levemente a la presión; se desprende con facilidad del pedúnculo.",
+   "luzNo": "Con poca luz la planta se ahíla (tallos largos y débiles), atrasa y reduce la floración/cuaje y produce pocos frutos, más blandos y de peor color.",
+   "sueloNo": "En suelos pesados, encharcados o pobres crece débil, es más susceptible a enfermedades de raíz (Phytophthora, marchitez) y baja el rendimiento;",
+   "truco": "Trasplantar después de la última helada; tutorar y realizar desbrote/poda en variedades indeterminadas;",
+   "plagas": "Pulgones, mosca blanca, arañuela roja/ácaros, chinches y polilla del tomate (Tuta absoluta); enfermedades fúngicas como tizón (Phytophthora), oídio, botritis; y virosis.",
+   "riesgos": "Evitar heladas (mata la planta), exceso o falta de agua (podredumbre apical / rajado), y suelos mal drenados. No repetir tomate/solanáceas en el mismo cantero años seguidos por acumulación de enfermedades de suelo.",
+   "vida": "Anual en cultivo de huerta (en clima templado con heladas). Produce durante toda la temporada primavera-verano-otoño;",
+   "siembra": "Preferentemente almácigo y luego trasplante (recomendado en INTA/ProHuerta); también admite siembra directa 'a golpes' en primavera-verano.",
+   "cuidados": [
+    "poda",
+    "riego",
+    "rotacion",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 9,
+    "asoc": 6
+   }
+  },
+  "pimiento": {
+   "nombre": "Pimiento / Morrón",
+   "cient": "Capsicum annuum",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": 19,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "7": "almacigo_protegido",
+    "8": "almacigo_protegido",
+    "9": "almacigo_protegido"
+   },
+   "dec": {
+    "siembra_ideal": [
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [
+     30
+    ],
+    "trasplante_posible": [
+     29,
+     31,
+     32,
+     33
+    ]
+   },
+   "dg": {
+    "min": 8,
+    "max": 12
+   },
+   "dc": {
+    "min": 80,
+    "max": 135
+   },
+   "dt": {
+    "min": 40,
+    "max": 50
+   },
+   "buenas": [
+    "zanahoria",
+    "berenjena",
+    "tomate",
+    "cebolla",
+    "menta",
+    "albahaca",
+    "calendula"
+   ],
+   "malas": [
+    "remolacha",
+    "arveja",
+    "chaucha",
+    "repollo",
+    "brocoli"
+   ],
+   "confB": 6,
+   "confM": 5,
+   "tg": {
+    "min": 13,
+    "ideal_min": 20,
+    "ideal_max": 30,
+    "max": 37
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 28,
+    "tolera_min": 1,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Es más friolento que el tomate: si lo sacás afuera antes de tiempo se queda parado y voltea las flores, y en pleno golpe de calor también las pierde.",
+   "listo": "Fruto de tamaño y forma propios de la variedad, firme y brillante; se cosecha verde (maduración comercial verde) o esperando el viraje a rojo/amarillo para…",
+   "luzNo": "Con luz insuficiente la planta se ahíla, la floración es escasa y caen las flores/frutos pequeños (mal cuaje), con bajo rendimiento.",
+   "sueloNo": "En suelos encharcados o compactos se asfixian las raíces y aparecen podredumbres (Phytophthora, Pythium); en suelos pobres crece débil y cuaja pocos frutos.",
+   "truco": "Trasplantar con buena temperatura y sin botón floral aún; asociar con menta para reducir pulgones; riego regular sin encharcar y tutorado en plantas cargadas.",
+   "plagas": "Pulgón y mosca blanca (vectores de virus), trips y arañuela. Hongos: Pythium, Sclerotinia, Phytophthora y Botrytis. Muy susceptible a virosis.",
+   "riesgos": "Muy susceptible a virus; sensible a heladas y a suelos encharcados. Desórdenes fisiológicos: podredumbre apical (falta de calcio/riego irregular) y mancha/golpe de sol en frutos expuestos.",
+   "vida": "Botánicamente perenne pero cultivado como anual en clima templado (las heladas lo matan). Produce escalonadamente durante toda la temporada estival hasta el otoño.",
+   "siembra": "Almácigo y posterior trasplante (recomendado): la semilla germina lento y el plantín necesita protección de las heladas antes de llevarlo al lugar definitivo.",
+   "cuidados": [
+    "riego",
+    "rotacion",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 8,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "aji-picante": {
+   "nombre": "Ají picante",
+   "cient": "Capsicum annuum / Capsicum frutescens / Capsicum chinense",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": 19,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "8": "almacigo_protegido",
+    "9": "almacigo_protegido",
+    "10": "almacigo",
+    "11": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ],
+    "siembra_posible": [
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_ideal": [
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_posible": [
+     29,
+     34,
+     35,
+     36
+    ]
+   },
+   "dg": {
+    "min": 8,
+    "max": 12
+   },
+   "dc": {
+    "min": 90,
+    "max": 120
+   },
+   "dt": {
+    "min": 45,
+    "max": 60
+   },
+   "buenas": [
+    "albahaca",
+    "calendula",
+    "zanahoria",
+    "tomate",
+    "cebolla",
+    "berenjena"
+   ],
+   "malas": [
+    "remolacha",
+    "arveja",
+    "chaucha",
+    "repollo",
+    "brocoli"
+   ],
+   "confB": 5,
+   "confM": 4,
+   "tg": {
+    "min": 13,
+    "ideal_min": 22,
+    "ideal_max": 30,
+    "max": 37
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 30,
+    "tolera_min": 1,
+    "tolera_max": 38
+   },
+   "helada": "muere",
+   "nota": "Tarda bastante más en asomar que el pimiento dulce, así que hacé el almácigo con calor de abajo y bien temprano, y no lo des por perdido en la primera semana.",
+   "listo": "Frutos con tamaño y color propios de la variedad (verde para consumo temprano; rojo/amarillo/naranja al madurar).",
+   "luzNo": "Con poca luz se ahíla, florece poco y produce pocos frutos; el picor y la coloración también se resienten.",
+   "sueloNo": "En suelos encharcados o compactos las raíces se asfixian y aparecen podredumbres; en suelos pobres la planta rinde poco.",
+   "truco": "Adelantar el almácigo con calor a fin de invierno para llegar a primavera con plantas medianas y anticipar la cosecha; riego regular sin encharcar, especialmente en floración;",
+   "plagas": "Pulgones, arañuelas (ácaros) y trips; también mosca blanca. Control casero con jabón potásico o infusiones de ajo y ají. Susceptible a hongos (Pythium, Phytophthora, Botrytis) y a virus como todo Capsicum.",
+   "riesgos": "Sensible a heladas y a suelos encharcados; germinación lenta que exige paciencia y calor. Como Capsicum es muy susceptible a virosis. No repetir solanáceas en el mismo cantero.",
+   "vida": "Botánicamente perenne; en clima templado puede sobrevivir inviernos suaves o resguardado y rebrotar la temporada siguiente (fuentes de picantes en Argentina), pero se…",
+   "siembra": "Almácigo y posterior trasplante (recomendado): sembrar 2-3 semillas por celda a ~0,5 cm de profundidad, desde fines del invierno hasta comienzos del verano.",
+   "cuidados": [
+    "riego",
+    "rotacion"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 5,
+    "temp": 7,
+    "cal": 5,
+    "asoc": 5
+   }
+  },
+  "berenjena": {
+   "nombre": "Berenjena",
+   "cient": "Solanum melongena",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": 19,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "7": "almacigo_protegido",
+    "8": "almacigo_protegido",
+    "9": "almacigo_protegido"
+   },
+   "dec": {
+    "siembra_ideal": [
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "siembra_posible": [
+     25,
+     26,
+     27
+    ],
+    "trasplante_ideal": [
+     30
+    ],
+    "trasplante_posible": [
+     29,
+     31,
+     32,
+     33
+    ]
+   },
+   "dg": {
+    "min": 8,
+    "max": 14
+   },
+   "dc": {
+    "min": 90,
+    "max": 120
+   },
+   "dt": {
+    "min": 50,
+    "max": 60
+   },
+   "buenas": [
+    "chaucha",
+    "lechuga",
+    "cebolla",
+    "ajo",
+    "puerro",
+    "repollo",
+    "espinaca",
+    "apio",
+    "rabanito",
+    "zanahoria",
+    "borraja"
+   ],
+   "malas": [
+    "pepino",
+    "zapallito-de-tronco",
+    "tomate",
+    "papa"
+   ],
+   "confB": 5,
+   "confM": 4,
+   "tg": {
+    "min": 15,
+    "ideal_min": 20,
+    "ideal_max": 30,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 20,
+    "ideal_max": 30,
+    "tolera_min": 1,
+    "tolera_max": 43
+   },
+   "helada": "muere",
+   "nota": "Es la más calurienta de las solanáceas: si la trasplantás con frío se queda quieta y los primeros frutos te salen deformes, así que esperá a que el verano arranque en serio.",
+   "listo": "Frutos lisos y brillantes, de color violáceo intenso, con tamaño comercial; se recolectan antes de la madurez fisiológica plena (cuando aún están tiernos).",
+   "luzNo": "Con poca luz la planta se ahíla (tallos largos y débiles), florece poco y no cuaja frutos.",
+   "sueloNo": "En suelos compactados, pobres o mal drenados el desarrollo radicular se limita, la planta crece débil y la fructificación es escasa;",
+   "truco": "Riegos frecuentes y regulares (riego localizado, evitar estrés hídrico, 600-900 mm en el ciclo); tutorado; despunte de ramas; carpidas para controlar malezas; asegurar calor (óptimo ~25 °C).",
+   "plagas": "Plagas: pulguilla y pulgones. Enfermedades: tizón/mildew y oídio.",
+   "riesgos": "Muy sensible al frío y a las heladas: no trasplantar hasta pasado el riesgo de heladas. El estrés hídrico afecta el cuaje. Necesita mucho calor y espacio.",
+   "vida": "En el clima templado del GBA se cultiva como anual (planta perenne de origen tropical que muere con las heladas).",
+   "siembra": "Almácigo protegido y posterior trasplante (NO siembra directa): su crecimiento inicial es lento y necesita calor, por eso se adelanta en almácigo protegido a fines de invierno y se trasplanta en…",
+   "cuidados": [
+    "poda",
+    "riego",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 5
+   }
+  },
+  "zapallito-de-tronco": {
+   "nombre": "Zapallito de tronco",
+   "cient": "Cucurbita maxima var. zapallito",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": 19,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "1": "directa",
+    "9": "directa|almacigo",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     25
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 8
+   },
+   "dc": {
+    "min": 45,
+    "max": 60
+   },
+   "dt": null,
+   "buenas": [
+    "albahaca",
+    "cebolla",
+    "arveja",
+    "chaucha",
+    "lechuga",
+    "choclo",
+    "menta"
+   ],
+   "malas": [
+    "berenjena"
+   ],
+   "confB": 5,
+   "confM": 4,
+   "tg": {
+    "min": 15,
+    "ideal_min": 21,
+    "ideal_max": 32,
+    "max": 37
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 24,
+    "tolera_min": 2,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "La semilla quiere la tierra mucho más caliente de lo que uno cree: si sembrás de asiento con el suelo frío se te pudre antes de nacer, aunque después la planta crezca cómoda en tiempo templado.",
+   "listo": "Frutos tiernos de 5-10 cm de diámetro, con piel verde clara; se cosechan jóvenes antes de que endurezcan.",
+   "luzNo": "Con sombra se ahíla, florece y fructifica menos.",
+   "sueloNo": "En suelos compactados o encharcados se pudre el cuello y las raíces; en suelos pobres crece poco y produce frutos escasos.",
+   "truco": "Aporcar la planta cuando tiene 15-20 cm de altura para afirmarla; evitar mojar el cuello al regar para prevenir hongos; cosechar frecuentemente (a diario) para estimular la producción continua;",
+   "plagas": "Vaquita del zapallo (Epilachna paenulata, plaga citada por SINAVIMO para cucurbitáceas), pulgones; enfermedades fúngicas como oídio y mildiu.",
+   "riesgos": "Sensible al frío. El exceso de humedad en el cuello provoca hongos y podredumbre. Frutos pequeños que amarillean y caen indican mala polinización.",
+   "vida": "Anual; la cosecha se prolonga aproximadamente 3 meses desde su inicio.",
+   "siembra": "Siembra directa a golpe, 2-3 semillas por golpe a ~2 cm de profundidad, en surcos separados ~1 m (UNLu y Calendario INTA), con golpes a ~0,70 m y raleo a una planta por hoyo (INTA Cerbas;",
+   "cuidados": [
+    "aporque",
+    "polinizacion",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 5
+   }
+  },
+  "zapallo": {
+   "nombre": "Zapallo / Calabaza",
+   "cient": "Cucurbita maxima / Cucurbita moschata",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": 19,
+    "plantas_por_contenedor": 1
+   },
+   "metodo": {
+    "9": "directa",
+    "10": "directa",
+    "11": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     28
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 8
+   },
+   "dc": {
+    "min": 120,
+    "max": 150
+   },
+   "dt": null,
+   "buenas": [
+    "choclo",
+    "chaucha",
+    "albahaca",
+    "cebolla",
+    "repollo",
+    "arveja",
+    "lechuga"
+   ],
+   "malas": [
+    "rabanito",
+    "papa",
+    "pepino",
+    "zapallito-de-tronco"
+   ],
+   "confB": 6,
+   "confM": 5,
+   "tg": {
+    "min": 15,
+    "ideal_min": 21,
+    "ideal_max": 32,
+    "max": 37
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 24,
+    "tolera_min": 2,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Necesita muchos meses seguidos sin heladas para llenar el fruto, así que sembralo apenas la tierra se templa y no lo dejes para el final de la primavera.",
+   "listo": "Cáscara endurecida (no se marca con la uña o se marca solo con esfuerzo), color de piel definido y pedúnculo seco;",
+   "luzNo": "Con falta de sol la planta vegeta pero cuaja pocos frutos y estos maduran mal.",
+   "sueloNo": "En suelos compactados o mal drenados crece poco y sufre pudriciones; en suelos pobres los frutos son chicos y escasos.",
+   "truco": "Dar mucho espacio (hasta ~2 m entre plantas); despunte de guías y aporque; remojar la semilla antes de sembrar;",
+   "plagas": "Vaquita del zapallo (Epilachna paenulata, plaga registrada por SINAVIMO en cucurbitáceas), pulgones; enfermedades fúngicas como oídio y mildiu.",
+   "riesgos": "Necesita 4-5 meses libres de heladas. La caída de flores sin cuajar indica mala polinización; frutos pequeños que amarillean señalan deficiencia de nutrientes o riego irregular;",
+   "vida": "Anual; una cosecha principal de frutos de guarda al final del ciclo, que bien curados se conservan varios meses.",
+   "siembra": "Siembra directa a golpe, 2-5 semillas por golpe a 2-3 cm de profundidad (Manual UNLu: distancia 200x200 cm; El Brote Urbano: 3-5 semillas por golpe).",
+   "cuidados": [
+    "aporque",
+    "poda",
+    "polinizacion"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "pepino": {
+   "nombre": "Pepino",
+   "cient": "Cucumis sativus",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "2": "directa",
+    "9": "directa",
+    "10": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     29,
+     30
+    ],
+    "siembra_posible": [
+     4,
+     5,
+     6,
+     28
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 50,
+    "max": 70
+   },
+   "dt": null,
+   "buenas": [
+    "albahaca",
+    "choclo",
+    "lechuga",
+    "ajo",
+    "apio",
+    "borraja",
+    "cebolla",
+    "repollo",
+    "arveja",
+    "chaucha",
+    "nabo",
+    "rabanito",
+    "remolacha"
+   ],
+   "malas": [
+    "berenjena",
+    "papa",
+    "tomate",
+    "melon"
+   ],
+   "confB": 6,
+   "confM": 6,
+   "tg": {
+    "min": 15,
+    "ideal_min": 22,
+    "ideal_max": 32,
+    "max": 40
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 28,
+    "tolera_min": 2,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Con las noches todavía frescas te tira hojas y pepinos torcidos, así que conviene sembrarlo bien entrada la primavera y no pelearle al calendario.",
+   "listo": "Frutos verdes, firmes y de tamaño comercial; se cosechan tiernos, antes de que amarilleen o engrosen; conviene cosechar con frecuencia.",
+   "luzNo": "Con poca luz o frío detiene el crecimiento, se ahíla y produce pocos frutos.",
+   "sueloNo": "En suelos pobres o mal drenados el crecimiento se resiente, hay pudriciones de raíz y la producción baja; el pepino además demanda humedad constante.",
+   "truco": "Conducir en espaldera o tutor para obtener frutos rectos, sanos y de mejor calidad; riego regular y abundante (el estrés hídrico amarga los frutos); asegurar calor.",
+   "plagas": "Plagas: vaquita de los melones y chinches. Enfermedades: oídio, mildiu y mosaicos virales.",
+   "riesgos": "Muy sensible al frío y a las heladas: no sembrar hasta que el suelo esté cálido. El estrés hídrico (falta de riego) puede amargar los frutos.",
+   "vida": "Anual; producción escalonada durante el verano hasta que llega el frío (planta muy sensible a las bajas temperaturas).",
+   "siembra": "Siembra directa de asiento a golpe: 2-3 semillas cada ~70 cm, en líneas separadas ~1 m (El Brote Urbano; Calendario INTA 50x100 cm).",
+   "cuidados": [
+    "riego",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "melon": {
+   "nombre": "Melón",
+   "cient": "Cucumis melo",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": "espaciado",
+   "maceta": null,
+   "metodo": {
+    "8": "almacigo_protegido",
+    "9": "directa",
+    "10": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     29,
+     30
+    ],
+    "siembra_posible": [
+     22,
+     23,
+     24,
+     28
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 100,
+    "max": 100
+   },
+   "dt": null,
+   "buenas": [
+    "choclo"
+   ],
+   "malas": [],
+   "confB": 6,
+   "confM": 5,
+   "tg": {
+    "min": 15,
+    "ideal_min": 22,
+    "ideal_max": 30,
+    "max": 39
+   },
+   "tc": {
+    "ideal_min": 20,
+    "ideal_max": 30,
+    "tolera_min": 2,
+    "tolera_max": 38
+   },
+   "helada": "muere",
+   "nota": "Tiene la raíz friolenta: si el suelo está frío la planta se queda parada aunque el aire venga lindo, así que no te apures con la siembra y regá con agua que no esté helada.",
+   "listo": "Cambio de color de fondo de verde a amarillento/crema, aroma intenso en el pedúnculo, y en melones tipo reticulado el pedúnculo se desprende con facilidad…",
+   "luzNo": "Con poca luz se ahíla, cuaja pocos frutos y estos resultan chicos y poco dulces; la maduración se atrasa.",
+   "sueloNo": "En suelos pesados o anegadizos, con mal drenaje, las raíces y el cuello se pudren (fusariosis, damping-off) y el fruto pierde calidad;",
+   "truco": "Regar casi a diario al inicio y espaciar a cada 3 días durante la floración-fructificación para concentrar azúcares; conducir o despuntar guías para controlar el espacio;",
+   "plagas": "Plagas: pulgones (Aphis gossypii, Myzus persicae, vectores de virus), mosca blanca (Bemisia tabaci, Trialeurodes vaporariorum), trips, arañuela roja (Tetranychus urticae), orugas defoliadoras (Spodoptera, Diaphania).",
+   "riesgos": "Sensible a heladas (no sembrar antes de que pase el riesgo). El exceso de riego o el mal drenaje pudren raíces y frutos y bajan el dulzor. Ocupa mucha superficie por su hábito rastrero.",
+   "vida": "Anual. Una temporada de producción (primavera-verano); la planta muere con el frío del otoño.",
+   "siembra": "Siembra directa 'a golpes' (2-3 semillas por hoyo) a 2,5-3 cm de profundidad, raleando a la mejor plántula cuando tiene 2 hojas verdaderas; o almácigo protegido en vasito en agosto para adelantar.",
+   "cuidados": [
+    "mulch",
+    "poda",
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "sandia": {
+   "nombre": "Sandía",
+   "cient": "Citrullus lanatus",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": "espaciado",
+   "maceta": null,
+   "metodo": {
+    "8": "almacigo_protegido",
+    "9": "directa",
+    "10": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     29,
+     30
+    ],
+    "siembra_posible": [
+     22,
+     23,
+     24,
+     28
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 90,
+    "max": 100
+   },
+   "dt": null,
+   "buenas": [
+    "choclo"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 5,
+   "tg": {
+    "min": 15,
+    "ideal_min": 21,
+    "ideal_max": 33,
+    "max": 40
+   },
+   "tc": {
+    "ideal_min": 21,
+    "ideal_max": 30,
+    "tolera_min": 2,
+    "tolera_max": 38
+   },
+   "helada": "muere",
+   "nota": "Pide más calor y más semanas que el melón, así que sembrala apenas pasó todo riesgo de helada para que alcance a madurar antes de que refresque el otoño.",
+   "listo": "Al golpear el fruto suena hueco/sordo; el zarcillo más cercano al fruto se seca; la mancha de contacto con el suelo vira de blanco a amarillo cremoso.",
+   "luzNo": "Sin sol y calor suficientes no cuaja o los frutos quedan chicos, pálidos y poco azucarados; la maduración no se completa.",
+   "sueloNo": "En suelos pesados y con drenaje deficiente hay pudrición de raíces y fruto, mayor incidencia de fusariosis y menor dulzor; el anegamiento es muy perjudicial.",
+   "truco": "Riego casi diario al principio y luego cada ~3 días dejando secar la superficie durante floración/fructificación; conducir guías para ordenar el espacio;",
+   "plagas": "Plagas: pulgones (Aphis gossypii), mosca blanca (Bemisia tabaci), trips, arañuela roja (Tetranychus urticae), orugas (Spodoptera, Diaphania, Helicoverpa).",
+   "riesgos": "Muy sensible al frío y a las heladas. Ocupa mucha superficie (hábito rastrero). Exceso de riego/mal drenaje: pudrición y frutos insípidos.",
+   "vida": "Anual. Una única temporada productiva de primavera-verano.",
+   "siembra": "Siembra directa a golpes a 2,5-3 cm de profundidad, raleando a la mejor plántula al tener 2 hojas verdaderas; distancia grande entre plantas (hasta ~2 m entre golpes según variedad;",
+   "cuidados": [
+    "mulch",
+    "polinizacion",
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 5
+   }
+  },
+  "choclo": {
+   "nombre": "Choclo / Maíz dulce",
+   "cient": "Zea mays",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "1": "directa",
+    "8": "almacigo_protegido",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     22,
+     23,
+     24,
+     28
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 12
+   },
+   "dc": {
+    "min": 100,
+    "max": 130
+   },
+   "dt": null,
+   "buenas": [
+    "batata",
+    "chaucha",
+    "zapallo"
+   ],
+   "malas": [],
+   "confB": 7,
+   "confM": 5,
+   "tg": {
+    "min": 12,
+    "ideal_min": 16,
+    "ideal_max": 24,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 28,
+    "tolera_min": 1,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Sembralo recién con la tierra templada, porque en suelo frío nace despareja y te quedan claros en la línea justo donde después no hay choclo.",
+   "listo": "Para consumo como choclo (grano lechoso): barbas/estigmas secos y marrones, granos llenos y turgentes que al pincharlos largan un líquido lechoso;",
+   "luzNo": "Con sombra o poca luz se ahíla, produce cañas débiles que se vuelcan y espigas pobres o incompletas.",
+   "sueloNo": "En suelos pobres o con poco nitrógeno las plantas quedan raquíticas, las espigas salen chicas y mal granadas; con mal drenaje se afecta el crecimiento radicular.",
+   "truco": "Sembrar en bloque cuadrado de varias filas (no en fila única) para asegurar polinización por viento y espigas bien granadas; escalonar siembras cada 2-3 semanas para cosecha prolongada;",
+   "plagas": "Plaga principal: gusano cogollero (Spodoptera frugiperda), que ataca el cogollo; también isoca de la espiga (Helicoverpa zea), pulgones y gusanos de raíz. Enfermedades: royas y tizones foliares, carbón del maíz (Ustilago maydis).",
+   "riesgos": "Sensible a heladas. Susceptible al vuelco por viento si no está bien implantado o en fila única. Alta demanda de agua y nitrógeno. Es de polinización cruzada: si se busca variedad pura, aislar de otros maíces.",
+   "vida": "Anual. Una temporada; cada planta produce típicamente 1-2 espigas y luego se seca.",
+   "siembra": "Principalmente siembra directa a golpe (2-3 semillas por hoyo), en línea; conviene sembrar en bloque de varias filas cortas y no en una sola fila larga para favorecer la polinización por viento.",
+   "cuidados": [
+    "abonado",
+    "aporque",
+    "polinizacion"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 7
+   }
+  },
+  "frutilla": {
+   "nombre": "Frutilla",
+   "cient": "Fragaria × ananassa",
+   "grupo": "Hortaliza de fruto",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "plantacion",
+    "4": "plantacion",
+    "5": "plantacion",
+    "6": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     16,
+     17,
+     18
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": null,
+   "dc": {
+    "min": 150,
+    "max": 240
+   },
+   "dt": null,
+   "buenas": [],
+   "malas": [
+    "papa",
+    "tomate",
+    "berenjena",
+    "pimiento"
+   ],
+   "confB": 6,
+   "confM": 7,
+   "tg": {
+    "min": 7,
+    "ideal_min": 10,
+    "ideal_max": 20,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "tolera_min": -10,
+    "tolera_max": 30
+   },
+   "helada": "sensible",
+   "nota": "Acá los valores de germinación son en realidad los de arraigo del plantín: plantalo en otoño con el suelo fresco, porque el frío del invierno es justamente lo que le arma las flores para la primavera, y cuidá esas…",
+   "listo": "Fruto con color rojo uniforme cubriendo casi toda la superficie, brillante y firme pero cediendo levemente al tacto; se cosecha con el cáliz (corona verde).",
+   "luzNo": "Con poca luz la planta produce mucha hoja y estolón pero pocas flores y frutos, más chicos, ácidos y de maduración lenta;",
+   "sueloNo": "En suelos pesados, encharcadizos o mal drenados aparecen pudriciones de corona y raíz (hongos de suelo) y el fruto se vuelve blando;",
+   "truco": "Usar mulching plástico negro tras la plantación (mantiene humedad, controla malezas y evita contacto del fruto con el suelo); riego por goteo bajo el plástico;",
+   "plagas": "Plagas: arañuela roja (Tetranychus), trips, y la mosca Drosophila suzukii que ataca el fruto maduro. Enfermedades: botrytis (moho gris) en fruto, podredumbre de la corona (Neopestalotiopsis), y hongos de suelo.",
+   "riesgos": "Heladas durante la floración (daño a -1°C, severo a -3°C). Exceso de humedad/encharcamiento: fruto blando y podredumbres. Salinidad.",
+   "vida": "Planta perenne, pero en producción hortícola comercial de Argentina se maneja como anual o bianual (se replanta cada 1 año, a veces 2);",
+   "siembra": "No se siembra: se planta a partir de plantines obtenidos por vía vegetativa (estolones), frescos o refrigerados ('frigo').",
+   "cuidados": [
+    "mulch",
+    "poda",
+    "raleo",
+    "rotacion"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 9,
+    "asoc": 6
+   }
+  },
+  "chaucha": {
+   "nombre": "Chaucha (poroto / judía)",
+   "cient": "Phaseolus vulgaris",
+   "grupo": "Legumbre",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": 8,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "1": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     29,
+     30
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     28,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 60,
+    "max": 80
+   },
+   "dt": null,
+   "buenas": [
+    "choclo",
+    "zapallo",
+    "zanahoria",
+    "pepino",
+    "apio",
+    "frutilla",
+    "perejil",
+    "papa",
+    "tomate"
+   ],
+   "malas": [
+    "ajo",
+    "cebolla",
+    "puerro",
+    "cebolla-de-verdeo"
+   ],
+   "confB": 6,
+   "confM": 6,
+   "tg": {
+    "min": 10,
+    "ideal_min": 15,
+    "ideal_max": 24,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 16,
+    "ideal_max": 26,
+    "tolera_min": 2,
+    "tolera_max": 30
+   },
+   "helada": "muere",
+   "nota": "No la apures en primavera: con el suelo todavía frío la semilla se pudre antes de nacer, y una helada te liquida la planta en cualquier momento del ciclo.",
+   "listo": "Vainas con su máximo desarrollo pero cosechadas ANTES de que los granos (porotos) se marquen/abulten en la vaina; deben quebrarse tiernas.",
+   "luzNo": "Con poca luz las plantas se ahílan (tallos largos y débiles), florecen y cuajan menos, y la producción de vainas cae marcadamente.",
+   "sueloNo": "En suelos pesados, encharcados o fríos la germinación es despareja y la semilla puede pudrirse; el exceso de humedad favorece enfermedades de raíz y podredumbres.",
+   "truco": "Sembrar recién pasado el riesgo de heladas y con suelo templado. Como legumbre fija nitrógeno: no abusar de abonos nitrogenados. Colocar tutores de 2-2,5 m para las variedades de enrame.",
+   "plagas": "Plagas: pulgones (verde y negro), arañuela roja y ácaros; también trips y chinches. Enfermedades del poroto documentadas por INTA: antracnosis, tizones bacterianos, mancha angular, oídio y podredumbres de raíz.",
+   "riesgos": "Muy sensible a heladas (no sembrar antes de que pase el peligro). Evitar exceso de riego/encharcamiento (pudre semilla y raíz). Evitar suelos fríos y compactados. No cosechar tarde (vainas fibrosas).",
+   "vida": "Anual. Produce vainas durante varias semanas (cosecha escalonada); las enanas concentran la producción, las de enrame producen por más tiempo.",
+   "siembra": "Siembra directa (no requiere almácigo). Variedades de enrame: 3-4 semillas por golpe cada 30 cm, a 3-4 cm de profundidad, en surcos separados 70 cm.",
+   "cuidados": [
+    "abonado",
+    "mulch",
+    "riego",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "arveja": {
+   "nombre": "Arveja",
+   "cient": "Pisum sativum",
+   "grupo": "Legumbre",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 5,
+   "hideal": 6,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa",
+    "8": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     10,
+     16,
+     17,
+     18
+    ],
+    "siembra_posible": [
+     11,
+     12,
+     13,
+     14,
+     15,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 10
+   },
+   "dc": {
+    "min": 120,
+    "max": 150
+   },
+   "dt": null,
+   "buenas": [
+    "zanahoria",
+    "rabanito",
+    "nabo",
+    "choclo",
+    "pepino"
+   ],
+   "malas": [
+    "ajo",
+    "cebolla",
+    "puerro",
+    "cebolla-de-verdeo"
+   ],
+   "confB": 5,
+   "confM": 5,
+   "tg": {
+    "min": 5,
+    "ideal_min": 15,
+    "ideal_max": 24,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "tolera_min": -4,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Sembrala en otoño para que llegue a llenar vainas antes del calor: de chiquita banca bien el frío, pero si la helada la agarra en flor te quedás sin cosecha.",
+   "listo": "Para arveja fresca: vainas bien llenas y verdes, con granos tiernos. Para grano seco: cuando las plantas terminan su ciclo (amarilleo general y la vaina se…",
+   "luzNo": "Con luz insuficiente se ahíla, florece y cuaja menos, retrasa la cosecha y baja el rendimiento de vainas.",
+   "sueloNo": "En suelos encharcados o mal drenados la semilla se pudre y aparecen enfermedades de raíz; en suelos muy pobres o secos la planta rinde poco.",
+   "truco": "Sembrar en otoño para aprovechar el fresco; colocar ramas o tutores/enrejado a las variedades trepadoras.",
+   "plagas": "Enfermedades más comunes: tizón y antracnosis (se controlan con caldo bordelés u oxicloruro de cobre); también oídio en primaveras húmedas. Plagas: pulgones y, en fructificación, gorgojo de la arveja.",
+   "riesgos": "No sembrar en verano: el calor detiene la floración y frena el cuaje. Evitar exceso de riego/encharcamiento (pudre la semilla y favorece hongos). No abusar de nitrógeno (crece follaje en vez de vainas).",
+   "vida": "Anual, de ciclo otoño-invernal. Produce durante un período de cosecha acotado hacia el fin del ciclo; conviene siembra escalonada para prolongar la cosecha.",
+   "siembra": "Siembra directa 'de asiento' (no requiere almácigo): se deposita la semilla en surcos, a golpes cada ~30 cm y a una profundidad no mayor de 5 cm.",
+   "cuidados": [
+    "abonado",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 5
+   }
+  },
+  "haba": {
+   "nombre": "Haba",
+   "cient": "Vicia faba",
+   "grupo": "Legumbre",
+   "suelo": "HUMEDO_RICO",
+   "luz": "PLENO_SOL",
+   "hmin": 5,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": {
+    "min": 150,
+    "max": 180
+   },
+   "dt": null,
+   "buenas": [
+    "ajo",
+    "lechuga",
+    "apio"
+   ],
+   "malas": [
+    "arveja",
+    "chaucha",
+    "cebolla"
+   ],
+   "confB": 7,
+   "confM": 3,
+   "tg": {
+    "min": 7,
+    "ideal_min": 22,
+    "ideal_max": 28,
+    "max": 36
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "tolera_min": -5,
+    "tolera_max": 28
+   },
+   "helada": "tolera",
+   "nota": "Se siembra de otoño y aguanta bien el invierno cuando es chica, pero si la helada la pesca en plena floración se le caen las flores y no cuaja las vainas.",
+   "listo": "Para consumo en fresco: vainas verdes bien formadas, con granos que aún se hunden con la uña.",
+   "luzNo": "Con sombra excesiva se ahíla, produce tallos débiles que se vuelcan, florece menos y baja el rendimiento de vainas.",
+   "sueloNo": "En suelos muy secos o pobres el desarrollo y el llenado de vainas se reducen. En suelos anegados aparecen podredumbres de raíz y enfermedades fúngicas.",
+   "truco": "Asociar con ajo implantado en el entresurco en mayo para repeler pulgones. Despuntar la planta (cortar la punta tierna) cuando aparecen las primeras vainas para reducir el ataque de pulgón y…",
+   "plagas": "Plagas: pulgón del haba (pulgón negro) y trips. Enfermedad principal: mancha chocolate (Botrytis fabae). Control casero: espolvoreos con ceniza de madera y despunte de brotes atacados.",
+   "riesgos": "Muy susceptible al pulgón negro, sobre todo en el brote apical (de ahí el despunte). Evitar suelos anegados (favorecen la mancha chocolate/Botrytis). Las plantas altas se vuelcan con viento si no se tutoran.",
+   "vida": "Anual, de ciclo otoño-invernal (largo, ~5-6 meses). Cada planta produce hasta unas 20 vainas hacia el final del ciclo.",
+   "siembra": "Siembra directa 'de asiento' (no requiere almácigo), en líneas separadas 0,70-0,80 m, colocando 2-3 semillas por golpe (a razón de 3-4 semillas por metro lineal).",
+   "cuidados": [
+    "aporque",
+    "poda"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 8,
+    "temp": 7,
+    "cal": 8,
+    "asoc": 7
+   }
+  },
+  "zanahoria": {
+   "nombre": "Zanahoria",
+   "cient": "Daucus carota subsp. sativus",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": 4,
+    "plantas_por_contenedor": 2
+   },
+   "metodo": {
+    "1": "directa",
+    "2": "directa",
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa",
+    "8": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     11,
+     12,
+     13,
+     14,
+     15,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 10,
+    "max": 20
+   },
+   "dc": {
+    "min": 50,
+    "max": 150
+   },
+   "dt": null,
+   "buenas": [
+    "cebolla",
+    "puerro",
+    "ajo",
+    "romero",
+    "lechuga",
+    "rabanito",
+    "arveja",
+    "tomate"
+   ],
+   "malas": [
+    "eneldo",
+    "apio",
+    "perejil"
+   ],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": 5,
+    "ideal_min": 15,
+    "ideal_max": 26,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "tolera_min": -5,
+    "tolera_max": 28
+   },
+   "helada": "tolera",
+   "nota": "Le cuesta nacer y tarda: mantené la superficie siempre húmeda hasta que emerja, porque si se seca una sola vez perdés la línea entera.",
+   "listo": "El 'hombro' o cuello de la raíz asoma en la superficie y alcanza buen diámetro (~1,5-2 cm o más en variedades medianas); color intenso y tamaño de la variedad.",
+   "luzNo": "Con luz insuficiente el follaje crece vigoroso pero la raíz queda delgada, pálida y poco dulce; la planta se ahíla.",
+   "sueloNo": "En suelos pedregosos, compactados o con estiércol fresco las raíces salen delgadas, deformes, bifurcadas o ramificadas al chocar con obstáculos.",
+   "truco": "Mezclar la semilla con arena seca (~1:3) para sembrar pareja. Mantener humedad constante hasta la emergencia (la germinación es lenta).",
+   "plagas": "Plaga principal: mosca de la zanahoria (Psila rosae), cuyas larvas excavan galerías en la raíz. También pulgones y nematodos. Enfermedades: oídio, alternaria (tizón foliar) y podredumbres en suelos húmedos.",
+   "riesgos": "Suelo pedregoso/compactado o abonado con materia orgánica fresca produce raíces bifurcadas y deformes. No ralear a tiempo da zanahorias pequeñas y torcidas. La germinación lenta se pierde si el suelo se seca.",
+   "vida": "Bianual, pero se cultiva como anual: se cosecha la raíz en el primer año. Solo florece y da semilla en el segundo año si se la deja. Cada planta produce una raíz.",
+   "siembra": "Siembra directa (NO se trasplanta), a chorrillo en líneas separadas 15-40 cm; se cubre con ~0,5-1 cm de tierra fina (fuentes indican surcos a 5x40 cm; profundidad de siembra somera). Luego se ralea.",
+   "cuidados": [
+    "abonado",
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "remolacha": {
+   "nombre": "Remolacha",
+   "cient": "Beta vulgaris var. conditiva",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "8": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     22,
+     23,
+     24,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": {
+    "min": 60,
+    "max": 130
+   },
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "coliflor",
+    "brocoli",
+    "lechuga",
+    "ajo",
+    "cebolla",
+    "apio"
+   ],
+   "malas": [
+    "espinaca",
+    "acelga",
+    "tomate",
+    "puerro"
+   ],
+   "confB": 7,
+   "confM": 5,
+   "tg": {
+    "min": 4,
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "max": 29
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 22,
+    "tolera_min": null,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Es de clima fresco pero cuidado con sembrarla muy al filo del invierno: si le toca frío de chiquita se va a flor y no te engorda la raíz.",
+   "listo": "Raíz de unos 5-8 cm de diámetro que asoma en la superficie del suelo; se cosecha antes de que se ponga fibrosa/leñosa.",
+   "luzNo": "Con poca luz la planta ahíla el follaje y engrosa poco la raíz, dando remolachas pequeñas.",
+   "sueloNo": "En suelos compactos, pedregosos o con estiércol fresco las raíces salen deformes, fibrosas/leñosas y pueden presentar 'zonado' (anillos claros y oscuros).",
+   "truco": "Ralear temprano para obtener raíces uniformes; usar suelo suelto y profundo con materia orgánica descompuesta (nunca estiércol fresco, que deforma la raíz);",
+   "plagas": "Plagas: pulgones, hormigas, bichos moros, tucuras, alquiche chico. Enfermedades: viruela o cercospora (Cercospora beticola) y virosis.",
+   "riesgos": "Floración prematura ('subida a flor') si sufre bajas temperaturas siendo pequeña; raíces leñosas/fibrosas si se cosecha tarde o falta agua; 'zonado' (anillos claros y oscuros) en condiciones desfavorables;",
+   "vida": "Bianual, cultivada como anual para consumo de raíz. Resistente a heladas. Cada planta produce una raíz principal.",
+   "siembra": "Siembra directa (no requiere almácigo), en línea/chorrillo o al voleo, enterrando el 'glomérulo' (fruto que contiene varias semillas). Por eso hay que ralear luego de la emergencia.",
+   "cuidados": [
+    "abonado",
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 8,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 7
+   }
+  },
+  "rabanito": {
+   "nombre": "Rabanito",
+   "cient": "Raphanus sativus",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "SOL_PARCIAL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": {
+    "profundidad_min_cm": 15,
+    "litros_min": 4,
+    "plantas_por_contenedor": 3
+   },
+   "metodo": {
+    "1": "directa",
+    "2": "directa",
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa",
+    "8": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 4,
+    "max": 7
+   },
+   "dc": {
+    "min": 25,
+    "max": 40
+   },
+   "dt": null,
+   "buenas": [
+    "zanahoria",
+    "lechuga",
+    "arveja",
+    "capuchina",
+    "espinaca",
+    "tomate",
+    "pepino",
+    "haba"
+   ],
+   "malas": [
+    "coliflor",
+    "repollo",
+    "brocoli"
+   ],
+   "confB": 7,
+   "confM": 5,
+   "tg": {
+    "min": 4,
+    "ideal_min": 20,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 22,
+    "tolera_min": -2,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Es lo más rápido de la huerta pero odia el calor: sembrado en pleno verano te sale picante y hueco, así que dejalo para las medias estaciones.",
+   "listo": "Raíz de 1-1,5 cm de diámetro que asoma en la superficie; cosechar a tiempo evita el sabor picante excesivo y el ahuecado.",
+   "luzNo": "Con poca luz se ahíla: desarrolla mucha hoja y una raíz pequeña o nula.",
+   "sueloNo": "En suelo duro, seco o pobre las raíces salen leñosas, ahuecadas y con sabor muy picante; el déficit de agua acentúa el picor y la fibrosidad.",
+   "truco": "Sembrar escalonado cada ~15 días para cosecha continua; ralear; mantener el suelo fresco con riegos frecuentes (sobre todo en verano) para evitar el picor;",
+   "plagas": "Plagas: pulgones (control con alcohol de ajo) y orugas/vaquitas que comen el follaje. Enfermedades: mildew (manchas amarillas que pardean; se trata con caldo bordelés al 1%).",
+   "riesgos": "Se endurece y ahueca si permanece demasiado tiempo en el suelo; sabor picante fuerte por falta de agua o cosecha tardía; tiende a espigar (subir a flor) con calor o días largos.",
+   "vida": "Anual, resistente a heladas (INTA). De ciclo muy corto: una siembra rinde una cosecha; se maneja con siembras escalonadas.",
+   "siembra": "Siembra directa (no requiere almácigo), en chorrillo ralo o al voleo, a 1-1,5 cm de profundidad (~2 g/m2). INTA: 30-40 cm entre líneas, ~5 cm entre plantas.",
+   "cuidados": [
+    "raleo",
+    "riego"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 7
+   }
+  },
+  "papa": {
+   "nombre": "Papa",
+   "cient": "Solanum tuberosum",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 45,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "1": "plantacion",
+    "2": "plantacion",
+    "8": "plantacion",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 14,
+    "max": 28
+   },
+   "dc": {
+    "min": 120,
+    "max": 150
+   },
+   "dt": null,
+   "buenas": [
+    "lechuga",
+    "haba",
+    "arveja",
+    "choclo",
+    "coliflor",
+    "brocoli",
+    "repollo",
+    "ajo",
+    "rabanito"
+   ],
+   "malas": [
+    "tomate",
+    "pimiento",
+    "berenjena"
+   ],
+   "confB": 6,
+   "confM": 6,
+   "tg": {
+    "min": 7,
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 13,
+    "ideal_max": 20,
+    "tolera_min": -2,
+    "tolera_max": 30
+   },
+   "helada": "sensible",
+   "nota": "Ojo que estos valores de germinación son de brotación del tubérculo-semilla, no de semilla: plantá cuando el suelo ya templó y buscá que engorde con noches frescas, porque con noches calurosas hace mucha mata y poca…",
+   "listo": "El amarilleo y secado del follaje indica que el tubérculo llegó a su máximo tamaño; se deja orear/madurar la piel antes de arrancar.",
+   "luzNo": "Con poca luz el follaje se ahíla y disminuye la tuberización. Atención: los tubérculos expuestos a la luz solar se ponen verdes (clorofila y solanina) y no son aptos…",
+   "sueloNo": "En suelo compacto o encharcado los tubérculos salen chicos y deformes y aumentan las pudriciones por exceso de humedad;",
+   "truco": "Usar tubérculo-semilla sano/certificado y preverdearlo para que brote; dejar cicatrizar los trozos antes de plantar; aporcar para aumentar la producción y evitar el verdeado de los tubérculos;",
+   "plagas": "Enfermedad más importante: tizón tardío (Phytophthora infestans). Plagas/vectores: pulgones (especialmente Myzus persicae); polilla de la papa. Virus: enrollamiento de la hoja y mosaico rugoso.",
+   "riesgos": "Heladas (planta y cosecha); verdeo de tubérculos por exposición a la luz (acumulan solanina, tóxica); exceso de humedad que provoca pudriciones; brotes largos y débiles si se almacena mal.",
+   "vida": "Anual, sensible a heladas (INTA). Cada mata produce varios tubérculos en una única temporada.",
+   "siembra": "No se usa semilla botánica: se planta el tubérculo-semilla entero o en trozos, cada uno con al menos 2 yemas. Los trozos se dejan cicatrizar ~4 días a 15 °C con alta humedad antes de plantar.",
+   "cuidados": [
+    "aporque",
+    "rotacion"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 8,
+    "temp": 9,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "batata": {
+   "nombre": "Batata",
+   "cient": "Ipomoea batatas",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "7": "almacigo_protegido",
+    "8": "almacigo_protegido",
+    "9": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "siembra_posible": [
+     25,
+     26,
+     27
+    ],
+    "trasplante_ideal": [
+     30
+    ],
+    "trasplante_posible": [
+     29,
+     31,
+     32,
+     33
+    ]
+   },
+   "dg": null,
+   "dc": {
+    "min": 190,
+    "max": 270
+   },
+   "dt": {
+    "min": 50,
+    "max": 70
+   },
+   "buenas": [
+    "choclo"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 2,
+   "tg": {
+    "min": 15,
+    "ideal_min": 21,
+    "ideal_max": 30,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 21,
+    "ideal_max": 30,
+    "tolera_min": 10,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Los valores de germinación son de brotación de la batata-semilla en el almácigo: es tropical, plantá los plantines recién cuando pasó todo peligro de helada porque con frío queda parada sin crecer.",
+   "listo": "El follaje empieza a amarillear y se cosecha antes de las heladas; las raíces alcanzan buen tamaño (rinde ~2-2,5 kg/m2).",
+   "luzNo": "Con frío (<15 °C) o poca luz el crecimiento se detiene; es muy sensible a las heladas, que la dañan gravemente.",
+   "sueloNo": "En suelo pesado, compacto o encharcado las raíces engrosadas salen deformes y aumenta el riesgo de pudrición.",
+   "truco": "Conservar batatas-semilla del año anterior para producir los brotes; plantar en camellón/lomo alto para favorecer el engrosamiento de las raíces y el drenaje; ubicar a pleno sol;",
+   "plagas": "En la región central del país la batata no suele presentar plagas significativas y las malezas son la principal amenaza inicial (El Brote Urbano). Plaga clave del cultivo a nivel general: el gorgojo de la batata (Cylas/Euscepes).",
+   "riesgos": "Muy sensible a las heladas (dañan follaje y raíces); el frío por debajo de 15 °C detiene el crecimiento; las malezas son la principal amenaza en la etapa inicial. Exceso de agua o suelo pesado favorece pudriciones.",
+   "vida": "Especie perenne cultivada como anual en clima templado (se levanta antes de las heladas). Sensible a heladas (INTA). Una temporada de cultivo por planta.",
+   "siembra": "No se siembra por semilla: se propaga vegetativamente. Se hace un almácigo con batatas-semilla (batatas del año anterior conservadas) que emiten brotes/plantines;",
+   "cuidados": [
+    "aporque",
+    "desmalezar"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 9,
+    "cal": 7,
+    "asoc": 5
+   }
+  },
+  "cebolla": {
+   "nombre": "Cebolla",
+   "cient": "Allium cepa",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 12,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "almacigo",
+    "4": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [
+     13,
+     14,
+     15,
+     16,
+     17,
+     18
+    ],
+    "trasplante_posible": [
+     19,
+     20,
+     21
+    ]
+   },
+   "dg": {
+    "min": 7,
+    "max": 15
+   },
+   "dc": {
+    "min": 230,
+    "max": 270
+   },
+   "dt": {
+    "min": 50,
+    "max": 60
+   },
+   "buenas": [
+    "zanahoria",
+    "remolacha",
+    "lechuga",
+    "frutilla",
+    "tomate",
+    "papa"
+   ],
+   "malas": [
+    "arveja",
+    "chaucha",
+    "haba"
+   ],
+   "confB": 5,
+   "confM": 5,
+   "tg": {
+    "min": 2,
+    "ideal_min": 18,
+    "ideal_max": 24,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 13,
+    "ideal_max": 24,
+    "tolera_min": null,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Respetá la fecha de siembra de tu variedad: si la planta pasa mucho frío siendo chica se va a flor y no te hace bulbo, porque el bulbo lo arma después con días largos y calor.",
+   "listo": "El cuello del bulbo se ablanda y el follaje se vuelca sobre el suelo; se cosecha cuando cerca del 60% del follaje se ha volcado.",
+   "luzNo": "Con luz insuficiente no bulbifica bien: se ahíla, da bulbos pequeños o solo follaje.",
+   "sueloNo": "En suelos pesados, compactados o mal drenados se producen pudriciones de bulbo (podredumbre blanca/botrytis) y bulbos pequeños o deformes.",
+   "truco": "Suspender el riego unos 30 días antes de la cosecha para que el bulbo cierre; aportar compost durante la bulbificación; mantener libre de malezas por su follaje escaso;",
+   "plagas": "Plagas: trips (dejan follaje plateado) y nematodos. Enfermedades: mildiu, podredumbre blanca y podredumbre del cuello (botrytis).",
+   "riesgos": "Exceso de humedad y mal drenaje que provocan pudriciones; competencia de malezas por su follaje delgado; cosechar con lluvia favorece podredumbres en almacenamiento.",
+   "vida": "Bienal, cultivada como anual: forma el bulbo en el primer ciclo y florece/semilla al segundo año. Produce un bulbo por planta.",
+   "siembra": "Conviene almácigo y posterior trasplante (mejor control de plántulas y densidad); también admite siembra directa en línea en abril. Se trasplanta cuando el plantín alcanza grosor de lápiz.",
+   "cuidados": [
+    "abonado",
+    "desmalezar",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 9,
+    "cal": 8,
+    "asoc": 5
+   }
+  },
+  "ajo": {
+   "nombre": "Ajo",
+   "cient": "Allium sativum",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "plantacion",
+    "4": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     11,
+     12
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     10
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": {
+    "min": 150,
+    "max": 210
+   },
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "brocoli",
+    "coliflor",
+    "acelga",
+    "remolacha",
+    "lechuga",
+    "apio",
+    "zanahoria"
+   ],
+   "malas": [
+    "arveja",
+    "chaucha",
+    "haba"
+   ],
+   "confB": 5,
+   "confM": 5,
+   "tg": {
+    "min": 0,
+    "ideal_min": 15,
+    "ideal_max": 18,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 10,
+    "ideal_max": 16,
+    "tolera_min": null,
+    "tolera_max": 40
+   },
+   "helada": "tolera",
+   "nota": "Estos valores de germinación son de brotación del diente, no de semilla: plantalo en otoño para que le entre el frío del invierno, porque sin ese frío te hace un montón de hoja y no arma la cabeza.",
+   "listo": "Cuando aproximadamente ¾ partes del follaje amarillean y toman aspecto pajizo/seco.",
+   "luzNo": "Con sombra o poca luz da bulbos pequeños y desarrollo pobre, con predominio de follaje.",
+   "sueloNo": "En suelo pesado, compacto o encharcado el diente se pudre y da bulbos pequeños o mal formados.",
+   "truco": "Cortar el escapo floral estimula el engrose de los dientes; en climas fríos usar mulch de paja; trenzar en ristras favorece el secado y almacenamiento;",
+   "plagas": "Trips, ácaros y nematodo del tallo; enfermedades: roya (Puccinia) y podredumbre blanca. (Fuente principal de sanidad tomada de aliáceas afines como cebolla/puerro).",
+   "riesgos": "Exceso de humedad y suelos pesados que pudren el diente; plantar en fecha muy tardía reduce el tamaño del bulbo.",
+   "vida": "Anual: se planta el diente y se cosecha el bulbo en un ciclo (~6-7 meses); no se conserva la planta.",
+   "siembra": "Siembra directa por diente ('ajo semilla'), colocado con la parte plana (raíces) hacia abajo, a 5-7 cm de profundidad, cada ~12 cm (5 cm si es ajo tierno). No se hace almácigo.",
+   "cuidados": [
+    "mulch",
+    "poda"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 8,
+    "asoc": 5
+   }
+  },
+  "puerro": {
+   "nombre": "Puerro",
+   "cient": "Allium porrum (Allium ampeloprasum var. porrum)",
+   "grupo": "Hortaliza de raíz/bulbo",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "2": "almacigo",
+    "3": "almacigo",
+    "4": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21
+    ],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 10,
+    "max": 14
+   },
+   "dc": {
+    "min": 120,
+    "max": 150
+   },
+   "dt": {
+    "min": 50,
+    "max": 70
+   },
+   "buenas": [
+    "zanahoria",
+    "apio",
+    "remolacha",
+    "lechuga"
+   ],
+   "malas": [
+    "arveja",
+    "chaucha",
+    "haba"
+   ],
+   "confB": 6,
+   "confM": 5,
+   "tg": {
+    "min": 7,
+    "ideal_min": 15,
+    "ideal_max": 18,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 13,
+    "ideal_max": 24,
+    "tolera_min": null,
+    "tolera_max": null
+   },
+   "helada": "tolera",
+   "nota": "Es de los más rústicos para el invierno: el almácigo tarda un montón en nacer, pero después podés dejarlo plantado en el cantero e ir cosechando a medida que lo necesitás.",
+   "listo": "Plantas de aproximadamente 50 cm de alto y 3-5 cm de grosor del fuste blanco (según destino/mercado).",
+   "luzNo": "Con poca luz el desarrollo es lento y las plantas se ahílan, dando tallos delgados.",
+   "sueloNo": "En suelos pedregosos o superficiales el tallo se deforma y se acorta; con mal drenaje aparecen pudriciones y patógenos.",
+   "truco": "Blanquear el fuste mediante aporque (aportar tierra sobre las plantas ~1 mes antes de la cosecha) para obtener mayor porción blanca y tierna; trasplantar en surco/hoyo profundo ayuda al blanqueo.",
+   "plagas": "Plagas: trips (Thrips tabaci) y polilla del puerro/cebolla (Acrolepia assectella). Enfermedades: mildiu (Peronospora) y roya (Puccinia porri).",
+   "riesgos": "Sensible a exceso de humedad y a suelos pedregosos/mal drenados; en poscosecha puede afectarlo la bacteria Pseudomonas syringae.",
+   "vida": "Bienal, cultivada como anual: se cosecha el fuste blanco en el primer ciclo; florecería y semillaría al segundo año.",
+   "siembra": "Almácigo y posterior trasplante (es lo habitual y recomendado); se trasplanta cuando el plantín tiene grosor de lápiz. Marco de plantación 20x40 o 10x40 cm.",
+   "cuidados": [
+    "blanqueo"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 6,
+    "temp": 6,
+    "cal": 8,
+    "asoc": 6
+   }
+  },
+  "cebolla-de-verdeo": {
+   "nombre": "Cebolla de verdeo",
+   "cient": "Allium cepa (tipo verdeo; en algunos casos Allium fistulosum)",
+   "grupo": "Hortaliza de hoja",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 15,
+    "litros_min": 4,
+    "plantas_por_contenedor": 3
+   },
+   "metodo": {
+    "2": "almacigo",
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "6": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 15
+   },
+   "dc": {
+    "min": 60,
+    "max": 150
+   },
+   "dt": null,
+   "buenas": [
+    "zanahoria",
+    "tomate",
+    "lechuga",
+    "frutilla"
+   ],
+   "malas": [
+    "arveja",
+    "chaucha",
+    "haba"
+   ],
+   "confB": 5,
+   "confM": 5,
+   "tg": {
+    "min": 2,
+    "ideal_min": 18,
+    "ideal_max": 24,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 13,
+    "ideal_max": 24,
+    "tolera_min": -5,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Arrancá recién cuando aflojen los días de calor del verano, porque con el suelo caliente la semilla tarda un montón en nacer; la planta se banca las heladas aunque la hoja te quede algo rojiza.",
+   "listo": "Cuando los tallos/hojas alcanzan grosor y altura de consumo (fuste de ~1 cm de diámetro, 20-30 cm de alto); se cosecha antes de que engrose el bulbo.",
+   "luzNo": "Con poca luz se ahíla, con tallos débiles y delgados.",
+   "sueloNo": "En suelo pesado o encharcado el crecimiento se frena y aparecen pudriciones de base.",
+   "truco": "Aporcar la base para blanquear la parte blanca y hacerla más tierna; cosechar por macollos dejando parte de la planta para el rebrote (en tipos perennes);",
+   "plagas": "Trips y mildiu (comunes a las aliáceas), además de podredumbres de base por humedad.",
+   "riesgos": "Exceso de humedad que pudre la base; competencia de malezas por follaje delgado.",
+   "vida": "Según el tipo: la de bulbo (A. cepa) se maneja como anual/bienal; la de mata perenne (A.",
+   "siembra": "Admite siembra directa en línea o almácigo con trasplante. Marco de plantación aproximado 5x40 cm (alta densidad).",
+   "cuidados": [
+    "blanqueo"
+   ],
+   "conf": {
+    "luz": 4,
+    "suelo": 5,
+    "temp": 8,
+    "cal": 7,
+    "asoc": 5
+   }
+  },
+  "albahaca": {
+   "nombre": "Albahaca",
+   "cient": "Ocimum basilicum",
+   "grupo": "Aromática",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "2": "directa|almacigo",
+    "3": "directa|almacigo",
+    "8": "almacigo_protegido",
+    "9": "almacigo_protegido",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ],
+    "siembra_posible": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_ideal": [
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_posible": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     29
+    ]
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": {
+    "min": 90,
+    "max": 100
+   },
+   "dt": {
+    "min": 28,
+    "max": 42
+   },
+   "buenas": [
+    "tomate",
+    "pimiento"
+   ],
+   "malas": [],
+   "confB": 7,
+   "confM": 2,
+   "tg": {
+    "min": 15,
+    "ideal_min": 20,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 20,
+    "ideal_max": 30,
+    "tolera_min": 10,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "No la apures en septiembre: hasta que el suelo no se calienta se queda clavada, y la primera helada del otoño te la lleva puesta.",
+   "listo": "Planta con buen desarrollo de hojas (a partir de ~10-15 cm); cosechar antes de que se formen los racimos florales, podando los ápices para prolongar la…",
+   "luzNo": "Con poca luz se ahíla (tallos largos y débiles), pierde aroma y aceites esenciales y da hojas más pálidas y escasas.",
+   "sueloNo": "En suelos encharcados o con mal drenaje sufre pudriciones de raíz y hongos; en suelos muy pobres crece débil y con menor producción de hoja y aroma.",
+   "truco": "Podar/pellizcar los ápices y quitar los racimos florales para estimular el rebrote y prolongar la cosecha de hoja. La plena exposición al sol aumenta los aceites esenciales y el aroma.",
+   "plagas": "En general muy resistente a plagas y enfermedades. Los daños posibles provienen de hormigas y orugas; en exceso de humedad puede sufrir hongos.",
+   "riesgos": "Muy sensible al frío y a las heladas: no sembrar antes de que pasen los fríos. No tolera el encharcamiento (riesgo de pudriciones). La floración adelantada por calor o estrés reduce la calidad de la hoja.",
+   "vida": "Anual. En GBA cumple su ciclo en la temporada cálida y muere con los primeros fríos/heladas del otoño.",
+   "siembra": "Se inicia en almácigo protegido por semilla (grano fino, siembra superficial) y luego se trasplanta; es la forma recomendada por su sensibilidad al frío.",
+   "cuidados": [
+    "poda"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 7,
+    "asoc": 7
+   }
+  },
+  "perejil": {
+   "nombre": "Perejil",
+   "cient": "Petroselinum crispum",
+   "grupo": "Aromática",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "SOL_PARCIAL",
+   "hmin": 3,
+   "hideal": 4,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": null,
+    "litros_min": 4,
+    "plantas_por_contenedor": 3
+   },
+   "metodo": {
+    "1": "directa",
+    "2": "directa",
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa",
+    "8": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 10,
+    "max": 18
+   },
+   "dc": {
+    "min": 60,
+    "max": 130
+   },
+   "dt": null,
+   "buenas": [
+    "tomate"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 2,
+   "tg": {
+    "min": 4,
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 21,
+    "tolera_min": -12,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Tené paciencia con el almácigo porque tarda muchísimo en asomar, pero después te banca todo el invierno dándote hoja.",
+   "listo": "Matas con hojas bien desarrolladas; se corta manualmente a unos 5 cm del suelo, dejando el centro para el rebrote.",
+   "luzNo": "Con muy poca luz crece más lento y ahilado; en exceso de sol y calor tiende a subirse a flor (espigar) antes.",
+   "sueloNo": "Es rústico y tolera suelos diversos; en suelos compactados o pobres el rebrote es más lento y las plantas menos vigorosas.",
+   "truco": "Remojar las semillas antes de sembrar para acelerar la germinación (que es lenta). Cortar a 5 cm del suelo dejando el cogollo central para favorecer sucesivos rebrotes;",
+   "plagas": "Cultivo rústico. La enfermedad más importante es la mancha foliar por el hongo Septoria. También pueden aparecer pulgones.",
+   "riesgos": "Germinación lenta y despareja (riesgo de darlo por perdido). Con calor fuerte se sube a flor perdiendo calidad de hoja. Evitar exceso de humedad que favorece hongos (Septoria).",
+   "vida": "Bianual: en el primer año produce hojas y en el segundo florece y semilla. En la huerta suele cultivarse como anual, dedicado a la producción de hojas.",
+   "siembra": "Siembra directa (el INTA la indica 'a chorrillo'/en línea). En líneas separadas ~40 cm o al voleo, a no más de 1 cm de profundidad. Germinación lenta (hasta ~18 días). El INTA da distancia 1 x 25 cm.",
+   "cuidados": [
+    "poda"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 7,
+    "asoc": 5
+   }
+  },
+  "cilantro": {
+   "nombre": "Cilantro",
+   "cient": "Coriandrum sativum",
+   "grupo": "Aromática",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "SOL_PARCIAL",
+   "hmin": 3,
+   "hideal": 4,
+   "riego": "parejo",
+   "maceta": null,
+   "metodo": {
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     13,
+     14,
+     15
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 12,
+    "max": 18
+   },
+   "dc": {
+    "min": 40,
+    "max": 60
+   },
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "lechuga",
+    "tomate"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 2,
+   "tg": {
+    "min": 10,
+    "ideal_min": 15,
+    "ideal_max": 20,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 22,
+    "tolera_min": -5,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Sembralo escalonado de otoño a principios de primavera: apenas pega el calor se va a flor y te quedás sin hoja.",
+   "listo": "Cuando la planta alcanza unos 15 cm de altura; se cortan hojas con tijera o se arrancan a mano, antes de que emita el tallo floral.",
+   "luzNo": "El sol fuerte y el calor lo hacen subirse a flor (espigar) rápidamente, acortando la producción de hoja; con muy poca luz crece más lento y ahilado.",
+   "sueloNo": "No tolera el exceso de humedad: en suelos encharcados o mal drenados es susceptible a enfermedades fúngicas (roya, podredumbre de raíz).",
+   "truco": "Partir a la mitad las semillas dobles antes de sembrar para mejorar la germinación. Hacer siembras escalonadas y ubicarlo con sol de la mañana / media sombra en primavera-verano para retrasar el…",
+   "plagas": "Pulgones (áfidos). Enfermedades: roya y podredumbre de raíz (Sitopia); mancha bacteriana por Pseudomonas syringae (Infoagro), favorecidas por el exceso de humedad.",
+   "riesgos": "Se sube a flor (espiga) muy rápido con calor y días largos: temperaturas por encima de ~21 °C aceleran la floración y bajan la calidad. No tolera el exceso de humedad. Evitar el trasplante que daña la raíz pivotante.",
+   "vida": "Anual, de ciclo corto (para follaje ~35-40 días de crecimiento activo). Tiende a florecer y semillar en una sola temporada, sobre todo con calor.",
+   "siembra": "Preferentemente siembra directa (raíz pivotante que no gusta del trasplante), aunque también se puede en almácigos biodegradables. Truco: el 'grano' son en realidad dos semillas pegadas;",
+   "cuidados": [
+    "proteger"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 8,
+    "cal": 6,
+    "asoc": 5
+   }
+  },
+  "oregano": {
+   "nombre": "Orégano",
+   "cient": "Origanum vulgare",
+   "grupo": "Aromática",
+   "suelo": "RUSTICO_TOLERANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "escaso",
+   "maceta": null,
+   "metodo": {
+    "3": "plantacion",
+    "4": "plantacion",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 20,
+    "max": 23
+   },
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "tomate",
+    "pimiento"
+   ],
+   "malas": [],
+   "confB": 3,
+   "confM": 1,
+   "tg": {
+    "min": null,
+    "ideal_min": 18,
+    "ideal_max": 22,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 28,
+    "tolera_min": -15,
+    "tolera_max": null
+   },
+   "helada": "tolera",
+   "nota": "Multiplicalo por gajo o mata dividida en vez de semilla; el frío no lo despeina, lo que le arruina la cosecha es la humedad del verano.",
+   "listo": "Plantas en botón/floración, con las matas bien desarrolladas; se cortan las ramas dejando la base para el rebrote.",
+   "luzNo": "Con poco sol crece débil y ahilado, y disminuye notablemente el aroma y los aceites esenciales.",
+   "sueloNo": "No tolera el encharcamiento: en suelos pesados y con mal drenaje sufre pudriciones de raíz y hongos. En suelos muy sombríos o húmedos pierde aroma y aceites esenciales.",
+   "truco": "Ubicarlo en el lugar más soleado (orientado al norte en el hemisferio sur) potencia el aroma. Multiplicarlo por división de matas o esquejes para plantas uniformes.",
+   "plagas": "Bastante rústico. Enfermedades fúngicas como Colletotrichum, Phytophthora y oídio (Erysiphe); ácaros y algunos artrópodos (p. ej. cicadélido Eupteryx decemnotata).",
+   "riesgos": "No tolera el encharcamiento (riesgo de pudriciones). La propagación por semilla da poblaciones heterogéneas (mejor multiplicación vegetativa). En sombra o suelos húmedos pierde aroma.",
+   "vida": "Perenne. El cultivo mantiene vida útil productiva de unos 8-10 años; conviene renovar/dividir las matas cada varios años.",
+   "siembra": "Se multiplica sobre todo en forma vegetativa: por esquejes, acodo (simple o por amontonamiento) y división de matas, que asegura plantas homogéneas.",
+   "cuidados": [
+    "dividir",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 6,
+    "temp": 9,
+    "cal": 6,
+    "asoc": 3
+   }
+  },
+  "tomillo": {
+   "nombre": "Tomillo",
+   "cient": "Thymus vulgaris",
+   "grupo": "Aromática",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "escaso",
+   "maceta": null,
+   "metodo": {
+    "1": "plantacion",
+    "2": "plantacion",
+    "3": "plantacion",
+    "8": "almacigo",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion",
+    "12": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     22,
+     23,
+     24,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 14,
+    "max": 28
+   },
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "romero",
+    "salvia",
+    "lavanda"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 2,
+   "tg": {
+    "min": 10,
+    "ideal_min": 15,
+    "ideal_max": 22,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "tolera_min": -15,
+    "tolera_max": null
+   },
+   "helada": "tolera",
+   "nota": "Hacelo por gajo porque de semilla nace despareja, y plantalo alto y bien drenado: el problema acá no es el invierno sino el verano húmedo.",
+   "listo": "Planta establecida y ramificada (a partir de unos meses/segundo período de crecimiento); brotes con hojas firmes y aromáticas;",
+   "luzNo": "Con poca luz se ahíla (tallos largos y débiles), pierde compacidad y aroma, disminuye la producción de aceites esenciales y se vuelve más susceptible a enfermedades por…",
+   "sueloNo": "En suelos pesados, arcillosos o con exceso de riego/nutrientes se encharca y las raíces se pudren; la planta pierde aroma, se debilita y muere.",
+   "truco": "Regar solo cuando la capa superior del suelo está seca; agregar arena para mejorar drenaje. Recortar las flores para favorecer hoja. Dividir la mata cada dos años para rejuvenecerla.",
+   "plagas": "Es una planta rústica y poco afectada por plagas; su aroma repele varios insectos. En condiciones de exceso de humedad/mal drenaje el principal problema son las enfermedades fúngicas de raíz (pudriciones).",
+   "riesgos": "Muy sensible al encharcamiento y al exceso de riego (pudrición de raíz); resistente al déficit hídrico. Evitar suelos ricos/abonados en exceso y sombra. Con los años tiende a lignificarse si no se poda/divide.",
+   "vida": "Perenne (subarbusto semi-perenne). Vive y produce varios años; conviene renovar la planta por división cada 2 años aproximadamente para mantener vigor y evitar que se…",
+   "siembra": "Se multiplica principalmente por esqueje (ramas jóvenes de ~10 cm enraizadas en agua o directas) y por división de matas cada dos años, que son los métodos más fiables.",
+   "cuidados": [
+    "dividir",
+    "poda",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 6,
+    "temp": 8,
+    "cal": 5,
+    "asoc": 5
+   }
+  },
+  "romero": {
+   "nombre": "Romero",
+   "cient": "Salvia rosmarinus (sin. Rosmarinus officinalis)",
+   "grupo": "Aromática",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": "escaso",
+   "maceta": null,
+   "metodo": {
+    "2": "plantacion",
+    "3": "plantacion",
+    "4": "plantacion",
+    "8": "plantacion",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     22,
+     23,
+     24
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": null,
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "zanahoria",
+    "salvia",
+    "lavanda",
+    "melisa"
+   ],
+   "malas": [],
+   "confB": 7,
+   "confM": 2,
+   "tg": {
+    "min": null,
+    "ideal_min": 18,
+    "ideal_max": 21,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 6,
+    "ideal_max": 25,
+    "tolera_min": -8,
+    "tolera_max": null
+   },
+   "helada": "tolera",
+   "nota": "El frío de acá no lo toca: lo que lo mata es el suelo encharcado en invierno, así que dale cantero drenado y aire entre plantas.",
+   "listo": "Planta establecida (a partir del segundo año); ramas firmes y aromáticas; para flores, cuando los pimpollos comienzan a abrir.",
+   "luzNo": "Con sombra o poca luz crece débil y ahilado, florece poco, pierde aroma y aceites esenciales y se vuelve más propenso a hongos por menor ventilación/secado.",
+   "sueloNo": "En suelos pesados o mal drenados con exceso de agua se pudren las raíces y la planta se enferma o muere;",
+   "truco": "Regar poco (prefiere sequía); podar regularmente para que no se vuelva leñoso y para dar forma. Multiplicar por gajo con punta floral es el método más eficaz.",
+   "plagas": "Planta rústica y poco atacada; su aroma ayuda a repeler insectos. El problema más frecuente son las pudriciones de raíz por hongos ante exceso de humedad. Sin dato específico de plagas de insectos en fuentes argentinas consultadas.",
+   "riesgos": "El principal riesgo es el exceso de riego y el suelo mal drenado (pudrición de raíz); es muy resistente a la sequía, así que conviene 'errar' hacia seco. Sin poda, se lignifica y baja la calidad del follaje.",
+   "vida": "Perenne: es un arbusto que vive muchos años (varios años a más de una década) y produce follaje todo el año una vez establecido.",
+   "siembra": "Se multiplica principalmente por esqueje/estaca (gajos de ~20 cm con punta floral, enterrando dos terceras partes) porque es rápido y económico;",
+   "cuidados": [
+    "poda",
+    "riego"
+   ],
+   "conf": {
+    "luz": 8,
+    "suelo": 7,
+    "temp": 8,
+    "cal": 6,
+    "asoc": 7
+   }
+  },
+  "salvia": {
+   "nombre": "Salvia",
+   "cient": "Salvia officinalis",
+   "grupo": "Aromática",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "escaso",
+   "maceta": null,
+   "metodo": {
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 14,
+    "max": 21
+   },
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "zanahoria",
+    "romero",
+    "lavanda",
+    "melisa"
+   ],
+   "malas": [],
+   "confB": 6,
+   "confM": 2,
+   "tg": {
+    "min": null,
+    "ideal_min": 18,
+    "ideal_max": 22,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "tolera_min": -15,
+    "tolera_max": 36
+   },
+   "helada": "tolera",
+   "nota": "Dale el rincón más drenado y aireado de la huerta y cortala seguido: el invierno lo pasa de taquito, pero la mata quieta en verano húmedo se llena de hongos.",
+   "listo": "Planta establecida (a partir del segundo año); hojas grandes, firmes, aterciopeladas y aromáticas. Cosechar antes de la floración para mayor calidad de hoja.",
+   "luzNo": "Con poca luz se ahíla, crece débil, produce menos hojas y aceites esenciales y es más susceptible a enfermedades fúngicas por menor ventilación.",
+   "sueloNo": "En suelos pesados/arcillosos o con exceso de humedad se encharca y la raíz se pudre; la planta se debilita, pierde aroma y es más sensible a hongos.",
+   "truco": "Regar con moderación (soporta sequía; 1 a 3 riegos semanales según clima/estación). Plantarla algo apartada del huerto principal por su porte y carácter expansivo.",
+   "plagas": "Como labiada aromática es antialimentaria, fungicida y nematicida, por lo que suele ser poco atacada; el riesgo principal son hongos por exceso de humedad. Sin dato específico de plagas de insectos en fuentes argentinas consultadas.",
+   "riesgos": "Sensible al exceso de agua y suelos pesados (pudrición de raíz). Puede resultar expansiva/vigorosa, por lo que conviene ubicarla ligeramente apartada del huerto principal. Con los años se vuelve leñosa si no se renueva.",
+   "vida": "Perenne. Vive varios años produciendo follaje; con el tiempo se lignifica en la base, por lo que suele renovarse cada pocos años por esqueje o división.",
+   "siembra": "Admite siembra directa en primavera (indicado por La Rural Semillería) y también almácigo para luego trasplantar; se multiplica muy bien por esqueje y por división de mata.",
+   "cuidados": [
+    "poda",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 6,
+    "asoc": 6
+   }
+  },
+  "menta": {
+   "nombre": "Menta",
+   "cient": "Mentha spp. (p. ej. Mentha x piperita, Mentha spicata)",
+   "grupo": "Aromática",
+   "suelo": "HUMEDO_RICO",
+   "luz": "MEDIA_SOMBRA",
+   "hmin": 2,
+   "hideal": 4,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "plantacion",
+    "4": "plantacion",
+    "8": "plantacion",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     22,
+     23,
+     24
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": null,
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "repollo"
+   ],
+   "malas": [
+    "romero",
+    "tomillo",
+    "salvia"
+   ],
+   "confB": 6,
+   "confM": 4,
+   "tg": {
+    "min": null,
+    "ideal_min": null,
+    "ideal_max": null,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 20,
+    "ideal_max": 28,
+    "tolera_min": -15,
+    "tolera_max": null
+   },
+   "helada": "tolera",
+   "nota": "Se planta por estolón y no por semilla, y aunque la helada le queme toda la parte de arriba el rizoma rebrota solo en primavera.",
+   "listo": "Plantas de buen porte con tallos frondosos; inicio de floración (máximo aroma); en general se puede empezar a cortar pocas semanas/meses después de plantar el…",
+   "luzNo": "A pleno sol fuerte y sin humedad suficiente las hojas se queman y la planta se marchita; con demasiada sombra se ahíla y crece débil, con hojas menos aromáticas.",
+   "sueloNo": "En suelo seco o pobre la menta se marchita, crece raquítica y con hojas pequeñas y poco aromáticas; si el suelo se satura de agua (encharcamiento) las raíces se pudren.",
+   "truco": "Cultivar en maceta o contenedor (o con barrera/limitador enterrado) para controlar su carácter invasivo. Mantener la tierra húmeda y ubicarla en media sombra para que no se quemen las hojas.",
+   "plagas": "Los pulgones (áfidos) son la plaga más común. Otras plagas: nematodos, lepidópteros, cigarras, hormigas, pulgones lanígeros y coleópteros.",
+   "riesgos": "Es una planta invasiva: se reproduce rápidamente por estolones/rizomas y puede invadir el resto de la huerta, por lo que debe contenerse (maceta/contenedor o barrera).",
+   "vida": "Perenne (herbácea). Rebrota año tras año desde sus rizomas/estolones y se expande rápidamente; con la temporada fría puede perder parte aérea y rebrotar en primavera.",
+   "siembra": "Se multiplica vegetativamente: por esqueje (tallo sumergido en agua unos días hasta que emite raíces), por estolones y por rizomas/división de mata.",
+   "cuidados": [
+    "contener",
+    "poda",
+    "proteger"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 5,
+    "asoc": 6
+   }
+  },
+  "melisa": {
+   "nombre": "Melisa (toronjil)",
+   "cient": "Melissa officinalis L.",
+   "grupo": "Aromática",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "SOL_PARCIAL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "parejo",
+   "maceta": null,
+   "metodo": {
+    "4": "almacigo_protegido",
+    "5": "almacigo_protegido",
+    "6": "almacigo_protegido",
+    "9": "almacigo",
+    "10": "almacigo",
+    "11": "almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 14,
+    "max": 21
+   },
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "romero",
+    "salvia"
+   ],
+   "malas": [],
+   "confB": 3,
+   "confM": 1,
+   "tg": {
+    "min": null,
+    "ideal_min": null,
+    "ideal_max": null,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": null,
+    "ideal_max": null,
+    "tolera_min": -15,
+    "tolera_max": null
+   },
+   "helada": "tolera",
+   "nota": "Metela a media sombra pensando en enero: de cualquier helada rebrota sola desde la corona, pero el sol pleno del verano se la come.",
+   "listo": "Planta bien desarrollada y frondosa, antes de que abran las flores (máximo aroma); hojas verdes y turgentes.",
+   "luzNo": "Con muy poca luz se ahíla (tallos débiles y largos) y baja la concentración de aceites esenciales/aroma; a pleno sol intenso y seco puede sufrir estrés hídrico.",
+   "sueloNo": "En suelos secos, arenosos o pobres el rendimiento de hoja es bajo; con drenaje deficiente y humedad acumulada aparecen enfermedades fúngicas (Septoria).",
+   "truco": "Propagar por división de matas para evitar la germinación lenta; mantener el suelo fresco pero sin encharcar; cosechar antes de floración para máximo aroma; podar los cortes estimula rebrote.",
+   "plagas": "Ácaros (arañuela roja, Tetranychus sp.) en condiciones secas y calurosas; enfermedad fúngica por Septoria en suelos con humedad acumulada.",
+   "riesgos": "Sensible a heladas y fríos intensos (proteger en invierno GBA); no tolera suelos secos/arenosos ni humedad acumulada. Puede volverse invasora por semilla y rizomas si no se controla.",
+   "vida": "Perenne; una plantación permanece productiva en el mismo sitio alrededor de 3 a 4 años.",
+   "siembra": "Almácigo (poder germinativo bajo, 30-40%) y luego trasplante de plántulas de 10-15 cm; también por división de matas, que es más segura y rápida.",
+   "cuidados": [
+    "dividir",
+    "proteger",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 8,
+    "temp": 6,
+    "cal": 5,
+    "asoc": 3
+   }
+  },
+  "ciboulette": {
+   "nombre": "Ciboulette (cebollín)",
+   "cient": "Allium schoenoprasum L.",
+   "grupo": "Aromática",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": "constante",
+   "maceta": {
+    "profundidad_min_cm": 15,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 10
+   },
+   "dc": {
+    "min": 60,
+    "max": 90
+   },
+   "dt": null,
+   "buenas": [
+    "zanahoria",
+    "tomate"
+   ],
+   "malas": [
+    "chaucha",
+    "arveja",
+    "haba"
+   ],
+   "confB": 4,
+   "confM": 4,
+   "tg": {
+    "min": 2,
+    "ideal_min": 18,
+    "ideal_max": 24,
+    "max": 35
+   },
+   "tc": {
+    "ideal_min": 13,
+    "ideal_max": 24,
+    "tolera_min": -15,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Es de las pocas que te sigue dando en pleno invierno, así que no la levantes: cortala al ras y rebrota sola del bulbo.",
+   "listo": "Hojas de unos 15-20 cm de alto, verdes y firmes; cortar dejando 3-5 cm para que rebrote.",
+   "luzNo": "Con poca luz las hojas se ahílan (finas y pálidas), la mata se debilita y disminuye el rebrote y el aroma.",
+   "sueloNo": "En suelos muy secos o pobres las matas crecen débiles, con hojas finas y menor rebrote tras el corte.",
+   "truco": "Reproducir por división de matas para plantas rápidas y vigorosas; mantener humedad constante; cortar seguido estimula el rebrote de hojas tiernas.",
+   "plagas": "Resiste bien a plagas (efecto repelente propio de los Allium); en exceso de humedad puede sufrir hongos (mildiu/pudriciones) y ataques puntuales de trips o mosca de la cebolla. Sin detalle específico en la fuente argentina.",
+   "riesgos": "Evitar suelos secos y encharcamiento; la floración (bola lila) endurece las hojas, conviene cortar los escapos florales para mantener hoja tierna. Como todos los Allium, exceso de humedad favorece pudriciones de bulbo.",
+   "vida": "Perenne; la mata rebrota y se cosecha durante años. En invierno la parte aérea puede secarse y rebrota en primavera.",
+   "siembra": "Por semilla (a unos 1-3 cm de profundidad, en almácigo o directa en línea) o, más práctico y rápido, por división de matas/bulbos con raíces.",
+   "cuidados": [
+    "dividir",
+    "poda"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 6,
+    "cal": 5,
+    "asoc": 4
+   }
+  },
+  "laurel": {
+   "nombre": "Laurel",
+   "cient": "Laurus nobilis L.",
+   "grupo": "Aromática",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 3,
+   "hideal": 6,
+   "riego": "espaciado",
+   "maceta": null,
+   "metodo": {
+    "3": "plantacion",
+    "4": "plantacion",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": null,
+   "dc": null,
+   "dt": null,
+   "buenas": [],
+   "malas": [],
+   "confB": 2,
+   "confM": 2,
+   "tg": {
+    "min": null,
+    "ideal_min": null,
+    "ideal_max": null,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 17,
+    "ideal_max": 25,
+    "tolera_min": -5,
+    "tolera_max": 30
+   },
+   "helada": "sensible",
+   "nota": "Con las heladas de acá pierde hoja y se le queman los brotes tiernos, pero no se muere: aunque lo cortes a ras rebrota desde la base.",
+   "listo": "Hojas adultas, coriáceas, verde oscuro y brillantes; se recogen las bien formadas en cualquier época.",
+   "luzNo": "En sombra profunda crece más lento y desgarbado; a pleno viento o helada intensa sufre daño foliar. Es de las aromáticas que mejor tolera la media sombra.",
+   "sueloNo": "En suelos encharcados o con drenaje deficiente aparece pudrición de raíces y hojas amarillentas;",
+   "truco": "Multiplicar por esqueje en primavera (mucho más rápido que semilla). Cultivable en maceta grande para poder resguardarlo de heladas en GBA y controlar su tamaño con poda.",
+   "plagas": "Cochinilla algodonosa (plaga habitual) y, como consecuencia de la melaza de cochinillas y pulgones, aparición del hongo negrilla (fumagina) que ennegrece las hojas.",
+   "riesgos": "No tolera heladas fuertes ni vientos intensos. El exceso de riego provoca pudrición de raíces y hojas amarillas. Crecimiento lento (paciencia). Puede naturalizarse/expandirse;",
+   "vida": "Perenne; árbol/arbusto perennifolio de larga vida que puede alcanzar hasta 15 m de altura. Produce hojas para cosecha durante muchos años (décadas).",
+   "siembra": "Propagación vegetativa por esqueje (método principal): ramas de ~15 cm de plantas adultas de 3+ años, en primavera, en maceta con humedad controlada.",
+   "cuidados": [
+    "poda",
+    "proteger",
+    "riego"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 5,
+    "asoc": 2
+   }
+  },
+  "eneldo": {
+   "nombre": "Eneldo",
+   "cient": "Anethum graveolens L.",
+   "grupo": "Aromática",
+   "suelo": "PROFUNDO_SUELTO",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": {
+    "profundidad_min_cm": 30,
+    "litros_min": null,
+    "plantas_por_contenedor": null
+   },
+   "metodo": {
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "8": "directa",
+    "9": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "siembra_posible": [
+     22,
+     23,
+     24,
+     25,
+     26,
+     27
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 10,
+    "max": 21
+   },
+   "dc": {
+    "min": 40,
+    "max": 60
+   },
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "zanahoria"
+   ],
+   "malas": [],
+   "confB": 6,
+   "confM": 3,
+   "tg": {
+    "min": null,
+    "ideal_min": 20,
+    "ideal_max": 22,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 16,
+    "ideal_max": 18,
+    "tolera_min": -4,
+    "tolera_max": 35
+   },
+   "helada": "tolera",
+   "nota": "Se va a flor por días largos y no solo por calor: sembrado en primavera se espiga aunque esté fresco, por eso rinde mucho más la siembra de otoño.",
+   "listo": "Para hoja: planta frondosa con follaje bien desarrollado, antes de espigar. Para semilla: umbelas y granos secos y de color pardo.",
+   "luzNo": "Con poca luz se ahíla (tallos débiles y volcados) y produce poco follaje; en calor intenso y días largos florece/espiga rápido perdiendo hoja tierna.",
+   "sueloNo": "En suelo compacto o pedregoso la raíz pivotante crece deforme, la planta se desarrolla mal y tiende a espigar/florecer prematuramente; con malezas compite y rinde poco.",
+   "truco": "Sembrar directo en cama mullida y sin malezas; hacer siembras escalonadas cada pocas semanas para tener hoja tierna continua antes de que espigue;",
+   "plagas": "La fuente argentina no detalla plagas específicas. En general (apiáceas) puede recibir pulgones y orugas; puede sufrir enfermedades fúngicas foliares en exceso de humedad. Sin dato preciso confiable para GBA.",
+   "riesgos": "Tiende a espigar (florecer) rápido con calor y días largos, acortando la cosecha de hoja. Mala tolerancia al trasplante. Las plantas altas pueden volcarse con viento (aporcar/tutorar). Se resiembra sola con facilidad.",
+   "vida": "Planta herbácea anual; completa su ciclo (crecimiento, floración y semilla) en una temporada.",
+   "siembra": "Siembra directa (no le gusta el trasplante por su raíz pivotante). Preferentemente en líneas distanciadas 60-70 cm y ~30 cm entre plantas;",
+   "cuidados": [
+    "aporque",
+    "desmalezar",
+    "raleo"
+   ],
+   "conf": {
+    "luz": 5,
+    "suelo": 7,
+    "temp": 7,
+    "cal": 7,
+    "asoc": 6
+   }
+  },
+  "calendula": {
+   "nombre": "Caléndula",
+   "cient": "Calendula officinalis",
+   "grupo": "Flor polinizadora",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "siembra_posible": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "trasplante_ideal": [
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "trasplante_posible": [
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21
+    ]
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": null,
+   "dt": {
+    "min": 42,
+    "max": 56
+   },
+   "buenas": [
+    "lechuga",
+    "tomate"
+   ],
+   "malas": [],
+   "confB": 7,
+   "confM": 2,
+   "tg": {
+    "min": 5,
+    "ideal_min": 15,
+    "ideal_max": 24,
+    "max": 30
+   },
+   "tc": {
+    "ideal_min": 10,
+    "ideal_max": 24,
+    "tolera_min": -5,
+    "tolera_max": 30
+   },
+   "helada": "tolera",
+   "nota": "Sembrala en otoño y vas a tener flor todo el invierno del GBA: la helada no la voltea, lo que la termina es el calorón del verano.",
+   "listo": "Flores completamente abiertas, de color intenso.",
+   "luzNo": "Con poca luz se ahíla (tallos largos y débiles) y florece menos; en verano muy caluroso a pleno sol puede detener la floración.",
+   "sueloNo": "Muy rústica: tolera suelos pobres, pero en suelos encharcados o mal drenados la raíz se pudre.",
+   "truco": "Despuntar flores marchitas y podar a fin de verano estimula nueva floración. Muy recomendada como planta trampa de pulgones intercalada con hortalizas; enriquece aromas y colores de la huerta.",
+   "plagas": "Funciona como planta trampa que atrae/desvía pulgones, chinches y gusanos de las hortalizas. Puede sufrir ella misma pulgones y oídio.",
+   "riesgos": "Evitar suelos anegados; en pleno verano muy caluroso puede detener la floración (le conviene media sombra). Al ser planta trampa concentra pulgones, hay que monitorearla.",
+   "vida": "Anual (a veces perenne de vida corta). Produce abundantes flores durante una temporada; poda a fin de verano prolonga la floración.",
+   "siembra": "Siembra directa o en almácigo, ambas viables; de germinación muy fácil. Enterrar la semilla 2-3 veces su tamaño. Almácigo 6-8 semanas antes de la última helada. Suele resembrarse sola.",
+   "cuidados": [
+    "poda"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 6,
+    "asoc": 7
+   }
+  },
+  "copete": {
+   "nombre": "Copete / Tagetes",
+   "cient": "Tagetes patula / Tagetes erecta",
+   "grupo": "Flor polinizadora",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "1": "directa",
+    "2": "directa",
+    "8": "almacigo_protegido",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo",
+    "12": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36
+    ],
+    "siembra_posible": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     22,
+     23,
+     24,
+     25
+    ],
+    "trasplante_ideal": [
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_posible": [
+     25,
+     26,
+     27,
+     34,
+     35,
+     36
+    ]
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": null,
+   "dt": {
+    "min": 30,
+    "max": 45
+   },
+   "buenas": [
+    "tomate",
+    "papa",
+    "albahaca"
+   ],
+   "malas": [],
+   "confB": 8,
+   "confM": 2,
+   "tg": {
+    "min": 15,
+    "ideal_min": 20,
+    "ideal_max": 25,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 18,
+    "ideal_max": 30,
+    "tolera_min": 0,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "Esperá a que el suelo se temple en primavera para sembrarlo: te florece todo el verano si no le falta agua, pero la primera helada del otoño te lo liquida.",
+   "listo": "Flores abiertas amarillas, naranjas o rojizas (simples o dobles, hasta 5 cm).",
+   "luzNo": "A la sombra se ahíla y florece poco.",
+   "sueloNo": "Se adapta a suelos pobres, pero en suelos pesados o encharcados crece mal y puede pudrirse.",
+   "truco": "Intercalar entre hortalizas (aprox. 1 flor cada 3-4 plantas de hortaliza). Sus raíces liberan compuestos que reducen nematodos del suelo.",
+   "plagas": "Repele/controla nematodos del suelo, mosca blanca y pulgones por su aroma intenso y sus raíces. Puede sufrir arañuela roja y babosas.",
+   "riesgos": "Sensible a heladas (sembrar/trasplantar tras la última helada); requiere riego constante en épocas de calor.",
+   "vida": "Anual; completa su ciclo en una temporada con floración extensa.",
+   "siembra": "Almácigo sembrado aprox. 1 a 1,5 meses antes del trasplante; también siembra directa. Germina y enraíza con facilidad; se multiplica además por esquejes (enraízan a 20-22 °C).",
+   "cuidados": [
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 6,
+    "temp": 6,
+    "cal": 6,
+    "asoc": 8
+   }
+  },
+  "borraja": {
+   "nombre": "Borraja",
+   "cient": "Borago officinalis",
+   "grupo": "Flor polinizadora",
+   "suelo": "FRANCO_FERTIL",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "directa",
+    "4": "directa",
+    "5": "directa",
+    "6": "directa",
+    "7": "directa",
+    "8": "directa",
+    "9": "directa",
+    "10": "directa",
+    "11": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     12,
+     13,
+     14,
+     15,
+     16
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 50,
+    "max": 120
+   },
+   "dt": null,
+   "buenas": [
+    "tomate",
+    "frutilla"
+   ],
+   "malas": [],
+   "confB": 7,
+   "confM": 2,
+   "tg": {
+    "min": 9,
+    "ideal_min": 15,
+    "ideal_max": 23,
+    "max": 37
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "tolera_min": -5,
+    "tolera_max": 32
+   },
+   "helada": "tolera",
+   "nota": "Banca el invierno del GBA con alguna hoja quemada y se resiembra sola, así que te garpa como fuente de flor para las abejas casi todo el año.",
+   "listo": "Hojas jóvenes tiernas (antes de la floración) y flores azules estrelladas abiertas.",
+   "luzNo": "Con poca luz se ahíla y florece poco; el exceso de calor/luz la manda a flor rápido y baja la producción de hoja.",
+   "sueloNo": "Se adapta a casi todos los suelos, pero con encharcamiento la raíz pivotante se pudre.",
+   "truco": "Sembrar directa para no dañar la raíz pivotante. Usar guantes al manipularla (planta urticante). Dejar flores para atraer abejas y favorecer la resiembra: es 'planta maravilla' para polinizadores.",
+   "plagas": "Puede sufrir virosis (mosaico del pepino, CMV), Fusarium, gusanos del suelo, orugas masticadoras y pulgones. En la huerta atrae polinizadores y enemigos naturales de plagas.",
+   "riesgos": "Planta urticante al tacto (usar guantes). Con altas temperaturas se va a flor rápido y baja la calidad de hoja. Evitar encharcamiento. Se resiembra mucho y puede volverse invasiva.",
+   "vida": "Anual (ocasionalmente se comporta como bienal); una temporada de producción, con abundante resiembra espontánea.",
+   "siembra": "Se prefiere siembra directa por su raíz pivotante; si se usa almácigo, en plugs grandes o macetines individuales para no dañar la raíz.",
+   "cuidados": [
+    "contener",
+    "raleo"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 6,
+    "temp": 6,
+    "cal": 5,
+    "asoc": 7
+   }
+  },
+  "capuchina": {
+   "nombre": "Capuchina (taco de reina)",
+   "cient": "Tropaeolum majus",
+   "grupo": "Flor polinizadora",
+   "suelo": "RUSTICO_TOLERANTE",
+   "luz": "SOL_PARCIAL",
+   "hmin": 4,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "3": "directa|almacigo",
+    "4": "directa|almacigo",
+    "5": "directa|almacigo",
+    "9": "directa",
+    "10": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "siembra_posible": [
+     13,
+     14,
+     15,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 7,
+    "max": 14
+   },
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "repollo",
+    "coliflor"
+   ],
+   "malas": [],
+   "confB": 7,
+   "confM": 2,
+   "tg": {
+    "min": 10,
+    "ideal_min": 13,
+    "ideal_max": 20,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 21,
+    "tolera_min": -1,
+    "tolera_max": 30
+   },
+   "helada": "muere",
+   "nota": "Aprovechala en otoño y en la primavera fresca: con el calor fuerte deja de florecer y con la primera helada en serio se te va, así que sembrala escalonada.",
+   "listo": "Hojas y flores desarrolladas; frutos verdes tiernos para encurtir.",
+   "luzNo": "Tolera media sombra, pero con poca luz florece menos y se enreda buscando luz.",
+   "sueloNo": "En suelo muy nitrogenado hace mucha hoja y pocas flores; necesita buen drenaje para no pudrirse.",
+   "truco": "Plantar en suelo pobre y no fertilizar en exceso para obtener más flores. Usarla como planta trampa/sacrificio de pulgones cerca de las hortalizas.",
+   "plagas": "Muy sensible a pulgones (negros) y orugas: funciona como planta trampa/sacrificio que los concentra. A la vez repele la mosca blanca de repollos y crucíferas. Los pulgones se controlan con solución de agua y ajo machacado.",
+   "riesgos": "Sensible a heladas (la queman). El exceso de nitrógeno inhibe la floración. Atrae pulgones (por eso funciona como trampa), lo que requiere monitoreo; puede extenderse mucho por resiembra.",
+   "vida": "Herbácea anual (ciclo otoño-invierno-primavera). Las heladas la queman, pero tras fructificar se resiembra naturalmente.",
+   "siembra": "Por semilla: siembra directa (junto a cercos o al pie de frutales), almácigo, o por estacas de tallo. La semilla es grande y germina con facilidad; la siembra directa es habitual.",
+   "cuidados": [
+    "abonado"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 7,
+    "temp": 6,
+    "cal": 7,
+    "asoc": 7
+   }
+  },
+  "cosmos": {
+   "nombre": "Cosmos",
+   "cient": "Cosmos bipinnatus",
+   "grupo": "Flor polinizadora",
+   "suelo": "RUSTICO_TOLERANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 6,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "8": "directa|almacigo",
+    "9": "directa|almacigo",
+    "10": "directa|almacigo",
+    "11": "directa|almacigo"
+   },
+   "dec": {
+    "siembra_ideal": [
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     22,
+     23,
+     24,
+     25,
+     26
+    ],
+    "trasplante_ideal": [
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "trasplante_posible": [
+     34,
+     35,
+     36
+    ]
+   },
+   "dg": {
+    "min": 7,
+    "max": 21
+   },
+   "dc": {
+    "min": 60,
+    "max": 90
+   },
+   "dt": {
+    "min": 21,
+    "max": 35
+   },
+   "buenas": [
+    "calendula"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 2,
+   "tg": {
+    "min": 16,
+    "ideal_min": 21,
+    "ideal_max": 24,
+    "max": 27
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 30,
+    "tolera_min": 0,
+    "tolera_max": 35
+   },
+   "helada": "muere",
+   "nota": "No lo apures: si sembrás con el suelo todavía frío te falla la germinación, pero una vez arrancado te florece hasta que llega el frío del otoño.",
+   "listo": "Flores completamente abiertas y de color pleno; para flor de corte se cortan cuando los pétalos están abiertos y el centro aún firme.",
+   "luzNo": "Con poca luz se ahíla (tallos largos y débiles), florece poco y las plantas tienden a tumbarse.",
+   "sueloNo": "En suelos muy ricos o muy abonados (exceso de nitrógeno) la planta produce mucho follaje pero se suprime/reduce la floración.",
+   "truco": "No abonar en exceso (el exceso de nitrógeno da follaje y poca flor). Despuntar/podar regularmente para ramificar y prolongar la floración.",
+   "plagas": "Principalmente podredumbre de raíz (por exceso de humedad) y oídio. Se previenen con buen drenaje y evitando el riego excesivo (se menciona tratamiento preventivo con equisetum/cola de caballo).",
+   "riesgos": "El exceso de riego/mal drenaje provoca enfermedades de raíz. El exceso de abono suprime la floración. Variedades altas pueden tumbarse con viento si no se tutoran.",
+   "vida": "Anual: germina, florece abundantemente en primavera-verano-otoño y muere al final del verano/otoño. Suele resembrarse sola (autosiembra) si se dejan secar algunas flores.",
+   "siembra": "Admite siembra directa en el suelo o en almácigo/almacigueras (semilleros biodegradables) para luego trasplantar. En huerta suele hacerse siembra directa por su fácil germinación;",
+   "cuidados": [
+    "abonado",
+    "poda",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 6,
+    "suelo": 6,
+    "temp": 7,
+    "cal": 5,
+    "asoc": 5
+   }
+  },
+  "girasol": {
+   "nombre": "Girasol",
+   "cient": "Helianthus annuus",
+   "grupo": "Flor polinizadora",
+   "suelo": "RUSTICO_TOLERANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": null,
+   "maceta": null,
+   "metodo": {
+    "9": "directa",
+    "10": "directa",
+    "11": "directa",
+    "12": "directa"
+   },
+   "dec": {
+    "siembra_ideal": [
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33
+    ],
+    "siembra_posible": [
+     25,
+     34,
+     35,
+     36
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": {
+    "min": 5,
+    "max": 10
+   },
+   "dc": {
+    "min": 40,
+    "max": 75
+   },
+   "dt": null,
+   "buenas": [
+    "tomate",
+    "zapallo",
+    "zapallito-de-tronco",
+    "chaucha",
+    "lechuga",
+    "espinaca",
+    "ajo",
+    "cebolla"
+   ],
+   "malas": [],
+   "confB": 5,
+   "confM": 2,
+   "tg": {
+    "min": 6,
+    "ideal_min": 15,
+    "ideal_max": 25,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 20,
+    "ideal_max": 25,
+    "tolera_min": -5,
+    "tolera_max": 35
+   },
+   "helada": "sensible",
+   "nota": "Podés adelantar la siembra porque la plantita recién nacida banca una helada suave, pero si el frío o el calor extremo la agarran en floración te arruina el capítulo.",
+   "listo": "Flor abierta y coloreada para disfrute ornamental; para semilla, 'cuando el disco central está seco, se extraen las semillas' (dorso del capítulo…",
+   "luzNo": "Con sombra o pocas horas de sol se ahíla (tallos largos y débiles), florece mal, da capítulos pequeños y se inclina buscando la luz.",
+   "sueloNo": "En suelos muy compactados o poco profundos las plantas crecen menos, con capítulos (flores) más chicos y mayor riesgo de vuelco.",
+   "truco": "Siembra directa escalonada cada 2-3 semanas para floración continua. Una cobertura de paja (mulch) y riego regular promueven girasoles más grandes.",
+   "plagas": "Plagas: gusanos grises (orugas cortadoras), gusanos de alambre y gusanos blancos que atacan raíces, gorgojos/escarabajos que dañan hojas, y ocasionalmente mosca blanca, pulgones y otras orugas.",
+   "riesgos": "Plantas altas: riesgo de vuelco por viento si el suelo es superficial o no se tutoran. Exceso de humedad/mal drenaje favorece podredumbres de tallo y raíz.",
+   "vida": "Anual: completa su ciclo en una sola temporada (siembra en primavera, floración en verano y muerte tras la maduración de semillas).",
+   "siembra": "Preferentemente siembra directa: se coloca la semilla en su lugar definitivo porque germina muy rápido y no le gusta el trasplante. También puede hacerse en maceta/almácigo para trasplantar después.",
+   "cuidados": [
+    "mulch",
+    "tutorado"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 6,
+    "temp": 8,
+    "cal": 6,
+    "asoc": 5
+   }
+  },
+  "lavanda": {
+   "nombre": "Lavanda",
+   "cient": "Lavandula angustifolia (Lavandula officinalis)",
+   "grupo": "Aromática",
+   "suelo": "ARENOSO_DRENANTE",
+   "luz": "PLENO_SOL",
+   "hmin": 6,
+   "hideal": 8,
+   "riego": "escaso",
+   "maceta": null,
+   "metodo": {
+    "3": "plantacion",
+    "4": "plantacion",
+    "5": "plantacion",
+    "9": "plantacion",
+    "10": "plantacion",
+    "11": "plantacion"
+   },
+   "dec": {
+    "siembra_ideal": [
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30
+    ],
+    "siembra_posible": [
+     13,
+     14,
+     15,
+     31,
+     32,
+     33
+    ],
+    "trasplante_ideal": [],
+    "trasplante_posible": []
+   },
+   "dg": null,
+   "dc": null,
+   "dt": null,
+   "buenas": [
+    "romero",
+    "salvia",
+    "tomillo"
+   ],
+   "malas": [],
+   "confB": 2,
+   "confM": 2,
+   "tg": {
+    "min": 15,
+    "ideal_min": 18,
+    "ideal_max": 24,
+    "max": null
+   },
+   "tc": {
+    "ideal_min": 15,
+    "ideal_max": 30,
+    "tolera_min": -15,
+    "tolera_max": 35
+   },
+   "helada": "tolera",
+   "nota": "Su problema en el GBA no es el frío ni el calor sino la humedad: pide la mitad de la que hay acá, así que va sí o sí en lomo drenado, con mulch de piedra y aire entre plantas.",
+   "listo": "Aprox. la mitad de las flores de la vara abiertas (floración plena) y buen aroma; se cortan las varas florales por la mañana.",
+   "luzNo": "Con sombra o poca luz crece débil y ahilada, florece poco y produce menos aceites esenciales/aroma; también aumenta la humedad en la mata y el riesgo de hongos.",
+   "sueloNo": "En suelos pesados, húmedos o mal drenados aparecen enfermedades de raíz (pudrición) y la planta languidece; en zonas bajas y frías sufre daño por heladas.",
+   "truco": "Priorizar drenaje excelente (plantar en camellón/montículo o suelo arenoso). Ubicar a pleno sol y con buena aireación. Riego escaso: prefiere condiciones de déficit hídrico, con riego ocasional.",
+   "plagas": "Las fuentes consultadas no detallan plagas específicas; la principal preocupación son las enfermedades de raíz (pudriciones) asociadas a exceso de humedad y mal drenaje. Sin dato confiable de plagas concretas (insectos).",
+   "riesgos": "El exceso de agua/riego y los suelos húmedos o mal drenados son perjudiciales y causan enfermedades de raíz. En lugares bajos sufre daño por heladas.",
+   "vida": "Perenne (arbusto): una plantación puede mantenerse en producción durante 6-8 años, e incluso más, aunque con la producción en disminución con los años.",
+   "siembra": "La propagación por semilla se realiza rara vez, 'porque es técnicamente imposible obtener plantas idénticas'.",
+   "cuidados": [
+    "poda",
+    "riego"
+   ],
+   "conf": {
+    "luz": 7,
+    "suelo": 8,
+    "temp": 7,
+    "cal": 6,
+    "asoc": 2
+   }
+  }
+ }
+}
