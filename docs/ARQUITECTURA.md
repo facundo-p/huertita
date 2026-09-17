@@ -13,12 +13,25 @@ Tres reglas sostienen todo lo demás.
 | `tipos.ts` | `Estado`, `Planta`, `Accion` (unión discriminada), `Evento` |
 | `catalogo.ts` | Une `datos/catalogo.json` con `datos/juego/especies.ts`: especies sin huecos |
 | `clima.ts` | Normales SMN, heladas FAUBA, carácter del año, tiempo de cada década y su pronóstico |
-| `patio.ts` | El patio: mapa, zonas, macetas, horas de sol. Hoy escrito a mano; será un dato |
+| `patio.ts` | Lo que el motor le pregunta al patio de la partida: qué zona es cada celda, qué propiedades tiene, cuánto sol le da |
+| `sol.ts` | Horas de sol por geometría: latitud, fecha y obstáculos. Y la fórmula vieja del fondo, mientras viva el test dorado |
 | `factores.ts` | Luz, agua, temperatura, suelo, vecinos; y el fantasma de siembra |
-| `abrigo.ts` | Manta, microtúnel, alero: grados de abrigo y riesgo de helada |
+| `abrigo.ts` | Manta, microtúnel y el reparo fijo de cada zona: grados de abrigo y riesgo de helada |
 | `acciones.ts` | `despachar(estado, accion)`: todo lo que hace el jugador |
 | `tiempo.ts` | `pasarDecada`: germinar → helar → semillar → crecer → estresar → plagas → espigar → madurar |
 | `misiones.ts`, `balance.ts`, `migraciones.ts` | Logros, puntaje, partidas viejas |
+
+## El patio es un dato
+
+Un patio (`datos/juego/patio.ts`) es un plano de letras con el norte arriba, una lista de zonas y una lista de obstáculos. Los patios viven en `datos/juego/patios/`, uno por archivo, y `validarPatio` los revisa en los tests.
+
+- **Zona:** un grupo de celdas que se riega y se tapa junto. Sus propiedades son lo único que el motor mira: `cria` (almaciguera), `techo` (no le llueve), `abrigo` (reparo fijo contra heladas), `calor`, `admiteTunel`, `macetas` (tamaño por celda), más suelo, materia orgánica, drenaje, hondo y costo de riego. El `id` es libre y queda escrito en las partidas; el `tipo` (`suelo`, `cajon`, `macetas`, `almaciguera`) decide cómo se dibuja.
+- **Obstáculo:** `muro` (con `opacidad` para barandas), `arbol` (copa, fuste, caduco) o `losa` (el balcón de arriba). En celdas con decimales y alturas en metros.
+- **Sol:** `sol.ts` recorre el día cada 10 minutos, calcula dónde está el sol a 34,6° S y ve si algún obstáculo lo tapa. Cuenta desde que supera el `horizonte` del patio. `tests/sol.test.ts` comprueba que se porte como el sol de verdad: mediodía al norte, paredón norte que sombrea más en invierno, techo que tapa el sol alto del verano.
+- **Regla:** ni el motor, ni los renderers, ni la interfaz nombran una zona o una celda de un patio en particular. Hay un test que lo vigila. Las frases se arman con `nombre` y `conArticulo`.
+- **Estado:** `E.patio` guarda el id. Si un patio cambia su plano o sus ids de zona, las partidas guardadas en él necesitan una migración, igual que si cambiara `Estado`.
+
+Sumar un patio: crear el archivo, anotarlo en `patios/index.ts`, correr `npm test` (lo valida y hace jugar al bot un año en él) y `npm run bot -- --patio <id>` para ver cómo rinde.
 
 ## El test dorado
 

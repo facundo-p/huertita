@@ -42,4 +42,6 @@ export const fondo: Patio = {
   ],
   horizonte: 15,
   sol: 'v04',
+  estrellas: [30, 70, 120],
+  aspecto: { piso: 'pasto', norte: 'paredon' },
 };

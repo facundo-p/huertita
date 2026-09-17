@@ -23,7 +23,7 @@ Nada, hasta que sincronices: el juego está clavado a la versión del candado. C
 4. **Especie nueva**: entra sola con el dibujo genérico de su grupo. Para que se vea bien, sumale estilo en `src/arte/estilos.ts` y familia en `datos/juego/especies.ts`.
 5. **Especie que desaparece o cambia de slug**: el sync lo avisa; hay que escribir una migración de partidas en `src/motor/migraciones.ts`.
 
-Una vez por semana, un workflow (`docs/workflows/datos.yml`, ver su LEEME para activarlo) corre el sync solo y, si hay cambios, abre un PR con el reporte.
+Una vez por semana, un workflow (`.github/workflows/datos.yml`) corre el sync solo y, si hay cambios, abre un PR con el reporte.
 
 ## El camino de vuelta
 

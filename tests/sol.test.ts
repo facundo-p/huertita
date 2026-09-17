@@ -5,7 +5,7 @@ import { horasSolGeometria, posicionSol } from '../src/motor';
 
 const ZONA = { id: 'z', letra: 'z', tipo: 'suelo', nombre: 'Z', conArticulo: 'la z', desc: '', suelo: 'FRANCO_FERTIL', mo: 50, drenaje: 0, hondo: 40, riegoCosto: [0, 1, 2, 3] } as const;
 let n = 0;
-const patio = (obstaculos: Patio['obstaculos'], horizonte = 0): Patio => ({ id: 'prueba-' + (n++), nombre: '', desc: '', bienvenida: '', celdaM: 0.5, plano: Array(12).fill('zzzzzzzzzzzz'), zonas: [{ ...ZONA, riegoCosto: [0, 1, 2, 3] }], obstaculos, horizonte, sol: 'geometria' });
+const patio = (obstaculos: Patio['obstaculos'], horizonte = 0): Patio => ({ estrellas: [1, 2, 3], aspecto: { piso: 'pasto', norte: 'paredon' }, id: 'prueba-' + (n++), nombre: '', desc: '', bienvenida: '', celdaM: 0.5, plano: Array(12).fill('zzzzzzzzzzzz'), zonas: [{ ...ZONA, riegoCosto: [0, 1, 2, 3] }], obstaculos, horizonte, sol: 'geometria' });
 const VERANO = 36, INVIERNO = 18, EQUINOCCIO = 27; // fines de diciembre, fines de junio, fines de septiembre
 const grados = (r: number) => r * 180 / Math.PI;
 

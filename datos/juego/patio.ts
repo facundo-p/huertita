@@ -71,6 +71,10 @@ export interface Patio {
    * siga protegiendo los refactors. Se va cuando se jubile el test dorado (paso 4 de los cimientos).
    */
   sol: 'geometria' | 'v04';
+  /** puntos del balance de fin de año que dan una, dos y tres estrellas: un patio chico no compite con uno grande */
+  estrellas: [number, number, number];
+  /** solo para dibujar: el piso que no es cantero y lo que cierra el lado norte */
+  aspecto: { piso: 'pasto' | 'baldosa'; norte: 'paredon' | 'baranda' };
 }
 
 const RESERVADAS = 'PHTC.:';
@@ -100,6 +104,7 @@ export function validarPatio(p: Patio): string[] {
   p.plano.forEach((f, y) => [...f].forEach((ch, x) => { if (!RESERVADAS.includes(ch) && !letras.has(ch)) e.push(`el plano usa "${ch}" en ${x},${y} y ninguna zona tiene esa letra`); }));
   if (!p.zonas.some((z) => z.cria)) e.push('no hay ninguna zona de cría (almaciguera)');
   if (!p.zonas.some((z) => !z.cria)) e.push('no hay ninguna zona de cultivo');
+  if (!(p.estrellas[0] > 0 && p.estrellas[0] < p.estrellas[1] && p.estrellas[1] < p.estrellas[2])) e.push('estrellas tiene que ser creciente');
   for (const o of p.obstaculos) if (!(o.alto > 0)) e.push(`${o.nombre}: alto inválido`);
   return e;
 }

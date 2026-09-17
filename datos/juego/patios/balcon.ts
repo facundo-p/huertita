@@ -35,4 +35,6 @@ export const balcon: Patio = {
   ],
   horizonte: 8,
   sol: 'geometria',
+  estrellas: [10, 25, 45], // sin balancear: el bot saca entre 12 y 37 puntos
+  aspecto: { piso: 'baldosa', norte: 'baranda' },
 };

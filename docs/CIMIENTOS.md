@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | 1 | TypeScript estricto, módulos, Vite, Vitest, bot, test dorado, CI | **Hecho** (v0.5) |
 | 1b | Datos sincronizados con huertapp: contrato, candado, reporte de cambios, huecos | **Hecho** (v0.5) |
-| 2 | El patio como dato: contenedores con propiedades (volumen, hondo, suelo, reparo, móvil) y obstáculos con altura; sombra por geometría y fecha | Pendiente |
+| 2 | El patio como dato: zonas con propiedades y obstáculos con altura; sol por geometría y fecha; segundo patio de prueba; estado v2 con migración | **Hecho** (v0.6) |
 | 3 | Plantas con huella propia y contenedores con capacidad (almacigueras de 50 celdas, zapallo de 4 celdas) | Pendiente |
 | 4 | Tic diario y `avanzar(estado, días)`; ratos por día con tope; pronóstico de 5 días | Pendiente. Jubila el test dorado |
 | 5 | Contenido como tablas: eventos, logros, pedidos e ítems son filas con condición y efecto | Pendiente |
@@ -13,6 +13,10 @@
 Deudas que aparecieron en el paso 1, ya con test que las vigila:
 
 - **Almácigo protegido de verdad.** Berenjena y batata no pueden germinar en su época ideal porque la almaciguera del juego es solo +2 °C. Falta el almácigo de adentro o con cama caliente (`CONTRADICCIONES_CONOCIDAS`).
+- **El sol del fondo sigue siendo la fórmula vieja.** El patio original tiene `sol: 'v04'` para que el test dorado siga valiendo. Sus obstáculos ya están cargados, pero la geometría no da lo mismo: un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m, y la fórmula vieja le daba entre 1 y 5 horas. Pasarlo a `'geometria'` es una decisión de diseño (mover canteros, bajar el paredón o aceptarlo) que va con el rebalanceo del paso 4.
+- **El balcón está sin balancear y sin revisar.** Todos sus números son supuestos. El bot saca ahí entre 12 y 37 puntos. Aparece en el juego marcado "en prueba".
+- **Babosas bajo techo.** Una zona con `techo` igual puede recibir babosas cuando llueve mucho. Es herencia del prototipo (la almaciguera) y corregirlo cambia el test dorado: va en el paso 4.
+- **Propiedad `movil`.** No se agregó porque todavía ninguna regla la usa. Entra con la mecánica de mover macetas (vacaciones de enero, sombra de verano).
 - **83 huecos en huertapp** que el juego completa con supuestos (`datos/HUECOS.md`).
 
 Bugs del prototipo que encontró el tipado y quedaron corregidos: especies con extremos de temperatura vacíos nunca germinaban o sufrían calor siempre (`null` comparado como 0), y el daño por exceso de riego nunca se disparaba.

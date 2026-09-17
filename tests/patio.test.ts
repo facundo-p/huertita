@@ -68,3 +68,15 @@ describe('migración de partidas guardadas', () => {
     const F: any = JSON.parse(JSON.stringify(M.crearPartida(3))); F.v = 99; expect(M.migrar(F)).toBeNull();
   });
 });
+
+describe('nadie fuera de los datos conoce un patio en particular', () => {
+  it('ni el motor, ni los renderers, ni la interfaz nombran zonas del fondo', async () => {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const culpables: string[] = [];
+    for (const dir of ['src/motor', 'src/render', 'src/ui', 'src/arte']) for (const f of readdirSync(dir)) {
+      if (f === 'migraciones.ts') continue; // las migraciones sí saben cómo era la v1
+      readFileSync(`${dir}/${f}`, 'utf8').split('\n').forEach((l, i) => { if (/['"](almacigo|elevado)['"]|['"]\d+,\d+['"]/.test(l) && !/^\s*(\/\/|\*)/.test(l)) culpables.push(`${dir}/${f}:${i + 1}`); });
+    }
+    expect(culpables).toEqual([]);
+  });
+});

@@ -1,5 +1,14 @@
 # Cambios
 
+## 0.6.0 · 2026-09-17 · Cimientos, paso 2: el patio es un dato
+- Los patios son archivos en `datos/juego/patios/`: plano, zonas con propiedades (cría, techo, abrigo, calor, microtúnel, macetas) y obstáculos con altura. El motor, los renderers y la interfaz ya no nombran ninguna zona ni celda en particular.
+- Sol por geometría: latitud del GBA, fecha, muros, barandas, árboles caducos y losas. Con tests de que se porta como el sol de verdad.
+- Segundo patio, en prueba: balcón en esquina, todo en recipientes, con el problema de luz inverso al del fondo. Se elige desde "Guardar y cargar".
+- Las estrellas de fin de año dependen del patio.
+- El microtúnel se anota por zona. Partidas guardadas: formato v2, con migración automática desde v1 (probada también en navegador).
+- El patio original conserva la fórmula de sol del prototipo, así el test dorado sigue verde. Ver la deuda en `docs/CIMIENTOS.md`.
+- `npm run bot` juega en todos los patios; `--patio <id>` elige uno.
+
 ## 0.5.0 · 2026-09-17 · Cimientos, paso 1
 - El prototipo pasa a un repo propio con TypeScript estricto, Vite y Vitest.
 - Motor partido en módulos, con la misma conducta que el prototipo v0.4 (test dorado, 8 semillas, estado idéntico).
