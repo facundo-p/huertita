@@ -73,7 +73,7 @@ import { RenderTexto } from '../render/texto';
       var c = E.celdas[k], Z = M.zona(E, c.zona), pl = M.plantaEn(E, k), p = k.split(','), x = +p[0], y = +p[1], planta = null, tinte = null;
       if (pl) { var sp = ESP[pl.slug]; planta = { slug: pl.slug, nombre: corto(sp.nombre), emoji: sp.emoji, grupo: sp.grupo, familia: sp.familia, etapa: pl.etapa, n: pl.n || 1, salud: pl.salud, plaga: pl.plaga, tutor: pl.tutor, flor: sp.flor, dulce: pl.dulce, trasplante: (function () { var pt = M.puntoDeTrasplante(pl); return pt && pt.punto !== 'chico' ? pt.punto : null; })(), avance: pl.etapa === 'plantin' && sp.dt ? pl.prog / sp.dt.min : pl.prog / M.objetivoCosecha(sp) }; }
       if (fantasma && !pl && !(ui.moviendo && Z.cria)) tinte = M.evaluarCelda(E, fantasma, k).nivel;
-      celdas[k] = { zona: c.zona, tipo: Z.tipo, nombreZona: Z.nombre, mo: c.mo, mulch: c.mulch, humedo: E.riego[c.zona], maceta: M.macetaDe(E, k), sol: M.horasSol(E, k), planta: planta, tinte: tinte, seleccion: ui.sel === k,
+      celdas[k] = { zona: c.zona, tipo: Z.tipo, nombreZona: Z.nombre, mo: c.mo, mulch: c.mulch, humedo: E.riego[c.zona], maceta: M.macetaDe(E, k), sol: M.horasSol(E, k), planta: planta, ancla: !pl || pl.celda === k, tinte: tinte, seleccion: ui.sel === k,
         borde: { n: M.zonaDeCelda(E, x + ',' + (y - 1)) !== c.zona, s: M.zonaDeCelda(E, x + ',' + (y + 1)) !== c.zona, o: x === 0 || M.zonaDeCelda(E, (x - 1) + ',' + y) !== c.zona, e: M.zonaDeCelda(E, (x + 1) + ',' + y) !== c.zona } };
     });
     if (ui.sel && E.celdas[ui.sel]) ui.zonaCerca = E.celdas[ui.sel].zona;

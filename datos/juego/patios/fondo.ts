@@ -33,7 +33,7 @@ export const fondo: Patio = {
     { id: 'elevado', letra: 'e', tipo: 'cajon', nombre: 'Bancal elevado', conArticulo: 'el bancal elevado', suelo: 'PROFUNDO_SUELTO', mo: 60, drenaje: 0.3, hondo: 32, riegoCosto: [0, 1, 2, 3], admiteTunel: true, desc: 'Cajón con sustrato mullido. Drena rápido, calienta antes y admite microtúnel.' },
     { id: 'macetas', letra: 'm', tipo: 'macetas', nombre: 'Macetas', conArticulo: 'las macetas', suelo: 'FRANCO_FERTIL', mo: 55, drenaje: 0.7, hondo: 30, riegoCosto: [0, 1, 1, 2], desc: 'Se secan mucho antes que la tierra. El tamaño decide qué entra.',
       macetas: { '5,4': { litros: 4, prof: 15 }, '6,4': { litros: 8, prof: 30 }, '5,5': { litros: 8, prof: 30 }, '6,5': { litros: 20, prof: 45 } } },
-    { id: 'almacigo', letra: 'a', tipo: 'almaciguera', nombre: 'Almaciguera', conArticulo: 'la almaciguera', suelo: 'FRANCO_FERTIL', mo: 70, drenaje: 0.5, hondo: 10, riegoCosto: [0, 0, 1, 1], cria: true, techo: true, abrigo: { grados: 5, nombre: 'alero y pared' }, calor: 2, desc: 'Contra la casa, mirando al norte y bajo alero: reparada de heladas y de la lluvia. Solo para criar plantines.' },
+    { id: 'almacigo', letra: 'a', tipo: 'almaciguera', nombre: 'Almaciguera', conArticulo: 'la almaciguera', suelo: 'FRANCO_FERTIL', mo: 70, drenaje: 0.5, hondo: 10, riegoCosto: [0, 0, 1, 1], cria: true, capacidad: 50, techo: true, abrigo: { grados: 5, nombre: 'alero y pared' }, calor: 2, desc: 'Contra la casa, mirando al norte y bajo alero: reparada de heladas y de la lluvia. Solo para criar plantines.' },
   ],
   obstaculos: [
     { tipo: 'muro', nombre: 'Paredón norte', desde: [-8, 1], hasta: [16, 1], alto: 1.8 },

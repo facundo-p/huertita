@@ -33,6 +33,8 @@ export interface ZonaDePatio {
   riegoCosto: [number, number, number, number];
   /** solo para criar plantines: siembra densa, no se cosecha ni recibe trasplantes */
   cria?: boolean;
+  /** solo en zonas de cría: cuántos plantines entran en cada bandeja (una celda del plano es una bandeja) */
+  capacidad?: number;
   /** no le llega la lluvia */
   techo?: boolean;
   /** reparo fijo contra heladas, en grados que le suma a la mínima */
@@ -100,6 +102,8 @@ export function validarPatio(p: Patio): string[] {
     if (z.tipo === 'macetas') { for (const c of celdas) if (!z.macetas?.[c]) e.push(`${z.id}: a la maceta ${c} le falta tamaño`); }
     for (const c in z.macetas ?? {}) if (!celdas.includes(c)) e.push(`${z.id}: hay tamaño para ${c}, que no es una celda de la zona`);
     if (z.cria && z.admiteTunel) e.push(`${z.id}: una zona de cría no lleva microtúnel`);
+    if (z.capacidad != null && !z.cria) e.push(`${z.id}: capacidad es solo de las zonas de cría`);
+    if (z.capacidad != null && !(z.capacidad >= 1 && z.capacidad <= 200)) e.push(`${z.id}: capacidad fuera de 1..200`);
   }
   p.plano.forEach((f, y) => [...f].forEach((ch, x) => { if (!RESERVADAS.includes(ch) && !letras.has(ch)) e.push(`el plano usa "${ch}" en ${x},${y} y ninguna zona tiene esa letra`); }));
   if (!p.zonas.some((z) => z.cria)) e.push('no hay ninguna zona de cría (almaciguera)');

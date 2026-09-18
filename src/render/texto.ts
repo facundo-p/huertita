@@ -20,7 +20,7 @@
       if (!c) b.textContent = (FONDO[es.plano[y][x]] || '') === '🌳' && !es.arbolConHojas ? '🪾' : (FONDO[es.plano[y][x]] || '');
       else {
         var p = c.planta, t = '';
-        if (p) t = ETAPA[p.etapa] || (p.avance < 0.5 ? '🌿' : p.emoji);
+        if (p) t = c.ancla === false ? '·' : (ETAPA[p.etapa] || (p.avance < 0.5 ? '🌿' : p.emoji));
         if (es.capa === 'sol') t = Math.round(c.sol) + 'h';
         b.textContent = t;
         b.title = c.nombreZona + (p ? ' · ' + p.nombre + ' · ' + p.etapa : '');

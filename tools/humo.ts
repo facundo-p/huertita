@@ -29,7 +29,8 @@ for (const [nombre, vp] of [['celular', { width: 390, height: 844 }], ['escritor
   await p.evaluate(() => { const H = (window as any).Huertita, E = JSON.parse(JSON.stringify(H.Motor.crearPartida(9))); delete E.patio; E.v = 1; E.tunel = true; localStorage.setItem('huertita-v1', JSON.stringify(E)); });
   await p.reload(); await p.waitForTimeout(400);
   const migrada = await p.evaluate(() => { const E = (window as any).Huertita.ui.E; return E.v + '|' + E.patio + '|' + JSON.stringify(E.tunel) + '|' + E.semilla; });
-  if (migrada !== '2|fondo|{"elevado":true}|9') errores.push(`${nombre}: la partida v1 no se migró al abrir (${migrada})`);
+  const esperada = await p.evaluate(() => (window as any).Huertita.Motor.VERSION) + '|fondo|{"elevado":true}|9';
+  if (migrada !== esperada) errores.push(`${nombre}: la partida v1 no se migró al abrir (${migrada}, se esperaba ${esperada})`);
   await p.click('[data-modo="semillas"]'); await p.click('[data-slug="rabanito"]'); { const c = celda(2, 4); await p.mouse.click(...c); await p.mouse.click(...c); }
   const plantas = await p.evaluate(() => Object.keys((window as any).Huertita.ui.E.plantas).length);
   if (plantas < 1) errores.push(`${nombre}: no quedó nada sembrado`);

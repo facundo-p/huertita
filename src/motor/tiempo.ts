@@ -13,6 +13,7 @@ import { ESPECIES, objetivoCosecha } from './catalogo';
 import { fechaDe, generarTiempo } from './clima';
 import { anotar, quitarPlanta, ratosLibres } from './estado';
 import { aliadosCerca, factoresPlanta, fVecinos, floresAbiertas, humedad, tempEfectiva, type Factores } from './factores';
+import { porCelda } from './espacio';
 import { cumplir } from './misiones';
 import { apuntar, cerrar } from './diario';
 import { idsDeZonas, macetaDe, zona } from './patio';
@@ -79,7 +80,8 @@ function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores)
   const nom = sp.nombre, enAlm = !!zona(E, z).cria;
   let g = F.luz.f * F.agua.f * F.temp.f * F.suelo.f * F.vecinos.f * pl.vigor * (pl.plaga ? 0.8 : 1) * (pl.shock ? 0.5 : 1);
   if (sp.cuidados.includes('tutorado') && !pl.tutor && pl.prog > objetivoCosecha(sp) * 0.45) g *= 0.85;
-  if (!enAlm && (pl.n || 1) > 1) { g *= Math.max(0.4, 1 - 0.15 * (pl.n - 1)); if (!pl.avisoRaleo) { pl.avisoRaleo = true; ev('info', nom + ': salieron ' + pl.n + ' juntas y compiten por luz y agua. ' + (sp.dt ? 'Podés repicar las que sobran a otro lugar o ralear.' : 'Hay que ralear y dejar una.'), pl.celda); } }
+  const cabe = porCelda(sp);
+  if (!enAlm && (pl.n || 1) > cabe) { g *= Math.max(0.4, 1 - 0.15 * (pl.n - cabe)); if (!pl.avisoRaleo) { pl.avisoRaleo = true; ev('info', nom + ': salieron ' + pl.n + ' juntas y compiten por luz y agua. ' + (sp.dt ? 'Podés repicar las que sobran a otro lugar o ralear.' : 'Hay que ralear y dejar una.'), pl.celda); } }
   pl.shock = 0;
   if (!(enAlm && sp.dt && pl.prog >= sp.dt.max)) pl.prog += DIAS * clamp(g, 0, 1.25);
   if (enAlm && sp.dt && pl.prog >= sp.dt.max && pl.edad > sp.dt.max + 30 && !pl.avisoPasado) { pl.avisoPasado = true; pl.vigor = r1(pl.vigor * 80) / 100; ev('mal', 'El plantín de ' + nom.toLowerCase() + ' se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar.', pl.celda); }

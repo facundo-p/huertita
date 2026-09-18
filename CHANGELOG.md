@@ -1,5 +1,13 @@
 # Cambios
 
+## 0.8.0 · 2026-09-18 · Cimientos, paso 3: cada planta ocupa lo que ocupa
+- Marco de plantación por especie en `datos/juego/especies.ts` ([SUPUESTO], huertapp todavía no lo trae): centímetros entre plantas, y de ahí la huella en celdas, cuántas entran en una celda (9 rabanitos, 4 lechugas, 1 tomate) y cuánto levanta cada planta.
+- El motor lo usa entero (`src/motor/espacio.ts`): un zapallo se lleva 4 celdas y avisa cuando no entra, el raleo deja las que caben en vez de una sola, la cosecha rinde por planta, la competencia empieza cuando se pasa de la densidad, el fantasma de siembra marca las celdas donde no entra, y una planta alta le hace sombra a las de al lado (obstáculo temporal en el cálculo de sol por geometría).
+- Las zonas de cría tienen `capacidad`: la almaciguera siembra la bandeja entera (50 plantines).
+- **La regla está apagada:** mientras viva el test dorado el juego corre como venía —una planta, una celda—, porque prender los marcos reales cambia rendimientos, azar y balance. Se prende en el paso 4, junto con el rebalanceo. `tests/espacio.test.ts` la prende y prueba cada regla.
+- Partidas guardadas: formato v3 (una planta puede ocupar varias celdas), con migración automática desde v2.
+- Una planta que tapa varias celdas se dibuja una sola vez: la escena marca cuál es su celda ancla.
+
 ## 0.7.0 · 2026-09-17 · Diario por planta y plantines que avisan
 - Cada planta lleva su diario (`pl.hist`, últimas 16 anotaciones): qué le pasó cada década, con qué salud cerró y cuánto cambió. Incluye lo que antes bajaba la salud en silencio (sed leve, plaga que sigue) y qué factor la frenó cuando creció lento. Se ve en la ficha de la planta y se abre solo si la salud está por debajo de 70. El plantín repicado conserva la historia del almácigo. Hay un test que exige que toda baja de salud tenga explicación.
 - Plantines: la ficha dice si está chico (y cuántos días de crecimiento le faltan), listo o pasándose; la barra de avance va hacia el trasplante y no hacia la cosecha; en el patio, una flecha verde marca los listos y una roja los que se pasan.

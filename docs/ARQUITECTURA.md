@@ -15,6 +15,7 @@ Tres reglas sostienen todo lo demás.
 | `clima.ts` | Normales SMN, heladas FAUBA, carácter del año, tiempo de cada década y su pronóstico |
 | `patio.ts` | Lo que el motor le pregunta al patio de la partida: qué zona es cada celda, qué propiedades tiene, cuánto sol le da |
 | `sol.ts` | Horas de sol por geometría: latitud, fecha y obstáculos. Y la fórmula vieja del fondo, mientras viva el test dorado |
+| `espacio.ts` | Cuánto lugar ocupa cada planta: huella en celdas, cuántas entran en una celda, qué sombra hace. Apagado hasta el paso 4 |
 | `factores.ts` | Luz, agua, temperatura, suelo, vecinos; y el fantasma de siembra |
 | `abrigo.ts` | Manta, microtúnel y el reparo fijo de cada zona: grados de abrigo y riesgo de helada |
 | `acciones.ts` | `despachar(estado, accion)`: todo lo que hace el jugador |
@@ -33,6 +34,22 @@ Un patio (`datos/juego/patio.ts`) es un plano de letras con el norte arriba, una
 - **Estado:** `E.patio` guarda el id. Si un patio cambia su plano o sus ids de zona, las partidas guardadas en él necesitan una migración, igual que si cambiara `Estado`.
 
 Sumar un patio: crear el archivo, anotarlo en `patios/index.ts`, correr `npm test` (lo valida y hace jugar al bot un año en él) y `npm run bot -- --patio <id>` para ver cómo rinde.
+
+## Cada planta ocupa lo que ocupa
+
+`datos/juego/especies.ts` guarda el marco de plantación de cada especie ([SUPUESTO]: los
+centímetros entre plantas de la huerta agroecológica del GBA, que huertapp todavía no trae). De ahí
+salen tres cosas: la **huella** (1, 2 o 4 celdas de 0,5 m que tapa una planta hecha), cuántas
+**entran en una celda** —9 rabanitos, 4 lechugas, 1 tomate— y cuánto **levanta**, que es lo que le
+sombrea a lo que tiene al lado. Las zonas de cría suman `capacidad`: los plantines de una bandeja.
+
+El motor lo usa entero: sembrar y trasplantar toman el bloque de celdas y avisan cuando no entra,
+el raleo deja las que caben, la cosecha rinde por planta, la competencia empieza cuando se pasa de
+la densidad, y las plantas altas entran como obstáculos temporales en el cálculo de sol.
+
+**Está apagado** (`src/motor/espacio.ts`): mientras viva el test dorado, el juego corre con huella 1
+y una planta por celda, que es como venía jugando. Se prende en el paso 4 (ver `docs/CIMIENTOS.md`).
+`conEspacioReal(fn)` lo prende para los tests.
 
 ## El test dorado
 

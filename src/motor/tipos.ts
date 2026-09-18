@@ -13,6 +13,8 @@ export type TipoEvento = 'info' | 'bien' | 'mal' | 'clima' | 'logro';
 
 export interface Planta {
   id: string; slug: string; celda: CeldaId; etapa: Etapa;
+  /** si ocupa más de una celda, todas las que ocupa: la primera es `celda`, el ancla. Falta cuando ocupa una sola */
+  celdas?: CeldaId[];
   /** días desde la siembra */ edad: number;
   /** días efectivos de crecimiento */ prog: number;
   /** días efectivos de germinación acumulados */ germ: number;
@@ -35,7 +37,7 @@ export interface Evento { turno: number; dec: number; tipo: TipoEvento; texto: s
 
 export interface Estado {
   /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
-  v: 2;
+  v: 3;
   /** id del patio en el que se juega (`datos/juego/patios`) */
   patio: string;
   semilla: number; rng: number; dec: number; turno: number; anio: number; caracter: CaracterId;

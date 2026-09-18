@@ -3,7 +3,8 @@
  *
  * [SUPUESTO] el modelo entero. Simplificaciones: terreno plano, el sol cuenta desde que supera el
  * `horizonte` del patio, la planta mide 20 cm, los árboles son un cilindro de copa sobre un fuste.
- * Es una función pura del patio: no mira el estado ni usa azar, así que se puede guardar en caché.
+ * No usa azar ni mira el estado: lo único que cambia con la partida son las plantas altas, que
+ * entran como obstáculos temporales (`temporales`) y por eso no se guardan en caché.
  */
 import type { Obstaculo, Patio } from '../../datos/juego/patio';
 import { diaCentral } from './clima';
@@ -52,9 +53,13 @@ function sombraDe(o: Obstaculo, m: number, px: number, py: number, dx: number, d
 }
 
 const cache = new Map<string, number>();
-/** Horas de sol directo en el centro de la celda (x,y), en la década `dec`. */
-export function horasSolGeometria(p: Patio, x: number, y: number, dec: number): number {
-  const clave = p.id + '|' + dec + '|' + x + ',' + y, guardado = cache.get(clave);
+/**
+ * Horas de sol directo en el centro de la celda (x,y), en la década `dec`. `temporales` son
+ * obstáculos que no son del patio y cambian con la partida (plantas altas): con ellos el resultado
+ * ya no es fijo, así que no se guarda en caché.
+ */
+export function horasSolGeometria(p: Patio, x: number, y: number, dec: number, temporales: Obstaculo[] = []): number {
+  const clave = p.id + '|' + dec + '|' + x + ',' + y, guardado = temporales.length ? undefined : cache.get(clave);
   if (guardado !== undefined) return guardado;
   const dia = diaCentral(dec), hojas = conHojas(dec), m = p.celdaM, px = (x + 0.5) * m, py = (y + 0.5) * m;
   const minimo = Math.sin(p.horizonte * Math.PI / 180);
@@ -65,10 +70,11 @@ export function horasSolGeometria(p: Patio, x: number, y: number, dec: number): 
     const plano = Math.hypot(s.este, s.norte) || 1e-9, dx = s.este / plano, dy = -s.norte / plano, pendiente = s.arriba / plano;
     let luz = 1;
     for (const o of p.obstaculos) { luz *= 1 - sombraDe(o, m, px, py, dx, dy, pendiente, hojas); if (luz <= 0) break; }
+    if (luz > 0) for (const o of temporales) { luz *= 1 - sombraDe(o, m, px, py, dx, dy, pendiente, hojas); if (luz <= 0) break; }
     horas += luz * PASO_MIN / 60;
   }
   const h = r1(clamp(horas, 0, 12));
-  cache.set(clave, h);
+  if (!temporales.length) cache.set(clave, h);
   return h;
 }
 

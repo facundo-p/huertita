@@ -62,6 +62,14 @@ describe('migración de partidas guardadas', () => {
     expect(() => M.pasarDecada(E)).not.toThrow();
   });
   it('sin túnel queda sin túnel', () => { expect(M.migrar(vieja(false))!.tunel).toEqual({}); });
+  it('una partida v2 pasa a v3: sus plantas ocupan una celda, que es como se jugaron', () => {
+    const E: any = JSON.parse(JSON.stringify(M.crearPartida(3))); E.v = 2;
+    M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: '0,4' });
+    const V = M.migrar(E)!;
+    expect(V.v).toBe(M.VERSION);
+    for (const pl of Object.values(V.plantas)) expect(M.celdasDePlanta(pl)).toEqual([pl.celda]);
+    expect(() => M.pasarDecada(V)).not.toThrow();
+  });
   it('lo que no es una partida, o es de un patio que ya no existe, no se carga', () => {
     expect(M.migrar(null)).toBeNull(); expect(M.migrar({ v: 1 })).toBeNull(); expect(M.migrar('hola')).toBeNull();
     const E: any = JSON.parse(JSON.stringify(M.crearPartida(3))); E.patio = 'demolido'; expect(M.migrar(E)).toBeNull();

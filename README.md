@@ -5,7 +5,7 @@ Juego de huerta urbana agroecológica del Gran Buenos Aires. Es divertido de jug
 ```
 npm install
 npm run dev              # jugar en local
-npm test                 # 138 tests: reglas, contrato de datos y test dorado
+npm test                 # 185 tests: reglas, contrato de datos y test dorado
 npm run bot              # 8 años jugados por un bot, para balancear
 npm run datos:sync       # traer el catálogo de huertapp (ver docs/DATOS.md)
 npm run build            # dist/ para GitHub Pages

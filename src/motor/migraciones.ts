@@ -6,7 +6,7 @@
 import { PATIOS } from './patio';
 import type { Estado } from './tipos';
 
-export const VERSION = 2;
+export const VERSION = 3;
 type Guardada = Record<string, any>;
 
 /** Cada paso lleva una partida de la versión de su clave a la siguiente. */
@@ -14,6 +14,9 @@ const PASOS: Record<number, (e: Guardada) => void> = {
   // v1 → v2 (0.6): el patio pasa a ser un dato. Todas las partidas v1 son del fondo, y el microtúnel,
   // que era un sí/no, pasa a anotarse por zona.
   1: (e) => { e.patio = 'fondo'; e.tunel = e.tunel ? { elevado: true } : {}; e.v = 2; },
+  // v2 → v3 (0.8): una planta puede ocupar varias celdas (`pl.celdas`). Las partidas v2 se jugaron
+  // todas con una planta por celda, así que no hay nada que llenar: el ancla alcanza.
+  2: (e) => { e.v = 3; },
 };
 
 export function esPartidaValida(E: unknown): E is Estado {

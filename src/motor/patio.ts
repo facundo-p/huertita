@@ -5,6 +5,7 @@
 import type { CategoriaSuelo } from '../../datos/contrato';
 import type { Patio, ZonaDePatio } from '../../datos/juego/patio';
 import { PATIOS, PATIO_INICIAL } from '../../datos/juego/patios';
+import { plantasQueSombrean } from './espacio';
 import { horasSolGeometria, horasSolV04 } from './sol';
 import type { CeldaId, Estado, ZonaId } from './tipos';
 
@@ -46,8 +47,8 @@ export function vecinas(celda: CeldaId): CeldaId[] {
   return out;
 }
 
-/** Horas de sol directo de una celda en una década (por defecto, la actual). */
-export function horasSol(E: Pick<Estado, 'patio' | 'dec'>, celda: CeldaId, dec?: number): number {
+/** Horas de sol directo de una celda en una década (por defecto, la actual). Las plantas altas de al lado también hacen sombra. */
+export function horasSol(E: Pick<Estado, 'patio' | 'dec' | 'celdas' | 'plantas'>, celda: CeldaId, dec?: number): number {
   const p = patioDe(E), q = xy(celda), d = dec || E.dec;
-  return p.sol === 'v04' ? horasSolV04(q.x, q.y, d) : horasSolGeometria(p, q.x, q.y, d);
+  return p.sol === 'v04' ? horasSolV04(q.x, q.y, d) : horasSolGeometria(p, q.x, q.y, d, plantasQueSombrean(E, celda));
 }

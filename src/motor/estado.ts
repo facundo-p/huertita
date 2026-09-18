@@ -1,6 +1,7 @@
 import { azar } from './azar';
 import { CARACTERES, fechaDe, generarTiempo } from './clima';
 import { ESPECIES } from './catalogo';
+import { celdasDePlanta } from './espacio';
 import { PATIOS, PATIO_INICIAL, celdasDe, zona, zonaDe, zonasDe } from './patio';
 import type { CaracterId, CeldaId, Estado, Evento, Planta, TipoEvento } from './tipos';
 import { clamp } from './util';
@@ -32,9 +33,13 @@ export const ratosLibres = (E: Estado): number => RATOS - costoRiego(E) - E.rato
 export function gastar(E: Estado, n: number): boolean { if (ratosLibres(E) < n) return false; E.ratosGastados += n; return true; }
 
 export function quitarPlanta(E: Estado, pl: Planta, alCompost: boolean): void {
-  const c = E.celdas[pl.celda], sp = ESPECIES[pl.slug];
-  if (!zona(E, c.zona).cria && pl.etapa !== 'semilla') { c.fam = sp.familia; c.mo = clamp(c.mo - (sp.fruto ? 6 : 4) + (sp.familia === 'leguminosa' ? 8 : 0), 5, 100); }
-  c.planta = null; delete E.plantas[pl.id];
+  const sp = ESPECIES[pl.slug];
+  for (const k of celdasDePlanta(pl)) {
+    const c = E.celdas[k];
+    if (!zona(E, c.zona).cria && pl.etapa !== 'semilla') { c.fam = sp.familia; c.mo = clamp(c.mo - (sp.fruto ? 6 : 4) + (sp.familia === 'leguminosa' ? 8 : 0), 5, 100); }
+    c.planta = null;
+  }
+  delete E.plantas[pl.id];
   if (alCompost) E.compost.carga += 1;
 }
 
@@ -42,7 +47,7 @@ export function crearPartida(semilla: number, opciones: { decInicio?: number; ca
   const patio = opciones.patio || PATIO_INICIAL;
   if (!PATIOS[patio]) throw new Error('Patio desconocido: ' + patio);
   const E = {
-    v: 2, patio, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9E3779B9,
+    v: 3, patio, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9E3779B9,
     dec: opciones.decInicio || 22, turno: 0, anio: 1, caracter: 'normal',
     ratosGastados: 0, riego: {},
     tunel: {}, manta: {}, goteo: false,

@@ -76,7 +76,7 @@ import * as SP from '../arte/sprites';
     var self = this, ahora = Date.now();
     // brotes y crecimiento: si el avance subió desde la última foto, se anima
     Object.keys(es.celdas).forEach(function (k) {
-      var p = es.celdas[k].planta, id = p ? k + p.slug : null, ant = self.prev[k];
+      var p = es.celdas[k].ancla === false ? null : es.celdas[k].planta, id = p ? k + p.slug : null, ant = self.prev[k];
       if (p && ant && ant.id === id) { var de = ant.etapa === 'semilla' && p.etapa !== 'semilla' ? 0.02 : ant.a; if (p.avance > de + 0.015 || ant.etapa !== p.etapa) self.tw[k] = { de: de, a: p.avance, t0: ahora + Math.round(ruido(+k.split(',')[0], +k.split(',')[1]) * 500), dur: 900, brote: ant.etapa === 'semilla' && p.etapa !== 'semilla' }; }
       self.prev[k] = p ? { id: id, a: p.avance, etapa: p.etapa } : null;
     });
@@ -168,7 +168,7 @@ import * as SP from '../arte/sprites';
     claves.forEach(function (k) {
       var c = es.celdas[k], p = c.planta, q = G.celda(k);
       if (G.cam === 'cerca' && q.frente && !self._bruma && G.filas.length > 1) { self._bruma = 1; g.fillStyle = 'rgba(190,225,250,0.30)'; g.fillRect(0, 58, G.W, 80); }
-      if (!p || self._oculta === k) return;
+      if (!p || c.ancla === false || self._oculta === k) return;
       var tw = self.tw[k], a = p.avance, esc = q.s, salto = 0;
       if (tw) { var u = (ahora - tw.t0) / tw.dur; if (u >= 1) delete self.tw[k]; else if (u > 0) { a = tw.de + (tw.a - tw.de) * easeBack(u); if (tw.brote && !tw.hecho) { tw.hecho = 1; self.efecto('brote', { celda: k }); } } else a = tw.de; }
       if (p.etapa === 'cosechable' && !p.flor) salto = Math.max(0, Math.sin(t * 0.5 + q.bx) - 0.8) * 8;

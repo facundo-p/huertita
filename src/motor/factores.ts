@@ -3,6 +3,7 @@ import type { CategoriaSuelo, RegimenRiego, TempCrecimiento } from '../../datos/
 import { ESPECIES, META, ventana } from './catalogo';
 import { CLIMA, diaCentral, interp } from './clima';
 import { plantaEn } from './estado';
+import { bloqueDe, ocupadaEn } from './espacio';
 import { horasSol, macetaDe, sueloBase, vecinas, xy, zonaDe } from './patio';
 import type { CeldaId, Especie, Estado, Planta, Tiempo } from './tipos';
 import { clamp, r1 } from './util';
@@ -117,6 +118,8 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
   const h2 = horasSol(E, celda, ((E.dec + 5) % 36) + 1); // la luz se mira también a 6 décadas: la planta va a vivir ahí
   const l = (fLuz(sp, h, 20) + fLuz(sp, h2, 20)) / 2, s = fSuelo(E, sp, celda), m = fMaceta(E, sp, celda), ve = fVecinos(E, slug, celda);
   const enAlm = !!zonaDe(E, celda).cria, vent = ventana(slug, E.dec), vig = vent === 'ideal' ? 1 : vent === 'posible' ? 0.85 : 0.6;
+  const bloque = bloqueDe(E, sp, celda, enAlm), entra = !!bloque && !ocupadaEn(E, bloque.filter((k) => k !== celda));
+  if (!entra) razones.push(sp.nombre + ' hecha ocupa ' + sp.marco.huella + ' celdas y ahí no entran.');
   if (l < 0.75) razones.push('Poca luz: ' + h + ' h ahora, pide ' + sp.hmin + '–' + sp.hideal + ' h. ' + sp.luzNo);
   if (s < 0.7) razones.push('El suelo no le gusta (' + META.suelos[sueloDeCelda(E, celda)].nombre + ', pide ' + META.suelos[sp.suelo].nombre + '). ' + sp.sueloNo);
   if (m < 1) razones.push('La maceta le queda chica: pide ' + (sp.maceta?.litros_min || 8) + ' L y ' + (sp.maceta?.profundidad_min_cm || 30) + ' cm de hondo.');
@@ -130,6 +133,6 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
   if (ts > tg.max) razones.push('Suelo demasiado caliente para germinar.');
   if (enAlm && !sp.dt) razones.push(sp.nombre + ' no tolera el trasplante: va de siembra directa.');
   const germ = ts < tg.min || ts > tg.max ? 0.3 : 1;
-  const p = l * s * m * ve.f * vig * germ * (c.fam === sp.familia ? 0.85 : 1) * (enAlm && !sp.dt ? 0.4 : 1);
+  const p = (entra ? 1 : 0) * l * s * m * ve.f * vig * germ * (c.fam === sp.familia ? 0.85 : 1) * (enAlm && !sp.dt ? 0.4 : 1);
   return { puntaje: clamp(p, 0, 1.2), nivel: p >= 0.72 ? 'bien' : p >= 0.45 ? 'regular' : 'mal', razones, horas: h };
 }
