@@ -36,7 +36,7 @@ Para que una instancia nueva arranque con todo: "Leé `docs/traspaso/TRASPASO-hu
 | huertapp (fuente de datos) | https://github.com/facundo-p/huertapp · local: `~/Desarrollos/Personales/App-info-huerta/info-huerta/` |
 | Prototipo viejo v0.4 (referencia, no se toca) | `~/Desarrollos/Personales/App-info-huerta/huertita-juego/` |
 | Juego publicado (artifact de Claude) | https://claude.ai/artifact/4qfBdRJGaRFdEjczwVLq4q — versión 7 = v0.7. Capacidades `db`, `user`, `downloads` (guardado en la nube por persona). Se republica con `npm run build:artifact` y publicando `dist-artifact/huertita-artifact.html` pasando ese `url`; las capacidades se conservan si no se pasa el campo. |
-| Mapa de ideas (cuadro 2×2 interactivo, 26 ideas) | https://claude.ai/artifact/SeF5Jr9GeytaMYqMmzbkwQ — fuente `docs/mapa-ideas.html` en el repo. Al cerrar una idea: marcarla `hecho: 'vX'` y republicar con ese `url`. |
+| Mapa de ideas (cuadro 2×2 interactivo, 26 ideas) | https://claude.ai/artifact/SeF5Jr9GeytaMYqMmzbkwQ — versión 2, con enlace al issue de cada idea. Fuente `docs/mapa-ideas.html` en el repo. Al cerrar una idea: marcarla `hecho: 'vX'` y republicar con ese `url`. |
 | GDD (Claude Docs) | https://claude.ai/code/artifact/19fb4257-8c56-40ea-97d5-f804bba4bde3 — exportado a `docs/traspaso/GDD-documento-de-diseno.md`. A Facu le resultó poco visible; no seguir engordándolo. |
 | Doc de estado en el Project "Desarrollo De Soft" | `claude/huertita-juego-estado.md` (actualizado a v0.7) |
 
@@ -48,6 +48,7 @@ pusheada la rama `claude/dazzling-wright-jghyog`, dos commits arriba de `main`:
 1. `Cimientos, paso 3: cada planta ocupa lo que ocupa; 0.8.0`
 2. `Traspaso al día: paso 3 hecho, issues todavía sin crear, skill con instalador`
 3. `Los 38 issues, creados; el mapa de ideas enlaza a cada uno`
+4. `El mapa de ideas marca los cimientos hechos` (y el artifact republicado)
 
 Falta mergearla a `main` (por PR o directo, como prefiera Facu). Los issues ya están creados, así
 que un PR ahora no le pisa la numeración a nadie.
@@ -106,8 +107,8 @@ Se crearon por la API de GitHub desde la sesión en la nube. `docs/traspaso/crea
 como respaldo (se genera desde `issues.json`, no se edita a mano): **no volver a correrlo**, crearía
 38 duplicados.
 
-`docs/mapa-ideas.html` ya dice que los números son issues y cada punto enlaza al suyo. Falta
-republicar el artifact del mapa con ese `url` si no se hizo en la misma sesión.
+`docs/mapa-ideas.html` ya dice que los números son issues, cada punto enlaza al suyo y la sección
+"En qué orden" marca los cimientos hechos. El artifact del mapa está republicado (versión 2).
 
 Lo que quedó en los issues, para ubicarse:
 
