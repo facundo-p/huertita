@@ -2,7 +2,7 @@
 
 Escrito el 18 de septiembre de 2026 por Claude, al cierre de una sesión larga de Cowork con Facu. Todo lo de abajo es lo que hace falta para retomar sin volver a explicar nada.
 
-**Actualizado el 18 de septiembre de 2026, en una sesión de Claude Code en la nube**: se hizo el paso 3 de los cimientos (0.8.0). Los cambios de esa sesión están marcados abajo. OJO: esa sesión **no pudo pushear ni crear issues** (GitHub devuelve 403), así que el paso 3 viaja como parche — ver "Estado de git".
+**Actualizado el 18 de septiembre de 2026, en una sesión de Claude Code en la nube**: se hizo el paso 3 de los cimientos (0.8.0) y se crearon los 38 issues. Los cambios de esa sesión están marcados abajo.
 
 **Todo lo de este traspaso vive en el repo, en `docs/traspaso/`:**
 
@@ -42,36 +42,22 @@ Para que una instancia nueva arranque con todo: "Leé `docs/traspaso/TRASPASO-hu
 
 ### Estado de git
 
-Los cuatro commits que faltaban ya están en `origin/main` (Facu pusheó).
-
-El 18-9, una sesión de Claude Code en la nube hizo el paso 3 de los cimientos sobre la rama
-`claude/dazzling-wright-jghyog`, dos commits arriba de `main`:
+`origin/main` está al día con todo lo anterior. El 18-9, una sesión de Claude Code en la nube dejó
+pusheada la rama `claude/dazzling-wright-jghyog`, dos commits arriba de `main`:
 
 1. `Cimientos, paso 3: cada planta ocupa lo que ocupa; 0.8.0`
 2. `Traspaso al día: paso 3 hecho, issues todavía sin crear, skill con instalador`
+3. `Los 38 issues, creados; el mapa de ideas enlaza a cada uno`
 
-**No se pudieron pushear.** Tanto `git push` como la API de issues devuelven 403 con el mismo
-motivo: *"Claude doesn't have GitHub access to facundo-p/huertita for your organization"*. Para
-destrabarlo, Facu tiene que instalar o reconectar el Claude GitHub App sobre el repo
-(https://github.com/apps/claude/installations/select_target, o reconectar GitHub desde
-https://claude.ai/customize/connectors). Mientras tanto los dos commits viajan como parche:
-
-```bash
-git checkout -b claude/dazzling-wright-jghyog main
-git am huertita-0.8-paso3.patch
-npm run tipos && npm test && npm run build:artifact && npm run humo
-git push -u origin claude/dazzling-wright-jghyog   # o mergear a main, como prefiera
-```
-
-**Sin pull request todavía**: un PR se lleva un número que los issues necesitan (ver §7a).
-Primero los issues, después el PR o el merge.
+Falta mergearla a `main` (por PR o directo, como prefiera Facu). Los issues ya están creados, así
+que un PR ahora no le pisa la numeración a nadie.
 
 ## 3. Cómo trabaja Claude sobre el repo desde Cowork (el flujo que funcionó)
 
 1. El repo es público: en la nube, `git clone https://github.com/facundo-p/huertita.git`, `npm ci`, trabajar y commitear ahí con autor `facundo-p <38925892+facundo-p@users.noreply.github.com>` y al pie `Co-Authored-By: Claude …`.
 2. Antes de dar algo por hecho: `npm run tipos && npm test && npm run build:artifact && npm run humo` (humo necesita Playwright; en la nube alcanzó con un symlink de un playwright global dentro de `node_modules`, que está ignorado).
 3. Exportar los commits nuevos: `git format-patch <base>..HEAD --stdout > x.patch`, dejar el archivo en la carpeta conectada (`~/Desarrollos/Personales/App-info-huerta/_parches/`) con `device_commit_files`, y aplicarlo en la Mac con `device_bash`: `git -c user.name=facundo-p -c user.email=… am ../_parches/x.patch`. Verificar que `git rev-parse 'HEAD^{tree}'` dé lo mismo en los dos lados. Borrar el parche después.
-4. Desde Claude Code en la nube (sesión web) se puede clonar el repo público, trabajar, commitear y correr todo (tests, build y hasta el humo con Playwright). **No se puede pushear ni crear issues** mientras el Claude GitHub App no tenga acceso al repo: los dos dan 403. El trabajo sale por parche (`git format-patch main..HEAD --stdout`).
+4. Desde Claude Code en la nube (sesión web) se puede clonar, trabajar, commitear, correr todo (tests, build y hasta el humo con Playwright), **pushear y crear issues**, siempre que el Claude GitHub App tenga acceso al repo. Si no lo tiene, push y API de issues dan 403 con el mismo mensaje ("Claude doesn't have GitHub access…") y hay que instalarlo o reconectarlo desde https://github.com/apps/claude/installations/select_target; mientras tanto, el trabajo sale por parche (`git format-patch main..HEAD --stdout`).
 5. Desde Cowork, cosas que NO se pueden hacer: pushear; escribir `.github/workflows/*` (archivos protegidos; se dejan en `docs/workflows/` y Facu los mueve); crear repos o issues por la API de GitHub (403: la sesión solo tiene acceso a repos configurados). Crear el repo se hizo con el Chrome de Facu (extensión Claude in Chrome), y ese es el camino para issues si no se usa `gh`.
 6. La VM de la Mac (`device_bash`) tiene git pero no credenciales; borrar archivos ahí pide permiso explícito (solo se pidió para lockfiles de git).
 7. Para sesiones largas de puro código conviene Claude Code en la Mac: el `CLAUDE.md` del repo ya está pensado para eso. Cowork rinde cuando hay artifacts, docs y diseño de por medio.
@@ -110,29 +96,28 @@ Primero los issues, después el PR o el merge.
 
 ## 7. Lo que quedó a medio hacer (en este orden)
 
-### a) Crear los Issues en GitHub — pedido explícito de Facu, sigue sin hacerse
+### a) Los Issues en GitHub — hecho el 18-9
 
-Facu pidió: *"Planificá y creá Issues para todas las tareas que estuvimos hablando. Mantené los números de tarea que me mostraste en el artifact. No implementes ninguna todavía."*
+Los **38 issues están creados**, en orden estricto y con la numeración del mapa de ideas: la idea 6
+es el issue #6. Cerrados: #1 a #5 (hechos en v0.3 y v0.4) y #27 (paso 3, v0.8). El resto, abiertos.
+https://github.com/facundo-p/huertita/issues
 
-Estado al 18-9, después de la sesión en la nube: las **6 etiquetas están creadas** (rabanito #3fc25a, zapallo #ffc233, aromática #1fc2b8, yuyo #8a88c8, cimientos #e0502f, deuda #b85a38), además de las de GitHub por defecto. **Sigue sin haber ningún issue.** Se intentó crearlos por la API de GitHub desde Claude Code en la nube y el App contesta **403 `Resource not accessible by integration`**: esa sesión puede leer y pushear, pero no abrir issues. No hay que volver a intentarlo por ahí.
+Se crearon por la API de GitHub desde la sesión en la nube. `docs/traspaso/crear-issues.sh` queda
+como respaldo (se genera desde `issues.json`, no se edita a mano): **no volver a correrlo**, crearía
+38 duplicados.
 
-**El repo no tiene issues ni PRs**, así que la numeración de GitHub todavía puede coincidir con la del mapa de ideas si se crean **en orden estricto, #1 a #38**. Los pull requests comparten la numeración: **crear los issues antes de abrir cualquier PR** (la rama `claude/dazzling-wright-jghyog` está sin PR a propósito).
+`docs/mapa-ideas.html` ya dice que los números son issues y cada punto enlaza al suyo. Falta
+republicar el artifact del mapa con ese `url` si no se hizo en la misma sesión.
 
-Cómo crearlos, de mejor a peor:
-
-1. **`bash docs/traspaso/crear-issues.sh`** en la terminal de la Mac, con `gh` autenticado: crea los 38 en orden y cierra en el acto los ya hechos (#1 a #5 y #27). Es lo más rápido y lo más seguro para la numeración. El script se genera desde `issues.json`: si cambia un cuerpo, se regenera, no se edita a mano.
-2. Desde Cowork con la extensión de Chrome: abrir `https://github.com/facundo-p/huertita/issues/new?title=…&body=…&labels=…` (los `url` ya están armados en `issues.json`), clic en "Create", uno por uno en orden; después cerrar #1–#5 y #27. Facu interrumpió este camino cuando iba a arrancar: preguntarle antes de volver a usar su Chrome.
-3. Si nada de eso: pasarle la tabla y que los cargue él.
-
-Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.json`. Resumen:
+Lo que quedó en los issues, para ubicarse:
 
 | # | Título | Etiquetas | Estado |
 |---|---|---|---|
-| 1 | Almaciguera con varios plantines, raleo y repique | rabanito | cerrar (hecho v0.3) |
-| 2 | Indicadores con el rango que pide cada especie | rabanito | cerrar (hecho v0.3) |
-| 3 | Almanaque de siembra y ficha completa | rabanito | cerrar (hecho v0.3) |
-| 4 | Guardar y cargar la huerta | rabanito | cerrar (hecho v0.4) |
-| 5 | Protección de heladas que cumple lo que dice | rabanito | cerrar (hecho v0.4) |
+| 1 | Almaciguera con varios plantines, raleo y repique | rabanito | cerrado (hecho v0.3) |
+| 2 | Indicadores con el rango que pide cada especie | rabanito | cerrado (hecho v0.3) |
+| 3 | Almanaque de siembra y ficha completa | rabanito | cerrado (hecho v0.3) |
+| 4 | Guardar y cargar la huerta | rabanito | cerrado (hecho v0.4) |
+| 5 | Protección de heladas que cumple lo que dice | rabanito | cerrado (hecho v0.4) |
 | 6 | Eventos sorpresa | rabanito, enhancement | abierto (depende de #29) |
 | 7 | Césped y poda como secos y verdes del compost | rabanito, enhancement | abierto |
 | 8 | Pedidos de vecinos con fecha | rabanito, enhancement | abierto (depende de #29) |
@@ -154,7 +139,7 @@ Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.jso
 | 24 | Fotoperíodo detallado | yuyo, enhancement | abierto |
 | 25 | Cámara isométrica o 3D | yuyo, enhancement | abierto |
 | 26 | Feria de semillas en línea entre jugadores | yuyo, enhancement | abierto |
-| 27 | Cimientos, paso 3: plantas con huella propia y contenedores con capacidad | cimientos, zapallo | cerrar (hecho v0.8, apagado hasta el paso 4) |
+| 27 | Cimientos, paso 3: plantas con huella propia y contenedores con capacidad | cimientos, zapallo | cerrado (hecho v0.8, apagado hasta el paso 4) |
 | 28 | Cimientos, paso 4: tic diario y avanzar(estado, días); ratos por día; pronóstico de 5 días | cimientos, zapallo | abierto |
 | 29 | Cimientos, paso 5: contenido como tablas (eventos, logros, pedidos, ítems) | cimientos, zapallo | abierto |
 | 30 | Cimientos, paso 6: interfaz por componentes, arte tipado y PWA | cimientos, zapallo | abierto |
@@ -167,7 +152,7 @@ Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.jso
 | 37 | Prender GitHub Pages y comprobar que el juego se publica en cada push | rabanito | abierto |
 | 38 | Revisar los textos nuevos del diario por planta (0.7) | rabanito | abierto |
 
-Cuando estén creados: anotar en `docs/mapa-ideas.html` (y republicar el artifact del mapa) que los números son ahora issues, y marcar `hecho` en las ideas 1–5 si no lo están. La idea 15 (tamaño real y marcos) todavía no se marca: el motor ya lo hace, pero el juego lo va a mostrar recién en el paso 4.
+La idea 15 (tamaño real y marcos) sigue sin marcarse como hecha en el mapa: el motor ya lo hace, pero el juego lo va a mostrar recién en el paso 4.
 
 ### b) El skill global `mapa-de-pendientes` — Facu lo pidió dos veces y todavía no lo tiene
 
@@ -200,8 +185,8 @@ El orden que queda, entonces:
 
 ### d) Chequeos rápidos cuando se retome
 
-- ¿Están los issues (§7a)? ¿Guardó el skill (§7b)? ¿Activó Pages (#37)?
-- ¿Se aplicó el parche del paso 3 y quedó en `main`? ¿Le dio acceso al Claude GitHub App? Recordar: primero los issues, después el PR.
+- ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
+- ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
 - Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm test` (185 tests) y `npm run humo`
   (necesita Playwright; en la nube alcanza con `ln -s $(npm root -g)/playwright node_modules/playwright`).
 
