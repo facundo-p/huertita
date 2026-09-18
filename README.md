@@ -29,3 +29,7 @@ Detalle en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md). De dónde salen los dat
 ## Dos marcas que vas a ver en el código
 
 `[REPO]` es un dato o regla que sale de huertapp. `[SUPUESTO]` es algo que inventó el juego porque hacía falta; cada uno es candidato a revisarse con fuentes.
+
+## Para retomar el trabajo
+
+`docs/traspaso/TRASPASO-huertita.md` cuenta el estado del proyecto, cómo se trabaja y qué sigue. Al lado están el documento de diseño, el juego publicado, los issues planificados y el skill del mapa de pendientes.
