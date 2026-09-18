@@ -2,13 +2,15 @@
 
 Escrito el 18 de septiembre de 2026 por Claude, al cierre de una sesión larga de Cowork con Facu. Todo lo de abajo es lo que hace falta para retomar sin volver a explicar nada.
 
+**Actualizado el 18 de septiembre de 2026, en una sesión de Claude Code en la nube**: se hizo el paso 3 de los cimientos (0.8.0). Los cambios de esa sesión están marcados abajo. OJO: esa sesión **no pudo pushear ni crear issues** (GitHub devuelve 403), así que el paso 3 viaja como parche — ver "Estado de git".
+
 **Todo lo de este traspaso vive en el repo, en `docs/traspaso/`:**
 
 | Archivo | Qué es |
 | --- | --- |
 | `TRASPASO-huertita.md` | Este documento |
 | `GDD-documento-de-diseno.md` | El documento de diseño del juego, exportado del Claude Doc (concepto, comparación con Minecraft, loops, sistemas, ideas, eventos sorpresa, tiempo, cimientos) |
-| `huertita-v0.7-artifact.html` | El juego tal cual está publicado en Claude (build de una sola página, versión 0.7). Se regenera con `npm run build:artifact` |
+| `huertita-v0.7-artifact.html` | El juego tal cual está publicado en Claude (build de una sola página, versión 0.7). Se regenera con `npm run build:artifact`. El artifact publicado sigue en 0.7: el 0.8 no cambia nada de lo que se ve, así que republicarlo puede esperar al paso 4 |
 | `../mapa-ideas.html` (o sea `docs/mapa-ideas.html`) | El mapa de ideas interactivo (cuadro 2×2), fuente del artifact publicado |
 | `issues.json` | Los 38 issues planificados: número, título, cuerpo, etiquetas, cuáles cerrar |
 | `crear-issues.sh` | Script `gh` que los crea en orden y cierra los ya hechos |
@@ -38,37 +40,54 @@ Para que una instancia nueva arranque con todo: "Leé `docs/traspaso/TRASPASO-hu
 | GDD (Claude Docs) | https://claude.ai/code/artifact/19fb4257-8c56-40ea-97d5-f804bba4bde3 — exportado a `docs/traspaso/GDD-documento-de-diseno.md`. A Facu le resultó poco visible; no seguir engordándolo. |
 | Doc de estado en el Project "Desarrollo De Soft" | `claude/huertita-juego-estado.md` (actualizado a v0.7) |
 
-### Estado de git, importante
+### Estado de git
 
-En la Mac hay **cuatro commits sobre `main` sin pushear** (`origin/main` sigue en "Activar CI"; Facu creyó haber pusheado el 18-9 pero el remoto no los tiene, así que probablemente el push falló por credenciales):
+Los cuatro commits que faltaban ya están en `origin/main` (Facu pusheó).
 
-1. `Motor: el patio es un dato`
-2. `Interfaz y renderers leen el patio; balcón elegible; 0.6.0`
-3. `Diario por planta, plantines que avisan y salud a la vista; 0.7.0`
-4. `Traspaso: documentos, artifacts e issues planificados en docs/traspaso`
+El 18-9, una sesión de Claude Code en la nube hizo el paso 3 de los cimientos sobre la rama
+`claude/dazzling-wright-jghyog`, dos commits arriba de `main`:
 
-Lo primero es que Facu haga `git push` desde su terminal y confirme con `git status -sb` que dice `main...origin/main` sin `[ahead N]`. Ni la nube ni la VM de Cowork tienen credenciales de push. Hasta que pushee, GitHub y Pages no muestran nada de esto y una instancia nueva que clone el repo no va a encontrar `docs/traspaso/`.
+1. `Cimientos, paso 3: cada planta ocupa lo que ocupa; 0.8.0`
+2. `Traspaso al día: paso 3 hecho, issues todavía sin crear, skill con instalador`
+
+**No se pudieron pushear.** Tanto `git push` como la API de issues devuelven 403 con el mismo
+motivo: *"Claude doesn't have GitHub access to facundo-p/huertita for your organization"*. Para
+destrabarlo, Facu tiene que instalar o reconectar el Claude GitHub App sobre el repo
+(https://github.com/apps/claude/installations/select_target, o reconectar GitHub desde
+https://claude.ai/customize/connectors). Mientras tanto los dos commits viajan como parche:
+
+```bash
+git checkout -b claude/dazzling-wright-jghyog main
+git am huertita-0.8-paso3.patch
+npm run tipos && npm test && npm run build:artifact && npm run humo
+git push -u origin claude/dazzling-wright-jghyog   # o mergear a main, como prefiera
+```
+
+**Sin pull request todavía**: un PR se lleva un número que los issues necesitan (ver §7a).
+Primero los issues, después el PR o el merge.
 
 ## 3. Cómo trabaja Claude sobre el repo desde Cowork (el flujo que funcionó)
 
 1. El repo es público: en la nube, `git clone https://github.com/facundo-p/huertita.git`, `npm ci`, trabajar y commitear ahí con autor `facundo-p <38925892+facundo-p@users.noreply.github.com>` y al pie `Co-Authored-By: Claude …`.
 2. Antes de dar algo por hecho: `npm run tipos && npm test && npm run build:artifact && npm run humo` (humo necesita Playwright; en la nube alcanzó con un symlink de un playwright global dentro de `node_modules`, que está ignorado).
 3. Exportar los commits nuevos: `git format-patch <base>..HEAD --stdout > x.patch`, dejar el archivo en la carpeta conectada (`~/Desarrollos/Personales/App-info-huerta/_parches/`) con `device_commit_files`, y aplicarlo en la Mac con `device_bash`: `git -c user.name=facundo-p -c user.email=… am ../_parches/x.patch`. Verificar que `git rev-parse 'HEAD^{tree}'` dé lo mismo en los dos lados. Borrar el parche después.
-4. Cosas que NO se pueden hacer desde la nube: pushear; escribir `.github/workflows/*` (archivos protegidos; se dejan en `docs/workflows/` y Facu los mueve); crear repos o issues por la API de GitHub (403: la sesión solo tiene acceso a repos configurados). Crear el repo se hizo con el Chrome de Facu (extensión Claude in Chrome), y ese es el camino para issues si no se usa `gh`.
-5. La VM de la Mac (`device_bash`) tiene git pero no credenciales; borrar archivos ahí pide permiso explícito (solo se pidió para lockfiles de git).
-6. Para sesiones largas de puro código conviene Claude Code en la Mac: el `CLAUDE.md` del repo ya está pensado para eso. Cowork rinde cuando hay artifacts, docs y diseño de por medio.
+4. Desde Claude Code en la nube (sesión web) se puede clonar el repo público, trabajar, commitear y correr todo (tests, build y hasta el humo con Playwright). **No se puede pushear ni crear issues** mientras el Claude GitHub App no tenga acceso al repo: los dos dan 403. El trabajo sale por parche (`git format-patch main..HEAD --stdout`).
+5. Desde Cowork, cosas que NO se pueden hacer: pushear; escribir `.github/workflows/*` (archivos protegidos; se dejan en `docs/workflows/` y Facu los mueve); crear repos o issues por la API de GitHub (403: la sesión solo tiene acceso a repos configurados). Crear el repo se hizo con el Chrome de Facu (extensión Claude in Chrome), y ese es el camino para issues si no se usa `gh`.
+6. La VM de la Mac (`device_bash`) tiene git pero no credenciales; borrar archivos ahí pide permiso explícito (solo se pidió para lockfiles de git).
+7. Para sesiones largas de puro código conviene Claude Code en la Mac: el `CLAUDE.md` del repo ya está pensado para eso. Cowork rinde cuando hay artifacts, docs y diseño de por medio.
 
 ## 4. Arquitectura, en una página
 
 - TypeScript estricto, Vite 5, Vitest 2, tsx. `npm run dev|build|build:artifact|test|tipos|bot|humo|datos:sync|datos:check`.
 - Capas en un solo sentido: `datos → motor → ui` y `arte → render → ui`. El motor no toca DOM. El renderer no importa el motor: recibe una `Escena` plana (`src/render/contrato.ts`) y cumple `montar / dibujar / alTocar / desmontar` (+ `camaras`, `efecto`). Hay dos renderers: pixel (3 cámaras: cenital, oblicua, cerca con corte de suelo) y texto.
-- Estado JSON `v:2`, azar con semilla (mulberry32). **El orden de las llamadas a `azar` es contrato mientras viva el test dorado** (`tests/dorado.test.ts`: el motor nuevo juega 8 años con el motor v0.4 y exige estado idéntico; una proyección quita lo nuevo — `patio`, `tunel` por zona, `hist` — antes de comparar).
+- Estado JSON `v:3`, azar con semilla (mulberry32). **El orden de las llamadas a `azar` es contrato mientras viva el test dorado** (`tests/dorado.test.ts`: el motor nuevo juega 8 años con el motor v0.4 y exige estado idéntico; una proyección quita lo nuevo — `patio`, `tunel` por zona, `hist` — antes de comparar).
+- **Cada planta ocupa lo que ocupa (0.8, paso 3):** el marco de plantación de cada especie vive en `datos/juego/especies.ts` ([SUPUESTO]: cm entre plantas, y de ahí huella en celdas, cuántas entran en una celda y cuánto levanta). El motor lo usa entero desde `src/motor/espacio.ts`: bloque de celdas al sembrar y trasplantar, raleo que deja las que caben, cosecha por planta, competencia pasada la densidad, `capacidad` de bandeja en las zonas de cría y plantas altas como obstáculos temporales del sol. **Está apagado** hasta el paso 4: `conEspacioReal(fn)` lo prende (lo usan `tests/espacio.test.ts` y `npm run bot -- --espacio`).
 - `src/motor/`: tipos, azar, clima (SMN Ezeiza + heladas FAUBA umbral 3 °C, carácter del año normal/niña/niño/tardía), patio, sol, catalogo, estado, factores (luz, agua, temp, suelo, vecinos + fantasma de siembra), abrigo, misiones, acciones (`despachar`), tiempo (`pasarDecada` en fases: germinar → helar → semillar → crecer → estresar → plagas → espigar → madurar → suelos y compost), diario, balance, migraciones.
 - **Datos:** huertapp es la única fuente de verdad. `datos/catalogo.json` es un derivado; `datos/fuente.lock.json` guarda el sha256 de `data/huerta_gba_enriquecido.json`. `npm run datos:sync` (o `-- --local ../info-huerta`) valida contra `datos/contrato.ts`, regenera y escribe `datos/CAMBIOS.md` y `datos/HUECOS.md` (83 huecos que el juego completa con supuestos). `datos:check` sale 1 si se rompe el contrato, 2 si hay cambios sin sincronizar. Lo propio del juego vive en `datos/juego/` (`especies.ts` con familias, emoji, defaults; `patio.ts`; `patios/`). Nunca editar el catálogo a mano.
 - **El patio es un dato (0.6):** `datos/juego/patios/fondo.ts` y `balcon.ts`. Plano de letras con el norte arriba, zonas con propiedades (`cria`, `techo`, `abrigo`, `calor`, `admiteTunel`, `macetas`, suelo, mo, drenaje, hondo, riegoCosto, `tipo` para dibujar) y obstáculos (`muro` con opacidad, `arbol` caduco, `losa`). `src/motor/sol.ts` calcula horas de sol por geometría a 34,6° S. Nadie fuera de esos archivos nombra una zona o celda concreta: hay un test que lo vigila.
 - `src/arte`, `src/render`, `src/ui` siguen con `// @ts-nocheck`, portados del prototipo (deuda del paso 6).
 - Balance actual: 14 ratos por década; riego por zona 0–3 con costo; arranque en década 22; estrellas por patio (fondo 30/70/120); abrigo manta +4, microtúnel +5, reparo fijo por zona.
-- Tests: 171 verdes (dorado, heladas, catálogo por especie con 2 contradicciones conocidas, regresiones, patio, sol, diario). `docs/ARQUITECTURA.md`, `docs/DATOS.md`, `docs/CIMIENTOS.md` y `CLAUDE.md` (9 innegociables) tienen el detalle.
+- Tests: 185 verdes (dorado, heladas, catálogo por especie con 2 contradicciones conocidas, regresiones, patio, sol, diario, espacio). `docs/ARQUITECTURA.md`, `docs/DATOS.md`, `docs/CIMIENTOS.md` y `CLAUDE.md` (9 innegociables) tienen el detalle.
 
 ## 5. Lo que se hizo en la sesión (para no repetirlo)
 
@@ -76,6 +95,7 @@ Lo primero es que Facu haga `git push` desde su terminal y confirme con `git sta
 - **Paso 2 (0.6):** patio como dato, sol por geometría, balcón en prueba, estado v2 con migración v1→v2, estrellas por patio, selector de patio en "Guardar y cargar".
 - **0.7:** diario por planta (`pl.hist`, últimas 16 anotaciones; incluye lo que antes bajaba la salud en silencio: sed leve, plaga que sigue, y qué factor frenó el crecimiento); plantines con estado chico/listo/pasándose (`puntoDeTrasplante`) y flecha en el patio; la planta amarillea desde salud 80 y muestra una barrita bajo 60. Test: toda baja de salud de un año entero tiene explicación en el diario.
 - Skill global `mapa-de-pendientes` propuesto (ver §7).
+- **0.8 (sesión de Claude Code en la nube, 18-9):** paso 3 de los cimientos, con la regla de espacio apagada; `--espacio` en el bot; estado v3 con migración; `docs/traspaso/instalar-skill.sh`; `crear-issues.sh` regenerado desde `issues.json` (ahora también cierra el #27).
 
 ## 6. Decisiones y deudas abiertas
 
@@ -90,16 +110,18 @@ Lo primero es que Facu haga `git push` desde su terminal y confirme con `git sta
 
 ## 7. Lo que quedó a medio hacer (en este orden)
 
-### a) Crear los Issues en GitHub — pedido explícito de Facu, sin empezar
+### a) Crear los Issues en GitHub — pedido explícito de Facu, sigue sin hacerse
 
 Facu pidió: *"Planificá y creá Issues para todas las tareas que estuvimos hablando. Mantené los números de tarea que me mostraste en el artifact. No implementes ninguna todavía."*
 
-Estado: las **6 etiquetas ya están creadas** en el repo (rabanito #3fc25a, zapallo #ffc233, aromática #1fc2b8, yuyo #8a88c8, cimientos #e0502f, deuda #b85a38), además de las de GitHub por defecto (bug, enhancement…). **No hay ningún issue creado todavía.** El repo no tenía issues ni PRs al momento de mirar, así que la numeración de GitHub va a coincidir con la del mapa de ideas si se crean **en orden estricto, #1 a #38**, y antes de que el workflow semanal de datos abra un PR (los PRs comparten la numeración).
+Estado al 18-9, después de la sesión en la nube: las **6 etiquetas están creadas** (rabanito #3fc25a, zapallo #ffc233, aromática #1fc2b8, yuyo #8a88c8, cimientos #e0502f, deuda #b85a38), además de las de GitHub por defecto. **Sigue sin haber ningún issue.** Se intentó crearlos por la API de GitHub desde Claude Code en la nube y el App contesta **403 `Resource not accessible by integration`**: esa sesión puede leer y pushear, pero no abrir issues. No hay que volver a intentarlo por ahí.
+
+**El repo no tiene issues ni PRs**, así que la numeración de GitHub todavía puede coincidir con la del mapa de ideas si se crean **en orden estricto, #1 a #38**. Los pull requests comparten la numeración: **crear los issues antes de abrir cualquier PR** (la rama `claude/dazzling-wright-jghyog` está sin PR a propósito).
 
 Cómo crearlos, de mejor a peor:
 
-1. **`docs/traspaso/crear-issues.sh`** en la terminal de la Mac, con `gh` autenticado: crea los 38 en orden y cierra en el acto los #1 a #5 (ya hechos). Es lo más rápido y lo más seguro para la numeración.
-2. Desde Cowork con la extensión de Chrome: abrir `https://github.com/facundo-p/huertita/issues/new?title=…&body=…&labels=…` (los `url` ya están armados en `issues.json`), clic en "Create", uno por uno en orden; después cerrar #1–#5. Facu interrumpió este camino cuando iba a arrancar: preguntarle antes de volver a usar su Chrome.
+1. **`bash docs/traspaso/crear-issues.sh`** en la terminal de la Mac, con `gh` autenticado: crea los 38 en orden y cierra en el acto los ya hechos (#1 a #5 y #27). Es lo más rápido y lo más seguro para la numeración. El script se genera desde `issues.json`: si cambia un cuerpo, se regenera, no se edita a mano.
+2. Desde Cowork con la extensión de Chrome: abrir `https://github.com/facundo-p/huertita/issues/new?title=…&body=…&labels=…` (los `url` ya están armados en `issues.json`), clic en "Create", uno por uno en orden; después cerrar #1–#5 y #27. Facu interrumpió este camino cuando iba a arrancar: preguntarle antes de volver a usar su Chrome.
 3. Si nada de eso: pasarle la tabla y que los cargue él.
 
 Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.json`. Resumen:
@@ -120,7 +142,7 @@ Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.jso
 | 12 | Jugar de a 1 a 10 días | zapallo, enhancement | abierto (= paso 4, #28) |
 | 13 | Feria vecinal: vender o trocar verdura | zapallo, enhancement | abierto |
 | 14 | Editor del espacio | zapallo, enhancement | abierto |
-| 15 | Tamaño real de cada planta y marcos de plantación | zapallo, enhancement | abierto (= paso 3, #27) |
+| 15 | Tamaño real de cada planta y marcos de plantación | zapallo, enhancement | abierto (el motor ya lo hace desde v0.8 (#27); falta prenderlo en el paso 4) |
 | 16 | Diagnóstico por síntomas | zapallo, enhancement | abierto |
 | 17 | Modo "mi patio" y puente con huertapp | zapallo, enhancement | abierto (depende de #14) |
 | 18 | Fauna viva y álbum de bichos | aromática, enhancement | abierto |
@@ -132,7 +154,7 @@ Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.jso
 | 24 | Fotoperíodo detallado | yuyo, enhancement | abierto |
 | 25 | Cámara isométrica o 3D | yuyo, enhancement | abierto |
 | 26 | Feria de semillas en línea entre jugadores | yuyo, enhancement | abierto |
-| 27 | Cimientos, paso 3: plantas con huella propia y contenedores con capacidad | cimientos, zapallo | abierto |
+| 27 | Cimientos, paso 3: plantas con huella propia y contenedores con capacidad | cimientos, zapallo | cerrar (hecho v0.8, apagado hasta el paso 4) |
 | 28 | Cimientos, paso 4: tic diario y avanzar(estado, días); ratos por día; pronóstico de 5 días | cimientos, zapallo | abierto |
 | 29 | Cimientos, paso 5: contenido como tablas (eventos, logros, pedidos, ítems) | cimientos, zapallo | abierto |
 | 30 | Cimientos, paso 6: interfaz por componentes, arte tipado y PWA | cimientos, zapallo | abierto |
@@ -145,31 +167,43 @@ Contenido de cada issue (títulos, cuerpos y etiquetas completos) en `issues.jso
 | 37 | Prender GitHub Pages y comprobar que el juego se publica en cada push | rabanito | abierto |
 | 38 | Revisar los textos nuevos del diario por planta (0.7) | rabanito | abierto |
 
-Cuando estén creados: anotar en `docs/mapa-ideas.html` (y republicar el artifact del mapa) que los números son ahora issues, y marcar `hecho` en las ideas 1–5 si no lo están.
+Cuando estén creados: anotar en `docs/mapa-ideas.html` (y republicar el artifact del mapa) que los números son ahora issues, y marcar `hecho` en las ideas 1–5 si no lo están. La idea 15 (tamaño real y marcos) todavía no se marca: el motor ya lo hace, pero el juego lo va a mostrar recién en el paso 4.
 
 ### b) El skill global `mapa-de-pendientes` — Facu lo pidió dos veces y todavía no lo tiene
 
 Pedido: *"quiero que este cuadro de dos ejes con 'impacto/costo de implementación' y 'impacto/ganancia en calidad del producto' forme parte de un skill global al que pueda invocar en otros proyectos. Que agarre la lista de pendientes (Issues por ejemplo) y me los organice así como hiciste acá, en un artifact así de maravilloso. La estética puede ser esta misma o adecuarse a la del proyecto (si eso no lo vuelve más costoso)."*
 
-Se propuso una vez con `propose_skills` (tarjeta de revisión) pero Facu no llegó a guardarlo y volvió a preguntar. **El SKILL.md completo está en `docs/traspaso/SKILL-mapa-de-pendientes.md`**, con la plantilla HTML probada (30 puntos, celular y escritorio, tema claro y oscuro, puntos que se separan sin salirse de su cuadrante, enlace al issue, dependencias, marca de estimación floja). En la sesión nueva: volver a proponerlo con `propose_skills` (kind `new`, nombre `mapa-de-pendientes`, ese SKILL.md tal cual) y decirle a Facu que tiene que tocar "guardar" en la tarjeta. Si la sesión no tiene esa herramienta, indicarle dónde pegar el archivo como skill de usuario.
+El SKILL.md completo está en `docs/traspaso/SKILL-mapa-de-pendientes.md`, con la plantilla HTML probada (30 puntos, celular y escritorio, tema claro y oscuro, puntos que se separan sin salirse de su cuadrante, enlace al issue, dependencias, marca de estimación floja).
+
+**Lo más corto para que lo tenga:** en la Mac, desde el repo, `bash docs/traspaso/instalar-skill.sh`. Copia el archivo a `~/.claude/skills/mapa-de-pendientes/SKILL.md` y queda disponible en todos sus proyectos de Claude Code (`/mapa-de-pendientes`). La sesión de Claude Code en la nube no tiene `propose_skills`; si la sesión nueva sí lo tiene (Cowork), se puede volver a proponer con kind `new`, nombre `mapa-de-pendientes` y ese SKILL.md tal cual, avisándole que tiene que tocar "guardar" en la tarjeta.
 
 Después de crear los issues, la primera prueba real del skill es correrlo sobre `facundo-p/huertita`: debería reproducir el mapa de ideas con los 38 issues.
 
-### c) Después: paso 3 de los cimientos (#27), pensado así
+### c) El paso 3 ya está hecho (0.8). Lo que sigue: decidir #31 y arrancar el paso 4 (#28)
 
-Objetivo: plantas con huella propia y contenedores con capacidad, para que el bancal sea un rompecabezas (#15) y la almaciguera críe de a 50.
+Lo que quedó del paso 3, en `src/motor/espacio.ts`, `datos/juego/especies.ts` y `tests/espacio.test.ts`: marco de plantación por especie, huella de 1, 2 o 4 celdas, densidad por celda (9 rabanitos, 4 lechugas, 1 tomate), `capacidad` de bandeja en las zonas de cría (50), sombra de las plantas altas y estado v3 con migración. **La regla está apagada**: prenderla cambia rendimientos, azar y balance, y el test dorado se jubila recién en el paso 4.
 
-- **Datos por especie** (en `datos/juego/especies.ts`, marcados `[SUPUESTO]` salvo que huertapp tenga marco de plantación): `huella` (celdas que ocupa: 1, 2 o 4) y `porCelda` (cuántas entran en una celda de 0,5 m: 9 rabanitos, 4 lechugas, 1 tomate) y `alto` (para que el choclo sombree al sur; el sol por geometría ya sabe de obstáculos: una planta alta puede ser un obstáculo temporal).
-- **Zonas:** `capacidad` para la almaciguera (bandejas de 50 plantines en vez de celdas); macetas con volumen real ya está (`litros`, `prof`).
-- **Estado:** una planta puede ocupar varias celdas (`celdas: CeldaId[]` con `celda` = ancla) y una celda puede tener varias plantas de especies chicas. Sube `v` a 3 con migración.
-- **Cuidado con el test dorado:** el cambio de modelo altera rendimientos y azar. Dos caminos: (1) hacer el paso 3 con defaults que conserven la conducta (huella 1, porCelda 1 para todas) y prender los valores reales en el paso 4, cuando el dorado se jubila y se rebalancea todo; (2) juntar 3 y 4 en un solo arco de rebalanceo. Claude recomienda (1): mantiene el refactor protegido y deja el cambio de reglas para un solo momento.
-- Antes de eso resolver #31 (sol del fondo), porque el rebalanceo del paso 4 depende de esa decisión.
+Cuánto hay que rebalancear, medido con `npm run bot -- --espacio` (8 semillas, un año):
+
+| Patio | Apagado (hoy) | Prendido |
+| --- | --- | --- |
+| fondo (3 estrellas = 120) | 112–141 puntos | 276–647 |
+| balcón (3 estrellas = 45) | 12–37 | 87–175 |
+
+O sea: con el espacio real, una celda de 9 rabanitos rinde 9 veces. Los números de estrellas, los ratos y el rendimiento por planta son todos del paso 4.
+
+El orden que queda, entonces:
+
+1. **#31, el sol del fondo** (decisión de diseño de Facu): fórmula v0.4, o geometría moviendo los canteros, o geometría bajando el paredón, o geometría y aguantarse el invierno oscuro. Con geometría, además, las plantas altas se sombrean entre sí. Todo el rebalanceo del paso 4 depende de esto.
+2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se jubila el test dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
+3. Cuando el espacio real se prenda, dos cosas de interfaz que quedaron pendientes a propósito: mostrar el marco en la ficha ("ocupa 4 celdas", "entran 9 por celda") y dibujar una planta grande como una sola planta grande, no como la misma planta repetida — la escena ya marca cuál es la celda ancla (`ancla`), los renderers ya dibujan una sola vez, pero el sprite no crece con la huella. Va con #30.
 
 ### d) Chequeos rápidos cuando se retome
 
-- ¿Pusheó Facu los tres commits? Si no, recordárselo sin insistir.
-- ¿Guardó el skill? ¿Están los issues? ¿Activó Pages?
-- Reproducir el estado de la nube: clonar, `npm ci`, `npm test` (171 tests) y `npm run humo`.
+- ¿Están los issues (§7a)? ¿Guardó el skill (§7b)? ¿Activó Pages (#37)?
+- ¿Se aplicó el parche del paso 3 y quedó en `main`? ¿Le dio acceso al Claude GitHub App? Recordar: primero los issues, después el PR.
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm test` (185 tests) y `npm run humo`
+  (necesita Playwright; en la nube alcanza con `ln -s $(npm root -g)/playwright node_modules/playwright`).
 
 ## 8. Cosas que Facu ya dijo y no hay que volver a preguntar
 
