@@ -17,4 +17,4 @@ Juego de huerta urbana agroecológica del GBA. Objetivo: divertido, disfrutable,
 `npm run tipos && npm test && npm run build:artifact && npm run humo`
 
 ## Dónde está cada cosa
-README (mapa de carpetas), docs/ARQUITECTURA.md, docs/DATOS.md, docs/CIMIENTOS.md (lo que falta, en orden). docs/traspaso/TRASPASO-huertita.md: estado, forma de trabajo y pendientes, para arrancar una sesión nueva.
+README (mapa de carpetas), docs/ARQUITECTURA.md, docs/DATOS.md, docs/CIMIENTOS.md (lo que falta, en orden). docs/traspaso/TRASPASO-huertita.md: estado, forma de trabajo y pendientes, para arrancar una sesión nueva. docs/REESTRUCTURA.md: la epic #39 (adónde va el código y en qué orden).

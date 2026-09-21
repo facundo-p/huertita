@@ -49,6 +49,7 @@ pusheada la rama `claude/dazzling-wright-jghyog`, dos commits arriba de `main`:
 2. `Traspaso al día: paso 3 hecho, issues todavía sin crear, skill con instalador`
 3. `Los 38 issues, creados; el mapa de ideas enlaza a cada uno`
 4. `El mapa de ideas marca los cimientos hechos` (y el artifact republicado)
+5. `Análisis de arquitectura y epic #39 de reestructura` (21-9: `docs/arquitectura.html`, `docs/REESTRUCTURA.md`, issues #39 a #61)
 
 Falta mergearla a `main` (por PR o directo, como prefiera Facu). Los issues ya están creados, así
 que un PR ahora no le pisa la numeración a nadie.
@@ -183,6 +184,24 @@ El orden que queda, entonces:
 1. **#31, el sol del fondo** (decisión de diseño de Facu): fórmula v0.4, o geometría moviendo los canteros, o geometría bajando el paredón, o geometría y aguantarse el invierno oscuro. Con geometría, además, las plantas altas se sombrean entre sí. Todo el rebalanceo del paso 4 depende de esto.
 2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se jubila el test dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
 3. Cuando el espacio real se prenda, dos cosas de interfaz que quedaron pendientes a propósito: mostrar el marco en la ficha ("ocupa 4 celdas", "entran 9 por celda") y dibujar una planta grande como una sola planta grande, no como la misma planta repetida — la escena ya marca cuál es la celda ancla (`ancla`), los renderers ya dibujan una sola vez, pero el sprite no crece con la huella. Va con #30.
+
+### c bis) La reestructura: epic #39 (21-9) — planificada, no empezada
+
+Facu pidió una epic con sub-issues para reestructurar el código (magic strings, código repetido, ifs
+anidados, una vista que quiere ir cambiando) y un análisis de arquitectura con alternativas. Está hecho:
+
+- Artifact [Arquitectura de Huertita](https://claude.ai/artifact/Tn8F6G1vQ9qk2yUDK9kVS4) (fuente
+  `docs/arquitectura.html`): diagnóstico con números, qué se usa para esto, alternativas con pros y
+  contras, la propuesta, features × habilitadores, la epic. Versión corta: `docs/REESTRUCTURA.md`.
+- Epic **#39** con 17 sub-issues (#40–#56, jerarquía de sub-issues de GitHub) y 5 issues de features
+  fuera de la epic (#57 regiones, #58 cosechado, #59 construir, #60 vista por celda, #61 dinero).
+- Decisiones de Facu (no volver a preguntar): vista con **Preact + signals**; epic = solo reestructura;
+  **la fase de dominio (#42–#48) va antes del paso 4 (#28) y de #31**, con el dorado como red; regiones
+  derivadas del clima sin repetir lo universal de la especie.
+
+**El orden nuevo, entonces:** #40, #41 (andamiaje) → fase 1 del dominio (#42–#48, dorado verde en
+cada una) → #31 y #28. Vista (#49–#53) y render (#54–#55) en paralelo; #52 espera a #44; #56 al final.
+Empezar por #40: es corto y deja el linter y el test de capas vigilando el resto.
 
 ### d) Chequeos rápidos cuando se retome
 

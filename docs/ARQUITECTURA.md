@@ -55,6 +55,14 @@ y una planta por celda, que es como venía jugando. Se prende en el paso 4 (ver 
 
 `tests/dorado.test.ts` hace jugar al bot un año entero con 8 semillas en el motor nuevo y en el del prototipo (`tests/legado/motor-v04.cjs`) y exige el mismo estado final, decimal por decimal. Mientras esté verde, mover código es seguro. Cuando una regla cambie a propósito (el tic diario, por ejemplo), el test se jubila en el mismo PR y el cambio se anota en el CHANGELOG.
 
+## Hacia dónde va
+
+La epic #39 reordena el código sin cambiar cómo se juega: dos capas nuevas (`src/aplicacion/` con casos
+de uso y consultas, `src/infra/` con los adaptadores de guardado), el motor como `src/dominio/` con
+sistemas de orden declarado, acciones `puede / costo / aplicar`, textos y números fuera de las reglas,
+estado v4 con forma y el patio adentro de la partida, región como dato, vista por componentes con
+Preact y renderer por cámaras. El análisis, las alternativas y los issues están en `docs/REESTRUCTURA.md`.
+
 ## Lo que todavía no está tipado
 
 `src/arte`, `src/render` y `src/ui` están portados tal cual del prototipo, con `// @ts-nocheck`. Funcionan y están probados en navegador (`npm run humo`), pero la interfaz arma HTML a mano en un solo archivo y no va a escalar: el paso 6 de los cimientos la reescribe por componentes.

@@ -10,6 +10,10 @@
 | 5 | Contenido como tablas: eventos, logros, pedidos e ítems son filas con condición y efecto | Pendiente |
 | 6 | Interfaz por componentes y arte tipado; PWA | Pendiente |
 
+**Desde el 21-9 el orden cambia:** la epic #39 (reestructura, ver `docs/REESTRUCTURA.md`) va antes del
+paso 4. Su fase de dominio (#42–#48) se hace con el test dorado vivo, que es la red para mover código
+sin cambiar conducta; el paso 4 lo jubila. El paso 6 queda cubierto por #49–#55 de la misma epic.
+
 **El paso 3 está hecho pero todavía no se juega.** El motor ya sabe de huella, densidad y sombra
 entre plantas, y cada especie tiene su marco de plantación en `datos/juego/especies.ts`. La regla
 está apagada (`src/motor/espacio.ts`): mientras viva el test dorado el juego corre como venía —una

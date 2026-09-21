@@ -24,7 +24,7 @@ npm run build:artifact   # dist-artifact/huertita-artifact.html, una sola págin
 | `tests/` | Reglas, contrato de datos, regresiones y el test dorado contra el motor del prototipo | |
 | `tools/` | Bot que juega solo y prueba de humo en navegador | |
 
-Detalle en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md). De dónde salen los datos y qué pasa cuando huertapp cambia, en [docs/DATOS.md](docs/DATOS.md). Lo que falta, en [docs/CIMIENTOS.md](docs/CIMIENTOS.md).
+Detalle en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md). De dónde salen los datos y qué pasa cuando huertapp cambia, en [docs/DATOS.md](docs/DATOS.md). Lo que falta, en [docs/CIMIENTOS.md](docs/CIMIENTOS.md). La reestructura que viene (epic #39), en [docs/REESTRUCTURA.md](docs/REESTRUCTURA.md).
 
 ## Dos marcas que vas a ver en el código
 
