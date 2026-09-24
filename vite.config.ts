@@ -15,5 +15,6 @@ export default defineConfig(({ mode }) => ({
     cssCodeSplit: false,
     assetsInlineLimit: mode === 'artifact' ? 100_000_000 : 4096,
   },
-  test: { include: ['tests/**/*.test.ts'] },
+  esbuild: { jsx: 'automatic', jsxImportSource: 'preact' },
+  test: { include: ['tests/**/*.test.{ts,tsx}'] },
 }));

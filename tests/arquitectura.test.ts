@@ -32,11 +32,12 @@ const PERMITIDAS: Record<string, string[]> = {
   dominio: ['datos'],
   aplicacion: ['datos', 'dominio'],
   infra: ['dominio'],
+  vista: ['datos', 'dominio', 'aplicacion', 'infra', 'render', 'arte', 'estilos'],
   arte: [],
   render: ['arte'],
   estilos: [],
   ui: ['datos', 'dominio', 'aplicacion', 'arte', 'render', 'estilos'],
-  raiz: ['ui', 'estilos'],
+  raiz: ['ui', 'vista', 'estilos'],
 };
 
 describe('las dependencias van en un solo sentido', () => {

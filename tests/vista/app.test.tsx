@@ -1,0 +1,47 @@
+// @vitest-environment happy-dom
+/** La carcasa de la interfaz: se monta con una partida y responde a los botones principales. */
+import { cleanup, fireEvent, render, screen } from '@testing-library/preact';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import * as M from '../../src/dominio';
+import { App } from '../../src/vista/App';
+import { interaccion, partida, renderer, tocada } from '../../src/vista/estado';
+
+beforeEach(() => {
+  renderer.value = 1; // el renderer de texto: happy-dom no tiene canvas
+  partida.value = M.crearPartida(3);
+  interaccion.value = { modo: { modo: 'inicio' }, sel: null };
+  tocada();
+});
+afterEach(cleanup);
+
+describe('la carcasa', () => {
+  it('muestra la fecha, los ratos y el pronóstico de la partida', () => {
+    render(<App />);
+    expect(screen.getByText(/año 1/)).toBeTruthy();
+    expect(document.querySelectorAll('.hz-pips i').length).toBe(M.RATOS);
+    expect(screen.getByText(/Pronóstico de la década/)).toBeTruthy();
+  });
+  it('dibuja el patio con el renderer elegido: una celda por celda de la partida', () => {
+    render(<App />);
+    expect(document.querySelectorAll('.hz-tcelda.z-suelo').length).toBe(M.celdasDe(partida.value, 'suelo').length);
+  });
+  it('los botones de la barra cambian de panel y marcan el que está abierto', () => {
+    render(<App />);
+    fireEvent.click(document.querySelector('[data-modo="riego"]')!);
+    expect(interaccion.value.modo.modo).toBe('riego');
+    expect(document.querySelector('[data-modo="riego"]')!.className).toBe('on');
+  });
+  it('pasar 10 días avanza la partida y muestra lo que pasó', () => {
+    render(<App />);
+    const antes = partida.value.turno;
+    fireEvent.click(document.getElementById('hz-pasar')!);
+    expect(partida.value.turno).toBe(antes + 1);
+    expect(interaccion.value.modo.modo).toBe('resumen');
+  });
+  it('tocar una celda en el patio la elige', () => {
+    render(<App />);
+    fireEvent.click(document.querySelectorAll('.hz-tcelda.z-suelo')[0]);
+    expect(interaccion.value.modo.modo).toBe('celda');
+    expect(interaccion.value.sel).toBe(M.celdasDe(partida.value, 'suelo')[0]);
+  });
+});
