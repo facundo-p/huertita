@@ -10,9 +10,11 @@
  */
 import type { Marco } from '../../datos/juego/especies';
 import type { Obstaculo } from '../../datos/juego/patio';
-import { ESPECIES, objetivoCosecha } from './catalogo';
+import { objetivoCosecha } from './catalogo';
 import type { CeldaId, Especie, Estado, Planta } from './tipos';
 import { clamp } from './util';
+import { idCelda, xy } from './vocabulario';
+import { especieDe } from './planta';
 
 /** Cómo se juega mientras el espacio real está apagado: cada planta en su celda y nada más. */
 const SIN_ESPACIO: Marco = { cm: 50, huella: 1, porCelda: 1, alto: 0 };
@@ -48,14 +50,12 @@ export function bloqueDe(E: Pick<Estado, 'celdas'>, sp: Especie, ancla: CeldaId,
     base = E.celdas[ancla];
   if (!base) return null;
   if (huella === 1 || cria) return [ancla];
-  const p = ancla.split(','),
-    x = +p[0],
-    y = +p[1],
+  const { x, y } = xy(ancla),
     largo = huella === 4 ? 2 : 1,
     bloque: CeldaId[] = [];
   for (let dy = 0; dy < largo; dy++)
     for (let dx = 0; dx < 2; dx++) {
-      const k = x + dx + ',' + (y + dy),
+      const k = idCelda(x + dx, y + dy),
         c = E.celdas[k];
       if (!c || c.zona !== base.zona) return null;
       bloque.push(k);
@@ -86,7 +86,7 @@ export function semillasDeSiembra(
 }
 
 /** [SUPUESTO] cuánto levanta una planta ahora: su alto de grande, según lo que lleva crecido. */
-export function altoDe(pl: Planta, sp: Especie = ESPECIES[pl.slug]): number {
+export function altoDe(pl: Planta, sp: Especie = especieDe(pl)): number {
   const alto = marco(sp).alto;
   if (!alto || pl.etapa === 'semilla') return 0;
   return alto * clamp(pl.prog / objetivoCosecha(sp), 0.15, 1);
@@ -101,7 +101,7 @@ export function plantasQueSombrean(E: Pick<Estado, 'celdas' | 'plantas'>, salvo:
   const out: Obstaculo[] = [];
   for (const id in E.plantas) {
     const pl = E.plantas[id],
-      sp = ESPECIES[pl.slug],
+      sp = especieDe(pl),
       alto = altoDe(pl, sp);
     if (alto < 0.4) continue;
     const celdas = celdasDePlanta(pl);
@@ -109,9 +109,9 @@ export function plantasQueSombrean(E: Pick<Estado, 'celdas' | 'plantas'>, salvo:
     let sx = 0,
       sy = 0;
     for (const k of celdas) {
-      const q = k.split(',');
-      sx += +q[0] + 0.5;
-      sy += +q[1] + 0.5;
+      const q = xy(k);
+      sx += q.x + 0.5;
+      sy += q.y + 0.5;
     }
     out.push({
       tipo: 'arbol',

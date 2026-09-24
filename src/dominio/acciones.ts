@@ -9,6 +9,7 @@ import { bloqueDe, celdasDePlanta, ocupadaEn, porCelda, semillasDeSiembra } from
 import { zona, zonaDeTunel } from './patio';
 import type { Accion, Estado, Evento, NivelRiego, Planta, Resultado } from './tipos';
 import { clamp, r1 } from './util';
+import { especieDe, nombreDe, vivas } from './planta';
 
 type Hacer<A> = (E: Estado, a: A, evs: Evento[]) => string | void;
 type De<T extends Accion['tipo']> = Extract<Accion, { tipo: T }>;
@@ -33,7 +34,7 @@ const sembrar: Hacer<De<'sembrar'>> = (E, a, evs) => {
     return tomada === a.celda
       ? 'Esa celda está ocupada.'
       : sp.nombre + ' ocupa ' + sp.marco.huella + ' celdas y la de al lado está ocupada.';
-  if (!(E.sobres[a.slug] > 0)) return 'No te quedan semillas de ' + sp.nombre.toLowerCase() + '.';
+  if (!(E.sobres[a.slug] > 0)) return 'No te quedan semillas de ' + nombreDe(sp) + '.';
   if (!gastar(E, 1)) return SIN_RATOS;
   E.sobres[a.slug]--;
   const vent = ventana(a.slug, E.dec),
@@ -71,7 +72,7 @@ const sembrar: Hacer<De<'sembrar'>> = (E, a, evs) => {
   for (const k of bloque) E.celdas[k].planta = id;
   let txt =
     'Sembraste ' +
-    sp.nombre.toLowerCase() +
+    nombreDe(sp) +
     ' en ' +
     Z.nombre.toLowerCase() +
     (ns > 1 ? (cria ? ': una tanda de ' + ns + ' celdas.' : ': ' + ns + ' semillas juntas.') : '.');
@@ -88,7 +89,7 @@ const trasplantar: Hacer<De<'trasplantar'>> = (E, a, evs) => {
   if (dest.planta) return 'Esa celda está ocupada.';
   if (zona(E, dest.zona).cria) return 'La almaciguera es para criar plantines, no para recibirlos.';
   if (pl.etapa === 'semilla') return 'Todavía no germinó.';
-  const sp = ESPECIES[pl.slug],
+  const sp = especieDe(pl),
     deCria = !!zona(E, E.celdas[pl.celda].zona).cria;
   const bloque = bloqueDe(E, sp, a.celda, false);
   if (!bloque)
@@ -101,10 +102,10 @@ const trasplantar: Hacer<De<'trasplantar'>> = (E, a, evs) => {
   const tomada = ocupadaEn(E, bloque);
   if (tomada) return sp.nombre + ' ocupa ' + sp.marco.huella + ' celdas y la de al lado está ocupada.';
   if (!deCria && !sp.dt) return sp.nombre + ' no tolera el trasplante: si salieron varias juntas, raleá.';
-  if (!deCria && !((pl.n || 1) > 1) && !(sp.dt && pl.prog < sp.dt.max + 40)) return 'Ya está grande para moverla.';
+  if (!deCria && !(vivas(pl) > 1) && !(sp.dt && pl.prog < sp.dt.max + 40)) return 'Ya está grande para moverla.';
   if (!gastar(E, 1)) return SIN_RATOS;
   let suelto = false;
-  if ((pl.n || 1) > 1) {
+  if (vivas(pl) > 1) {
     // del grupo sale un plantín; el resto queda esperando
     pl.n--;
     const hijo = JSON.parse(JSON.stringify(pl)) as Planta;
@@ -116,7 +117,7 @@ const trasplantar: Hacer<De<'trasplantar'>> = (E, a, evs) => {
     suelto = true;
   }
   const celdasOrigen = celdasDePlanta(pl);
-  let txt = 'Trasplantaste ' + sp.nombre.toLowerCase() + '.',
+  let txt = 'Trasplantaste ' + nombreDe(sp) + '.',
     tipo: 'info' | 'mal' = 'info';
   if (!sp.dt) {
     pl.salud -= 40;
@@ -150,15 +151,15 @@ const trasplantar: Hacer<De<'trasplantar'>> = (E, a, evs) => {
 const cosechar: Hacer<De<'cosechar'>> = (E, a, evs) => {
   const pl = E.plantas[a.planta];
   if (!pl || pl.etapa !== 'cosechable') return 'Todavía no está para cosechar.';
-  const sp = ESPECIES[pl.slug],
+  const sp = especieDe(pl),
     c = E.celdas[pl.celda];
   if (sp.flor) return 'Las flores se dejan: trabajan atrayendo polinizadores. Podés dejarla semillar.';
   const bajoTunel = estaBajoTunel(E, pl.celda);
   const pol = sp.fruto ? (bajoTunel ? 0.45 : clamp(0.55 + 0.12 * floresAbiertas(E), 0, 1)) : 1;
   const tut = sp.cuidados.includes('tutorado') && !pl.tutor ? 0.8 : 1;
   const cabe = porCelda(sp),
-    cuantas = Math.min(pl.n || 1, cabe),
-    apret = (pl.n || 1) > cabe ? 0.7 : 1;
+    cuantas = Math.min(vivas(pl), cabe),
+    apret = vivas(pl) > cabe ? 0.7 : 1;
   const n = r1(
     cuantas *
       apret *
@@ -177,7 +178,7 @@ const cosechar: Hacer<De<'cosechar'>> = (E, a, evs) => {
   pl.listoHace = 0;
   c.mo = clamp(c.mo - 2, 5, 100);
   E.compost.carga += 0.5;
-  let txt = 'Cosechaste ' + sp.nombre.toLowerCase() + ': ' + n + ' porciones.';
+  let txt = 'Cosechaste ' + nombreDe(sp) + ': ' + n + ' porciones.';
   if (sp.fruto && pol < 0.8)
     txt += bajoTunel
       ? ' Bajo el microtúnel no entran polinizadores: cuajó poco.'
@@ -203,7 +204,7 @@ const semillar: Hacer<De<'semillar'>> = (E, a, evs) => {
   const pl = E.plantas[a.planta];
   if (!pl || (pl.etapa !== 'cosechable' && pl.etapa !== 'pasada'))
     return 'Solo una planta madura o pasada puede dar semilla.';
-  const sp = ESPECIES[pl.slug];
+  const sp = especieDe(pl);
   pl.etapa = 'semillando';
   pl.semillar = sp.fruto || sp.familia === 'leguminosa' ? 1 : BIENALES.includes(pl.slug) ? 9 : 3;
   evs.push(
@@ -211,7 +212,7 @@ const semillar: Hacer<De<'semillar'>> = (E, a, evs) => {
       E,
       'info',
       'Dejás semillar ' +
-        sp.nombre.toLowerCase() +
+        nombreDe(sp) +
         '. ' +
         (pl.semillar >= 9
           ? 'Es bienal: florece recién después del frío, va a ocupar el lugar unos 3 meses.'
@@ -226,15 +227,15 @@ const semillar: Hacer<De<'semillar'>> = (E, a, evs) => {
 const ralear: Hacer<De<'ralear'>> = (E, a, evs) => {
   const pl = E.plantas[a.planta];
   if (!pl) return 'No hay nada que ralear.';
-  const sp = ESPECIES[pl.slug],
-    dejo = Math.min(pl.n || 1, porCelda(sp)),
-    saco = (pl.n || 1) - dejo;
+  const sp = especieDe(pl),
+    dejo = Math.min(vivas(pl), porCelda(sp)),
+    saco = vivas(pl) - dejo;
   if (saco < 1) return 'No hay nada que ralear.';
   if (!gastar(E, 1)) return SIN_RATOS;
   const come = RALEO_SE_COME.includes(pl.slug) && pl.prog > 18;
   let txt =
     'Raleaste ' +
-    sp.nombre.toLowerCase() +
+    nombreDe(sp) +
     ': dejaste ' +
     (dejo === 1 ? 'la más fuerte' : 'las ' + dejo + ' más fuertes') +
     ' y sacaste ' +
@@ -255,7 +256,7 @@ const ralear: Hacer<De<'ralear'>> = (E, a, evs) => {
 const arrancar: Hacer<De<'arrancar'>> = (E, a, evs) => {
   const pl = E.plantas[a.planta];
   if (!pl) return 'No hay nada ahí.';
-  evs.push(anotar(E, 'info', 'Sacaste ' + ESPECIES[pl.slug].nombre.toLowerCase() + '. Va a la compostera.', pl.celda));
+  evs.push(anotar(E, 'info', 'Sacaste ' + nombreDe(especieDe(pl)) + '. Va a la compostera.', pl.celda));
   quitarPlanta(E, pl, pl.etapa !== 'semilla');
 };
 const tutorar: Hacer<De<'tutorar'>> = (E, a, evs) => {
@@ -263,7 +264,7 @@ const tutorar: Hacer<De<'tutorar'>> = (E, a, evs) => {
   if (!pl || pl.tutor) return 'No hace falta.';
   if (!gastar(E, 1)) return SIN_RATOS;
   pl.tutor = true;
-  evs.push(anotar(E, 'info', 'Le pusiste tutor a ' + ESPECIES[pl.slug].nombre.toLowerCase() + '.', pl.celda));
+  evs.push(anotar(E, 'info', 'Le pusiste tutor a ' + nombreDe(especieDe(pl)) + '.', pl.celda));
 };
 const COMO_TRATAR = {
   pulgon: 'Rociaste jabón potásico: adiós pulgones.',

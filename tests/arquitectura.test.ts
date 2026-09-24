@@ -66,6 +66,21 @@ describe('las dependencias van en un solo sentido', () => {
   });
 });
 
+describe('el vocabulario del dominio vive en un solo lugar', () => {
+  it('solo vocabulario.ts conoce el formato "x,y" de una celda', () => {
+    const culpables = archivos('src/dominio')
+      .filter((r) => !r.endsWith('vocabulario.ts'))
+      .filter((r) => /split\(','\)|\+ ',' \+/.test(readFileSync(join(RAIZ, r), 'utf8')));
+    expect(culpables).toEqual([]);
+  });
+  it('nadie repite ESPECIES[pl.slug] ni pl.n || 1: para eso están especieDe y vivas', () => {
+    const culpables = archivos('src/dominio')
+      .filter((r) => !r.endsWith('planta.ts'))
+      .filter((r) => /ESPECIES\[pl\.slug\]|pl\.n \|\| 1/.test(readFileSync(join(RAIZ, r), 'utf8')));
+    expect(culpables).toEqual([]);
+  });
+});
+
 describe('la deuda solo baja', () => {
   const todos = [...archivos('src'), ...archivos('datos'), ...archivos('tools'), ...archivos('scripts')];
   it('archivos sin tipar (@ts-nocheck)', () => {

@@ -1,15 +1,10 @@
 /** Tipos del estado de una partida. Todo es JSON serializable: eso da guardado, tests y bot gratis. */
 import type { Especie } from '../../datos/juego/especies';
 
+import type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, ZonaId } from './vocabulario';
+
 export type { Especie };
-/** id de una zona del patio de la partida (ver `datos/juego/patio.ts`) */
-export type ZonaId = string;
-export type CeldaId = string; // "x,y"
-export type Etapa = 'semilla' | 'plantin' | 'creciendo' | 'cosechable' | 'pasada' | 'semillando';
-export type Plaga = 'pulgon' | 'oruga' | 'babosa';
-export type NivelRiego = 0 | 1 | 2 | 3;
-export type CaracterId = 'normal' | 'nina' | 'nino' | 'tardia';
-export type TipoEvento = 'info' | 'bien' | 'mal' | 'clima' | 'logro';
+export type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, Ventana, ZonaId } from './vocabulario';
 
 export interface Planta {
   id: string;

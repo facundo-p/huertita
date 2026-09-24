@@ -9,6 +9,7 @@
 import type { Obstaculo, Patio } from '../../datos/juego/patio';
 import { diaCentral } from './clima';
 import { clamp, r1 } from './util';
+import { idCelda } from './vocabulario';
 
 const LATITUD = (-34.6 * Math.PI) / 180; // Gran Buenos Aires
 const PASO_MIN = 10;
@@ -82,7 +83,7 @@ const cache = new Map<string, number>();
  * ya no es fijo, así que no se guarda en caché.
  */
 export function horasSolGeometria(p: Patio, x: number, y: number, dec: number, temporales: Obstaculo[] = []): number {
-  const clave = p.id + '|' + dec + '|' + x + ',' + y,
+  const clave = p.id + '|' + dec + '|' + idCelda(x, y),
     guardado = temporales.length ? undefined : cache.get(clave);
   if (guardado !== undefined) return guardado;
   const dia = diaCentral(dec),

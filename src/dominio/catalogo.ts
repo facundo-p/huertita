@@ -3,13 +3,14 @@ import catalogoJson from '../../datos/catalogo.json';
 import type { Catalogo } from '../../datos/contrato';
 import { completar, type Especie } from '../../datos/juego/especies';
 import { mesDe } from './clima';
+import type { Ventana } from './vocabulario';
 
 const CATALOGO = catalogoJson as unknown as Catalogo;
 export const META = CATALOGO.meta;
 export const ESPECIES: Record<string, Especie> = {};
 for (const [slug, r] of Object.entries(CATALOGO.especies)) ESPECIES[slug] = completar(slug, r);
 
-export type Ventana = 'ideal' | 'posible' | 'fuera';
+export type { Ventana };
 /** [REPO] calendario.decadas.conurbano */
 export function ventana(slug: string, dec: number, que: 'siembra' | 'trasplante' = 'siembra'): Ventana {
   const d = ESPECIES[slug].dec;

@@ -1,10 +1,10 @@
 import { azar } from './azar';
 import { CARACTERES, fechaDe, generarTiempo } from './clima';
-import { ESPECIES } from './catalogo';
 import { celdasDePlanta } from './espacio';
 import { PATIOS, PATIO_INICIAL, celdasDe, zona, zonaDe, zonasDe } from './patio';
 import type { CaracterId, CeldaId, Estado, Evento, Planta, TipoEvento } from './tipos';
 import { clamp } from './util';
+import { especieDe } from './planta';
 
 export const RATOS = 14;
 export const RIEGOS = ['nada', 'espaciado', 'parejo', 'constante'] as const;
@@ -48,7 +48,7 @@ export function plantaEn(E: Estado, celda: CeldaId): Planta | null {
 export function puntoDeTrasplante(
   pl: Planta,
 ): { punto: 'chico' | 'listo' | 'pasado'; faltan: number; min: number; max: number } | null {
-  const dt = ESPECIES[pl.slug].dt;
+  const dt = especieDe(pl).dt;
   if (pl.etapa !== 'plantin' || !dt) return null;
   return {
     punto: pl.prog < dt.min ? 'chico' : pl.prog < dt.max ? 'listo' : 'pasado',
@@ -74,7 +74,7 @@ export function gastar(E: Estado, n: number): boolean {
 }
 
 export function quitarPlanta(E: Estado, pl: Planta, alCompost: boolean): void {
-  const sp = ESPECIES[pl.slug];
+  const sp = especieDe(pl);
   for (const k of celdasDePlanta(pl)) {
     const c = E.celdas[k];
     if (!zona(E, c.zona).cria && pl.etapa !== 'semilla') {

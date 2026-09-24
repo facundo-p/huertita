@@ -7,6 +7,7 @@ import { bloqueDe, ocupadaEn } from './espacio';
 import { horasSol, macetaDe, sueloBase, vecinas, xy, zonaDe } from './patio';
 import type { CeldaId, Especie, Estado, Planta, Tiempo } from './tipos';
 import { clamp, r1 } from './util';
+import { especieDe } from './planta';
 
 /** [REPO] la escala de riego; [SUPUESTO] los números */
 export const DESEO_AGUA: Record<RegimenRiego, number> = { escaso: 0.6, espaciado: 1.4, parejo: 2.2, constante: 3.0 };
@@ -98,11 +99,11 @@ export function fVecinos(
     const r = relacion(slug, pl.slug);
     if (r === 'buena') {
       f += 0.08 * clamp(sp.confB / 8, 0.4, 1);
-      buenas.push(ESPECIES[pl.slug].nombre);
+      buenas.push(especieDe(pl).nombre);
     }
     if (r === 'mala') {
       f -= 0.12 * clamp(sp.confM / 8, 0.4, 1);
-      malas.push(ESPECIES[pl.slug].nombre);
+      malas.push(especieDe(pl).nombre);
     }
   }
   return { f: clamp(f, 0.65, 1.25), buenas, malas };
@@ -114,7 +115,7 @@ export function aliadosCerca(E: Estado, celda: CeldaId): number {
   for (const id in E.plantas) {
     const pl = E.plantas[id],
       q = xy(pl.celda),
-      sp = ESPECIES[pl.slug];
+      sp = especieDe(pl);
     if (pl.celda === celda || pl.etapa === 'semilla' || pl.etapa === 'plantin') continue;
     if ((sp.flor || sp.grupo === 'Aromática') && Math.max(Math.abs(p.x - q.x), Math.abs(p.y - q.y)) <= 2) n++;
   }
@@ -124,7 +125,7 @@ export function floresAbiertas(E: Estado): number {
   let n = 0;
   for (const id in E.plantas) {
     const pl = E.plantas[id],
-      sp = ESPECIES[pl.slug];
+      sp = especieDe(pl);
     if (pl.etapa === 'cosechable' && (sp.flor || sp.familia === 'lamiacea')) n += sp.flor ? 1 : 0.5;
   }
   return n;
@@ -139,7 +140,7 @@ export interface Factores {
 }
 /** Lo que la interfaz muestra como indicadores: por qué esta planta crece como crece. */
 export function factoresPlanta(E: Estado, pl: Planta, w: Tiempo = E.prox.real): Factores {
-  const sp = ESPECIES[pl.slug],
+  const sp = especieDe(pl),
     h = horasSol(E, pl.celda, w.dec),
     H = humedad(E, pl.celda, w),
     ag = fAgua(sp, H),

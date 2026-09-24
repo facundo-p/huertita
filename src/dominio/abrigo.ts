@@ -3,10 +3,10 @@
  * [SUPUESTO] grados que suma cada protección a la mínima de la noche. Se acumulan.
  * Hay helada para la planta si mínima + abrigo ≤ 3 °C (el umbral agrometeorológico de FAUBA).
  */
-import { ESPECIES } from './catalogo';
 import { zona as zonaDelPatio } from './patio';
 import type { Estado, ZonaId } from './tipos';
 import { clamp, phi } from './util';
+import { especieDe } from './planta';
 
 /** El reparo fijo de cada zona (alero, pared, techo) está en los datos del patio. */
 export const ABRIGO = { manta: 4, tunel: 5 };
@@ -40,7 +40,7 @@ export function enRiesgo(E: Estado, zona: ZonaId): string[] {
   const out: string[] = [];
   for (const id in E.plantas) {
     const pl = E.plantas[id],
-      sp = ESPECIES[pl.slug];
+      sp = especieDe(pl);
     if (
       E.celdas[pl.celda].zona === zona &&
       pl.etapa !== 'semilla' &&

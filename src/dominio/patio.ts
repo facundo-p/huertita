@@ -8,6 +8,9 @@ import { PATIOS, PATIO_INICIAL } from '../../datos/juego/patios';
 import { plantasQueSombrean } from './espacio';
 import { horasSolGeometria, horasSolV04 } from './sol';
 import type { CeldaId, Estado, ZonaId } from './tipos';
+import { idCelda, xy } from './vocabulario';
+
+export { xy };
 
 export { PATIOS, PATIO_INICIAL };
 export type { Patio, ZonaDePatio };
@@ -35,7 +38,7 @@ function indice(p: Patio): Indice {
     p.plano.forEach((fila, y) =>
       [...fila].forEach((ch, x) => {
         const z = i!.porLetra[ch];
-        if (z) i!.celdas[z].push(x + ',' + y);
+        if (z) i!.celdas[z].push(idCelda(x, y));
       }),
     );
     indices.set(p.id, i);
@@ -61,9 +64,9 @@ export const zonaDe = (E: Pick<Estado, 'patio' | 'celdas'>, celda: CeldaId): Zon
   zona(E, E.celdas[celda].zona);
 export const celdasDe = (E: ConPatio, id: ZonaId): CeldaId[] => indice(patioDe(E)).celdas[id] || [];
 export function zonaDeCelda(E: ConPatio, c: CeldaId): ZonaId | null {
-  const p = c.split(','),
-    fila = patioDe(E).plano[+p[1]];
-  return (fila && indice(patioDe(E)).porLetra[fila[+p[0]]]) || null;
+  const { x, y } = xy(c),
+    fila = patioDe(E).plano[y];
+  return (fila && indice(patioDe(E)).porLetra[fila[x]]) || null;
 }
 export const macetaDe = (E: ConPatio, celda: CeldaId): { litros: number; prof: number } | null =>
   indice(patioDe(E)).macetas[celda] || null;
@@ -72,14 +75,10 @@ export const sueloBase = (E: Pick<Estado, 'patio' | 'celdas'>, celda: CeldaId): 
 /** Primera zona que admite microtúnel, o null si el patio no tiene. */
 export const zonaDeTunel = (E: ConPatio): ZonaId | null => zonasDe(E).find((z) => z.admiteTunel)?.id ?? null;
 
-export function xy(c: CeldaId): { x: number; y: number } {
-  const p = c.split(',');
-  return { x: +p[0], y: +p[1] };
-}
 export function vecinas(celda: CeldaId): CeldaId[] {
   const p = xy(celda),
     out: CeldaId[] = [];
-  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (dx || dy) out.push(p.x + dx + ',' + (p.y + dy));
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (dx || dy) out.push(idCelda(p.x + dx, p.y + dy));
   return out;
 }
 

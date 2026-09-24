@@ -2,6 +2,7 @@
 import { ESPECIES } from './catalogo';
 import { anotar } from './estado';
 import type { Estado, Evento } from './tipos';
+import { nombreDe } from './planta';
 
 export interface Mision {
   id: string;
@@ -73,7 +74,7 @@ export function cumplir(E: Estado, id: string, evs: Evento[]): void {
         m.titulo +
         '. Una vecina te pasa sobres de ' +
         Object.keys(m.premio)
-          .map((s) => ESPECIES[s].nombre.toLowerCase())
+          .map((s) => nombreDe(ESPECIES[s]))
           .join(', ') +
         '.',
     ),

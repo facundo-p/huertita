@@ -9,7 +9,7 @@
  */
 import { ABRIGO, abrigo, type Abrigo } from './abrigo';
 import { azar } from './azar';
-import { ESPECIES, objetivoCosecha } from './catalogo';
+import { objetivoCosecha } from './catalogo';
 import { fechaDe, generarTiempo } from './clima';
 import { anotar, quitarPlanta, ratosLibres } from './estado';
 import {
@@ -27,6 +27,7 @@ import { apuntar, cerrar } from './diario';
 import { idsDeZonas, macetaDe, zona } from './patio';
 import type { CeldaId, Especie, Estado, Evento, Planta, Tiempo, TipoEvento, ZonaId } from './tipos';
 import { cap, clamp, r1 } from './util';
+import { especieDe, nombreDe, vivas } from './planta';
 
 const DIAS = 10;
 interface Ctx {
@@ -84,7 +85,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
         'No germinó ninguna de las ' +
           S +
           ' semillas de ' +
-          nom.toLowerCase() +
+          nombreDe(sp) +
           '. ' +
           (ideal
             ? 'A veces pasa: por eso se siembra de más.'
@@ -106,7 +107,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
     ev(
       'bien',
       '¡Germinó ' +
-        nom.toLowerCase() +
+        nombreDe(sp) +
         '!' +
         (S > 1
           ? ' Nacieron ' + nacieron + ' de ' + S + (ideal ? '.' : ': con el suelo fuera del rango ideal nacen menos.')
@@ -115,11 +116,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
     );
     cumplir(E, 'germina', evs);
   } else if (pl.edad >= 30) {
-    ev(
-      'mal',
-      'La semilla de ' + nom.toLowerCase() + ' se perdió: pasaron 30 días sin condiciones para germinar.',
-      pl.celda,
-    );
+    ev('mal', 'La semilla de ' + nombreDe(sp) + ' se perdió: pasaron 30 días sin condiciones para germinar.', pl.celda);
     quitarPlanta(E, pl, false);
   }
 }
@@ -180,7 +177,7 @@ function semillarOSecarse({ E, ev, evs }: Ctx, pl: Planta, sp: Especie): Sigue {
       ev(
         'bien',
         'Guardaste 4 sobres de ' +
-          nom.toLowerCase() +
+          nombreDe(sp) +
           ' (generación ' +
           (pl.gen + 1) +
           '). Semilla criada en tu patio: se adapta un poco más cada año.',
@@ -209,7 +206,7 @@ function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores)
     F.luz.f * F.agua.f * F.temp.f * F.suelo.f * F.vecinos.f * pl.vigor * (pl.plaga ? 0.8 : 1) * (pl.shock ? 0.5 : 1);
   if (sp.cuidados.includes('tutorado') && !pl.tutor && pl.prog > objetivoCosecha(sp) * 0.45) g *= 0.85;
   const cabe = porCelda(sp);
-  if (!enAlm && (pl.n || 1) > cabe) {
+  if (!enAlm && vivas(pl) > cabe) {
     g *= Math.max(0.4, 1 - 0.15 * (pl.n - cabe));
     if (!pl.avisoRaleo) {
       pl.avisoRaleo = true;
@@ -232,14 +229,14 @@ function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores)
     ev(
       'mal',
       'El plantín de ' +
-        nom.toLowerCase() +
+        nombreDe(sp) +
         ' se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar.',
       pl.celda,
     );
   }
   if (enAlm && sp.dt && pl.prog >= sp.dt.min && !pl.avisoListo) {
     pl.avisoListo = true;
-    ev('bien', 'Plantín de ' + nom.toLowerCase() + ' listo para trasplantar.', pl.celda);
+    ev('bien', 'Plantín de ' + nombreDe(sp) + ' listo para trasplantar.', pl.celda);
   }
   return g;
 }
@@ -312,8 +309,7 @@ function estresar(
 
 /** [REPO] el texto de plagas de cada ficha. [SUPUESTO] las probabilidades. */
 function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void {
-  const nom = sp.nombre,
-    c = E.celdas[pl.celda];
+  const c = E.celdas[pl.celda];
   if (!pl.plaga) {
     const prot = clamp(1 - 0.22 * aliadosCerca(E, pl.celda), 0.25, 1),
       joven = pl.prog < objetivoCosecha(sp) * 0.4;
@@ -325,18 +321,14 @@ function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void 
       ev(
         'mal',
         'Orugas en ' +
-          nom.toLowerCase() +
+          nombreDe(sp) +
           ': la mariposa blanca pone en las brasicáceas. ' +
           (prot === 1 ? 'Sin flores ni aromáticas cerca no hay quien las controle.' : ''),
         pl.celda,
       );
     } else if (joven && w.lluvia > 40 && !macetaDe(E, pl.celda) && p < 0.15 * prot) {
       pl.plaga = 'babosa';
-      ev(
-        'mal',
-        'Babosas en ' + nom.toLowerCase() + ': con tanta lluvia salen de noche y se comen lo tierno.',
-        pl.celda,
-      );
+      ev('mal', 'Babosas en ' + nombreDe(sp) + ': con tanta lluvia salen de noche y se comen lo tierno.', pl.celda);
     } else if (
       /hoja|fruto|Legumbre/.test(sp.grupo) &&
       ((d >= 25 && d <= 33) || (d >= 7 && d <= 12)) &&
@@ -346,7 +338,7 @@ function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void 
       ev(
         'mal',
         'Pulgones en ' +
-          nom.toLowerCase() +
+          nombreDe(sp) +
           '. ' +
           (prot === 1 ? 'Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen.' : ''),
         pl.celda,
@@ -364,7 +356,7 @@ function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void 
       ev(
         'bien',
         'Llegaron vaquitas de San Antonio atraídas por tus flores: limpiaron ' +
-          nom.toLowerCase() +
+          nombreDe(sp) +
           ' de ' +
           (pl.plaga === 'pulgon' ? 'pulgones' : 'plaga') +
           '.',
@@ -502,7 +494,7 @@ export function pasarDecada(E: Estado): Evento[] {
   for (const id of Object.keys(E.plantas)) {
     const pl = E.plantas[id];
     if (!pl) continue;
-    const sp = ESPECIES[pl.slug],
+    const sp = especieDe(pl),
       z = E.celdas[pl.celda].zona,
       saludAntes = pl.salud;
     pl.edad += DIAS;
