@@ -8,6 +8,3 @@ tests/fixtures
 datos/catalogo.json
 datos/fuente.lock.json
 package-lock.json
-# portados del prototipo con @ts-nocheck: se reescriben en la epic #39 (#55)
-src/render/pixel.ts
-src/render/texto.ts

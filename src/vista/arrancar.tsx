@@ -8,7 +8,8 @@ import * as M from '../dominio';
 import type { Estado } from '../dominio';
 import { App } from './App';
 import { interaccion, partida, tocada } from './estado';
-import { usarPartida } from './mensajes';
+import { activo } from './efectos';
+import { escenaActual, usarPartida } from './mensajes';
 import { almacenes, conectar } from './persistencia';
 
 interface Hot {
@@ -44,11 +45,17 @@ export function arrancar(raiz: HTMLElement): void {
   if (hot?.snapshot) hot.snapshot(() => partida.value);
   if (hot?.ready) hot.ready((datos) => void empezar(raiz, datos));
   else void empezar(raiz, hot?.data);
-  // para la prueba de humo: la partida y el dominio a mano desde la consola
+  // para el humo y las capturas: la partida, la escena, el renderer montado y el dominio, a mano desde la consola
   (globalThis as { Huertita?: unknown }).Huertita = {
     ui: {
       get E() {
         return partida.value;
+      },
+      get escena() {
+        return escenaActual();
+      },
+      get renderer() {
+        return activo.value;
       },
     },
     Motor: M,

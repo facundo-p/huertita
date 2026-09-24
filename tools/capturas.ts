@@ -18,10 +18,13 @@ const { chromium } = await playwright();
 const modo = process.argv.includes('--guardar') ? 'guardar' : 'comparar';
 const REF = '.capturas/referencia.json';
 const frag = readFileSync('dist-artifact/huertita-artifact.html', 'utf8');
-writeFileSync(
-  'dist-artifact/_capturas.html',
-  `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>${frag}</body></html>`,
-);
+const CABEZA =
+  '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+  '<meta name="viewport" content="width=device-width,initial-scale=1"></head><body>';
+/** La página de las capturas: el juego y, si hace falta, un lugar para un renderer aparte. */
+const armarPagina = (extra = '') =>
+  writeFileSync('dist-artifact/_capturas.html', CABEZA + frag + extra + '</body></html>');
+armarPagina();
 
 /** FNV-1a de los píxeles de un lienzo: igual huella = mismos píxeles. */
 const HUELLA = `(cv) => { const d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let h = 2166136261;
@@ -110,6 +113,64 @@ for (const s of slugs) {
   await p.click('[data-modo="almanaque"]');
 }
 await p.close();
+
+/**
+ * Los efectos animados, con el reloj del navegador quieto: una instancia aparte del renderer recibe
+ * la escena de la partida, todos los efectos juntos, una foto con más crecimiento (brotes y plantas
+ * que se estiran) y los tres climas animados. Se toma la huella de un cuadro de cada dos.
+ */
+const ESCENARIO = `(() => {
+  const H = globalThis.Huertita, R = H.ui.renderer.constructor;
+  const es = JSON.parse(JSON.stringify(H.ui.escena)); es.camara = CAMARA;
+  const r = new R(); r.montar(document.getElementById('banco')); r.dibujar(es);
+  globalThis.__banco = { r, es };
+  const conPlanta = Object.keys(es.celdas).filter((k) => es.celdas[k].planta && es.celdas[k].ancla !== false);
+  const libres = Object.keys(es.celdas).filter((k) => !es.celdas[k].planta);
+  const pl = (k) => es.celdas[k].planta, otra = conPlanta[2] || conPlanta[0];
+  r.efecto('sembrar', { celda: libres[0] || conPlanta[0] });
+  r.efecto('cosechar', { celda: conPlanta[0], planta: pl(conPlanta[0]), texto: '+1,5' });
+  r.efecto('trasplantar', { de: conPlanta[1], celda: libres[1] || otra, planta: pl(conPlanta[1]) });
+  for (const t of ['polvo', 'morir', 'tratar', 'mulch', 'compost', 'tutorar', 'brote']) r.efecto(t, { celda: otra });
+  r.efecto('regar', { zona: es.celdas[conPlanta[0]].zona, nivel: 2 });
+  r.efecto('logro');
+})()`;
+const CRECER = `(() => {
+  const { r, es } = globalThis.__banco, es2 = JSON.parse(JSON.stringify(es));
+  for (const c of Object.values(es2.celdas))
+    if (c.planta && c.ancla !== false) c.planta.avance = Math.min(1, c.planta.avance + 0.2);
+  const sem = Object.keys(es2.celdas).find((k) => es2.celdas[k].planta?.etapa === 'semilla');
+  if (sem) es2.celdas[sem].planta.etapa = 'plantin';
+  globalThis.__banco.es = es2; r.dibujar(es2);
+})()`;
+const HUELLA_BANCO = `(${HUELLA})(document.querySelector('#banco canvas'))`;
+armarPagina('<div id="banco" style="width:512px"></div>');
+for (const partida of ['partida-v3-fondo', 'partida-v3-balcon'])
+  for (const cam of ['cenital', 'oblicua', 'cerca']) {
+    const pb = await b.newPage({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 1 });
+    await pb.clock.install({ time: new Date('2026-09-01T12:00:00Z') });
+    const E = readFileSync(`tests/fixtures/${partida}.json`, 'utf8');
+    await pb.addInitScript((e: string) => localStorage.setItem('huertita-v1', e), E);
+    await pb.goto('file://' + resolve('dist-artifact/_capturas.html'));
+    await pb.clock.pauseAt(new Date('2026-09-01T12:00:30Z'));
+    await pb.clock.runFor(1000);
+    await pb.evaluate(ESCENARIO.replace('CAMARA', `'${cam}'`));
+    const cuadros = async (fase: string, n: number) => {
+      for (let i = 0; i < n; i++) {
+        await pb.clock.runFor(90);
+        if (i % 2) huellas[`efectos/${partida}/${cam}/${fase}-${i}`] = await pb.evaluate(HUELLA_BANCO);
+      }
+    };
+    await cuadros('efectos', 30);
+    await pb.evaluate(CRECER);
+    await cuadros('crece', 16);
+    for (const animar of ['lluvia', 'helada', 'calor']) {
+      await pb.evaluate(
+        `(() => { const { r, es } = globalThis.__banco; r.dibujar({ ...es, animar: '${animar}' }); })()`,
+      );
+      await cuadros(animar, 4);
+    }
+    await pb.close();
+  }
 await b.close();
 
 if (modo === 'guardar') {

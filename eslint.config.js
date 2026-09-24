@@ -7,17 +7,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: [
-      'dist/**',
-      'dist-artifact/**',
-      'node_modules/**',
-      '.capturas/**',
-      'tests/legado/**',
-      'docs/**',
-      // portados del prototipo con @ts-nocheck: se reescriben en la epic #39 (#55)
-      'src/render/pixel.ts',
-      'src/render/texto.ts',
-    ],
+    ignores: ['dist/**', 'dist-artifact/**', 'node_modules/**', '.capturas/**', 'tests/legado/**', 'docs/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

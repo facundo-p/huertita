@@ -4,17 +4,17 @@
  * dibujar la escena nueva.
  */
 import { signal } from '@preact/signals';
-import type { Efecto, Renderer } from '../render/contrato';
+import type { DatosDeEfecto, Efecto, Renderer } from '../render/contrato';
 import { RenderPixel } from '../render/pixel';
 import { RenderTexto } from '../render/texto';
 
-export const RENDERERS: (new () => Renderer)[] = [RenderPixel as never, RenderTexto as never];
+export const RENDERERS: (new () => Renderer)[] = [RenderPixel, RenderTexto];
 
 /** el renderer montado ahora (lo pone el lienzo) */
 export const activo = signal<Renderer | null>(null);
 
-let cola: [Efecto, Record<string, unknown>][] = [];
-export function efecto(tipo: Efecto, datos: Record<string, unknown> = {}): void {
+let cola: [Efecto, DatosDeEfecto][] = [];
+export function efecto(tipo: Efecto, datos: DatosDeEfecto = {}): void {
   cola.push([tipo, datos]);
 }
 /** Dispara las animaciones encoladas en el renderer. */

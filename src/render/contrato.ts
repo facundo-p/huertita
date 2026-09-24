@@ -7,6 +7,8 @@ import type { TipoZona } from '../../datos/juego/patio';
 import type { PlantaParaDibujar } from '../arte';
 import type { CeldaId, Etapa, Plaga, ZonaId } from '../dominio';
 
+export type { CeldaId, ZonaId };
+
 /** Todo lo que el arte necesita para dibujar la planta (`PlantaParaDibujar`), más lo que usa el renderer. */
 export interface PlantaDeEscena extends PlantaParaDibujar {
   slug: string;
@@ -46,7 +48,7 @@ export interface Escena {
   cerca: { zona: ZonaId; tipo: TipoZona; hondo: number; col: number | null };
   ancho: number;
   alto: number;
-  /** filas de norte a sur: P pared, H casa, T árbol, C compostera, '.' pasto, ':' sendero; cualquier otra letra es una celda de cultivo */
+  /** filas de norte a sur: P pared, H casa, T árbol, '.' pasto, ':' sendero; cualquier otra letra es una celda de cultivo */
   plano: string[];
   piso: 'pasto' | 'baldosa';
   norte: 'paredon' | 'baranda';
@@ -79,6 +81,18 @@ export type Efecto =
   | 'tutorar'
   | 'regar'
   | 'logro';
+/** Lo que acompaña a un efecto: dónde pasó y, según el efecto, qué planta, de dónde vino o cuánto se regó. */
+export interface DatosDeEfecto {
+  celda?: CeldaId | null;
+  /** trasplante: de qué celda sale */
+  de?: CeldaId | null;
+  /** la planta que vuela (cosecha, trasplante) */
+  planta?: PlantaDeEscena | null;
+  /** lo cosechado, que sube como texto */
+  texto?: string | null;
+  zona?: ZonaId;
+  nivel?: number;
+}
 export interface Renderer {
   nombre: string;
   montar(elemento: HTMLElement): void;
@@ -88,5 +102,5 @@ export interface Renderer {
   /** opcional: cámaras que ofrece, como pares [id, etiqueta]; la elegida llega en `escena.camara` */
   camaras?: [string, string][];
   /** opcional: animación puntual disparada por una acción del jugador */
-  efecto?(tipo: Efecto, datos: Record<string, unknown>): void;
+  efecto?(tipo: Efecto, datos?: DatosDeEfecto): void;
 }
