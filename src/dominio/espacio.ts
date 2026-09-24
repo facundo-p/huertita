@@ -10,6 +10,7 @@
  */
 import type { Marco } from '../../datos/juego/especies';
 import type { Obstaculo } from '../../datos/juego/patio';
+import { REGLAS } from '../../datos/juego/reglas';
 import { objetivoCosecha } from './catalogo';
 import type { CeldaId, Especie, Estado, Planta } from './tipos';
 import { clamp } from './util';
@@ -82,14 +83,14 @@ export function semillasDeSiembra(
   if (!real) return porDefecto;
   if (zona.cria) return zona.capacidad ?? porDefecto;
   const pc = porCelda(sp);
-  return pc <= 1 ? porDefecto : pc + Math.ceil(pc / 3);
+  return pc <= 1 ? porDefecto : pc + Math.ceil(pc / REGLAS.espacio.extraParaRalear);
 }
 
 /** [SUPUESTO] cuánto levanta una planta ahora: su alto de grande, según lo que lleva crecido. */
 export function altoDe(pl: Planta, sp: Especie = especieDe(pl)): number {
   const alto = marco(sp).alto;
   if (!alto || pl.etapa === 'semilla') return 0;
-  return alto * clamp(pl.prog / objetivoCosecha(sp), 0.15, 1);
+  return alto * clamp(pl.prog / objetivoCosecha(sp), REGLAS.espacio.altoInicial, 1);
 }
 /**
  * Las plantas altas del patio, como obstáculos temporales para el cálculo de sol. Se saltea la
@@ -103,7 +104,7 @@ export function plantasQueSombrean(E: Pick<Estado, 'celdas' | 'plantas'>, salvo:
     const pl = E.plantas[id],
       sp = especieDe(pl),
       alto = altoDe(pl, sp);
-    if (alto < 0.4) continue;
+    if (alto < REGLAS.espacio.sombreaDesde) continue;
     const celdas = celdasDePlanta(pl);
     if (celdas.includes(salvo)) continue;
     let sx = 0,

@@ -1,3 +1,4 @@
+import { REGLAS } from '../../datos/juego/reglas';
 import { moMedia } from './estado';
 import { patioDe } from './patio';
 import type { Estado } from './tipos';
@@ -15,9 +16,13 @@ export interface Balance {
 export function balance(E: Estado): Balance {
   const especies = Object.keys(E.cosechado).length,
     dMo = r1(moMedia(E) - E.moInicial);
-  const [e1, e2, e3] = patioDe(E).estrellas;
+  const B = REGLAS.balance;
   const puntos =
-    E.porciones + especies * 3 + E.semillasGuardadas * 0.5 + Math.max(0, dMo) + Math.min(20, E.visitas / 10);
+    E.porciones +
+    especies * B.porEspecie +
+    E.semillasGuardadas * B.porSobreGuardado +
+    Math.max(0, dMo) +
+    Math.min(B.topeDeVisitas, E.visitas / B.visitasPorPunto);
   return {
     porciones: E.porciones,
     especies,
@@ -26,6 +31,12 @@ export function balance(E: Estado): Balance {
     visitas: E.visitas,
     logros: Object.keys(E.misiones).length,
     puntos: Math.round(puntos),
-    estrellas: puntos >= e3 ? 3 : puntos >= e2 ? 2 : puntos >= e1 ? 1 : 0,
+    estrellas: estrellasPara(puntos, patioDe(E).estrellas),
   };
+}
+/** Las estrellas del año: cada patio dice cuántos puntos pide cada una, así uno chico no compite con uno grande. */
+function estrellasPara(puntos: number, [una, dos, tres]: [number, number, number]): Balance['estrellas'] {
+  if (puntos >= tres) return 3;
+  if (puntos >= dos) return 2;
+  return puntos >= una ? 1 : 0;
 }

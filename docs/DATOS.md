@@ -11,6 +11,7 @@ datos/fuente.lock.json     de qué versión exacta salió (sha256, rama, fecha)
 datos/CAMBIOS.md           qué cambió en cada sync y qué sistema del juego toca
 datos/HUECOS.md            lo que a huertapp le falta y el juego supone
 datos/juego/especies.ts    lo que agrega el juego: familia, tipo de cosecha, supuestos para los huecos
+datos/juego/reglas.ts      los números del juego (balance): cada supuesto con nombre, unidad y marca
 ```
 
 ## Qué pasa si cambio la base en huertapp

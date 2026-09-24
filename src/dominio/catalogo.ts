@@ -2,6 +2,7 @@
 import catalogoJson from '../../datos/catalogo.json';
 import type { Catalogo } from '../../datos/contrato';
 import { completar, type Especie } from '../../datos/juego/especies';
+import { REGLAS } from '../../datos/juego/reglas';
 import { mesDe } from './clima';
 import type { Ventana } from './vocabulario';
 
@@ -20,17 +21,19 @@ export function ventana(slug: string, dec: number, que: 'siembra' | 'trasplante'
 }
 export const metodoDe = (slug: string, dec: number): string | null => ESPECIES[slug].metodo[String(mesDe(dec))] || null;
 /** días efectivos de crecimiento para llegar a cosecha */
-export const objetivoCosecha = (sp: Especie): number => sp.dc.min + (sp.dc.max - sp.dc.min) * 0.35;
+export const objetivoCosecha = (sp: Especie): number => sp.dc.min + (sp.dc.max - sp.dc.min) * REGLAS.cosecha.objetivo;
 
-// [SUPUESTO] cuántas semillas van por siembra: una tanda de celdas en la almaciguera, un golpe o chorrillo en directa
+/** [SUPUESTO] las que se plantan de diente, tubérculo, estolón o esqueje: una por siembra */
 const VEGETATIVAS = 'ajo papa batata frutilla romero menta lavanda laurel'.split(' ');
+/** Cuántas semillas van por siembra: una tanda de celdas en la almaciguera, un golpe o chorrillo en directa. */
 export function semillasPorSiembra(slug: string, enAlmacigo: boolean): number {
   const sp = ESPECIES[slug];
   if (VEGETATIVAS.includes(slug)) return 1;
-  if (enAlmacigo) return 6;
-  return sp.familia === 'leguminosa' || sp.familia === 'cucurbitacea' || slug === 'choclo' || slug === 'girasol'
-    ? 3
-    : 4;
+  const S = REGLAS.siembra.semillas;
+  if (enAlmacigo) return S.almacigo;
+  const grande =
+    sp.familia === 'leguminosa' || sp.familia === 'cucurbitacea' || slug === 'choclo' || slug === 'girasol';
+  return grande ? S.grandes : S.resto;
 }
 export const RALEO_SE_COME =
   'rabanito zanahoria remolacha nabo lechuga rucula espinaca acelga kale cebolla-de-verdeo perejil cilantro'.split(' ');

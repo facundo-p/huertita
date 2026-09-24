@@ -3,13 +3,15 @@
  * [SUPUESTO] grados que suma cada protección a la mínima de la noche. Se acumulan.
  * Hay helada para la planta si mínima + abrigo ≤ 3 °C (el umbral agrometeorológico de FAUBA).
  */
+import { REGLAS } from '../../datos/juego/reglas';
 import { zona as zonaDelPatio } from './patio';
 import type { Estado, ZonaId } from './tipos';
 import { clamp, phi } from './util';
 import { especieDe } from './planta';
 
 /** El reparo fijo de cada zona (alero, pared, techo) está en los datos del patio. */
-export const ABRIGO = { manta: 4, tunel: 5 };
+export const ABRIGO = REGLAS.abrigo;
+const { umbral: UMBRAL, desvioPronostico } = REGLAS.helada;
 export interface Abrigo {
   grados: number;
   partes: string[];
@@ -31,11 +33,11 @@ export function abrigo(E: Estado, zona: ZonaId): Abrigo {
     g += ABRIGO.manta;
     partes.push('manta');
   }
-  return { grados: g, partes, aguanta: 3 - g };
+  return { grados: g, partes, aguanta: UMBRAL - g };
 }
 /** % de que la helada le llegue a esa zona esta década, con el abrigo puesto y el pronóstico a la vista. */
 export const riesgoHelada = (E: Estado, zona: ZonaId): number =>
-  Math.round(clamp(phi((3 - abrigo(E, zona).grados - E.prox.pron.tmin) / 2.2), 0, 1) * 100);
+  Math.round(clamp(phi((UMBRAL - abrigo(E, zona).grados - E.prox.pron.tmin) / desvioPronostico), 0, 1) * 100);
 export function enRiesgo(E: Estado, zona: ZonaId): string[] {
   const out: string[] = [];
   for (const id in E.plantas) {

@@ -1,3 +1,4 @@
+import { REGLAS } from '../../datos/juego/reglas';
 import { azar } from './azar';
 import { CARACTERES, fechaDe, generarTiempo } from './clima';
 import { celdasDePlanta } from './espacio';
@@ -6,27 +7,14 @@ import type { CaracterId, CeldaId, Estado, Evento, Planta, TipoEvento } from './
 import { clamp } from './util';
 import { especieDe } from './planta';
 
-export const RATOS = 14;
+export const RATOS = REGLAS.ratos.porDecada;
 export const RIEGOS = ['nada', 'espaciado', 'parejo', 'constante'] as const;
-const SOBRES_INICIO: Record<string, number> = {
-  rabanito: 6,
-  lechuga: 6,
-  acelga: 4,
-  arveja: 6,
-  haba: 4,
-  perejil: 3,
-  calendula: 4,
-  tomate: 4,
-  albahaca: 4,
-  zanahoria: 6,
-  'cebolla-de-verdeo': 4,
-  rucula: 4,
-};
+const { arranque: ARRANQUE, suelo: SUELO } = REGLAS;
 
 export function anotar(E: Estado, tipo: TipoEvento, texto: string, celda?: CeldaId | null): Evento {
   const ev: Evento = { turno: E.turno, dec: E.dec, tipo, texto, celda: celda || null };
   E.cuaderno.push(ev);
-  if (E.cuaderno.length > 400) E.cuaderno.shift();
+  if (E.cuaderno.length > ARRANQUE.cuaderno) E.cuaderno.shift();
   return ev;
 }
 export function moMedia(E: Estado): number {
@@ -62,7 +50,7 @@ export function costoRiego(E: Estado): number {
   let t = 0;
   for (const z of zonasDe(E)) {
     const costo = z.riegoCosto[E.riego[z.id]];
-    t += Math.max(0, costo - (E.goteo && costo > 0 ? 1 : 0));
+    t += Math.max(0, costo - (E.goteo && costo > 0 ? REGLAS.ratos.ahorroGoteo : 0));
   }
   return t;
 }
@@ -79,12 +67,14 @@ export function quitarPlanta(E: Estado, pl: Planta, alCompost: boolean): void {
     const c = E.celdas[k];
     if (!zona(E, c.zona).cria && pl.etapa !== 'semilla') {
       c.fam = sp.familia;
-      c.mo = clamp(c.mo - (sp.fruto ? 6 : 4) + (sp.familia === 'leguminosa' ? 8 : 0), 5, 100);
+      const seLleva = sp.fruto ? SUELO.moQueSeLleva.fruto : SUELO.moQueSeLleva.resto,
+        devuelve = sp.familia === 'leguminosa' ? SUELO.moQueDejaLeguminosa : 0;
+      c.mo = clamp(c.mo - seLleva + devuelve, SUELO.moMin, SUELO.moMax);
     }
     c.planta = null;
   }
   delete E.plantas[pl.id];
-  if (alCompost) E.compost.carga += 1;
+  if (alCompost) E.compost.carga += REGLAS.compost.porPlanta;
 }
 
 export function crearPartida(
@@ -98,7 +88,7 @@ export function crearPartida(
     patio,
     semilla: semilla | 0,
     rng: (semilla | 0) ^ 0x9e3779b9,
-    dec: opciones.decInicio || 22,
+    dec: opciones.decInicio || ARRANQUE.decada,
     turno: 0,
     anio: 1,
     caracter: 'normal',
@@ -112,7 +102,7 @@ export function crearPartida(
     nextId: 1,
     sobres: {},
     gen: {},
-    compost: { dosis: 2, carga: 0, tandas: [] },
+    compost: { dosis: ARRANQUE.dosisDeCompost, carga: 0, tandas: [] },
     cosechado: {},
     porciones: 0,
     semillasGuardadas: 0,
@@ -125,9 +115,9 @@ export function crearPartida(
   } as Estado;
   const ks = Object.keys(CARACTERES) as CaracterId[];
   E.caracter = opciones.caracter || ks[Math.floor(azar(E) * ks.length)];
-  for (const s in SOBRES_INICIO) E.sobres[s] = SOBRES_INICIO[s];
+  for (const s in ARRANQUE.sobres) E.sobres[s] = ARRANQUE.sobres[s];
   for (const z of zonasDe(E)) {
-    E.riego[z.id] = 2;
+    E.riego[z.id] = ARRANQUE.riego;
     for (const c of celdasDe(E, z.id)) E.celdas[c] = { zona: z.id, mo: z.mo, mulch: false, fam: null, planta: null };
   }
   E.moInicial = moMedia(E);

@@ -7,6 +7,7 @@
  * OJO con el orden: cada llamada a `azar` consume la secuencia de la partida. Cambiar
  * el orden de los sistemas cambia todas las partidas guardadas y rompe el test dorado.
  */
+import { REGLAS } from '../../datos/juego/reglas';
 import { ABRIGO, abrigo, type Abrigo } from './abrigo';
 import { azar } from './azar';
 import { objetivoCosecha } from './catalogo';
@@ -30,6 +31,15 @@ import { cap, clamp, r1 } from './util';
 import { especieDe, nombreDe, vivas } from './planta';
 
 const DIAS = 10;
+const {
+  germinacion: GERM,
+  crecimiento: CREC,
+  estres: ESTRES,
+  plagas: PLAGAS,
+  espigado: ESPIGA,
+  madurez: MADUREZ,
+} = REGLAS;
+const { helada: HELADA, compost: COMPOST } = REGLAS;
 interface Ctx {
   E: Estado;
   w: Tiempo;
@@ -48,7 +58,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
     nom = sp.nombre,
     t = tempEfectiva(E, pl.celda, w),
     H = humedad(E, pl.celda, w);
-  if (H < 1.2) {
+  if (H < GERM.humedadMinima) {
     if (pl.edad === DIAS)
       ev(
         'mal',
@@ -70,11 +80,11 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
           (!zona(E, z).cria && t < tg.min ? ' En la almaciguera reparada habría arrancado.' : ''),
         pl.celda,
       );
-  } else pl.germ += DIAS * (t >= tg.ideal_min && t <= tg.ideal_max ? 1 : 0.6);
+  } else pl.germ += DIAS * (t >= tg.ideal_min && t <= tg.ideal_max ? 1 : GERM.ritmoFueraDeIdeal);
   const necesita = (sp.dg.min + sp.dg.max) / 2;
   if (pl.germ >= necesita) {
     const ideal = t >= tg.ideal_min && t <= tg.ideal_max,
-      pg = (ideal ? 0.85 : 0.55) * clamp(pl.vigor + 0.1, 0.5, 1),
+      pg = (ideal ? GERM.poder.ideal : GERM.poder.fueraDeIdeal) * clamp(pl.vigor + GERM.vigorExtra, GERM.vigorMin, 1),
       S = pl.semillas || 1;
     let nacieron = 0;
     for (let si = 0; si < S; si++) if (azar(E) < pg) nacieron++;
@@ -115,7 +125,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
       pl.celda,
     );
     cumplir(E, 'germina', evs);
-  } else if (pl.edad >= 30) {
+  } else if (pl.edad >= GERM.diasHastaPerderse) {
     ev('mal', 'La semilla de ' + nombreDe(sp) + ' se perdió: pasaron 30 días sin condiciones para germinar.', pl.celda);
     quitarPlanta(E, pl, false);
   }
@@ -124,7 +134,7 @@ function germinar({ E, w, ev, evs }: Ctx, pl: Planta, sp: Especie, z: ZonaId): v
 /** [REPO] temperaturas.helada. [SUPUESTO] grados de cada abrigo. */
 function helar({ E, w, ev, salvadas }: Ctx, pl: Planta, sp: Especie, z: ZonaId, ab: Abrigo): Sigue {
   const nom = sp.nombre,
-    hiela = w.helada && w.tmin + ab.grados <= 3;
+    hiela = w.helada && w.tmin + ab.grados <= HELADA.umbral;
   if (w.helada && !hiela && (sp.helada === 'muere' || sp.helada === 'sensible'))
     (salvadas[z] = salvadas[z] || []).push(nom);
   if (!hiela) return true;
@@ -132,9 +142,9 @@ function helar({ E, w, ev, salvadas }: Ctx, pl: Planta, sp: Especie, z: ZonaId, 
   const Z = zona(E, z);
   if (!(ab.grados > 0))
     falta =
-      w.tmin + ABRIGO.manta > 3
+      w.tmin + ABRIGO.manta > HELADA.umbral
         ? 'Una manta antihelada (+' + ABRIGO.manta + ' °C) la habría salvado.'
-        : Z.admiteTunel && w.tmin + ABRIGO.manta + ABRIGO.tunel > 3
+        : Z.admiteTunel && w.tmin + ABRIGO.manta + ABRIGO.tunel > HELADA.umbral
           ? 'Fue una helada fuerte: hacían falta manta y microtúnel juntos.'
           : 'Fue una helada muy fuerte: con ' + w.tmin + ' °C una manta sola no alcanzaba.';
   else
@@ -157,7 +167,7 @@ function helar({ E, w, ev, salvadas }: Ctx, pl: Planta, sp: Especie, z: ZonaId, 
     return false;
   }
   if (sp.helada === 'sensible') {
-    pl.salud -= 45;
+    pl.salud -= HELADA.danioSensible;
     ev('mal', nom + ' se quemó con la helada (mín ' + w.tmin + ' °C). ' + falta, pl.celda);
   }
   if (sp.helada === 'mejora' && !pl.dulce) {
@@ -172,8 +182,8 @@ function semillarOSecarse({ E, ev, evs }: Ctx, pl: Planta, sp: Especie): Sigue {
   if (pl.etapa === 'semillando') {
     if (--pl.semillar <= 0) {
       E.gen[pl.slug] = Math.max(E.gen[pl.slug] || 0, pl.gen + 1);
-      E.sobres[pl.slug] = (E.sobres[pl.slug] || 0) + 4;
-      E.semillasGuardadas += 4;
+      E.sobres[pl.slug] = (E.sobres[pl.slug] || 0) + REGLAS.cosecha.sobresPorSemillar;
+      E.semillasGuardadas += REGLAS.cosecha.sobresPorSemillar;
       ev(
         'bien',
         'Guardaste 4 sobres de ' +
@@ -189,7 +199,7 @@ function semillarOSecarse({ E, ev, evs }: Ctx, pl: Planta, sp: Especie): Sigue {
     return false;
   }
   if (pl.etapa === 'pasada') {
-    if (++pl.listoHace > 3) {
+    if (++pl.listoHace > MADUREZ.pasadaSeSeca) {
       ev('info', nom + ' pasada se secó. Al compost.', pl.celda);
       quitarPlanta(E, pl, true);
     }
@@ -203,11 +213,19 @@ function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores)
   const nom = sp.nombre,
     enAlm = !!zona(E, z).cria;
   let g =
-    F.luz.f * F.agua.f * F.temp.f * F.suelo.f * F.vecinos.f * pl.vigor * (pl.plaga ? 0.8 : 1) * (pl.shock ? 0.5 : 1);
-  if (sp.cuidados.includes('tutorado') && !pl.tutor && pl.prog > objetivoCosecha(sp) * 0.45) g *= 0.85;
+    F.luz.f *
+    F.agua.f *
+    F.temp.f *
+    F.suelo.f *
+    F.vecinos.f *
+    pl.vigor *
+    (pl.plaga ? CREC.conPlaga : 1) *
+    (pl.shock ? CREC.conShock : 1);
+  if (sp.cuidados.includes('tutorado') && !pl.tutor && pl.prog > objetivoCosecha(sp) * CREC.sinTutorDesde)
+    g *= CREC.sinTutor;
   const cabe = porCelda(sp);
   if (!enAlm && vivas(pl) > cabe) {
-    g *= Math.max(0.4, 1 - 0.15 * (pl.n - cabe));
+    g *= Math.max(CREC.competenciaPiso, 1 - CREC.competenciaPorPlanta * (pl.n - cabe));
     if (!pl.avisoRaleo) {
       pl.avisoRaleo = true;
       ev(
@@ -222,10 +240,10 @@ function crecer({ E, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId, F: Factores)
     }
   }
   pl.shock = 0;
-  if (!(enAlm && sp.dt && pl.prog >= sp.dt.max)) pl.prog += DIAS * clamp(g, 0, 1.25);
-  if (enAlm && sp.dt && pl.prog >= sp.dt.max && pl.edad > sp.dt.max + 30 && !pl.avisoPasado) {
+  if (!(enAlm && sp.dt && pl.prog >= sp.dt.max)) pl.prog += DIAS * clamp(g, 0, CREC.factorMaximo);
+  if (enAlm && sp.dt && pl.prog >= sp.dt.max && pl.edad > sp.dt.max + CREC.diasHastaPasarse && !pl.avisoPasado) {
     pl.avisoPasado = true;
-    pl.vigor = r1(pl.vigor * 80) / 100;
+    pl.vigor = r1(pl.vigor * CREC.vigorPlantinPasado) / 100;
     ev(
       'mal',
       'El plantín de ' +
@@ -252,9 +270,10 @@ function estresar(
 ): void {
   const nom = sp.nombre,
     bajoTunel = !!E.tunel[z];
-  if (F.agua.estado === 'seco' && F.agua.f < 0.75) {
-    pl.salud -= (1 - F.agua.f) * 35;
-    if (F.agua.f >= 0.5) nota('mal', 'Le faltó agua: pide riego ' + sp.riego + ' y tuvo menos. Perdió salud.');
+  if (F.agua.estado === 'seco' && F.agua.f < ESTRES.sedDesde) {
+    pl.salud -= (1 - F.agua.f) * ESTRES.danioSed;
+    if (F.agua.f >= ESTRES.sedGrave)
+      nota('mal', 'Le faltó agua: pide riego ' + sp.riego + ' y tuvo menos. Perdió salud.');
     else
       ev(
         'mal',
@@ -266,8 +285,8 @@ function estresar(
         pl.celda,
       );
   }
-  if (F.agua.estado === 'exceso' && F.agua.diff > 1.4) {
-    pl.salud -= 14;
+  if (F.agua.estado === 'exceso' && F.agua.diff > ESTRES.excesoDesde) {
+    pl.salud -= ESTRES.danioExceso;
     ev(
       'mal',
       nom +
@@ -277,8 +296,8 @@ function estresar(
       pl.celda,
     );
   }
-  if (w.tmax + (bajoTunel ? 5 : 0) > sp.tc.tolera_max + 2) {
-    pl.salud -= 6 + (w.tmax - sp.tc.tolera_max) * 3;
+  if (w.tmax + (bajoTunel ? ESTRES.calorBajoTunel : 0) > sp.tc.tolera_max + ESTRES.margenDeCalor) {
+    pl.salud -= ESTRES.danioCalorBase + (w.tmax - sp.tc.tolera_max) * ESTRES.danioCalorPorGrado;
     ev(
       'mal',
       nom + ' sufrió el calor (máx ' + w.tmax + ' °C' + (bajoTunel ? ', y bajo el microtúnel es peor' : '') + ').',
@@ -286,15 +305,15 @@ function estresar(
     );
   }
   if (!w.helada && w.tmin + ab.grados < sp.tc.tolera_min) {
-    pl.salud -= 12;
+    pl.salud -= ESTRES.danioFrio;
     ev('mal', nom + ' sufrió el frío (mín ' + w.tmin + ' °C).', pl.celda);
   }
-  if (F.luz.f < 0.5 && pl.edad % 30 === 0)
+  if (F.luz.f < ESTRES.pocaLuz && pl.edad % ESTRES.avisoDeLuzCada === 0)
     ev('mal', nom + ' recibe ' + F.luz.horas + ' h de sol y pide ' + F.luz.pide + '. ' + sp.luzNo, pl.celda);
-  if (g > 0.85 && !pl.plaga) {
+  if (g > ESTRES.creceBien && !pl.plaga) {
     if (pl.salud < 100) nota('bien', 'Creció a gusto y recuperó salud.');
-    pl.salud = Math.min(100, pl.salud + 5);
-  } else if (g < 0.6) {
+    pl.salud = Math.min(100, pl.salud + ESTRES.curaPorDecada);
+  } else if (g < ESTRES.creceLento) {
     const fs: [string, number][] = [
       ['poca luz (' + F.luz.horas + ' h, pide ' + F.luz.pide + ')', F.luz.f],
       ['el agua', F.agua.f],
@@ -311,12 +330,12 @@ function estresar(
 function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void {
   const c = E.celdas[pl.celda];
   if (!pl.plaga) {
-    const prot = clamp(1 - 0.22 * aliadosCerca(E, pl.celda), 0.25, 1),
-      joven = pl.prog < objetivoCosecha(sp) * 0.4;
-    const rot = c.fam === sp.familia ? 1.5 : 1,
+    const prot = clamp(1 - PLAGAS.proteccionPorAliado * aliadosCerca(E, pl.celda), PLAGAS.proteccionMaxima, 1),
+      joven = pl.prog < objetivoCosecha(sp) * PLAGAS.jovenHasta;
+    const rot = c.fam === sp.familia ? PLAGAS.riesgoRepitiendoFamilia : 1,
       d = w.dec,
       p = azar(E);
-    if (sp.familia === 'brasicacea' && (d >= 31 || d <= 12) && p < 0.1 * prot * rot) {
+    if (sp.familia === 'brasicacea' && (d >= 31 || d <= 12) && p < PLAGAS.oruga.prob * prot * rot) {
       pl.plaga = 'oruga';
       ev(
         'mal',
@@ -326,13 +345,18 @@ function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void 
           (prot === 1 ? 'Sin flores ni aromáticas cerca no hay quien las controle.' : ''),
         pl.celda,
       );
-    } else if (joven && w.lluvia > 40 && !macetaDe(E, pl.celda) && p < 0.15 * prot) {
+    } else if (
+      joven &&
+      w.lluvia > PLAGAS.babosa.lluviaDesde &&
+      !macetaDe(E, pl.celda) &&
+      p < PLAGAS.babosa.prob * prot
+    ) {
       pl.plaga = 'babosa';
       ev('mal', 'Babosas en ' + nombreDe(sp) + ': con tanta lluvia salen de noche y se comen lo tierno.', pl.celda);
     } else if (
       /hoja|fruto|Legumbre/.test(sp.grupo) &&
       ((d >= 25 && d <= 33) || (d >= 7 && d <= 12)) &&
-      p < 0.06 * prot * rot
+      p < PLAGAS.pulgon.prob * prot * rot
     ) {
       pl.plaga = 'pulgon';
       ev(
@@ -345,14 +369,14 @@ function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void 
       );
     }
   } else {
-    pl.salud -= 12;
+    pl.salud -= PLAGAS.danioPorDecada;
     nota(
       'mal',
       'Sigue con ' +
         (pl.plaga === 'pulgon' ? 'pulgones' : pl.plaga === 'oruga' ? 'orugas' : 'babosas') +
         ': pierde salud cada década hasta que la trates o lleguen aliados.',
     );
-    if (flores >= 2 && azar(E) < 0.35) {
+    if (flores >= PLAGAS.floresParaVaquitas && azar(E) < PLAGAS.probVaquitas) {
       ev(
         'bien',
         'Llegaron vaquitas de San Antonio atraídas por tus flores: limpiaron ' +
@@ -369,9 +393,16 @@ function plagas({ E, w, ev, nota, flores }: Ctx, pl: Planta, sp: Especie): void 
 
 /** [REPO] riesgos de la ficha (subida a flor). [SUPUESTO] la probabilidad. */
 function espigar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, F: Factores): Sigue {
-  if (!(sp.grupo === 'Hortaliza de hoja' && sp.familia !== 'brasicacea' && pl.prog > objetivoCosecha(sp) * 0.5))
+  if (!(
+    sp.grupo === 'Hortaliza de hoja' &&
+    sp.familia !== 'brasicacea' &&
+    pl.prog > objetivoCosecha(sp) * ESPIGA.desde
+  ))
     return true;
-  const pe = (w.tmed - (sp.tc.ideal_max + 4)) * 0.22 * (F.luz.horas <= 5.5 ? 0.4 : 1);
+  const pe =
+    (w.tmed - (sp.tc.ideal_max + ESPIGA.margen)) *
+    ESPIGA.probPorGrado *
+    (F.luz.horas <= ESPIGA.horasDeMediaSombra ? ESPIGA.aMediaSombra : 1);
   if (pe > 0 && azar(E) < pe) {
     pl.etapa = 'pasada';
     pl.listoHace = 0;
@@ -381,7 +412,7 @@ function espigar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, F: Factores): Sigue
         ' se subió a flor por el calor (media ' +
         w.tmed +
         ' °C) y amargó. ' +
-        (F.luz.horas > 5.5 ? 'A media sombra aguanta mucho más en verano.' : '') +
+        (F.luz.horas > ESPIGA.horasDeMediaSombra ? 'A media sombra aguanta mucho más en verano.' : '') +
         ' Todavía podés dejarla semillar.',
       pl.celda,
     );
@@ -399,17 +430,20 @@ function madurar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId): void {
   }
   if (pl.etapa === 'cosechable') {
     pl.listoHace++;
-    if (sp.pasadas > 1) pl.reserva = Math.min(2, pl.reserva + 1);
-    else if (!sp.flor && pl.listoHace > (w.tmed > 22 ? 2 : 4)) {
+    if (sp.pasadas > 1) pl.reserva = Math.min(MADUREZ.reservaMaxima, pl.reserva + 1);
+    else if (
+      !sp.flor &&
+      pl.listoHace > (w.tmed > MADUREZ.calorDesde ? MADUREZ.aguantaConCalor : MADUREZ.aguantaSinCalor)
+    ) {
       pl.etapa = 'pasada';
       pl.listoHace = 0;
       ev('mal', nom + ' se pasó: había que cosecharla antes. ' + sp.listo, pl.celda);
     }
-    if (sp.flor && pl.listoHace > 12) {
+    if (sp.flor && pl.listoHace > MADUREZ.floracion) {
       ev('info', nom + ' terminó de florecer.', pl.celda);
       if (sp.perenne) {
         pl.etapa = 'creciendo';
-        pl.prog = objetivoCosecha(sp) * 0.5;
+        pl.prog = objetivoCosecha(sp) * MADUREZ.perenneVuelveA;
       } else quitarPlanta(E, pl, true);
     }
   } else if (!zona(E, z).cria && pl.prog >= objetivoCosecha(sp)) {
@@ -426,23 +460,31 @@ function madurar({ E, w, ev }: Ctx, pl: Planta, sp: Especie, z: ZonaId): void {
 
 /** [REPO] compostaje.json: listo desde ~120 días, más rápido en verano. */
 function suelosYCompost({ E, w, ev }: Ctx): void {
-  for (const cel in E.celdas) if (E.celdas[cel].mulch) E.celdas[cel].mo = clamp(E.celdas[cel].mo + 1, 0, 100);
-  E.compost.carga += 1; // restos de cocina
-  if (E.compost.carga >= 6) {
-    E.compost.carga -= 6;
+  for (const cel in E.celdas)
+    if (E.celdas[cel].mulch) E.celdas[cel].mo = clamp(E.celdas[cel].mo + REGLAS.suelo.moPorMulch, 0, 100);
+  E.compost.carga += COMPOST.restosDeCocina;
+  if (E.compost.carga >= COMPOST.tanda) {
+    E.compost.carga -= COMPOST.tanda;
     E.compost.tandas.push({ avance: 0 });
     ev('info', 'Cerraste una tanda de compost. En unos 4 meses va a estar madura.');
   }
   E.compost.tandas = E.compost.tandas.filter((t) => {
-    t.avance += w.tmed > 20 ? 1.3 : w.tmed < 12 ? 0.7 : 1;
-    if (t.avance >= 12) {
-      E.compost.dosis += 3;
+    t.avance += avanceDelCompost(w.tmed);
+    if (t.avance >= COMPOST.madura) {
+      E.compost.dosis += COMPOST.dosisPorTanda;
       ev('bien', 'Una tanda de compost maduró: huele a tierra de monte. +3 dosis.');
       return false;
     }
     return true;
   });
-  E.visitas += Math.round(floresAbiertas(E) * (w.tmed > 14 ? 3 : 1));
+  E.visitas += Math.round(
+    floresAbiertas(E) * (w.tmed > REGLAS.polinizadores.calorDesde ? REGLAS.polinizadores.visitasConCalor : 1),
+  );
+}
+/** Cuánto avanza una tanda de compost en la década: más rápido con calor, más lento con frío. */
+function avanceDelCompost(tmed: number): number {
+  if (tmed > COMPOST.calorDesde) return COMPOST.avanceConCalor;
+  return tmed < COMPOST.frioDesde ? COMPOST.avanceConFrio : 1;
 }
 
 export function pasarDecada(E: Estado): Evento[] {
