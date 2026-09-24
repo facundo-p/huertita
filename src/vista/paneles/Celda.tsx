@@ -5,7 +5,7 @@
 import { type AccionDePlanta, fichaDeCelda, type FichaDeCelda, type PlantaEnFicha } from '../../aplicacion/consultas';
 import type { ComponentChildren, JSX } from 'preact';
 import * as M from '../../dominio';
-import * as SP from '../../arte/sprites';
+import * as SP from '../../arte';
 import { interaccion, usarPartida } from '../estado';
 import { corto } from '../formato';
 import { cuidarPlanta, cuidarSuelo, escenaActual, hacer } from '../mensajes';

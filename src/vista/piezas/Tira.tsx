@@ -1,7 +1,7 @@
 /** La tira de estadíos de una especie: de la semilla a la semilla, con los días de cada paso. */
 import { useEffect, useRef } from 'preact/hooks';
 import * as M from '../../dominio';
-import * as SP from '../../arte/sprites';
+import * as SP from '../../arte';
 
 export function TiraDeEstadios({ slug, actual }: { slug: string; actual?: number | null }) {
   const lienzo = useRef<HTMLCanvasElement>(null),
@@ -11,7 +11,7 @@ export function TiraDeEstadios({ slug, actual }: { slug: string; actual?: number
     SP.tira(
       lienzo.current,
       { slug, grupo: sp.grupo, familia: sp.familia, tutor: sp.cuidados.includes('tutorado') },
-      { actual: actual ?? -1 },
+      { actual: actual ?? -1, dpr: window.devicePixelRatio },
     );
   });
   const dias = ['día 0', sp.dg.min + '–' + sp.dg.max + ' d', '', '', sp.dc.min + '–' + sp.dc.max + ' d', ''];

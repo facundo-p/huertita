@@ -4,9 +4,11 @@
  * El renderer no importa el motor ni lee el estado: solo recibe una `Escena` plana.
  */
 import type { TipoZona } from '../../datos/juego/patio';
+import type { PlantaParaDibujar } from '../arte';
 import type { CeldaId, Etapa, Plaga, ZonaId } from '../dominio';
 
-export interface PlantaDeEscena {
+/** Todo lo que el arte necesita para dibujar la planta (`PlantaParaDibujar`), más lo que usa el renderer. */
+export interface PlantaDeEscena extends PlantaParaDibujar {
   slug: string;
   nombre: string;
   emoji: string;

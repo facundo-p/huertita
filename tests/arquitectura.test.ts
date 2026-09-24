@@ -87,7 +87,7 @@ describe('la deuda solo baja', () => {
   const todos = [...archivos('src'), ...archivos('datos'), ...archivos('tools'), ...archivos('scripts')];
   it('archivos sin tipar (@ts-nocheck)', () => {
     const sinTipos = todos.filter((r) => readFileSync(join(RAIZ, r), 'utf8').includes('@ts-nocheck'));
-    expect(sinTipos.length, sinTipos.join(', ')).toBeLessThanOrEqual(4);
+    expect(sinTipos.length, sinTipos.join(', ')).toBeLessThanOrEqual(2);
   });
   /** tope de líneas de más de 200 caracteres por carpeta */
   const TOPE_LINEAS_LARGAS: Record<string, number> = {
@@ -97,7 +97,7 @@ describe('la deuda solo baja', () => {
     aplicacion: 0,
     infra: 0,
     render: 69,
-    arte: 47,
+    arte: 0,
     tools: 0,
     scripts: 1,
   };

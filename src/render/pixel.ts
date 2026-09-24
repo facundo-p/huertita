@@ -15,7 +15,7 @@
  * y 'cerca' (un cantero de frente, con el suelo cortado para ver las raíces).
  * No importa el motor ni lee el estado: solo la escena que le pasan.
  */
-import * as SP from '../arte/sprites';
+import * as SP from '../arte';
   var mez = SP.mezcla, root = window;
   var T = 32;
   var C = {

@@ -14,11 +14,9 @@ export default tseslint.config(
       '.capturas/**',
       'tests/legado/**',
       'docs/**',
-      // portados del prototipo con @ts-nocheck: se reescriben en la epic #39 (#54, #55)
+      // portados del prototipo con @ts-nocheck: se reescriben en la epic #39 (#55)
       'src/render/pixel.ts',
       'src/render/texto.ts',
-      'src/arte/sprites.ts',
-      'src/arte/estilos.ts',
     ],
   },
   js.configs.recommended,
