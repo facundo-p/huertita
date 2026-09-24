@@ -5,6 +5,7 @@
  * su contrato de cuatro métodos. No dibuja plantas ni calcula agronomía.
  */
 import * as M from '../dominio';
+import * as C from '../aplicacion/consultas';
 import * as SP from '../arte/sprites';
 import { RenderPixel } from '../render/pixel';
 import { RenderTexto } from '../render/texto';
@@ -21,7 +22,7 @@ import { RenderTexto } from '../render/texto';
   function valida(E) { return !!M.migrar(E); }
   function guardar() { ui.E.guardado = Date.now(); try { root.localStorage.setItem(CLAVE, JSON.stringify(ui.E)); ui.sinStorage = false; } catch (e) { ui.sinStorage = true; /* sin storage se juega igual */ } }
   function cargar() { try { var t = root.localStorage.getItem(CLAVE); var E = t && JSON.parse(t); return valida(E) ? E : null; } catch (e) { ui.sinStorage = true; return null; } }
-  function resumenDe(E) { var P = E.patio && E.patio !== M.PATIO_INICIAL && M.PATIOS[E.patio]; return (P ? P.nombre + ' · ' : '') + cap(M.fechaDe(E.dec)) + ' · año ' + E.anio + ' · ' + E.porciones + ' porciones · ' + Object.keys(E.plantas).length + ' plantas'; }
+  var resumenDe = C.resumenDePartida;
   function cuando(t) { if (!t) return ''; var d = new Date(t), p = function (n) { return (n < 10 ? '0' : '') + n; }; return p(d.getDate()) + '/' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
   function usar(E, aviso) { ui.E = E; ui.modo = E.terminado ? 'fin' : 'partidas'; ui.sel = null; ui.sobre = null; ui.moviendo = null; ui.ultimos = []; ui.aviso = ''; ui.nota = aviso || ''; guardar(); }
 
@@ -68,23 +69,9 @@ import { RenderTexto } from '../render/texto';
 
   // ── escena: la foto plana que recibe cualquier renderer ──
   function escena() {
-    var E = ui.E, celdas = {}, fantasma = ui.sobre || (ui.moviendo && E.plantas[ui.moviendo] ? E.plantas[ui.moviendo].slug : null);
-    Object.keys(E.celdas).forEach(function (k) {
-      var c = E.celdas[k], Z = M.zona(E, c.zona), pl = M.plantaEn(E, k), p = k.split(','), x = +p[0], y = +p[1], planta = null, tinte = null;
-      if (pl) { var sp = ESP[pl.slug]; planta = { slug: pl.slug, nombre: corto(sp.nombre), emoji: sp.emoji, grupo: sp.grupo, familia: sp.familia, etapa: pl.etapa, n: pl.n || 1, salud: pl.salud, plaga: pl.plaga, tutor: pl.tutor, flor: sp.flor, dulce: pl.dulce, trasplante: (function () { var pt = M.puntoDeTrasplante(pl); return pt && pt.punto !== 'chico' ? pt.punto : null; })(), avance: pl.etapa === 'plantin' && sp.dt ? pl.prog / sp.dt.min : pl.prog / M.objetivoCosecha(sp) }; }
-      if (fantasma && !pl && !(ui.moviendo && Z.cria)) tinte = M.evaluarCelda(E, fantasma, k).nivel;
-      celdas[k] = { zona: c.zona, tipo: Z.tipo, nombreZona: Z.nombre, mo: c.mo, mulch: c.mulch, humedo: E.riego[c.zona], maceta: M.macetaDe(E, k), sol: M.horasSol(E, k), planta: planta, ancla: !pl || pl.celda === k, tinte: tinte, seleccion: ui.sel === k,
-        borde: { n: M.zonaDeCelda(E, x + ',' + (y - 1)) !== c.zona, s: M.zonaDeCelda(E, x + ',' + (y + 1)) !== c.zona, o: x === 0 || M.zonaDeCelda(E, (x - 1) + ',' + y) !== c.zona, e: M.zonaDeCelda(E, (x + 1) + ',' + y) !== c.zona } };
-    });
-    if (ui.sel && E.celdas[ui.sel]) ui.zonaCerca = E.celdas[ui.sel].zona;
-    if (!ui.zonaCerca || !(ui.zonaCerca in E.riego)) ui.zonaCerca = M.zonaDeTunel(E) || M.idsDeZonas(E)[0];
-    var cams = ui.r && ui.r.camaras, selZona = ui.sel && E.celdas[ui.sel] && E.celdas[ui.sel].zona === ui.zonaCerca, P = M.patioDe(E), ZC = M.zona(E, ui.zonaCerca);
-    var compostera = null, arboles = [];
-    P.plano.forEach(function (fila, y) { var x = fila.indexOf('C'); if (x >= 0) compostera = x + ',' + y; });
-    P.obstaculos.forEach(function (o) { if (o.tipo !== 'arbol') return; var col = Math.floor(o.en[0]), base = Math.floor(o.en[1]); while (P.plano[base + 1] && P.plano[base + 1][col] === 'T') base++; arboles.push({ x: o.en[0], base: base, caduco: o.caduco }); });
-    // la sombra pintada del paredón es la de la fórmula v0.4; con sol por geometría, la capa de sol es la que cuenta
-    return { camara: cams ? cams[ui.cam % cams.length][0] : 'cenital', cerca: { zona: ui.zonaCerca, tipo: ZC.tipo, hondo: ZC.hondo, col: selZona ? +ui.sel.split(',')[0] : null }, ancho: P.plano[0].length, alto: P.plano.length, plano: P.plano, piso: P.aspecto.piso, norte: P.aspecto.norte, celdas: celdas, arboles: arboles, compostera: compostera, dec: E.dec, estacion: M.estacionDe(E.dec), arbolConHojas: M.conHojas(E.dec),
-      sombraPared: P.sol === 'v04' ? 0.35 + 1.9 * M.invierno(E.dec) : 0, tuneles: Object.keys(E.tunel).filter(function (z) { return E.tunel[z]; }), mantas: E.manta, capa: ui.capa, animar: ui.animar, compost: { carga: E.compost.carga, tandas: E.compost.tandas.length, dosis: E.compost.dosis } };
+    var E = ui.E, fantasma = ui.sobre || (ui.moviendo && E.plantas[ui.moviendo] ? E.plantas[ui.moviendo].slug : null), cams = ui.r && ui.r.camaras;
+    ui.zonaCerca = C.zonaCerca(E, ui.sel, ui.zonaCerca);
+    return C.escena(E, { fantasma: fantasma, trasplantando: !!ui.moviendo, seleccion: ui.sel, zonaCerca: ui.zonaCerca, camara: cams ? cams[ui.cam % cams.length][0] : 'cenital', capa: ui.capa, animar: ui.animar });
   }
 
   function vistaDe(k) { var c = escena().celdas[k]; return c && c.planta; }
@@ -151,13 +138,12 @@ import { RenderTexto } from '../render/texto';
   }
 
   function hud() {
-    var E = ui.E, p = E.prox.pron, riego = M.costoRiego(E), libres = M.ratosLibres(E), pips = '';
-    for (var i = 0; i < M.RATOS; i++) pips += '<i class="' + (i < libres ? 'libre' : i < libres + E.ratosGastados ? 'usado' : 'riego') + '"></i>';
-    return '<div class="hz-marca"><h1>Huertita</h1><span>' + esc(cap(M.fechaDe(E.dec))) + ' · ' + M.estacionDe(E.dec) + ' · año ' + E.anio + '</span></div>' +
-      '<button class="hz-guardada" data-acc="modo" data-modo="partidas" title="Guardar y cargar">' + (ui.sinStorage ? 'sin guardar' : 'guardada ' + cuando(E.guardado).slice(6)) + (nube.estado === 'lista' ? ' · nube' : '') + '</button>' +
-      '<div class="hz-ratos" title="Ratos libres esta década. Los celestes se van en regar."><b>' + libres + '</b> ratos<span class="hz-pips">' + pips + '</span></div>' +
+    var h = C.hud(ui.E), p = h.pronostico, pips = h.ratos.map(function (r) { return '<i class="' + r + '"></i>'; }).join('');
+    return '<div class="hz-marca"><h1>Huertita</h1><span>' + esc(h.fecha) + ' · ' + h.estacion + ' · año ' + h.anio + '</span></div>' +
+      '<button class="hz-guardada" data-acc="modo" data-modo="partidas" title="Guardar y cargar">' + (ui.sinStorage ? 'sin guardar' : 'guardada ' + cuando(ui.E.guardado).slice(6)) + (nube.estado === 'lista' ? ' · nube' : '') + '</button>' +
+      '<div class="hz-ratos" title="Ratos libres esta década. Los celestes se van en regar."><b>' + h.libres + '</b> ratos<span class="hz-pips">' + pips + '</span></div>' +
       '<div class="hz-pron"><span class="hz-eti">Pronóstico de la década</span><span>' + p.tmin + '° / ' + p.tmax + '°</span>' +
-      '<span class="' + (p.pHelada >= 50 ? 'alto' : p.pHelada >= 20 ? 'medio' : '') + '">helada ' + p.pHelada + ' %</span><span>' + p.lluvia + '</span></div>';
+      '<span class="' + ({ alta: 'alto', media: 'medio' }[h.alertaDeHelada] || '') + '">helada ' + p.pHelada + ' %</span><span>' + p.lluvia + '</span></div>';
   }
 
   function panelInicio() {
@@ -168,10 +154,9 @@ import { RenderTexto } from '../render/texto';
   }
 
   function panelSemillas() {
-    var E = ui.E, orden = { ideal: 0, posible: 1, fuera: 2 };
-    var slugs = Object.keys(E.sobres).filter(function (s) { return E.sobres[s] > 0; }).sort(function (a, b) { return orden[M.ventana(a, E.dec)] - orden[M.ventana(b, E.dec)] || ESP[a].nombre.localeCompare(ESP[b].nombre); });
-    var h = '<h2>Sobres de semillas</h2><div class="hz-sobres">' + slugs.map(function (s) {
-      return '<button class="hz-sobre' + (ui.sobre === s ? ' on' : '') + ' v-' + M.ventana(s, E.dec) + '" data-acc="sobre" data-slug="' + s + '"><b>' + esc(corto(ESP[s].nombre)) + '</b><span>×' + E.sobres[s] + (E.gen[s] ? ' · gen ' + E.gen[s] : '') + '</span></button>';
+    var E = ui.E;
+    var h = '<h2>Sobres de semillas</h2><div class="hz-sobres">' + C.sobresDisponibles(E).map(function (x) {
+      return '<button class="hz-sobre' + (ui.sobre === x.slug ? ' on' : '') + ' v-' + x.ventana + '" data-acc="sobre" data-slug="' + x.slug + '"><b>' + esc(x.nombre) + '</b><span>×' + x.sobres + (x.gen ? ' · gen ' + x.gen : '') + '</span></button>';
     }).join('') + '</div>';
     if (!ui.sobre) return h + '<p class="hz-dim">Verde: época ideal ahora. Amarillo: posible. Gris: fuera de época en el GBA.</p>';
     var sp = ESP[ui.sobre], met = metodoTexto(ui.sobre);
@@ -230,11 +215,11 @@ import { RenderTexto } from '../render/texto';
         '<p class="hz-dim">La banda es lo que pide la especie según el catálogo (clara: tolera; fuerte: ideal). La marca es lo que va a tener esta década, y su color dice qué tan bien le viene. En temperatura, la línea fina va de la mínima a la máxima.</p>';
     } else h += '<p>Germina en ' + sp.dg.min + '–' + sp.dg.max + ' días si el suelo está entre ' + (sp.tg ? sp.tg.min + ' y ' + sp.tg.max + ' °C' : 'templado') + ' y húmedo.</p>';
     // qué botones hay lo decide el dominio: la interfaz no repite reglas
-    var b = '', se = function (tipo) { return M.puede(E, { tipo: tipo, planta: pl.id }, { sinMirarRatos: true }) === null; };
+    var b = '', puede = C.fichaDeCelda(E, k).planta.acciones, se = function (a) { return puede.indexOf(a) >= 0; };
     var deCria = !!M.zona(E, c.zona).cria, varios = (pl.n || 1) > 1;
     if (se('cosechar')) b += '<button class="hz-btn pri" data-acc="cosechar">Cosechar</button>';
     if (se('semillar')) b += '<button class="hz-btn" data-acc="semillar">Dejar semillar</button>';
-    if (M.puedeMoverse(E, pl) === null) b += '<button class="hz-btn' + (sp.dt && pl.prog >= sp.dt.min ? ' pri' : '') + '" data-acc="mover">' + (varios ? 'Trasplantar uno · 1 (hay ' + pl.n + ')' : 'Trasplantar · 1') + '</button>';
+    if (se('mover')) b += '<button class="hz-btn' + (sp.dt && pl.prog >= sp.dt.min ? ' pri' : '') + '" data-acc="mover">' + (varios ? 'Trasplantar uno · 1 (hay ' + pl.n + ')' : 'Trasplantar · 1') + '</button>';
     if (se('ralear')) b += '<button class="hz-btn pri" data-acc="ralear">Ralear: dejar una · 1</button>';
     if (se('tutorar')) b += '<button class="hz-btn" data-acc="tutorar">Poner tutor · 1</button>';
     if (se('tratar')) b += '<button class="hz-btn pri" data-acc="tratar">Tratar plaga · 1</button>';
@@ -259,11 +244,11 @@ import { RenderTexto } from '../render/texto';
   function panelProteger() {
     var E = ui.E, p = E.prox.pron, A = M.ABRIGO;
     var h = '<h2>Proteger de la helada</h2><p>Pronóstico: mínima <b>' + p.tmin + ' °C</b>. Hiela para la planta cuando la mínima, más el abrigo que tenga, no pasa de 3 °C. El pronóstico se equivoca un par de grados: es una apuesta.</p><div class="hz-abrigos">';
-    M.idsDeZonas(E).forEach(function (z) {
-      var ab = M.abrigo(E, z), r = M.riesgoHelada(E, z), riesgo = M.enRiesgo(E, z), nivel = !riesgo.length ? 'nada' : r >= 50 ? 'alto' : r >= 15 ? 'medio' : 'bajo';
-      h += '<div class="hz-abrigo n-' + nivel + '"><div><b>' + esc(M.zona(E, z).nombre) + '</b><span>' + (ab.grados ? ab.partes.join(' + ') + ': +' + ab.grados + ' °C, aguanta hasta ' + (ab.aguanta + 0.1).toFixed(0) + ' °C' : 'sin abrigo: se hiela con 3 °C o menos') + '</span>' +
-        '<span>' + (riesgo.length ? '<i class="hz-riesgo">' + r + ' % de que se hiele</i> · sensibles: ' + esc(riesgo.map(corto).join(', ').toLowerCase()) : 'nada sensible a la helada acá') + '</span></div>' +
-        '<button class="hz-btn' + (E.manta[z] ? ' on' : riesgo.length && r >= 15 ? ' pri' : '') + '" data-acc="manta" data-zona="' + z + '"' + (E.manta[z] ? ' disabled' : '') + '>' + (E.manta[z] ? 'Manta puesta' : 'Manta · 1') + '</button></div>';
+    C.riesgoPorZona(E).forEach(function (z) {
+      var ab = z.abrigo;
+      h += '<div class="hz-abrigo n-' + z.nivel + '"><div><b>' + esc(z.nombre) + '</b><span>' + (ab.grados ? ab.partes.join(' + ') + ': +' + ab.grados + ' °C, aguanta hasta ' + (ab.aguanta + 0.1).toFixed(0) + ' °C' : 'sin abrigo: se hiela con 3 °C o menos') + '</span>' +
+        '<span>' + (z.sensibles.length ? '<i class="hz-riesgo">' + z.riesgo + ' % de que se hiele</i> · sensibles: ' + esc(z.sensibles.map(corto).join(', ').toLowerCase()) : 'nada sensible a la helada acá') + '</span></div>' +
+        '<button class="hz-btn' + (z.conManta ? ' on' : z.sensibles.length && z.riesgo >= 15 ? ' pri' : '') + '" data-acc="manta" data-zona="' + z.id + '"' + (z.conManta ? ' disabled' : '') + '>' + (z.conManta ? 'Manta puesta' : 'Manta · 1') + '</button></div>';
     });
     h += '</div><div class="hz-fila">' + M.zonasDe(E).filter(function (z) { return z.admiteTunel; }).map(function (z) { return '<button class="hz-btn' + (E.tunel[z.id] ? ' on' : '') + '" data-acc="tunel" data-zona="' + z.id + '">' + (E.tunel[z.id] ? 'Sacar' : 'Armar') + ' microtúnel en ' + esc(z.conArticulo) + ' · 2</button>'; }).join('') + '</div>';
     return h + '<p class="hz-dim">Cada manta tapa un solo cantero, abriga unos ' + A.manta + ' °C y dura esta década. El microtúnel abriga ' + A.tunel + ' °C y queda puesto, pero no deja entrar lluvia ni polinizadores y en verano cocina. ' + M.zonasDe(E).filter(function (z) { return z.abrigo; }).map(function (z) { return esc(cap(z.conArticulo)) + (/^l[ao]s /.test(z.conArticulo) ? ' ya tienen ' : ' ya tiene ') + z.abrigo.grados + ' °C por ' + esc(z.abrigo.nombre) + '. '; }).join('') + 'Los abrigos se suman: manta sobre microtúnel aguanta hasta ' + (3 - A.manta - A.tunel) + ' °C. Una helada más fuerte que eso mata igual, y el cuaderno te lo va a decir.</p>';
@@ -285,8 +270,7 @@ import { RenderTexto } from '../render/texto';
   function mesesHTML() { return '<span class="hz-meses">' + LETRAS_MES.split('').map(function (l) { return '<small>' + l + '</small>'; }).join('') + '</span>'; }
   function leyendaAlm() { return '<p class="hz-leyenda"><span><b class="si"></b>siembra ideal</span><span><b class="sp"></b>siembra posible</span><span><b class="ti"></b>trasplante ideal</span><span><b class="tp"></b>trasplante posible</span><span><b class="hoy"></b>hoy</span></p>'; }
   function panelAlmanaque() {
-    var E = ui.E, orden = { ideal: 0, posible: 1, fuera: 2 };
-    var slugs = Object.keys(ESP).filter(function (s) { return ui.almTodas || E.sobres[s] > 0; }).sort(function (a, b) { return orden[M.ventana(a, E.dec)] - orden[M.ventana(b, E.dec)] || ESP[a].nombre.localeCompare(ESP[b].nombre); });
+    var E = ui.E, lista = C.almanaque(E, ui.almTodas), slugs = lista.map(function (x) { return x.slug; });
     return '<h2>Almanaque de siembra</h2><p>Conurbano, por décadas de 10 días. Arriba la siembra, abajo el trasplante. Tocá una especie para ver su ficha.</p>' +
       '<div class="hz-seg dos"><button data-acc="alm" data-todas="0" class="' + (ui.almTodas ? '' : 'on') + '">Mis sobres</button><button data-acc="alm" data-todas="1" class="' + (ui.almTodas ? 'on' : '') + '">Las ' + Object.keys(ESP).length + ' especies</button></div>' + leyendaAlm() +
       '<div class="hz-alm"><div class="hz-alm-fila cab"><span></span>' + mesesHTML() + '</div>' + slugs.map(function (s) {

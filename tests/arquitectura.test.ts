@@ -30,10 +30,11 @@ function capa(ruta: string): string {
 const PERMITIDAS: Record<string, string[]> = {
   datos: [],
   dominio: ['datos'],
+  aplicacion: ['datos', 'dominio'],
   arte: [],
   render: ['arte'],
   estilos: [],
-  ui: ['datos', 'dominio', 'arte', 'render', 'estilos'],
+  ui: ['datos', 'dominio', 'aplicacion', 'arte', 'render', 'estilos'],
   raiz: ['ui', 'estilos'],
 };
 
