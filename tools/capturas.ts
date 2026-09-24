@@ -29,9 +29,9 @@ const HUELLA = `(cv) => { const d = cv.getContext('2d').getImageData(0, 0, cv.wi
 
 const b = await chromium.launch();
 const huellas: Record<string, string> = {};
-const pagina = async (partida: string) => {
+const pagina = async (partida: string, cambios: Record<string, unknown> = {}) => {
   const p = await b.newPage({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
-  const E = readFileSync(`tests/fixtures/${partida}.json`, 'utf8');
+  const E = JSON.stringify({ ...JSON.parse(readFileSync(`tests/fixtures/${partida}.json`, 'utf8')), ...cambios });
   await p.addInitScript((e: string) => {
     try {
       localStorage.setItem('huertita-v1', e);
@@ -47,15 +47,48 @@ const lienzo = async (p: any, clave: string) => {
   await p.waitForTimeout(700); // dos cuadros del temporizador del renderer
   huellas[clave] = await p.$eval('.hz-canvas', new Function('return ' + HUELLA)());
 };
-
-for (const partida of ['partida-v3-fondo', 'partida-v3-balcon']) {
-  const p = await pagina(partida);
+/** Las tres cámaras, y en la de cerca, cada cantero. Deja la cámara como estaba. */
+const camaras = async (p: any, clave: string, conCanteros: boolean) => {
   for (const cam of ['cenital', 'oblicua', 'cerca']) {
-    await lienzo(p, `${partida}/${cam}`);
+    await lienzo(p, `${clave}/${cam}`);
+    if (cam === 'cerca' && conCanteros)
+      for (const z of await p.$$eval('#hz-zonas [data-zona]', (xs: Element[]) =>
+        xs.map((x) => x.getAttribute('data-zona')),
+      )) {
+        await p.click(`#hz-zonas [data-zona="${z}"]`);
+        await lienzo(p, `${clave}/cerca-${z}`);
+      }
     await p.click('#hz-camara');
   }
+};
+
+for (const partida of ['partida-v3-fondo', 'partida-v3-balcon']) {
+  let p = await pagina(partida);
+  await camaras(p, partida, false);
   await p.click('#hz-capa');
   await lienzo(p, `${partida}/cenital-sol`);
+  await p.close();
+  // cada estación: el cielo, el árbol, la luz; en invierno con mantas y en primavera con el túnel armado
+  const base = JSON.parse(readFileSync(`tests/fixtures/${partida}.json`, 'utf8'));
+  const zonas = Object.keys(base.riego);
+  const ESTACIONES: [string, number, Record<string, unknown>][] = [
+    ['verano', 2, {}],
+    ['otono', 11, {}],
+    ['invierno', 20, { manta: Object.fromEntries(zonas.map((z) => [z, true])) }],
+    ['primavera', 29, { tunel: Object.fromEntries(zonas.map((z) => [z, true])) }],
+  ];
+  for (const [estacion, dec, cambios] of ESTACIONES) {
+    p = await pagina(partida, { dec, ...cambios });
+    await camaras(p, `${partida}/${estacion}`, true);
+    await p.close();
+  }
+  // sembrando: el patio se tiñe según cómo le iría a la especie en cada celda, y se marca la elegida
+  p = await pagina(partida);
+  await p.click('[data-modo="semillas"]');
+  await p.click('.hz-sobre >> nth=0');
+  await lienzo(p, `${partida}/tinte-cenital`);
+  await p.click('#hz-camara');
+  await lienzo(p, `${partida}/tinte-oblicua`);
   await p.close();
 }
 
