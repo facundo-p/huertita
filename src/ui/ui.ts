@@ -229,14 +229,15 @@ import { RenderTexto } from '../render/texto';
         '<tr><th>Vecinos</th><td>' + barra(F.vecinos.f >= 1 ? 1 : F.vecinos.f - 0.2) + '</td><td>' + (F.vecinos.buenas.length ? '+ ' + esc(F.vecinos.buenas.map(corto).join(', ')) : '') + (F.vecinos.malas.length ? ' − ' + esc(F.vecinos.malas.map(corto).join(', ')) : '') + (!F.vecinos.buenas.length && !F.vecinos.malas.length ? 'neutros' : '') + '</td></tr></table>' +
         '<p class="hz-dim">La banda es lo que pide la especie según el catálogo (clara: tolera; fuerte: ideal). La marca es lo que va a tener esta década, y su color dice qué tan bien le viene. En temperatura, la línea fina va de la mínima a la máxima.</p>';
     } else h += '<p>Germina en ' + sp.dg.min + '–' + sp.dg.max + ' días si el suelo está entre ' + (sp.tg ? sp.tg.min + ' y ' + sp.tg.max + ' °C' : 'templado') + ' y húmedo.</p>';
-    var b = '';
-    if (pl.etapa === 'cosechable' && !sp.flor) b += '<button class="hz-btn pri" data-acc="cosechar">Cosechar</button>';
-    if (pl.etapa === 'cosechable' || pl.etapa === 'pasada') b += '<button class="hz-btn" data-acc="semillar">Dejar semillar</button>';
-    var deCria = !!M.zona(E, c.zona).cria, varios = (pl.n || 1) > 1, movible = pl.etapa !== 'semilla' && (deCria || (sp.dt && (varios || pl.prog < sp.dt.max + 40)));
-    if (movible && /plantin|creciendo/.test(pl.etapa)) b += '<button class="hz-btn' + (sp.dt && pl.prog >= sp.dt.min ? ' pri' : '') + '" data-acc="mover">' + (varios ? 'Trasplantar uno · 1 (hay ' + pl.n + ')' : 'Trasplantar · 1') + '</button>';
-    if (varios && !deCria) b += '<button class="hz-btn pri" data-acc="ralear">Ralear: dejar una · 1</button>';
-    if (sp.cuidados.indexOf('tutorado') >= 0 && !pl.tutor && pl.etapa !== 'semilla' && !deCria) b += '<button class="hz-btn" data-acc="tutorar">Poner tutor · 1</button>';
-    if (pl.plaga) b += '<button class="hz-btn pri" data-acc="tratar">Tratar plaga · 1</button>';
+    // qué botones hay lo decide el dominio: la interfaz no repite reglas
+    var b = '', se = function (tipo) { return M.puede(E, { tipo: tipo, planta: pl.id }, { sinMirarRatos: true }) === null; };
+    var deCria = !!M.zona(E, c.zona).cria, varios = (pl.n || 1) > 1;
+    if (se('cosechar')) b += '<button class="hz-btn pri" data-acc="cosechar">Cosechar</button>';
+    if (se('semillar')) b += '<button class="hz-btn" data-acc="semillar">Dejar semillar</button>';
+    if (M.puedeMoverse(E, pl) === null) b += '<button class="hz-btn' + (sp.dt && pl.prog >= sp.dt.min ? ' pri' : '') + '" data-acc="mover">' + (varios ? 'Trasplantar uno · 1 (hay ' + pl.n + ')' : 'Trasplantar · 1') + '</button>';
+    if (se('ralear')) b += '<button class="hz-btn pri" data-acc="ralear">Ralear: dejar una · 1</button>';
+    if (se('tutorar')) b += '<button class="hz-btn" data-acc="tutorar">Poner tutor · 1</button>';
+    if (se('tratar')) b += '<button class="hz-btn pri" data-acc="tratar">Tratar plaga · 1</button>';
     b += '<button class="hz-btn sec" data-acc="arrancar">Arrancar</button>';
     h += '<div class="hz-fila">' + b + '</div>';
     if (deCria && sp.dt) h += '<p class="hz-dim">Se trasplanta con ' + sp.dt.min + '–' + sp.dt.max + ' días de crecimiento. ' + vent(pl.slug, 'trasplante') + '</p>';

@@ -12,7 +12,7 @@ export {
 } from './vocabulario';
 export { especieDe, nombreDe, vivas } from './planta';
 export { ABRIGO, abrigo, enRiesgo, riesgoHelada } from './abrigo';
-export { despachar } from './acciones';
+export { despachar, puede, puedeMoverse } from './acciones';
 export { apuntar } from './diario';
 export { balance } from './balance';
 export { ESPECIES, META, metodoDe, objetivoCosecha, semillasPorSiembra, ventana } from './catalogo';

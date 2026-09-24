@@ -1,5 +1,8 @@
 # Cambios
 
+## Sin publicar · reestructura (epic #39)
+- Las acciones son reglas con `puede / costo / aplicar` (`src/dominio/acciones/`). La interfaz ya no repite condiciones: pregunta `puede()`. Cuatro condiciones que antes aplicaba solo la interfaz ahora las aplica el dominio, con su explicación: en la almaciguera no se ralea ni se pone tutor ni compost, el tutor va solo en especies que lo piden y ya germinadas, y se trasplanta solo un plantín o una planta que está creciendo. El juego se ve igual; lo que cambia es que ya no se puede esquivar desde afuera.
+
 ## 0.8.0 · 2026-09-18 · Cimientos, paso 3: cada planta ocupa lo que ocupa
 - Marco de plantación por especie en `datos/juego/especies.ts` ([SUPUESTO], huertapp todavía no lo trae): centímetros entre plantas, y de ahí la huella en celdas, cuántas entran en una celda (9 rabanitos, 4 lechugas, 1 tomate) y cuánto levanta cada planta.
 - El motor lo usa entero (`src/motor/espacio.ts`): un zapallo se lleva 4 celdas y avisa cuando no entra, el raleo deja las que caben en vez de una sola, la cosecha rinde por planta, la competencia empieza cuando se pasa de la densidad, el fantasma de siembra marca las celdas donde no entra, y una planta alta le hace sombra a las de al lado (obstáculo temporal en el cálculo de sol por geometría).

@@ -58,11 +58,6 @@ export function costoRiego(E: Estado): number {
   return t;
 }
 export const ratosLibres = (E: Estado): number => RATOS - costoRiego(E) - E.ratosGastados;
-export function gastar(E: Estado, n: number): boolean {
-  if (ratosLibres(E) < n) return false;
-  E.ratosGastados += n;
-  return true;
-}
 
 export function quitarPlanta(E: Estado, pl: Planta, alCompost: boolean): void {
   const sp = especieDe(pl);
