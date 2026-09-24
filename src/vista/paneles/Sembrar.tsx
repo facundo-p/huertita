@@ -93,7 +93,7 @@ function FichaDelSobre({ slug }: { slug: string }) {
       </h3>
       <TiraDeEstadios slug={slug} />
       <DatosDelSobre f={f} />
-      {sel && E.celdas[sel] && !E.celdas[sel].planta ? (
+      {sel && E.mundo.celdas[sel] && !E.mundo.celdas[sel].planta ? (
         <Evaluacion slug={slug} celda={sel} />
       ) : (
         <p class="hz-dim">

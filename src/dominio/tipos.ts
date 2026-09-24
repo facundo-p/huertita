@@ -1,10 +1,11 @@
 /** Tipos del estado de una partida. Todo es JSON serializable: eso da guardado, tests y bot gratis. */
 import type { Especie } from '../../datos/juego/especies';
+import type { Patio } from '../../datos/juego/patio';
 
 import type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, ZonaId } from './vocabulario';
 
 export type { Especie };
-export type { ZonaDePatio } from '../../datos/juego/patio';
+export type { Patio, ZonaDePatio } from '../../datos/juego/patio';
 export type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, Ventana, ZonaId } from './vocabulario';
 
 export interface Planta {
@@ -78,28 +79,69 @@ export interface Evento {
   codigo?: string;
 }
 
-export interface Estado {
+/** De qué está hecha una partida, más allá de lo que se juega: formato, azar, lugar. */
+export interface Meta {
   /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
-  v: 3;
-  /** id del patio en el que se juega (`datos/juego/patios`) */
-  patio: string;
+  v: 4;
   semilla: number;
   rng: number;
+  /** la región del clima y el calendario (`datos/juego/regiones`) */
+  region: string;
+  /** de qué plantilla de patio salió (`datos/juego/patios`); el patio en sí vive en `mundo.patio` */
+  plantilla: string;
+  /** marca de tiempo del último guardado; la pone la interfaz, el motor no la mira */
+  guardado?: number;
+}
+
+/** Una compostera: lo que se le echa (`carga`) se vuelve tandas, y cada tanda madura en dosis de compost. */
+export interface Compostera {
+  tipo: 'compostera';
+  en: CeldaId;
+  carga: number;
+  tandas: { avance: number }[];
+  /** dosis de compost listas para usar */
+  dosis: number;
+}
+/** Lo que se construye en el patio y no es una zona de cultivo. Hoy, solo la compostera. */
+export type Estructura = Compostera;
+
+/** Lo que hay en el patio: el patio mismo (una copia de su plantilla), la tierra, las plantas y lo construido. */
+export interface Mundo {
+  patio: Patio;
+  celdas: Record<CeldaId, Celda>;
+  plantas: Record<string, Planta>;
+  estructuras: Estructura[];
+}
+
+/** Dónde está la partida en el calendario y qué tiempo hace. */
+export interface Momento {
+  /** década del año, 1..36 */
   dec: number;
   turno: number;
   anio: number;
   caracter: CaracterId;
+  /** el tiempo que va a hacer esta década */
+  clima: Tiempo;
+  /** lo que se pronosticó para esta década */
+  pronostico: Pronostico;
+  terminado: boolean;
+}
+
+/** Lo que se gasta y se reparte: el tiempo del jugador, el agua, los abrigos y las semillas. */
+export interface Recursos {
   ratosGastados: number;
   riego: Record<ZonaId, NivelRiego>;
-  /** zonas con el microtúnel armado */ tunel: Partial<Record<ZonaId, boolean>>;
+  /** zonas con el microtúnel armado */
+  tunel: Partial<Record<ZonaId, boolean>>;
   manta: Partial<Record<ZonaId, boolean>>;
   goteo: boolean;
-  celdas: Record<CeldaId, Celda>;
-  plantas: Record<string, Planta>;
-  nextId: number;
   sobres: Record<string, number>;
+  /** generaciones de semilla propia, por especie */
   gen: Record<string, number>;
-  compost: { dosis: number; carga: number; tandas: { avance: number }[] };
+}
+
+/** Lo que va quedando de la partida: cosechas, logros y el cuaderno. */
+export interface Progreso {
   cosechado: Record<string, number>;
   porciones: number;
   semillasGuardadas: number;
@@ -107,9 +149,16 @@ export interface Estado {
   moInicial: number;
   misiones: Record<string, number>;
   cuaderno: Evento[];
-  prox: { real: Tiempo; pron: Pronostico };
-  terminado: boolean;
-  /** marca de tiempo del último guardado; la pone la interfaz, el motor no la mira */ guardado?: number;
+  /** el número de la próxima planta */
+  nextId: number;
+}
+
+export interface Estado {
+  meta: Meta;
+  mundo: Mundo;
+  tiempo: Momento;
+  recursos: Recursos;
+  progreso: Progreso;
 }
 
 export type Accion =

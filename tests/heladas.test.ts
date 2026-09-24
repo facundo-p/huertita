@@ -3,15 +3,15 @@ import { crearPartida, despachar, pasarDecada, type Estado, type ZonaId } from '
 
 function noche(zona: ZonaId, celda: string, slug: string, tmin: number, prep?: (E: Estado) => void) {
   const E = crearPartida(1, { decInicio: 30 });
-  E.sobres[slug] = 5;
+  E.recursos.sobres[slug] = 5;
   despachar(E, { tipo: 'sembrar', slug, celda });
-  const pl = Object.values(E.plantas)[0];
+  const pl = Object.values(E.mundo.plantas)[0];
   pl.etapa = zona === 'almacigo' ? 'plantin' : 'creciendo';
   pl.n = 1;
   pl.prog = 30;
   prep?.(E);
-  E.prox.real = {
-    dec: E.dec,
+  E.tiempo.clima = {
+    dec: E.tiempo.dec,
     tmed: 12,
     tmax: 18,
     tmin,
@@ -22,7 +22,7 @@ function noche(zona: ZonaId, celda: string, slug: string, tmin: number, prep?: (
   };
   const evs = pasarDecada(E);
   return {
-    viva: Object.keys(E.plantas).length === 1,
+    viva: Object.keys(E.mundo.plantas).length === 1,
     texto: evs.map((e) => e.texto).join(' | '),
     codigos: evs.map((e) => e.codigo),
     E,
@@ -84,6 +84,6 @@ describe('protección contra heladas (el tomate muere con helada)', () => {
     const E = crearPartida(1, { decInicio: 30 });
     despachar(E, { tipo: 'manta', zona: 'suelo' });
     pasarDecada(E);
-    expect(E.manta.suelo).toBeUndefined();
+    expect(E.recursos.manta.suelo).toBeUndefined();
   });
 });

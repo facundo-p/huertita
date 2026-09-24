@@ -22,7 +22,7 @@ export function puedeMoverse(E: Estado, pl: Planta): string | null {
   if (pl.etapa === 'semilla') return T.noGermino();
   if (pl.etapa !== 'plantin' && pl.etapa !== 'creciendo') return T.noEsDeMover();
   const sp = especieDe(pl);
-  if (zona(E, E.celdas[pl.celda].zona).cria) return null;
+  if (zona(E, E.mundo.celdas[pl.celda].zona).cria) return null;
   if (!sp.dt) return T.noToleraTrasplante(sp);
   if (!(vivas(pl) > 1) && !(pl.prog < sp.dt.max + TRASPLANTE.margenDeEdad)) return T.yaGrande();
   return null;
@@ -30,8 +30,8 @@ export function puedeMoverse(E: Estado, pl: Planta): string | null {
 
 export const trasplantar: Regla<De<'trasplantar'>> = {
   puede(E, a) {
-    const pl = E.plantas[a.planta],
-      dest = E.celdas[a.celda];
+    const pl = E.mundo.plantas[a.planta],
+      dest = E.mundo.celdas[a.celda];
     if (!pl || !dest) return T.noSeTrasplantaAhi();
     if (dest.planta) return T.celdaOcupada();
     if (zona(E, dest.zona).cria) return T.almacigueraNoRecibe();
@@ -45,16 +45,16 @@ export const trasplantar: Regla<De<'trasplantar'>> = {
   },
   costo: () => REGLAS.ratos.accion,
   aplicar(E, a, evs) {
-    const sp = especieDe(E.plantas[a.planta]),
-      dest = E.celdas[a.celda],
+    const sp = especieDe(E.mundo.plantas[a.planta]),
+      dest = E.mundo.celdas[a.celda],
       bloque = bloqueDe(E, sp, a.celda, false)!;
     // de un grupo sale un plantín y el resto queda esperando; si es uno solo, se mueve entero
-    const varios = vivas(E.plantas[a.planta]) > 1,
-      pl = varios ? separarUno(E, E.plantas[a.planta]) : E.plantas[a.planta];
+    const varios = vivas(E.mundo.plantas[a.planta]) > 1,
+      pl = varios ? separarUno(E, E.mundo.plantas[a.planta]) : E.mundo.plantas[a.planta];
     const celdasOrigen = celdasDePlanta(pl);
     const como = danioDelTrasplante(E, pl);
-    if (!varios) for (const k of celdasOrigen) E.celdas[k].planta = null;
-    for (const k of bloque) E.celdas[k].planta = pl.id;
+    if (!varios) for (const k of celdasOrigen) E.mundo.celdas[k].planta = null;
+    for (const k of bloque) E.mundo.celdas[k].planta = pl.id;
     pl.celda = a.celda;
     if (bloque.length > 1) pl.celdas = bloque;
     else delete pl.celdas;
@@ -73,10 +73,10 @@ export const trasplantar: Regla<De<'trasplantar'>> = {
 function separarUno(E: Estado, grupo: Planta): Planta {
   grupo.n--;
   const hijo = JSON.parse(JSON.stringify(grupo)) as Planta;
-  hijo.id = 'p' + E.nextId++;
+  hijo.id = 'p' + E.progreso.nextId++;
   hijo.n = 1;
   hijo.avisoRaleo = false;
-  E.plantas[hijo.id] = hijo;
+  E.mundo.plantas[hijo.id] = hijo;
   return hijo;
 }
 
@@ -92,7 +92,7 @@ function danioDelTrasplante(E: Estado, pl: Planta): T.ComoFueElTrasplante {
     pl.salud -= TRASPLANTE.danioChico;
     return 'chico';
   }
-  if (ventana(pl.slug, E.dec, 'trasplante') === 'fuera') {
+  if (ventana(pl.slug, E.tiempo.dec, 'trasplante') === 'fuera') {
     pl.vigor = r1(pl.vigor * TRASPLANTE.vigorFueraDeVentana) / 100;
     return 'fuera-de-ventana';
   }

@@ -60,7 +60,7 @@ export function crearContexto(E: Estado, dias = DIAS_POR_TURNO): Contexto {
   let avisos: Aviso[] = [];
   const ctx: Contexto = {
     E,
-    w: E.prox.real,
+    w: E.tiempo.clima,
     dias,
     evs: [],
     flores: floresAbiertas(E),

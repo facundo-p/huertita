@@ -32,7 +32,7 @@ export function Barra() {
         Ver sol
       </button>
       {DESPUES.map(boton)}
-      <button id="hz-pasar" disabled={E.terminado} onClick={pasarDecada}>
+      <button id="hz-pasar" disabled={E.tiempo.terminado} onClick={pasarDecada}>
         Pasar 10 días ▶
       </button>
     </nav>

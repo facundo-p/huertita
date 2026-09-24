@@ -19,12 +19,13 @@ function enStorage(storage: () => Storage, clave: string, envuelta: boolean, nom
     const t = storage().getItem(clave);
     if (!t) return null;
     const o = JSON.parse(t);
-    return envuelta ? o : { t: o.guardado ?? 0, E: o };
+    // la marca de la hora está en `meta` desde la v4; antes, suelta
+    return envuelta ? o : { t: o.meta?.guardado ?? o.guardado ?? 0, E: o };
   };
   return {
     nombre,
     async guardar(E) {
-      storage().setItem(clave, JSON.stringify(envuelta ? { t: E.guardado ?? 0, E } : E));
+      storage().setItem(clave, JSON.stringify(envuelta ? { t: E.meta.guardado ?? 0, E } : E));
     },
     async cargar() {
       try {

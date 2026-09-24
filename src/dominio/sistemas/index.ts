@@ -57,11 +57,11 @@ export const SISTEMAS_DEL_PATIO: SistemaDelPatio[] = [
 function unaPlanta(ctx: Contexto, pl: Planta): void {
   const { E } = ctx,
     saludAntes = pl.salud,
-    t = { pl, sp: especieDe(pl), z: E.celdas[pl.celda].zona };
+    t = { pl, sp: especieDe(pl), z: E.mundo.celdas[pl.celda].zona };
   pl.edad += ctx.dias;
   ctx.planta = pl;
   for (const sistema of SISTEMAS_POR_PLANTA) if (sistema(ctx, t) === 'basta') break;
-  if (E.plantas[pl.id]) cerrar(E, pl, saludAntes); // si sigue viva, su diario cierra la década
+  if (E.mundo.plantas[pl.id]) cerrar(E, pl, saludAntes); // si sigue viva, su diario cierra la década
   ctx.planta = null;
 }
 
@@ -69,7 +69,7 @@ function unaPlanta(ctx: Contexto, pl: Planta): void {
 export function correrTurno(E: Estado): Evento[] {
   const ctx = crearContexto(E);
   ctx.ev('clima', TT.climaDeLaDecada(fechaDe(ctx.w.dec), ctx.w));
-  for (const id of Object.keys(E.plantas)) if (E.plantas[id]) unaPlanta(ctx, E.plantas[id]);
+  for (const id of Object.keys(E.mundo.plantas)) if (E.mundo.plantas[id]) unaPlanta(ctx, E.mundo.plantas[id]);
   for (const sistema of SISTEMAS_DEL_PATIO) sistema(ctx);
   return ctx.evs;
 }

@@ -7,7 +7,7 @@ import type { Estado, Planta } from '../src/dominio';
 const textos = (pl: Planta): string => (pl.hist || []).flatMap((r) => r.n.map((x) => x[1])).join(' | ');
 function sembrada(slug: string, celda: string): { E: Estado; pl: Planta } {
   const E = M.crearPartida(4, { decInicio: 30 });
-  E.sobres[slug] = 5;
+  E.recursos.sobres[slug] = 5;
   expect(M.despachar(E, { tipo: 'sembrar', slug, celda }).ok).toBe(true);
   return { E, pl: M.plantaEn(E, celda)! };
 }
@@ -25,8 +25,8 @@ describe('diario por planta', () => {
   });
   it('si pierde salud por sed sin que haya aviso general, el diario igual lo dice', () => {
     const { E, pl } = crecida('lechuga', '0,4');
-    E.riego.elevado = 1;
-    E.prox.real = { ...E.prox.real, lluvia: 0, tmax: 26, tmin: 14, tmed: 20, helada: false, ola: false };
+    E.recursos.riego.elevado = 1;
+    E.tiempo.clima = { ...E.tiempo.clima, lluvia: 0, tmax: 26, tmin: 14, tmed: 20, helada: false, ola: false };
     const antes = pl.salud;
     M.pasarDecada(E);
     expect(pl.salud).toBeLessThan(antes);
@@ -36,11 +36,11 @@ describe('diario por planta', () => {
   it('una plaga sin tratar queda anotada cada década, y tratarla también', () => {
     const { E, pl } = crecida('lechuga', '0,4');
     pl.plaga = 'pulgon';
-    E.riego.elevado = 2;
+    E.recursos.riego.elevado = 2;
     M.pasarDecada(E);
     expect(textos(pl)).toMatch(/Sigue con pulgones/);
     expect(pl.hist!.flatMap((r) => r.n.map((x) => x[2]))).toContain('plagas.sigue');
-    E.ratosGastados = 0;
+    E.recursos.ratosGastados = 0;
     expect(M.despachar(E, { tipo: 'tratar', planta: pl.id }).ok).toBe(true);
     expect(pl.hist![pl.hist!.length - 1].n.some((x) => x[0] === 'bien')).toBe(true);
   });
@@ -49,19 +49,19 @@ describe('diario por planta', () => {
       sinExplicar: string[] = [];
     const salud: Record<string, number> = {};
     for (let t = 0; t < 36; t++) {
-      for (const pl of Object.values(E.plantas)) salud[pl.id] = pl.salud;
+      for (const pl of Object.values(E.mundo.plantas)) salud[pl.id] = pl.salud;
       M.pasarDecada(E);
-      for (const pl of Object.values(E.plantas)) {
+      for (const pl of Object.values(E.mundo.plantas)) {
         if (salud[pl.id] == null || pl.salud >= salud[pl.id] - 0.5) continue;
         const r = pl.hist?.[pl.hist.length - 1];
-        if (!r || (r.turno !== E.turno - 1 && r.turno !== E.turno) || !r.n.some((x) => x[0] === 'mal'))
-          sinExplicar.push(`${pl.slug} década ${E.dec}: ${salud[pl.id]} → ${pl.salud}`);
+        if (!r || (r.turno !== E.tiempo.turno - 1 && r.turno !== E.tiempo.turno) || !r.n.some((x) => x[0] === 'mal'))
+          sinExplicar.push(`${pl.slug} década ${E.tiempo.dec}: ${salud[pl.id]} → ${pl.salud}`);
       }
       // siembra algo cada tanto para que haya plantas
       if (t % 3 === 0)
         for (const slug of ['lechuga', 'rabanito', 'acelga', 'tomate'])
-          for (const c of Object.keys(E.celdas))
-            if (!E.celdas[c].planta && E.sobres[slug] > 0 && M.ratosLibres(E) > 0) {
+          for (const c of Object.keys(E.mundo.celdas))
+            if (!E.mundo.celdas[c].planta && E.recursos.sobres[slug] > 0 && M.ratosLibres(E) > 0) {
               M.despachar(E, { tipo: 'sembrar', slug, celda: c });
               break;
             }
@@ -70,13 +70,13 @@ describe('diario por planta', () => {
   });
   it('el plantín repicado se lleva la historia del almácigo', () => {
     const E = jugarUnAnio(M, 3) as Estado;
-    const trasplantadas = Object.values(E.plantas).filter((pl) => /Trasplantaste/.test(textos(pl)));
+    const trasplantadas = Object.values(E.mundo.plantas).filter((pl) => /Trasplantaste/.test(textos(pl)));
     expect(trasplantadas.length).toBeGreaterThan(0);
     for (const pl of trasplantadas) if ((pl.hist || []).length < 16) expect(textos(pl)).toMatch(/Sembraste/);
   });
   it('no crece sin límite y sigue siendo JSON', () => {
     const E = jugarUnAnio(M, 2) as Estado;
-    for (const pl of Object.values(E.plantas)) expect((pl.hist || []).length).toBeLessThanOrEqual(16);
+    for (const pl of Object.values(E.mundo.plantas)) expect((pl.hist || []).length).toBeLessThanOrEqual(16);
     expect(JSON.parse(JSON.stringify(E))).toEqual(E);
   });
 });

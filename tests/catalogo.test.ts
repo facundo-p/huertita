@@ -82,12 +82,12 @@ describe('el juego no contradice a huertapp', () => {
     // se prueba en cada década ideal con un año normal: en al menos una tiene que poder nacer
     const nacio = ideales.some((dec) => {
       const E = crearPartida(11, { decInicio: dec, caracter: 'normal' });
-      E.sobres[s] = 3;
-      E.riego.almacigo = 3;
-      E.riego.elevado = 3;
+      E.recursos.sobres[s] = 3;
+      E.recursos.riego.almacigo = 3;
+      E.recursos.riego.elevado = 3;
       despachar(E, { tipo: 'sembrar', slug: s, celda });
-      for (let i = 0; i < 4 && Object.values(E.plantas)[0]?.etapa === 'semilla'; i++) pasarDecada(E);
-      const pl = Object.values(E.plantas)[0];
+      for (let i = 0; i < 4 && Object.values(E.mundo.plantas)[0]?.etapa === 'semilla'; i++) pasarDecada(E);
+      const pl = Object.values(E.mundo.plantas)[0];
       return !!pl && pl.etapa !== 'semilla';
     });
     if (CONTRADICCIONES_CONOCIDAS[s])

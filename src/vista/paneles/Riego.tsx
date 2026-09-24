@@ -24,7 +24,7 @@ export function Riego() {
                 key={nivel}
                 data-zona={z.id}
                 data-nivel={nivel}
-                class={E.riego[z.id] === nivel ? 'on' : ''}
+                class={E.recursos.riego[z.id] === nivel ? 'on' : ''}
                 onClick={() => regar(z.id, nivel)}
               >
                 {nombre}

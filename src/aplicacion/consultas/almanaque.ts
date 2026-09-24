@@ -20,9 +20,9 @@ function ordenar(E: Estado, slugs: string[]): EspecieEnLista[] {
     .map((slug) => ({
       slug,
       nombre: nombreCorto(M.ESPECIES[slug].nombre),
-      ventana: M.ventana(slug, E.dec),
-      sobres: E.sobres[slug] || 0,
-      gen: E.gen[slug] || 0,
+      ventana: M.ventana(slug, E.tiempo.dec),
+      sobres: E.recursos.sobres[slug] || 0,
+      gen: E.recursos.gen[slug] || 0,
     }))
     .sort(
       (a, b) =>
@@ -34,12 +34,12 @@ function ordenar(E: Estado, slugs: string[]): EspecieEnLista[] {
 export const sobresDisponibles = (E: Estado): EspecieEnLista[] =>
   ordenar(
     E,
-    Object.keys(E.sobres).filter((s) => E.sobres[s] > 0),
+    Object.keys(E.recursos.sobres).filter((s) => E.recursos.sobres[s] > 0),
   );
 
 /** El almanaque: tus sobres, o todas las especies del catálogo. */
 export const almanaque = (E: Estado, todas: boolean): EspecieEnLista[] =>
   ordenar(
     E,
-    Object.keys(M.ESPECIES).filter((s) => todas || E.sobres[s] > 0),
+    Object.keys(M.ESPECIES).filter((s) => todas || E.recursos.sobres[s] > 0),
   );

@@ -14,22 +14,22 @@ export interface Balance {
   estrellas: 0 | 1 | 2 | 3;
 }
 export function balance(E: Estado): Balance {
-  const especies = Object.keys(E.cosechado).length,
-    dMo = r1(moMedia(E) - E.moInicial);
+  const especies = Object.keys(E.progreso.cosechado).length,
+    dMo = r1(moMedia(E) - E.progreso.moInicial);
   const B = REGLAS.balance;
   const puntos =
-    E.porciones +
+    E.progreso.porciones +
     especies * B.porEspecie +
-    E.semillasGuardadas * B.porSobreGuardado +
+    E.progreso.semillasGuardadas * B.porSobreGuardado +
     Math.max(0, dMo) +
-    Math.min(B.topeDeVisitas, E.visitas / B.visitasPorPunto);
+    Math.min(B.topeDeVisitas, E.progreso.visitas / B.visitasPorPunto);
   return {
-    porciones: E.porciones,
+    porciones: E.progreso.porciones,
     especies,
-    semillas: E.semillasGuardadas,
+    semillas: E.progreso.semillasGuardadas,
     dMo,
-    visitas: E.visitas,
-    logros: Object.keys(E.misiones).length,
+    visitas: E.progreso.visitas,
+    logros: Object.keys(E.progreso.misiones).length,
     puntos: Math.round(puntos),
     estrellas: estrellasPara(puntos, patioDe(E).estrellas),
   };

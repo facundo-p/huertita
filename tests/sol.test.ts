@@ -19,6 +19,7 @@ const ZONA = {
 let n = 0;
 const patio = (obstaculos: Patio['obstaculos'], horizonte = 0): Patio => ({
   estrellas: [1, 2, 3],
+  estructuras: [],
   aspecto: { piso: 'pasto', norte: 'paredon' },
   id: 'prueba-' + n++,
   nombre: '',

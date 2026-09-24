@@ -62,11 +62,11 @@ export const MISIONES: Mision[] = [
   },
 ];
 export function cumplir(E: Estado, id: string, evs: Evento[]): void {
-  if (id in E.misiones) return;
+  if (id in E.progreso.misiones) return;
   const m = MISIONES.find((x) => x.id === id);
   if (!m) return;
-  E.misiones[id] = E.turno;
-  for (const s in m.premio) E.sobres[s] = (E.sobres[s] || 0) + m.premio[s];
+  E.progreso.misiones[id] = E.tiempo.turno;
+  for (const s in m.premio) E.recursos.sobres[s] = (E.recursos.sobres[s] || 0) + m.premio[s];
   const especies = Object.keys(m.premio).map((s) => nombreDe(ESPECIES[s]));
   evs.push(anotar(E, 'logro', logro(m.titulo, especies)));
 }

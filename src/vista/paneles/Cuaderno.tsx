@@ -18,7 +18,7 @@ export function Cuaderno() {
   return (
     <>
       <h2>Cuaderno de huerta</h2>
-      {porTurno(E.cuaderno)
+      {porTurno(E.progreso.cuaderno)
         .slice(0, 12)
         .map((evs) => (
           <Fragment key={evs[0].turno}>

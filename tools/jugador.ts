@@ -11,6 +11,35 @@ export interface MotorJugable {
   /** solo el motor nuevo: las zonas salen del patio de la partida. El prototipo tenía estas cuatro fijas. */
   zonasDe?(E: any): { id: string; cria?: boolean }[];
 }
+/** Lo que el jugador mira de una partida para decidir. */
+export interface Vistazo {
+  celdas: Record<string, { zona: string; planta: string | null }>;
+  plantas: Record<string, any>;
+  sobres: Record<string, number>;
+  misiones: Record<string, number>;
+  dec: number;
+  pronostico: { pHelada: number; tmax: number };
+}
+/** El estado del motor nuevo viene en partes (v4); el del prototipo, todo suelto. */
+function leer(E: any): Vistazo {
+  if (E.mundo)
+    return {
+      celdas: E.mundo.celdas,
+      plantas: E.mundo.plantas,
+      sobres: E.recursos.sobres,
+      misiones: E.progreso.misiones,
+      dec: E.tiempo.dec,
+      pronostico: E.tiempo.pronostico,
+    };
+  return {
+    celdas: E.celdas,
+    plantas: E.plantas,
+    sobres: E.sobres,
+    misiones: E.misiones,
+    dec: E.dec,
+    pronostico: E.prox.pron,
+  };
+}
 const ZONAS_V04 = [{ id: 'suelo' }, { id: 'elevado' }, { id: 'macetas' }, { id: 'almacigo', cria: true }];
 export function jugarUnAnio(
   M: MotorJugable,
@@ -22,29 +51,30 @@ export function jugarUnAnio(
   const zonas = M.zonasDe ? M.zonasDe(E) : ZONAS_V04,
     deCria = new Set(zonas.filter((z) => z.cria).map((z) => z.id)),
     deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
-  const enCria = (celda: string): boolean => deCria.has(E.celdas[celda].zona);
+  const enCria = (celda: string): boolean => deCria.has(leer(E).celdas[celda].zona);
   for (let t = 0; t < (opciones?.decadas ?? 36); t++) {
-    for (const pl of Object.values<any>(E.plantas)) {
+    const V = leer(E);
+    for (const pl of Object.values<any>(V.plantas)) {
       const sp = M.ESPECIES[pl.slug];
       if (pl.etapa === 'cosechable' && !sp.flor) {
-        if (!('semillas' in E.misiones) && pl.slug === 'rabanito') M.despachar(E, { tipo: 'semillar', planta: pl.id });
+        if (!('semillas' in V.misiones) && pl.slug === 'rabanito') M.despachar(E, { tipo: 'semillar', planta: pl.id });
         else M.despachar(E, { tipo: 'cosechar', planta: pl.id });
       }
-      if (E.plantas[pl.id] && pl.plaga) M.despachar(E, { tipo: 'tratar', planta: pl.id });
-      if (E.plantas[pl.id] && pl.etapa === 'pasada') M.despachar(E, { tipo: 'arrancar', planta: pl.id });
-      if (E.plantas[pl.id] && !enCria(pl.celda) && pl.n > 1) M.despachar(E, { tipo: 'ralear', planta: pl.id });
+      if (V.plantas[pl.id] && pl.plaga) M.despachar(E, { tipo: 'tratar', planta: pl.id });
+      if (V.plantas[pl.id] && pl.etapa === 'pasada') M.despachar(E, { tipo: 'arrancar', planta: pl.id });
+      if (V.plantas[pl.id] && !enCria(pl.celda) && pl.n > 1) M.despachar(E, { tipo: 'ralear', planta: pl.id });
       let vueltas = 0;
       while (
         vueltas++ < 6 &&
-        E.plantas[pl.id] &&
+        V.plantas[pl.id] &&
         enCria(pl.celda) &&
         sp.dt &&
         pl.prog >= sp.dt.min &&
-        M.ventana(pl.slug, E.dec, 'trasplante') !== 'fuera'
+        M.ventana(pl.slug, V.dec, 'trasplante') !== 'fuera'
       ) {
         let mejor: { c: string; p: number } | null = null;
-        for (const c in E.celdas)
-          if (!E.celdas[c].planta && !enCria(c)) {
+        for (const c in V.celdas)
+          if (!V.celdas[c].planta && !enCria(c)) {
             const ev = M.evaluarCelda(E, pl.slug, c)!;
             if (!mejor || ev.puntaje > mejor.p) mejor = { c, p: ev.puntaje };
           }
@@ -52,19 +82,19 @@ export function jugarUnAnio(
           break;
       }
     }
-    if (E.prox.pron.pHelada > 40) for (const z of deCultivo) M.despachar(E, { tipo: 'manta', zona: z });
-    const calor = E.prox.pron.tmax > 29;
+    if (V.pronostico.pHelada > 40) for (const z of deCultivo) M.despachar(E, { tipo: 'manta', zona: z });
+    const calor = V.pronostico.tmax > 29;
     for (const z of deCultivo) M.despachar(E, { tipo: 'riego', zona: z, nivel: calor ? 2 : 1 });
     let guarda = 0;
     while (M.ratosLibres(E) > 0 && guarda++ < 10) {
       let mejor: { s: string; c: string; p: number } | null = null;
-      for (const s in E.sobres)
-        if (E.sobres[s] > 0 && M.ventana(s, E.dec) !== 'fuera')
-          for (const c in E.celdas)
-            if (!E.celdas[c].planta) {
+      for (const s in V.sobres)
+        if (V.sobres[s] > 0 && M.ventana(s, V.dec) !== 'fuera')
+          for (const c in V.celdas)
+            if (!V.celdas[c].planta) {
               const sp = M.ESPECIES[s],
                 alm = enCria(c);
-              if (alm !== !!(sp.dt && /almacigo/.test(M.metodoDe(s, E.dec) || ''))) continue;
+              if (alm !== !!(sp.dt && /almacigo/.test(M.metodoDe(s, V.dec) || ''))) continue;
               const ev = M.evaluarCelda(E, s, c)!;
               if (!mejor || ev.puntaje > mejor.p) mejor = { s, c, p: ev.puntaje };
             }

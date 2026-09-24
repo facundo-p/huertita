@@ -18,7 +18,7 @@ export const fondo: Patio = {
   bienvenida:
     'Todavía hiela. El bancal elevado es el que más sol tiene ahora; la almaciguera está reparada. El tomate se arranca en almácigo protegido.',
   celdaM: 0.5,
-  plano: ['PPPPPPPP', 'ssssss:T', 'ssssss:T', '::::::::', 'eeee:mm.', 'eeee:mm.', '::::::::', 'aaaa:C..', 'HHHHHHHH'],
+  plano: ['PPPPPPPP', 'ssssss:T', 'ssssss:T', '::::::::', 'eeee:mm.', 'eeee:mm.', '::::::::', 'aaaa:...', 'HHHHHHHH'],
   zonas: [
     {
       id: 'suelo',
@@ -85,6 +85,7 @@ export const fondo: Patio = {
       desc: 'Contra la casa, mirando al norte y bajo alero: reparada de heladas y de la lluvia. Solo para criar plantines.',
     },
   ],
+  estructuras: [{ tipo: 'compostera', en: '5,7' }],
   obstaculos: [
     { tipo: 'muro', nombre: 'Paredón norte', desde: [-8, 1], hasta: [16, 1], alto: 1.8 },
     { tipo: 'muro', nombre: 'Casa', desde: [0, 8], hasta: [8, 8], alto: 3 },

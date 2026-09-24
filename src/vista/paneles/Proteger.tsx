@@ -78,7 +78,7 @@ function ComoSeSuman() {
 
 export function Proteger() {
   const E = usarPartida(),
-    p = E.prox.pron,
+    p = E.tiempo.pronostico,
     zonas = riesgoPorZona(E);
   return (
     <>

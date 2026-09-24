@@ -36,7 +36,7 @@ function Cuando({ f }: { f: FichaDeEspecie }) {
           <Meses />
         </div>
         <div class="hz-alm-fila">
-          <Franja slug={sp.slug} hoy={E.dec} grande />
+          <Franja slug={sp.slug} hoy={E.tiempo.dec} grande />
         </div>
       </div>
       <Leyenda />
@@ -196,7 +196,7 @@ export function Ficha() {
     f = modo.modo === 'ficha' ? fichaDeEspecie(E, modo.slug) : null;
   if (!f) return <Almanaque />;
   const sp = f.sp,
-    sobres = E.sobres[sp.slug] || 0;
+    sobres = E.recursos.sobres[sp.slug] || 0;
   return (
     <>
       <div class="hz-fila">

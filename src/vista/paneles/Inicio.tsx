@@ -4,7 +4,7 @@ import { usarPartida } from '../estado';
 
 export function Inicio() {
   const E = usarPartida(),
-    car = M.CARACTERES[E.caracter];
+    car = M.CARACTERES[E.tiempo.caracter];
   return (
     <>
       <h2>Tu patio en el conurbano</h2>

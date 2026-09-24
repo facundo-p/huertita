@@ -12,7 +12,7 @@ import { PANELES } from './paneles';
 
 function Trasplantando({ planta }: { planta: string }) {
   const E = usarPartida(),
-    pl = E.plantas[planta];
+    pl = E.mundo.plantas[planta];
   if (!pl) return null;
   return (
     <div class="hz-eval n-regular">

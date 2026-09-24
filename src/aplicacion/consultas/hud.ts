@@ -29,12 +29,12 @@ function alertaDeHelada(pHelada: number): Hud['alertaDeHelada'] {
 export function hud(E: Estado): Hud {
   const libres = M.ratosLibres(E),
     ratos: Rato[] = [];
-  for (let i = 0; i < M.RATOS; i++) ratos.push(queRato(i, libres, E.ratosGastados));
-  const p = E.prox.pron;
+  for (let i = 0; i < M.RATOS; i++) ratos.push(queRato(i, libres, E.recursos.ratosGastados));
+  const p = E.tiempo.pronostico;
   return {
-    fecha: cap(M.fechaDe(E.dec)),
-    estacion: M.estacionDe(E.dec),
-    anio: E.anio,
+    fecha: cap(M.fechaDe(E.tiempo.dec)),
+    estacion: M.estacionDe(E.tiempo.dec),
+    anio: E.tiempo.anio,
     libres,
     ratos,
     pronostico: p,
@@ -44,16 +44,16 @@ export function hud(E: Estado): Hud {
 
 /** Una línea que identifica una partida guardada: patio, fecha, año, porciones y plantas. */
 export function resumenDePartida(E: Estado): string {
-  const P = E.patio && E.patio !== M.PATIO_INICIAL ? M.PATIOS[E.patio] : null;
+  const P = E.meta.plantilla !== M.PLANTILLA_INICIAL ? M.patioDe(E) : null;
   return (
     (P ? P.nombre + ' · ' : '') +
-    cap(M.fechaDe(E.dec)) +
+    cap(M.fechaDe(E.tiempo.dec)) +
     ' · año ' +
-    E.anio +
+    E.tiempo.anio +
     ' · ' +
-    E.porciones +
+    E.progreso.porciones +
     ' porciones · ' +
-    Object.keys(E.plantas).length +
+    Object.keys(E.mundo.plantas).length +
     ' plantas'
   );
 }

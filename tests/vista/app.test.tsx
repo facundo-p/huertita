@@ -33,9 +33,9 @@ describe('la carcasa', () => {
   });
   it('pasar 10 días avanza la partida y muestra lo que pasó', () => {
     render(<App />);
-    const antes = partida.value.turno;
+    const antes = partida.value.tiempo.turno;
     fireEvent.click(document.getElementById('hz-pasar')!);
-    expect(partida.value.turno).toBe(antes + 1);
+    expect(partida.value.tiempo.turno).toBe(antes + 1);
     expect(interaccion.value.modo.modo).toBe('resumen');
   });
   it('tocar una celda en el patio la elige', () => {

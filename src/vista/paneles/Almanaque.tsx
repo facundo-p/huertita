@@ -40,7 +40,7 @@ export function Almanaque() {
             <span class="nom">
               {x.nombre} {x.sobres > 0 && <small>×{x.sobres}</small>}
             </span>
-            <Franja slug={x.slug} hoy={E.dec} />
+            <Franja slug={x.slug} hoy={E.tiempo.dec} />
           </button>
         ))}
       </div>

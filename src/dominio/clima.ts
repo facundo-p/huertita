@@ -109,7 +109,7 @@ export const estacionDe = (dec: number): string =>
 export const invierno = (dec: number): number => (Math.cos((6.2831853 * (diaCentral(dec) - 172)) / 365) + 1) / 2;
 
 export function generarTiempo(E: Estado, dec: number): { real: Tiempo; pron: Pronostico } {
-  const car = CARACTERES[E.caracter],
+  const car = CARACTERES[E.tiempo.caracter],
     dia = diaCentral(dec),
     est = estacionDe(dec);
   const anom = gauss(E) * 2.1 + car.dT; // [SUPUESTO] desvío de la anomalía decádica

@@ -55,13 +55,13 @@ function plantaEnFicha(E: Estado, pl: Planta): PlantaEnFicha {
     punto,
     factores: pl.etapa === 'semilla' ? null : M.factoresPlanta(E, pl),
     avance: Math.min(1, pl.prog / (punto ? punto.min : M.objetivoCosecha(sp))),
-    enAlmacigo: !!M.zona(E, E.celdas[pl.celda].zona).cria,
+    enAlmacigo: !!M.zona(E, E.mundo.celdas[pl.celda].zona).cria,
     acciones: ACCIONES.filter(se),
   };
 }
 
 export function fichaDeCelda(E: Estado, k: CeldaId): FichaDeCelda | null {
-  const c = E.celdas[k];
+  const c = E.mundo.celdas[k];
   if (!c) return null;
   const z = M.zona(E, c.zona),
     pl = M.plantaEn(E, k);
@@ -76,7 +76,7 @@ export function fichaDeCelda(E: Estado, k: CeldaId): FichaDeCelda | null {
     familiaAnterior: c.fam,
     puedeMulch: M.puede(E, { tipo: 'mulch', celda: k }, { sinMirarRatos: true }) === null,
     admiteCompost: !z.cria,
-    dosisDeCompost: E.compost.dosis,
+    dosisDeCompost: M.dosisDeCompost(E),
     planta: pl ? plantaEnFicha(E, pl) : null,
   };
 }

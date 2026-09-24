@@ -20,7 +20,7 @@ export const DESEO_AGUA: Record<RegimenRiego, number> = AGUA.deseo;
 /** El suelo de una celda: un franco fértil con mucha materia orgánica pasa a ser húmedo y rico. */
 export function sueloDeCelda(E: Estado, celda: CeldaId): CategoriaSuelo {
   const base = sueloBase(E, celda);
-  return E.celdas[celda].mo >= SUELO.moRica && base === 'FRANCO_FERTIL' ? 'HUMEDO_RICO' : base;
+  return E.mundo.celdas[celda].mo >= SUELO.moRica && base === 'FRANCO_FERTIL' ? 'HUMEDO_RICO' : base;
 }
 
 /** Cuánto crece con estas horas de sol: 1 desde las ideales, 0.7 en las mínimas, y cae rápido por debajo. */
@@ -36,7 +36,7 @@ export function fLuz(sp: Especie, h: number, tmax: number): number {
 }
 export function fSuelo(E: Estado, sp: Especie, celda: CeldaId): number {
   const compatible = SUELO.compatibilidad[sp.suelo][sueloDeCelda(E, celda)] || SUELO.compatibilidadSinDato;
-  return compatible * (SUELO.factorBase + (SUELO.factorPorMo * E.celdas[celda].mo) / 100);
+  return compatible * (SUELO.factorBase + (SUELO.factorPorMo * E.mundo.celdas[celda].mo) / 100);
 }
 /** Lo que pide de maceta una especie; si huertapp no lo dice, 8 L y 30 cm. */
 export function macetaQuePide(sp: Especie): { litros: number; prof: number } {
@@ -46,7 +46,7 @@ export function macetaQuePide(sp: Especie): { litros: number; prof: number } {
   };
 }
 /** Qué tan bien le queda la maceta de la celda: 1 si alcanza, 0.6 si es mediana, 0.35 si es chica. */
-export function fMaceta(E: Pick<Estado, 'patio'>, sp: Especie, celda: CeldaId): number {
+export function fMaceta(E: Pick<Estado, 'mundo'>, sp: Especie, celda: CeldaId): number {
   const m = macetaDe(E, celda);
   if (!m) return 1;
   const pide = macetaQuePide(sp);
@@ -55,18 +55,18 @@ export function fMaceta(E: Pick<Estado, 'patio'>, sp: Especie, celda: CeldaId): 
     return MACETA.factorMediana;
   return MACETA.factorChica;
 }
-export const bajoTunel = (E: Pick<Estado, 'celdas' | 'tunel'>, celda: CeldaId): boolean =>
-  !!E.tunel[E.celdas[celda].zona];
+export const bajoTunel = (E: Pick<Estado, 'mundo' | 'recursos'>, celda: CeldaId): boolean =>
+  !!E.recursos.tunel[E.mundo.celdas[celda].zona];
 /** Índice de humedad del suelo, de 0 (seco) a ~4,5 (encharcado). [SUPUESTO] balance hídrico simplificado. */
 export function humedad(E: Estado, celda: CeldaId, w: Pick<Tiempo, 'lluvia' | 'tmax'>): number {
-  const c = E.celdas[celda],
+  const c = E.mundo.celdas[celda],
     z = zonaDe(E, celda),
     m = macetaDe(E, celda);
   const cubierta = !!z.techo || bajoTunel(E, celda);
   const ll = cubierta ? 0 : aguaDeLluvia(w.lluvia);
   const calor = w.tmax > AGUA.calorDesde ? (w.tmax - AGUA.calorDesde) * AGUA.secadoPorGrado : 0;
   const dren = z.drenaje + (m && m.litros <= MACETA.chicaLitros ? MACETA.secadoExtra : 0);
-  return E.riego[c.zona] + ll - calor - dren + (c.mulch ? AGUA.mulch : 0);
+  return E.recursos.riego[c.zona] + ll - calor - dren + (c.mulch ? AGUA.mulch : 0);
 }
 /** Cuánta humedad suma la lluvia de la década, en mm. */
 function aguaDeLluvia(mm: number): number {
@@ -133,8 +133,8 @@ export function fVecinos(
 export function aliadosCerca(E: Estado, celda: CeldaId): number {
   const p = xy(celda);
   let n = 0;
-  for (const id in E.plantas) {
-    const pl = E.plantas[id],
+  for (const id in E.mundo.plantas) {
+    const pl = E.mundo.plantas[id],
       q = xy(pl.celda),
       sp = especieDe(pl);
     if (pl.celda === celda || pl.etapa === 'semilla' || pl.etapa === 'plantin') continue;
@@ -148,8 +148,8 @@ export function aliadosCerca(E: Estado, celda: CeldaId): number {
 }
 export function floresAbiertas(E: Estado): number {
   let n = 0;
-  for (const id in E.plantas) {
-    const pl = E.plantas[id],
+  for (const id in E.mundo.plantas) {
+    const pl = E.mundo.plantas[id],
       sp = especieDe(pl);
     if (pl.etapa === 'cosechable' && (sp.flor || sp.familia === 'lamiacea'))
       n += sp.flor ? 1 : REGLAS.polinizadores.aromatica;
@@ -165,7 +165,7 @@ export interface Factores {
   vecinos: { f: number; buenas: string[]; malas: string[] };
 }
 /** Lo que la interfaz muestra como indicadores: por qué esta planta crece como crece. */
-export function factoresPlanta(E: Estado, pl: Planta, w: Tiempo = E.prox.real): Factores {
+export function factoresPlanta(E: Estado, pl: Planta, w: Tiempo = E.tiempo.clima): Factores {
   const sp = especieDe(pl),
     h = horasSol(E, pl.celda, w.dec),
     H = humedad(E, pl.celda, w),
@@ -199,7 +199,7 @@ export function factoresPlanta(E: Estado, pl: Planta, w: Tiempo = E.prox.real): 
     },
     suelo: {
       f: clamp(fSuelo(E, sp, pl.celda) * fMaceta(E, sp, pl.celda), 0, 1),
-      mo: Math.round(E.celdas[pl.celda].mo),
+      mo: Math.round(E.mundo.celdas[pl.celda].mo),
       maceta: fMaceta(E, sp, pl.celda),
     },
     vecinos: ve,
@@ -215,17 +215,17 @@ export interface Evaluacion {
 /** El "fantasma de siembra": qué tan bien le iría HOY a esta especie en esta celda. */
 export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacion | null {
   const sp = ESPECIES[slug],
-    c = E.celdas[celda];
+    c = E.mundo.celdas[celda];
   if (!c) return null;
   const razones: string[] = [],
-    h = horasSol(E, celda, E.dec);
-  const h2 = horasSol(E, celda, ((E.dec + F.decadasAdelante) % 36) + 1); // la planta va a vivir ahí
+    h = horasSol(E, celda, E.tiempo.dec);
+  const h2 = horasSol(E, celda, ((E.tiempo.dec + F.decadasAdelante) % 36) + 1); // la planta va a vivir ahí
   const l = (fLuz(sp, h, F.temperaturaDeReferencia) + fLuz(sp, h2, F.temperaturaDeReferencia)) / 2,
     s = fSuelo(E, sp, celda),
     m = fMaceta(E, sp, celda),
     ve = fVecinos(E, slug, celda);
   const enAlm = !!zonaDe(E, celda).cria,
-    vent = ventana(slug, E.dec),
+    vent = ventana(slug, E.tiempo.dec),
     vig = REGLAS.siembra.vigorPorVentana[vent];
   const bloque = bloqueDe(E, sp, celda, enAlm),
     entra =
@@ -245,7 +245,7 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
   if (vent === 'fuera') razones.push(TF.fueraDeEpoca());
   else if (vent === 'posible') razones.push(TF.epocaPosible());
   const tg = sp.tg,
-    ts = tempEfectiva(E, celda, { tmed: interp(CLIMA.media, diaCentral(E.dec)) });
+    ts = tempEfectiva(E, celda, { tmed: interp(CLIMA.media, diaCentral(E.tiempo.dec)) });
   if (ts < tg.min) razones.push(TF.sueloFrio(ts, tg.min, enAlm));
   if (ts > tg.max) razones.push(TF.sueloCaliente());
   if (enAlm && !sp.dt) razones.push(TF.noToleraTrasplante(sp));

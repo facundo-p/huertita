@@ -32,7 +32,7 @@ describe('la ficha de una celda', () => {
   it('muestra, para cada planta, los botones que el dominio permite y ninguno más', () => {
     const E = jugarUnAnio(M, 4, undefined, { decadas: 12 }) as Estado;
     con(E);
-    for (const pl of Object.values(E.plantas)) {
+    for (const pl of Object.values(E.mundo.plantas)) {
       hacer({ tipo: 'irACelda', celda: pl.celda });
       const hay = botones();
       for (const a of ['cosechar', 'semillar', 'ralear', 'tutorar', 'tratar'] as const)
@@ -45,7 +45,7 @@ describe('la ficha de una celda', () => {
   });
   it('una celda libre invita a sembrar y dice qué hubo antes', () => {
     const E = M.crearPartida(2);
-    E.celdas[M.idCelda(0, 1)].fam = 'solanacea';
+    E.mundo.celdas[M.idCelda(0, 1)].fam = 'solanacea';
     con(E);
     hacer({ tipo: 'irACelda', celda: M.idCelda(0, 1) });
     expect(screen.getByText('Celda libre')).toBeTruthy();
@@ -53,13 +53,13 @@ describe('la ficha de una celda', () => {
   });
   it('cosechar desde el botón cosecha de verdad', () => {
     const E = M.crearPartida(2);
-    E.sobres.rabanito = 3;
+    E.recursos.sobres.rabanito = 3;
     M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: M.idCelda(0, 4) });
-    Object.assign(Object.values(E.plantas)[0], { etapa: 'cosechable', n: 1, prog: 40 });
+    Object.assign(Object.values(E.mundo.plantas)[0], { etapa: 'cosechable', n: 1, prog: 40 });
     con(E);
     hacer({ tipo: 'irACelda', celda: M.idCelda(0, 4) });
     fireEvent.click(document.querySelector('#hz-panel [data-acc="cosechar"]')!);
-    expect(E.porciones).toBeGreaterThan(0);
+    expect(E.progreso.porciones).toBeGreaterThan(0);
   });
 });
 
@@ -83,7 +83,7 @@ describe('riego y protección', () => {
     con(E);
     hacer({ tipo: 'ir', modo: 'riego' });
     fireEvent.click(document.querySelector('[data-zona="suelo"][data-nivel="3"]')!);
-    expect(E.riego.suelo).toBe(3);
+    expect(E.recursos.riego.suelo).toBe(3);
   });
   it('la manta se pone y el botón lo dice; el microtúnel se arma donde se puede', () => {
     const E = M.crearPartida(2);
@@ -92,11 +92,11 @@ describe('riego y protección', () => {
     fireEvent.click(screen.getAllByText('Manta · 1')[0]);
     expect(screen.getByText('Manta puesta')).toBeTruthy();
     fireEvent.click(document.querySelector('[data-acc="tunel"]')!);
-    expect(E.tunel).toEqual({ [M.zonaDeTunel(E)!]: true });
+    expect(E.recursos.tunel).toEqual({ [M.zonaDeTunel(E)!]: true });
   });
   it('si no alcanzan los ratos, el aviso lo explica', () => {
     const E = M.crearPartida(2);
-    E.ratosGastados = M.RATOS;
+    E.recursos.ratosGastados = M.RATOS;
     con(E);
     hacer({ tipo: 'ir', modo: 'proteger' });
     fireEvent.click(screen.getAllByText('Manta · 1')[0]);

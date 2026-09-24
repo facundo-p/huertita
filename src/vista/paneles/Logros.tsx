@@ -16,7 +16,7 @@ export function Logros() {
       </p>
       <ul class="hz-logros">
         {M.MISIONES.map((m) => (
-          <li key={m.id} class={m.id in E.misiones ? 'ok' : ''}>
+          <li key={m.id} class={m.id in E.progreso.misiones ? 'ok' : ''}>
             <b>{m.titulo}</b>
             <span>{m.texto}</span>
             <small>

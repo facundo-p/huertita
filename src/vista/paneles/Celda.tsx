@@ -215,7 +215,7 @@ function EnElAlmacigo({ p }: { p: PlantaEnFicha }) {
   return (
     <p class="hz-dim">
       Se trasplanta con {sp.dt.min}–{sp.dt.max} días de crecimiento.{' '}
-      <Epoca v={M.ventana(pl.slug, usarPartida().dec, 'trasplante')} />
+      <Epoca v={M.ventana(pl.slug, usarPartida().tiempo.dec, 'trasplante')} />
     </p>
   );
 }

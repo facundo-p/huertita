@@ -13,9 +13,9 @@ const copia = (E: Estado): Estado => JSON.parse(JSON.stringify(E));
 /** Un surtido de acciones para probar sobre una partida: buenas, malas y absurdas. */
 function candidatas(E: Estado): Accion[] {
   const out: Accion[] = [];
-  const celdas = Object.keys(E.celdas),
-    libres = celdas.filter((c) => !E.celdas[c].planta);
-  for (const pl of Object.values(E.plantas)) {
+  const celdas = Object.keys(E.mundo.celdas),
+    libres = celdas.filter((c) => !E.mundo.celdas[c].planta);
+  for (const pl of Object.values(E.mundo.plantas)) {
     for (const tipo of ['cosechar', 'semillar', 'ralear', 'arrancar', 'tutorar', 'tratar'] as const)
       out.push({ tipo, planta: pl.id });
     for (const c of [...libres.slice(0, 3), celdas[0]]) out.push({ tipo: 'trasplantar', planta: pl.id, celda: c });
@@ -33,7 +33,7 @@ function candidatas(E: Estado): Accion[] {
 }
 
 describe('puede() y despachar() dicen lo mismo', () => {
-  for (const patio of Object.keys(M.PATIOS))
+  for (const patio of Object.keys(M.PLANTILLAS))
     for (const decadas of [3, 9, 15, 21, 27])
       it(`${patio}, después de ${decadas} décadas del bot`, () => {
         const E = jugarUnAnio(M, 5, undefined, { patio, decadas }) as Estado;
@@ -53,7 +53,7 @@ describe('puede() y despachar() dicen lo mismo', () => {
 describe('lo que la interfaz ya no dejaba hacer, ahora lo decide el dominio', () => {
   const partida = (): Estado => {
     const E = M.crearPartida(8, { decInicio: 30 });
-    for (const s of ['tomate', 'lechuga', 'rabanito']) E.sobres[s] = 9;
+    for (const s of ['tomate', 'lechuga', 'rabanito']) E.recursos.sobres[s] = 9;
     return E;
   };
   const CRIA = '0,7',
@@ -94,7 +94,7 @@ describe('lo que la interfaz ya no dejaba hacer, ahora lo decide el dominio', ()
   });
   it('sin ratos, la razón es la falta de ratos', () => {
     const E = partida();
-    E.ratosGastados = M.RATOS;
+    E.recursos.ratosGastados = M.RATOS;
     expect(M.puede(E, { tipo: 'sembrar', slug: 'rabanito', celda: TIERRA })).toBe('No te quedan ratos esta década.');
     expect(M.puede(E, { tipo: 'tunel' })).toBe('Armar o sacar el microtúnel lleva 2 ratos.');
   });

@@ -18,8 +18,9 @@ function queFaltoContraLaHelada(E: Estado, w: Tiempo, z: ZonaId, ab: Abrigo): st
     return TH.heladaMuyFuerte(w.tmin);
   }
   let yDespues = TH.sinLugarAfuera();
-  if (Z.admiteTunel && !(E.tunel[z] && E.manta[z])) yDespues = TH.mantaYTunelSuman(ABRIGO.manta + ABRIGO.tunel);
-  else if (!Z.cria && !E.manta[z]) yDespues = TH.conMantaSumaba(ABRIGO.manta);
+  if (Z.admiteTunel && !(E.recursos.tunel[z] && E.recursos.manta[z]))
+    yDespues = TH.mantaYTunelSuman(ABRIGO.manta + ABRIGO.tunel);
+  else if (!Z.cria && !E.recursos.manta[z]) yDespues = TH.conMantaSumaba(ABRIGO.manta);
   return TH.estabaAbrigada(ab, yDespues);
 }
 

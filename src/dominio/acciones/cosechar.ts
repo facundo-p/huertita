@@ -1,4 +1,5 @@
 import { REGLAS } from '../../../datos/juego/reglas';
+import { alCompost } from '../estructuras';
 import { BIENALES, RALEO_SE_COME, objetivoCosecha } from '../catalogo';
 import { porCelda } from '../espacio';
 import { anotar, quitarPlanta } from '../estado';
@@ -47,31 +48,32 @@ function rinde(E: Estado, pl: Planta, sp: Especie): T.ComoFueLaCosecha {
 /** Los logros que puede destrabar una cosecha. */
 function logrosDeCosecha(E: Estado, evs: Evento[]): void {
   cumplir(E, 'cosecha1', evs);
-  if (E.cosechado.lechuga && E.cosechado.tomate && E.cosechado.albahaca) cumplir(E, 'ensalada', evs);
-  if (Object.keys(E.cosechado).length >= 5) cumplir(E, 'cinco', evs);
-  if (E.dec >= 16 && E.dec <= 24) cumplir(E, 'invierno', evs);
+  if (E.progreso.cosechado.lechuga && E.progreso.cosechado.tomate && E.progreso.cosechado.albahaca)
+    cumplir(E, 'ensalada', evs);
+  if (Object.keys(E.progreso.cosechado).length >= 5) cumplir(E, 'cinco', evs);
+  if (E.tiempo.dec >= 16 && E.tiempo.dec <= 24) cumplir(E, 'invierno', evs);
 }
 
 export const cosechar: Regla<De<'cosechar'>> = {
   puede(E, a) {
-    const pl = E.plantas[a.planta];
+    const pl = E.mundo.plantas[a.planta];
     if (!pl || pl.etapa !== 'cosechable') return T.noCosechable();
     if (especieDe(pl).flor) return T.floresSeDejan();
     return null;
   },
   costo: gratis,
   aplicar(E, a, evs) {
-    const pl = E.plantas[a.planta],
+    const pl = E.mundo.plantas[a.planta],
       sp = especieDe(pl),
-      c = E.celdas[pl.celda];
+      c = E.mundo.celdas[pl.celda];
     const como = rinde(E, pl, sp);
-    E.porciones = r1(E.porciones + como.porciones);
-    E.cosechado[pl.slug] = r1((E.cosechado[pl.slug] || 0) + como.porciones);
+    E.progreso.porciones = r1(E.progreso.porciones + como.porciones);
+    E.progreso.cosechado[pl.slug] = r1((E.progreso.cosechado[pl.slug] || 0) + como.porciones);
     pl.cosechas++;
     pl.reserva = 0;
     pl.listoHace = 0;
     c.mo = clamp(c.mo - COSECHA.moQueSeLleva, SUELO.moMin, SUELO.moMax);
-    E.compost.carga += COMPOST.porCosecha;
+    alCompost(E, COMPOST.porCosecha);
     evs.push(anotar(E, 'bien', T.cosechaste(sp, como), pl.celda));
     if (sp.pasadas <= 1 || (pl.cosechas >= sp.pasadas && !sp.perenne)) {
       quitarPlanta(E, pl, true);
@@ -92,13 +94,13 @@ function comoSemilla(sp: Especie): 'fruto' | 'bienal' | 'resto' {
 
 export const semillar: Regla<De<'semillar'>> = {
   puede(E, a) {
-    const pl = E.plantas[a.planta];
+    const pl = E.mundo.plantas[a.planta];
     if (!pl || (pl.etapa !== 'cosechable' && pl.etapa !== 'pasada')) return T.noSemilla();
     return null;
   },
   costo: gratis,
   aplicar(E, a, evs) {
-    const pl = E.plantas[a.planta],
+    const pl = E.mundo.plantas[a.planta],
       sp = especieDe(pl),
       como = comoSemilla(sp);
     pl.etapa = 'semillando';
@@ -109,15 +111,15 @@ export const semillar: Regla<De<'semillar'>> = {
 
 export const ralear: Regla<De<'ralear'>> = {
   puede(E, a) {
-    const pl = E.plantas[a.planta];
+    const pl = E.mundo.plantas[a.planta];
     if (!pl) return T.nadaQueRalear();
-    if (zona(E, E.celdas[pl.celda].zona).cria) return T.enAlmacigoSeRepica();
+    if (zona(E, E.mundo.celdas[pl.celda].zona).cria) return T.enAlmacigoSeRepica();
     if (vivas(pl) - Math.min(vivas(pl), porCelda(especieDe(pl))) < 1) return T.nadaQueRalear();
     return null;
   },
   costo: () => REGLAS.ratos.accion,
   aplicar(E, a, evs) {
-    const pl = E.plantas[a.planta],
+    const pl = E.mundo.plantas[a.planta],
       sp = especieDe(pl),
       dejo = Math.min(vivas(pl), porCelda(sp)),
       saco = vivas(pl) - dejo;
@@ -126,17 +128,17 @@ export const ralear: Regla<De<'ralear'>> = {
     let porciones: number | null = null;
     if (seCome) {
       porciones = r1(RALEO.porcionesPorPlanta * saco);
-      E.porciones = r1(E.porciones + porciones);
-    } else E.compost.carga += COMPOST.porRaleo;
+      E.progreso.porciones = r1(E.progreso.porciones + porciones);
+    } else alCompost(E, COMPOST.porRaleo);
     evs.push(anotar(E, 'bien', T.raleaste(sp, dejo, saco, porciones), pl.celda));
   },
 };
 
 export const arrancar: Regla<De<'arrancar'>> = {
-  puede: (E, a) => (E.plantas[a.planta] ? null : T.nadaAhi()),
+  puede: (E, a) => (E.mundo.plantas[a.planta] ? null : T.nadaAhi()),
   costo: gratis,
   aplicar(E, a, evs) {
-    const pl = E.plantas[a.planta];
+    const pl = E.mundo.plantas[a.planta];
     evs.push(anotar(E, 'info', T.sacaste(especieDe(pl)), pl.celda));
     quitarPlanta(E, pl, pl.etapa !== 'semilla');
   },

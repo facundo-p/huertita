@@ -14,25 +14,25 @@ const SIEMBRA = REGLAS.siembra;
 export const sembrar: Regla<De<'sembrar'>> = {
   puede(E, a) {
     const sp = ESPECIES[a.slug],
-      c = E.celdas[a.celda];
+      c = E.mundo.celdas[a.celda];
     if (!sp || !c) return T.noSeSiembraAhi();
     const bloque = bloqueDe(E, sp, a.celda, !!zona(E, c.zona).cria);
     if (!bloque) return T.noEntra(sp);
     const tomada = ocupadaEn(E, bloque);
     if (tomada) return tomada === a.celda ? T.celdaOcupada() : T.laDeAlLadoOcupada(sp);
-    if (!(E.sobres[a.slug] > 0)) return T.sinSemillas(sp);
+    if (!(E.recursos.sobres[a.slug] > 0)) return T.sinSemillas(sp);
     return null;
   },
   costo: () => REGLAS.ratos.accion,
   aplicar(E, a, evs) {
     const sp = ESPECIES[a.slug],
-      c = E.celdas[a.celda],
+      c = E.mundo.celdas[a.celda],
       Z = zona(E, c.zona),
       cria = !!Z.cria,
       bloque = bloqueDe(E, sp, a.celda, cria)!;
-    E.sobres[a.slug]--;
-    const vent = ventana(a.slug, E.dec),
-      gen = E.gen[a.slug] || 0,
+    E.recursos.sobres[a.slug]--;
+    const vent = ventana(a.slug, E.tiempo.dec),
+      gen = E.recursos.gen[a.slug] || 0,
       repite = c.fam === sp.familia;
     const vigor =
       SIEMBRA.vigorPorVentana[vent] *
@@ -41,7 +41,7 @@ export const sembrar: Regla<De<'sembrar'>> = {
     const semillas = semillasDeSiembra(sp, Z, semillasPorSiembra(a.slug, cria));
     const pl = nuevaPlanta(E, a.slug, a.celda, r1(vigor * 100) / 100, gen, fMaceta(E, sp, a.celda), semillas);
     if (bloque.length > 1) pl.celdas = bloque;
-    for (const k of bloque) E.celdas[k].planta = pl.id;
+    for (const k of bloque) E.mundo.celdas[k].planta = pl.id;
     evs.push(anotar(E, 'info', T.sembraste(sp, Z, semillas, bloque.length, vent === 'fuera', repite), a.celda));
   },
 };
@@ -56,7 +56,7 @@ function nuevaPlanta(
   pote: number,
   semillas: number,
 ): Planta {
-  const id = 'p' + E.nextId++;
+  const id = 'p' + E.progreso.nextId++;
   const pl: Planta = {
     id,
     slug,
@@ -80,6 +80,6 @@ function nuevaPlanta(
     n: 0,
     semillas,
   };
-  E.plantas[id] = pl;
+  E.mundo.plantas[id] = pl;
   return pl;
 }

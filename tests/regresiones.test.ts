@@ -10,13 +10,22 @@ describe('huecos de temperatura en huertapp', () => {
   });
   it('una especie sin calor máximo tolerado (romero) no sufre calor a 20 °C', () => {
     const E = crearPartida(2, { decInicio: 30 });
-    E.sobres.romero = 1;
+    E.recursos.sobres.romero = 1;
     despachar(E, { tipo: 'sembrar', slug: 'romero', celda: '6,5' });
-    const pl = Object.values(E.plantas)[0];
+    const pl = Object.values(E.mundo.plantas)[0];
     pl.etapa = 'creciendo';
     pl.n = 1;
     pl.prog = 40;
-    E.prox.real = { dec: 30, tmed: 16, tmax: 20, tmin: 9, lluvia: 5, helada: false, ola: false, estacion: 'primavera' };
+    E.tiempo.clima = {
+      dec: 30,
+      tmed: 16,
+      tmax: 20,
+      tmin: 9,
+      lluvia: 5,
+      helada: false,
+      ola: false,
+      estacion: 'primavera',
+    };
     expect(
       pasarDecada(E)
         .map((e) => e.texto)
@@ -27,14 +36,14 @@ describe('huecos de temperatura en huertapp', () => {
 describe('exceso de riego', () => {
   it('regar "constante" un romero lo daña (en el prototipo nunca pasaba)', () => {
     const E = crearPartida(2, { decInicio: 30 });
-    E.sobres.romero = 1;
+    E.recursos.sobres.romero = 1;
     despachar(E, { tipo: 'sembrar', slug: 'romero', celda: '0,2' });
-    const pl = Object.values(E.plantas)[0];
+    const pl = Object.values(E.mundo.plantas)[0];
     pl.etapa = 'creciendo';
     pl.n = 1;
     pl.prog = 40;
-    E.riego.suelo = 3;
-    E.prox.real = {
+    E.recursos.riego.suelo = 3;
+    E.tiempo.clima = {
       dec: 30,
       tmed: 16,
       tmax: 20,

@@ -7,6 +7,7 @@ import { playwright } from './playwright';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 const { chromium } = await playwright();
+const V1 = JSON.parse(readFileSync('tests/fixtures/partida-v1.json', 'utf8'));
 const frag = readFileSync('dist-artifact/huertita-artifact.html', 'utf8');
 writeFileSync(
   'dist-artifact/_humo.html',
@@ -45,43 +46,49 @@ for (const [nombre, vp] of [
   await p.click('[data-modo="patios"]');
   await p.click('[data-patio="balcon"]');
   await p.click('[data-patio="balcon"]');
-  if ((await p.evaluate(() => (window as any).Huertita.ui.E.patio)) !== 'balcon')
+  if ((await p.evaluate(() => (window as any).Huertita.ui.E.meta.plantilla)) !== 'balcon')
     errores.push(`${nombre}: no arrancó la partida en el balcón`);
   await p.click('[data-modo="proteger"]');
   await p.click('[data-acc="tunel"]');
-  if (!(await p.evaluate(() => (window as any).Huertita.ui.E.tunel.cajon)))
+  if (!(await p.evaluate(() => (window as any).Huertita.ui.E.recursos.tunel.cajon)))
     errores.push(`${nombre}: no se armó el microtúnel del balcón`);
   for (let i = 0; i < 3; i++) {
     await p.click('#hz-camara');
     await p.waitForTimeout(150);
     await p.click('#hz-pasar');
   }
-  // una partida guardada con el formato viejo (v1) se migra al abrir
-  await p.evaluate(() => {
-    const H = (window as any).Huertita,
-      E = JSON.parse(JSON.stringify(H.Motor.crearPartida(9)));
-    delete E.patio;
-    E.v = 1;
-    E.tunel = true;
-    localStorage.setItem('huertita-v1', JSON.stringify(E));
-  });
+  // una partida guardada con el formato de la v1 (la del prototipo, tests/fixtures) se migra al abrir
+  await p.evaluate((E: string) => localStorage.setItem('huertita-v1', E), JSON.stringify({ ...V1, tunel: true }));
   await p.reload();
   await p.waitForTimeout(400);
   const migrada = await p.evaluate(() => {
     const E = (window as any).Huertita.ui.E;
-    return E.v + '|' + E.patio + '|' + JSON.stringify(E.tunel) + '|' + E.semilla;
+    return E.meta.v + '|' + E.meta.plantilla + '|' + JSON.stringify(E.recursos.tunel) + '|' + E.meta.semilla;
   });
-  const esperada = (await p.evaluate(() => (window as any).Huertita.Motor.VERSION)) + '|fondo|{"elevado":true}|9';
+  const esperada =
+    (await p.evaluate(() => (window as any).Huertita.Motor.VERSION)) + '|fondo|{"elevado":true}|' + V1.semilla;
   if (migrada !== esperada)
     errores.push(`${nombre}: la partida v1 no se migró al abrir (${migrada}, se esperaba ${esperada})`);
+  // la partida migrada sigue jugando: pasa una década y el cuaderno cuenta lo que pasó
+  const turno = () => p.evaluate(() => (window as any).Huertita.ui.E.tiempo.turno as number);
+  const antes = await turno();
+  await p.click('#hz-pasar');
+  await p.waitForTimeout(200);
+  if ((await turno()) !== antes + 1) errores.push(`${nombre}: la partida migrada no pasó de década`);
+  // y se puede sembrar en una partida nueva
+  await p.click('[data-modo="partidas"]');
+  await p.click('[data-modo="patios"]');
+  await p.click('[data-patio="fondo"]');
+  await p.click('[data-patio="fondo"]');
   await p.click('[data-modo="semillas"]');
   await p.click('[data-slug="rabanito"]');
   {
+    await p.evaluate(() => scrollTo(0, 0));
     const c = celda(2, 4);
     await p.mouse.click(...c);
     await p.mouse.click(...c);
   }
-  const plantas = await p.evaluate(() => Object.keys((window as any).Huertita.ui.E.plantas).length);
+  const plantas = await p.evaluate(() => Object.keys((window as any).Huertita.ui.E.mundo.plantas).length);
   if (plantas < 1) errores.push(`${nombre}: no quedó nada sembrado`);
   if (await p.evaluate(() => document.documentElement.scrollWidth > innerWidth))
     errores.push(`${nombre}: la página se desborda a lo ancho`);

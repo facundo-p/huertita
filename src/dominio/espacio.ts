@@ -46,9 +46,9 @@ export const celdasDePlanta = (pl: Pick<Planta, 'celda' | 'celdas'>): CeldaId[] 
  * sale del cantero o cae en otra zona. En una zona de cría siempre es una celda: en la bandeja el
  * plantín todavía no ocupa su marco.
  */
-export function bloqueDe(E: Pick<Estado, 'celdas'>, sp: Especie, ancla: CeldaId, cria: boolean): CeldaId[] | null {
+export function bloqueDe(E: Pick<Estado, 'mundo'>, sp: Especie, ancla: CeldaId, cria: boolean): CeldaId[] | null {
   const { huella } = marco(sp),
-    base = E.celdas[ancla];
+    base = E.mundo.celdas[ancla];
   if (!base) return null;
   if (huella === 1 || cria) return [ancla];
   const { x, y } = xy(ancla),
@@ -57,16 +57,16 @@ export function bloqueDe(E: Pick<Estado, 'celdas'>, sp: Especie, ancla: CeldaId,
   for (let dy = 0; dy < largo; dy++)
     for (let dx = 0; dx < 2; dx++) {
       const k = idCelda(x + dx, y + dy),
-        c = E.celdas[k];
+        c = E.mundo.celdas[k];
       if (!c || c.zona !== base.zona) return null;
       bloque.push(k);
     }
   return bloque;
 }
 /** La primera celda del bloque que ya está ocupada por otra planta, o null si entra. */
-export function ocupadaEn(E: Pick<Estado, 'celdas'>, bloque: CeldaId[], salvo?: string): CeldaId | null {
+export function ocupadaEn(E: Pick<Estado, 'mundo'>, bloque: CeldaId[], salvo?: string): CeldaId | null {
   for (const k of bloque) {
-    const p = E.celdas[k].planta;
+    const p = E.mundo.celdas[k].planta;
     if (p && p !== salvo) return k;
   }
   return null;
@@ -97,11 +97,11 @@ export function altoDe(pl: Planta, sp: Especie = especieDe(pl)): number {
  * planta que está en la celda que se está midiendo: una planta no se hace sombra a sí misma.
  * [SUPUESTO] cada planta es un cilindro del ancho de su huella, sin tronco.
  */
-export function plantasQueSombrean(E: Pick<Estado, 'celdas' | 'plantas'>, salvo: CeldaId): Obstaculo[] {
+export function plantasQueSombrean(E: Pick<Estado, 'mundo'>, salvo: CeldaId): Obstaculo[] {
   if (!real) return [];
   const out: Obstaculo[] = [];
-  for (const id in E.plantas) {
-    const pl = E.plantas[id],
+  for (const id in E.mundo.plantas) {
+    const pl = E.mundo.plantas[id],
       sp = especieDe(pl),
       alto = altoDe(pl, sp);
     if (alto < REGLAS.espacio.sombreaDesde) continue;

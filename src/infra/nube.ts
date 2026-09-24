@@ -33,7 +33,7 @@ export async function conectarNube(cl: RuntimeDeClaude | null = runtime()): Prom
     return {
       nombre: 'la nube',
       async guardar(E, resumen) {
-        await doc.set({ t: E.guardado ?? 0, resumen, json: JSON.stringify(E) });
+        await doc.set({ t: E.meta.guardado ?? 0, resumen, json: JSON.stringify(E) });
       },
       async cargar() {
         const snap = await doc.get();

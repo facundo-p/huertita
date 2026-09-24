@@ -9,7 +9,7 @@ import { jugarUnAnio } from './jugador';
 const args = process.argv.slice(2),
   iP = args.indexOf('--patio'),
   iV = args.indexOf('-v');
-const patios = iP >= 0 ? [args[iP + 1]] : Object.keys(M.PATIOS);
+const patios = iP >= 0 ? [args[iP + 1]] : Object.keys(M.PLANTILLAS);
 const jugar = <T>(f: () => T): T => (args.includes('--espacio') ? M.conEspacioReal(f) : f());
 if (iV >= 0) jugar(() => jugarUnAnio(M, +(args[iV + 1] ?? 1), (l) => console.log(l), { patio: patios[0] }));
 else
@@ -20,9 +20,9 @@ else
         JSON.stringify({
           patio,
           semilla: s,
-          caracter: E.caracter,
+          caracter: E.tiempo.caracter,
           ...M.balance(E),
-          vivas: Object.keys(E.plantas).length,
+          vivas: Object.keys(E.mundo.plantas).length,
         }),
       );
     }

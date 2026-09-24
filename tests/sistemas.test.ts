@@ -37,9 +37,9 @@ describe('la tubería del tiempo', () => {
   it('un turno son 10 días, y los días están en un solo lugar', () => {
     expect(DIAS_POR_TURNO).toBe(10);
     const E = M.crearPartida(3);
-    E.sobres.rabanito = 3;
+    E.recursos.sobres.rabanito = 3;
     M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: M.idCelda(0, 4) });
-    const pl = Object.values(E.plantas)[0];
+    const pl = Object.values(E.mundo.plantas)[0];
     M.pasarDecada(E);
     expect(pl.edad).toBe(DIAS_POR_TURNO);
   });

@@ -25,11 +25,11 @@ export function abrigo(E: Estado, zona: ZonaId): Abrigo {
     g += fijo.grados;
     partes.push(fijo.nombre);
   }
-  if (E.tunel[zona]) {
+  if (E.recursos.tunel[zona]) {
     g += ABRIGO.tunel;
     partes.push('microtúnel');
   }
-  if (E.manta[zona]) {
+  if (E.recursos.manta[zona]) {
     g += ABRIGO.manta;
     partes.push('manta');
   }
@@ -37,14 +37,14 @@ export function abrigo(E: Estado, zona: ZonaId): Abrigo {
 }
 /** % de que la helada le llegue a esa zona esta década, con el abrigo puesto y el pronóstico a la vista. */
 export const riesgoHelada = (E: Estado, zona: ZonaId): number =>
-  Math.round(clamp(phi((UMBRAL - abrigo(E, zona).grados - E.prox.pron.tmin) / desvioPronostico), 0, 1) * 100);
+  Math.round(clamp(phi((UMBRAL - abrigo(E, zona).grados - E.tiempo.pronostico.tmin) / desvioPronostico), 0, 1) * 100);
 export function enRiesgo(E: Estado, zona: ZonaId): string[] {
   const out: string[] = [];
-  for (const id in E.plantas) {
-    const pl = E.plantas[id],
+  for (const id in E.mundo.plantas) {
+    const pl = E.mundo.plantas[id],
       sp = especieDe(pl);
     if (
-      E.celdas[pl.celda].zona === zona &&
+      E.mundo.celdas[pl.celda].zona === zona &&
       pl.etapa !== 'semilla' &&
       (sp.helada === 'muere' || sp.helada === 'sensible') &&
       !out.includes(sp.nombre)

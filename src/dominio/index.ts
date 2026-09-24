@@ -11,6 +11,7 @@ export {
   xy,
 } from './vocabulario';
 export { especieDe, nombreDe, vivas } from './planta';
+export { compostera, dosisDeCompost } from './estructuras';
 export { ABRIGO, abrigo, enRiesgo, riesgoHelada } from './abrigo';
 export { despachar, puede, puedeMoverse } from './acciones';
 export { apuntar } from './diario';
@@ -22,9 +23,10 @@ export { altoDe, bloqueDe, celdasDePlanta, conEspacioReal, espacioReal, marco, p
 export { bajoTunel, evaluarCelda, factoresPlanta, floresAbiertas, sueloDeCelda } from './factores';
 export { MISIONES } from './misiones';
 export {
-  PATIOS,
-  PATIO_INICIAL,
+  PLANTILLAS,
+  PLANTILLA_INICIAL,
   celdasDe,
+  copiarPlantilla,
   horasSol,
   idsDeZonas,
   macetaDe,

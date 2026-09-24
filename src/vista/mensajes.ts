@@ -33,7 +33,7 @@ export function escenaActual(E: Estado = partida.value): Escena {
     cams = r?.camaras;
   let fantasma: string | null = null;
   if (modo.modo === 'semillas') fantasma = modo.sobre;
-  if (modo.modo === 'moviendo') fantasma = E.plantas[modo.planta]?.slug ?? null;
+  if (modo.modo === 'moviendo') fantasma = E.mundo.plantas[modo.planta]?.slug ?? null;
   return armarEscena(E, {
     fantasma,
     trasplantando: modo.modo === 'moviendo',
@@ -56,13 +56,16 @@ export function guardar(): void {
 function poner(i: Interaccion): void {
   const E = partida.value;
   nota.value = '';
-  const n = normalizar(i, E.sobres, (id) => !!E.plantas[id]);
-  if (n.sel && E.celdas[n.sel]) zonaCerca.value = E.celdas[n.sel].zona;
+  const n = normalizar(i, E.recursos.sobres, (id) => !!E.mundo.plantas[id]);
+  if (n.sel && E.mundo.celdas[n.sel]) zonaCerca.value = E.mundo.celdas[n.sel].zona;
   interaccion.value = n;
 }
 const patio = () => {
   const E = partida.value;
-  return { existe: (k: CeldaId) => !!E.celdas[k], libre: (k: CeldaId) => !!E.celdas[k] && !E.celdas[k].planta };
+  return {
+    existe: (k: CeldaId) => !!E.mundo.celdas[k],
+    libre: (k: CeldaId) => !!E.mundo.celdas[k] && !E.mundo.celdas[k].planta,
+  };
 };
 
 /** Despacha una acción del juego. Si no se pudo, queda la explicación en el aviso. */
@@ -104,10 +107,10 @@ export function cuidarPlanta(tipo: 'cosechar' | 'semillar' | 'arrancar' | 'tutor
     pl = sel ? M.plantaEn(E, sel) : null;
   if (!pl) return;
   const planta = vistaDe(sel),
-    antes = E.porciones;
+    antes = E.progreso.porciones;
   if (!jugar({ tipo, planta: pl.id })) return;
   const cosecha =
-    tipo === 'cosechar' ? '+' + String(Math.round((E.porciones - antes) * 10) / 10).replace('.', ',') : null;
+    tipo === 'cosechar' ? '+' + String(Math.round((E.progreso.porciones - antes) * 10) / 10).replace('.', ',') : null;
   const anim = { arrancar: 'polvo', ralear: 'polvo', semillar: 'brote' } as const;
   efecto(anim[tipo as keyof typeof anim] ?? tipo, { celda: sel, planta, texto: cosecha });
   // si la planta ya no está (se cosechó entera, se arrancó), se muestra lo que pasó
@@ -127,7 +130,7 @@ export const taparConManta = (zona: string): boolean => jugar({ tipo: 'manta', z
 export const armarTunel = (zona: string): boolean => jugar({ tipo: 'tunel', zona });
 
 /** La animación del clima que acaba de pasar: helada, mucha lluvia u ola de calor. */
-function animacionDelClima(w: Estado['prox']['real']): typeof animar.value {
+function animacionDelClima(w: Estado['tiempo']['clima']): typeof animar.value {
   if (w.helada) return 'helada';
   if (w.lluvia > 30) return 'lluvia';
   return w.ola ? 'calor' : null;
@@ -136,11 +139,11 @@ function animacionDelClima(w: Estado['prox']['real']): typeof animar.value {
 /** Pasar 10 días: el clima de la década, la animación que le toca y lo que pasó. */
 export function pasarDecada(): void {
   const E = partida.value,
-    w = E.prox.real;
+    w = E.tiempo.clima;
   ultimos.value = M.pasarDecada(E);
   aviso.value = '';
   tocada();
-  poner(transicion(interaccion.value, { tipo: 'decadaPasada', terminado: E.terminado }, patio()).i);
+  poner(transicion(interaccion.value, { tipo: 'decadaPasada', terminado: E.tiempo.terminado }, patio()).i);
   animar.value = animacionDelClima(w);
   for (const e of ultimos.value) {
     if (e.tipo === 'logro') efecto('logro');
@@ -172,7 +175,7 @@ export function usarPartida(E: Estado, mensaje: string, esNueva = false): void {
   tocada();
   const ev: EventoUI = esNueva
     ? { tipo: 'partidaNueva', terminada: false }
-    : { tipo: 'partidaCargada', terminada: E.terminado };
+    : { tipo: 'partidaCargada', terminada: E.tiempo.terminado };
   poner(transicion(interaccion.value, ev, patio()).i);
   nota.value = mensaje;
   guardar();

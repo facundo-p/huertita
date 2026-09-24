@@ -22,18 +22,18 @@ async function partidaInicial(previa: unknown): Promise<{ E: Estado; guardada: b
   if (deAntes) return { E: deAntes, guardada: true };
   const local = await almacenes.local.cargar();
   if (local) return { E: local, guardada: true };
-  return { E: nueva(M.PATIO_INICIAL, almacenes.reloj), guardada: false };
+  return { E: nueva(M.PLANTILLA_INICIAL, almacenes.reloj), guardada: false };
 }
 
 async function empezar(raiz: HTMLElement, previa: unknown): Promise<void> {
   const { E, guardada } = await partidaInicial(previa);
   partida.value = E;
-  interaccion.value = { modo: E.terminado ? { modo: 'fin' } : { modo: 'inicio' }, sel: null };
+  interaccion.value = { modo: E.tiempo.terminado ? { modo: 'fin' } : { modo: 'inicio' }, sel: null };
   tocada();
   render(<App />, raiz);
   const remota = await conectar();
   // sin partida en este dispositivo, se sigue la de la nube si hay
-  if (!guardada && remota && almacenes.nube && partida.value.turno === 0) {
+  if (!guardada && remota && almacenes.nube && partida.value.tiempo.turno === 0) {
     const deLaNube = await almacenes.nube.cargar();
     if (deLaNube) usarPartida(deLaNube, 'Seguís la partida que tenías en la nube.');
   }

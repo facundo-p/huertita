@@ -27,7 +27,7 @@ export const plagas: SistemaDePlanta = ({ E, w, ev, nota, flores }, { pl, sp }) 
   }
   const prot = clamp(1 - PLAGAS.proteccionPorAliado * aliadosCerca(E, pl.celda), PLAGAS.proteccionMaxima, 1),
     joven = pl.prog < objetivoCosecha(sp) * PLAGAS.jovenHasta,
-    rot = E.celdas[pl.celda].fam === sp.familia ? PLAGAS.riesgoRepitiendoFamilia : 1,
+    rot = E.mundo.celdas[pl.celda].fam === sp.familia ? PLAGAS.riesgoRepitiendoFamilia : 1,
     d = w.dec,
     p = azar(E),
     sinAliados = prot === 1;

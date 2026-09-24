@@ -31,7 +31,7 @@ export interface Reloj {
 
 /** Guarda la partida y anota cuándo. Devuelve si se pudo. */
 export async function guardar(E: Estado, donde: Almacen, reloj: Reloj): Promise<boolean> {
-  E.guardado = reloj.ahora();
+  E.meta.guardado = reloj.ahora();
   try {
     await donde.guardar(E, resumenDePartida(E));
     return true;
@@ -60,7 +60,7 @@ function deBase64(b64: string): string {
 /** Un texto que se copia y se pega: la partida entera, con el cuaderno recortado para que no pese. */
 export function aCodigo(E: Estado): string {
   const copia = JSON.parse(JSON.stringify(E)) as Estado;
-  copia.cuaderno = copia.cuaderno.slice(-40);
+  copia.progreso.cuaderno = copia.progreso.cuaderno.slice(-40);
   return PREFIJO + aBase64(JSON.stringify(copia));
 }
 
@@ -76,4 +76,4 @@ export function deCodigo(texto: string): Estado | null {
 
 /** El nombre del archivo que se baja: año y fecha del juego. */
 export const nombreDeArchivo = (E: Estado): string =>
-  'huertita-año' + E.anio + '-' + M.fechaDe(E.dec).replace(/ /g, '-') + '.json';
+  'huertita-año' + E.tiempo.anio + '-' + M.fechaDe(E.tiempo.dec).replace(/ /g, '-') + '.json';

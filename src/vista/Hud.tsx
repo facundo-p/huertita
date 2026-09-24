@@ -12,7 +12,7 @@ export function Hud() {
   const E = usarPartida(),
     h = hud(E),
     p = h.pronostico;
-  const guardada = sinStorage.value ? 'sin guardar' : 'guardada ' + cuando(E.guardado).slice(6);
+  const guardada = sinStorage.value ? 'sin guardar' : 'guardada ' + cuando(E.meta.guardado).slice(6);
   return (
     <>
       <div class="hz-marca">

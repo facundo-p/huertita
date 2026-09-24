@@ -15,9 +15,9 @@ export const semillarOSecarse: SistemaDePlanta = ({ E, ev, evs }, { pl, sp }) =>
   if (pl.etapa === 'semillando') {
     if (--pl.semillar <= 0) {
       const sobres = COSECHA.sobresPorSemillar;
-      E.gen[pl.slug] = Math.max(E.gen[pl.slug] || 0, pl.gen + 1);
-      E.sobres[pl.slug] = (E.sobres[pl.slug] || 0) + sobres;
-      E.semillasGuardadas += sobres;
+      E.recursos.gen[pl.slug] = Math.max(E.recursos.gen[pl.slug] || 0, pl.gen + 1);
+      E.recursos.sobres[pl.slug] = (E.recursos.sobres[pl.slug] || 0) + sobres;
+      E.progreso.semillasGuardadas += sobres;
       ev('bien', TC.semillasGuardadas(sp, sobres, pl.gen + 1), pl.celda);
       cumplir(E, 'semillas', evs);
       quitarPlanta(E, pl, true);

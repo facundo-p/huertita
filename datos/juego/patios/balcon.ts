@@ -14,7 +14,7 @@ export const balcon: Patio = {
   bienvenida:
     'En el balcón no hay tierra: todo depende del tamaño de la maceta y del riego. Mirá la capa de sol antes de ubicar cada cosa: contra la baranda y contra la pared no es lo mismo.',
   celdaM: 0.5,
-  plano: ['PPPPPP', 'mmmmmm', 'cc::::', 'cc:aaC', 'HHHHHH'],
+  plano: ['PPPPPP', 'mmmmmm', 'cc::::', 'cc:aa:', 'HHHHHH'],
   zonas: [
     {
       id: 'macetas',
@@ -73,6 +73,7 @@ export const balcon: Patio = {
       desc: 'Bandejas contra el ventanal: el rincón más reparado del balcón. Solo para criar plantines.',
     },
   ],
+  estructuras: [{ tipo: 'compostera', en: '5,3' }],
   obstaculos: [
     { tipo: 'muro', nombre: 'Baranda', desde: [0, 1], hasta: [6, 1], alto: 1, opacidad: 0.4 },
     { tipo: 'muro', nombre: 'Baranda del costado este', desde: [6, 1], hasta: [6, 4], alto: 1, opacidad: 0.4 },

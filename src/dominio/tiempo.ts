@@ -7,6 +7,6 @@ import { correrTurno } from './sistemas';
 import type { Estado, Evento } from './tipos';
 
 export function pasarDecada(E: Estado): Evento[] {
-  if (E.terminado) return [];
+  if (E.tiempo.terminado) return [];
   return correrTurno(E);
 }

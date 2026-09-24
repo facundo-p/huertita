@@ -48,13 +48,13 @@ function plantaDeEscena(pl: Planta): PlantaDeEscena {
 /** Qué lados de la celda dan a otra zona (o al borde): ahí se dibuja el borde del cantero. */
 function bordes(E: Estado, k: CeldaId): CeldaDeEscena['borde'] {
   const { x, y } = M.xy(k),
-    z = E.celdas[k].zona,
+    z = E.mundo.celdas[k].zona,
     otra = (cx: number, cy: number) => M.zonaDeCelda(E, M.idCelda(cx, cy)) !== z;
   return { n: otra(x, y - 1), s: otra(x, y + 1), o: x === 0 || otra(x - 1, y), e: otra(x + 1, y) };
 }
 
 function celdaDeEscena(E: Estado, k: CeldaId, vista: VistaDeEscena, sol: number): CeldaDeEscena {
-  const c = E.celdas[k],
+  const c = E.mundo.celdas[k],
     Z = M.zona(E, c.zona),
     pl = M.plantaEn(E, k);
   const fantasmaAca = vista.fantasma && !pl && !(vista.trasplantando && Z.cria);
@@ -64,7 +64,7 @@ function celdaDeEscena(E: Estado, k: CeldaId, vista: VistaDeEscena, sol: number)
     nombreZona: Z.nombre,
     mo: c.mo,
     mulch: c.mulch,
-    humedo: E.riego[c.zona],
+    humedo: E.recursos.riego[c.zona],
     maceta: M.macetaDe(E, k),
     sol,
     planta: pl ? plantaDeEscena(pl) : null,
@@ -77,18 +77,9 @@ function celdaDeEscena(E: Estado, k: CeldaId, vista: VistaDeEscena, sol: number)
 
 /** La zona que muestra la cámara de cerca: la de la celda elegida, o la que ya se miraba, o la del microtúnel. */
 export function zonaCerca(E: Estado, seleccion: CeldaId | null, actual: ZonaId | null): ZonaId {
-  if (seleccion && E.celdas[seleccion]) return E.celdas[seleccion].zona;
-  if (actual && actual in E.riego) return actual;
+  if (seleccion && E.mundo.celdas[seleccion]) return E.mundo.celdas[seleccion].zona;
+  if (actual && actual in E.recursos.riego) return actual;
   return M.zonaDeTunel(E) || M.idsDeZonas(E)[0];
-}
-
-/** Dónde está la compostera en el plano. */
-function compostera(plano: string[]): CeldaId | null {
-  for (let y = 0; y < plano.length; y++) {
-    const x = plano[y].indexOf('C');
-    if (x >= 0) return M.idCelda(x, y);
-  }
-  return null;
 }
 
 /** Los árboles del patio: dónde apoya el tronco (la fila más al sur que ocupa su letra). */
@@ -104,12 +95,13 @@ function arboles(P: M.Patio): Escena['arboles'] {
 
 export function escena(E: Estado, vista: VistaDeEscena): Escena {
   const P = M.patioDe(E),
+    K = M.compostera(E),
     sol = horasDeSol(E),
     celdas: Record<CeldaId, CeldaDeEscena> = {};
-  for (const k of Object.keys(E.celdas)) celdas[k] = celdaDeEscena(E, k, vista, sol[k]);
+  for (const k of Object.keys(E.mundo.celdas)) celdas[k] = celdaDeEscena(E, k, vista, sol[k]);
   const ZC = M.zona(E, vista.zonaCerca),
-    sel = vista.seleccion && E.celdas[vista.seleccion] ? vista.seleccion : null,
-    selEnLaZona = sel && E.celdas[sel].zona === vista.zonaCerca;
+    sel = vista.seleccion && E.mundo.celdas[vista.seleccion] ? vista.seleccion : null,
+    selEnLaZona = sel && E.mundo.celdas[sel].zona === vista.zonaCerca;
   return {
     camara: vista.camara,
     cerca: { zona: vista.zonaCerca, tipo: ZC.tipo, hondo: ZC.hondo, col: selEnLaZona ? M.xy(sel).x : null },
@@ -120,16 +112,16 @@ export function escena(E: Estado, vista: VistaDeEscena): Escena {
     norte: P.aspecto.norte,
     celdas,
     arboles: arboles(P),
-    compostera: compostera(P.plano),
-    dec: E.dec,
-    estacion: M.estacionDe(E.dec),
-    arbolConHojas: M.conHojas(E.dec),
+    compostera: K ? K.en : null,
+    dec: E.tiempo.dec,
+    estacion: M.estacionDe(E.tiempo.dec),
+    arbolConHojas: M.conHojas(E.tiempo.dec),
     // la sombra pintada del paredón es la de la fórmula v0.4; con sol por geometría, la capa de sol es la que cuenta
-    sombraPared: P.sol === 'v04' ? 0.35 + 1.9 * M.invierno(E.dec) : 0,
-    tuneles: Object.keys(E.tunel).filter((z) => E.tunel[z]),
-    mantas: E.manta,
+    sombraPared: P.sol === 'v04' ? 0.35 + 1.9 * M.invierno(E.tiempo.dec) : 0,
+    tuneles: Object.keys(E.recursos.tunel).filter((z) => E.recursos.tunel[z]),
+    mantas: E.recursos.manta,
     capa: vista.capa,
     animar: vista.animar,
-    compost: { carga: E.compost.carga, tandas: E.compost.tandas.length, dosis: E.compost.dosis },
+    compost: K ? { carga: K.carga, tandas: K.tandas.length, dosis: K.dosis } : { carga: 0, tandas: 0, dosis: 0 },
   };
 }

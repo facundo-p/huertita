@@ -11,11 +11,11 @@ import type { Estado, Planta, TipoEvento } from './tipos';
 const MAXIMO = 16;
 
 /** Anota algo en el diario de la planta, en la entrada de esta década (la crea si hace falta). */
-export function apuntar(E: Pick<Estado, 'dec' | 'turno'>, pl: Planta, tipo: TipoEvento, f: Frase): void {
+export function apuntar(E: Pick<Estado, 'tiempo'>, pl: Planta, tipo: TipoEvento, f: Frase): void {
   const hist = pl.hist || (pl.hist = []);
   let r = hist[hist.length - 1];
-  if (!r || r.turno !== E.turno) {
-    r = { dec: E.dec, turno: E.turno, s: Math.round(pl.salud), n: [] };
+  if (!r || r.turno !== E.tiempo.turno) {
+    r = { dec: E.tiempo.dec, turno: E.tiempo.turno, s: Math.round(pl.salud), n: [] };
     hist.push(r);
     if (hist.length > MAXIMO) hist.shift();
   }
@@ -23,9 +23,9 @@ export function apuntar(E: Pick<Estado, 'dec' | 'turno'>, pl: Planta, tipo: Tipo
   r.s = Math.round(pl.salud);
 }
 /** Cierra la década de una planta: deja asentada la salud aunque no haya pasado nada digno de nota. */
-export function cerrar(E: Pick<Estado, 'dec' | 'turno'>, pl: Planta, saludAntes: number): void {
+export function cerrar(E: Pick<Estado, 'tiempo'>, pl: Planta, saludAntes: number): void {
   const r = pl.hist && pl.hist[pl.hist.length - 1];
-  if (r && r.turno === E.turno) r.s = Math.round(pl.salud);
+  if (r && r.turno === E.tiempo.turno) r.s = Math.round(pl.salud);
   else if (Math.round(pl.salud) !== Math.round(saludAntes)) {
     if (pl.salud > saludAntes) apuntar(E, pl, 'bien', recuperoEnElDiario());
     else apuntar(E, pl, 'mal', perdioEnElDiario());

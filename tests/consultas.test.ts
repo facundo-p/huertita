@@ -23,8 +23,8 @@ describe('la escena', () => {
   it('tiene todas las celdas, y cada planta se dibuja una vez, en su ancla', () => {
     const E = partida(),
       es = C.escena(E, VISTA);
-    expect(Object.keys(es.celdas).sort()).toEqual(Object.keys(E.celdas).sort());
-    for (const pl of Object.values(E.plantas))
+    expect(Object.keys(es.celdas).sort()).toEqual(Object.keys(E.mundo.celdas).sort());
+    for (const pl of Object.values(E.mundo.plantas))
       for (const k of M.celdasDePlanta(pl)) {
         expect(es.celdas[k].planta!.slug).toBe(pl.slug);
         expect(es.celdas[k].ancla).toBe(k === pl.celda);
@@ -34,8 +34,8 @@ describe('la escena', () => {
     const E = partida();
     const conSobre = C.escena(E, { ...VISTA, fantasma: 'lechuga' }),
       trasplantando = C.escena(E, { ...VISTA, fantasma: 'tomate', trasplantando: true });
-    for (const k of Object.keys(E.celdas)) {
-      const libre = !E.celdas[k].planta,
+    for (const k of Object.keys(E.mundo.celdas)) {
+      const libre = !E.mundo.celdas[k].planta,
         cria = !!M.zonaDe(E, k).cria;
       expect(conSobre.celdas[k].tinte !== null).toBe(libre);
       expect(trasplantando.celdas[k].tinte !== null).toBe(libre && !cria);
@@ -55,7 +55,7 @@ describe('la escena', () => {
     expect(C.horasDeSol(E)).toBe(a);
     M.pasarDecada(E);
     expect(C.horasDeSol(E)).not.toBe(a);
-    for (const k of Object.keys(E.celdas)) expect(C.horasDeSol(E)[k]).toBe(M.horasSol(E, k));
+    for (const k of Object.keys(E.mundo.celdas)) expect(C.horasDeSol(E)[k]).toBe(M.horasSol(E, k));
   });
 });
 
@@ -80,7 +80,7 @@ describe('el HUD y las listas', () => {
 describe('la ficha de una celda decide lo mismo que el dominio', () => {
   it('cada botón que ofrece, el dominio lo permite; y ninguno que el dominio permite falta', () => {
     const E = partida();
-    for (const pl of Object.values(E.plantas)) {
+    for (const pl of Object.values(E.mundo.plantas)) {
       const f = C.fichaDeCelda(E, pl.celda)!.planta!;
       for (const a of ['cosechar', 'semillar', 'ralear', 'tutorar', 'tratar'] as const)
         expect(f.acciones.includes(a), `${pl.slug} ${a}`).toBe(

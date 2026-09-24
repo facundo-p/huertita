@@ -152,7 +152,9 @@ export function Partidas() {
             no perder la partida.
           </>
         ) : (
-          'Se guarda sola en este dispositivo después de cada cosa que hacés. Última vez: ' + cuando(E.guardado) + '.'
+          'Se guarda sola en este dispositivo después de cada cosa que hacés. Última vez: ' +
+          cuando(E.meta.guardado) +
+          '.'
         )}
       </p>
       <p class="hz-sub">{resumenDePartida(partida.value)}</p>

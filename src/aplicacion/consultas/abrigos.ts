@@ -34,8 +34,8 @@ export function riesgoPorZona(E: Estado): ZonaAbrigada[] {
       riesgo,
       sensibles,
       nivel: nivelDeRiesgo(sensibles.length, riesgo),
-      conManta: !!E.manta[z.id],
-      conTunel: !!E.tunel[z.id],
+      conManta: !!E.recursos.manta[z.id],
+      conTunel: !!E.recursos.tunel[z.id],
       admiteTunel: !!z.admiteTunel,
     };
   });

@@ -31,7 +31,7 @@ Un patio (`datos/juego/patio.ts`) es un plano de letras con el norte arriba, una
 - **Obstáculo:** `muro` (con `opacidad` para barandas), `arbol` (copa, fuste, caduco) o `losa` (el balcón de arriba). En celdas con decimales y alturas en metros.
 - **Sol:** `sol.ts` recorre el día cada 10 minutos, calcula dónde está el sol a 34,6° S y ve si algún obstáculo lo tapa. Cuenta desde que supera el `horizonte` del patio. `tests/sol.test.ts` comprueba que se porte como el sol de verdad: mediodía al norte, paredón norte que sombrea más en invierno, techo que tapa el sol alto del verano.
 - **Regla:** ni el motor, ni los renderers, ni la interfaz nombran una zona o una celda de un patio en particular. Hay un test que lo vigila. Las frases se arman con `nombre` y `conArticulo`.
-- **Estado:** `E.patio` guarda el id. Si un patio cambia su plano o sus ids de zona, las partidas guardadas en él necesitan una migración, igual que si cambiara `Estado`.
+- **Estado:** cada partida lleva su propia copia del patio (`mundo.patio`) y el id de la plantilla de la que salió (`meta.plantilla`). Corregir una plantilla no cambia las partidas empezadas; editar el patio de una partida no toca la plantilla. La compostera no es una letra del plano: es una estructura (`mundo.estructuras`) que la plantilla trae ubicada.
 
 Sumar un patio: crear el archivo, anotarlo en `patios/index.ts`, correr `npm test` (lo valida y hace jugar al bot un año en él) y `npm run bot -- --patio <id>` para ver cómo rinde.
 

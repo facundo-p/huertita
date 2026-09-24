@@ -2,6 +2,7 @@
 
 ## Sin publicar · reestructura (epic #39)
 - Las acciones son reglas con `puede / costo / aplicar` (`src/dominio/acciones/`). La interfaz ya no repite condiciones: pregunta `puede()`. Cuatro condiciones que antes aplicaba solo la interfaz ahora las aplica el dominio, con su explicación: en la almaciguera no se ralea ni se pone tutor ni compost, el tutor va solo en especies que lo piden y ya germinadas, y se trasplanta solo un plantín o una planta que está creciendo. El juego se ve igual; lo que cambia es que ya no se puede esquivar desde afuera.
+- Partidas guardadas: formato v4, con migración automática desde v1, v2 y v3 (probada con partidas guardadas de verdad por cada versión, en `tests/fixtures/`, y en navegador). El estado va en cinco partes (`meta`, `mundo`, `tiempo`, `recursos`, `progreso`); la partida lleva una copia de su patio, y la compostera pasa a ser una estructura del patio en vez de una letra del plano. Los patios de `datos/juego/patios/` pasan a llamarse plantillas. Se juega igual: el test dorado y el bot dan lo mismo que antes.
 
 ## 0.8.0 · 2026-09-18 · Cimientos, paso 3: cada planta ocupa lo que ocupa
 - Marco de plantación por especie en `datos/juego/especies.ts` ([SUPUESTO], huertapp todavía no lo trae): centímetros entre plantas, y de ahí la huella en celdas, cuántas entran en una celda (9 rabanitos, 4 lechugas, 1 tomate) y cuánto levanta cada planta.

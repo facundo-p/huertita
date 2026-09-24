@@ -12,11 +12,11 @@ import type { Estado, Planta } from '../src/dominio';
 
 const CELDA_SUELO = '0,1',
   CRIA = '0,7';
-const plantaDe = (E: Estado, celda: string): Planta => E.plantas[E.celdas[celda].planta!];
+const plantaDe = (E: Estado, celda: string): Planta => E.mundo.plantas[E.mundo.celdas[celda].planta!];
 function partida(sobres: Record<string, number> = {}): Estado {
   const E = M.crearPartida(5);
-  for (const s in sobres) E.sobres[s] = sobres[s];
-  E.ratosGastados = 0;
+  for (const s in sobres) E.recursos.sobres[s] = sobres[s];
+  E.recursos.ratosGastados = 0;
   return E;
 }
 
@@ -49,7 +49,7 @@ describe('con las reglas de espacio apagadas (como juega hoy)', () => {
     expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
     const pl = plantaDe(E, CELDA_SUELO);
     expect(pl.celdas).toBeUndefined();
-    expect(E.celdas['1,1'].planta).toBeNull();
+    expect(E.mundo.celdas['1,1'].planta).toBeNull();
     pl.n = 4;
     pl.etapa = 'creciendo';
     expect(M.despachar(E, { tipo: 'ralear', planta: pl.id }).ok).toBe(true);
@@ -64,9 +64,9 @@ describe('con las reglas de espacio prendidas', () => {
       expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
       const pl = plantaDe(E, CELDA_SUELO);
       expect(pl.celdas).toEqual(['0,1', '1,1', '0,2', '1,2']);
-      for (const k of pl.celdas!) expect(E.celdas[k].planta).toBe(pl.id);
+      for (const k of pl.celdas!) expect(E.mundo.celdas[k].planta).toBe(pl.id);
       expect(M.despachar(E, { tipo: 'arrancar', planta: pl.id }).ok).toBe(true);
-      for (const k of ['0,1', '1,1', '0,2', '1,2']) expect(E.celdas[k].planta).toBeNull();
+      for (const k of ['0,1', '1,1', '0,2', '1,2']) expect(E.mundo.celdas[k].planta).toBeNull();
     }));
 
   it('no se siembra un zapallo donde no entra: ni contra el borde del cantero ni al lado de otra planta', () =>
@@ -93,7 +93,7 @@ describe('con las reglas de espacio prendidas', () => {
     M.conEspacioReal(() => {
       const E = partida({ tomate: 2, rabanito: 2 });
       M.despachar(E, { tipo: 'sembrar', slug: 'tomate', celda: CRIA });
-      expect(plantaDe(E, CRIA).semillas).toBe(M.zona(E, E.celdas[CRIA].zona).capacidad);
+      expect(plantaDe(E, CRIA).semillas).toBe(M.zona(E, E.mundo.celdas[CRIA].zona).capacidad);
       M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: CELDA_SUELO });
       expect(plantaDe(E, CELDA_SUELO).semillas).toBe(12); // 9 que entran + 3 para ralear
     }));
@@ -121,7 +121,7 @@ describe('con las reglas de espacio prendidas', () => {
         const pl = plantaDe(E, CELDA_SUELO);
         Object.assign(pl, { etapa: 'cosechable', n, salud: 100, reserva: 1, prog: 30 });
         M.despachar(E, { tipo: 'cosechar', planta: pl.id });
-        return E.porciones;
+        return E.progreso.porciones;
       };
       return real ? M.conEspacioReal(hacer) : hacer();
     };
@@ -137,8 +137,8 @@ describe('con las reglas de espacio prendidas', () => {
     // (La sombra clásica del choclo sobre lo que tiene al sur va a verse en el fondo el día que ese
     // patio pase a sol por geometría: hoy sigue con la fórmula del prototipo. Ver #31.)
     const E = M.crearPartida(1, { patio: 'balcon' });
-    E.sobres.choclo = 2;
-    E.ratosGastados = 0;
+    E.recursos.sobres.choclo = 2;
+    E.recursos.ratosGastados = 0;
     M.conEspacioReal(() => {
       expect(M.despachar(E, { tipo: 'sembrar', slug: 'choclo', celda: '1,1' }).ok).toBe(true);
     });
@@ -160,11 +160,11 @@ describe('con las reglas de espacio prendidas', () => {
   it('el bot juega un año entero con el espacio prendido y el estado sigue siendo JSON', () =>
     M.conEspacioReal(() => {
       const E = jugarUnAnio(M, 7) as Estado;
-      expect(E.terminado).toBe(true);
-      expect(E.porciones).toBeGreaterThan(0);
+      expect(E.tiempo.terminado).toBe(true);
+      expect(E.progreso.porciones).toBeGreaterThan(0);
       expect(JSON.parse(JSON.stringify(E))).toEqual(E);
-      for (const pl of Object.values(E.plantas))
-        for (const k of M.celdasDePlanta(pl)) expect(E.celdas[k].planta).toBe(pl.id);
+      for (const pl of Object.values(E.mundo.plantas))
+        for (const k of M.celdasDePlanta(pl)) expect(E.mundo.celdas[k].planta).toBe(pl.id);
     }));
 
   it('es determinista', () => {

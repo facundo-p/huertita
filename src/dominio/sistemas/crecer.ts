@@ -87,7 +87,7 @@ export const estresar: SistemaDePlanta = ({ E, w, ev, nota }, t) => {
   const { pl, sp, z } = t,
     F = t.F!,
     g = t.g!,
-    bajoTunel = !!E.tunel[z];
+    bajoTunel = !!E.recursos.tunel[z];
   if (F.agua.estado === 'seco' && F.agua.f < ESTRES.sedDesde) {
     pl.salud -= (1 - F.agua.f) * ESTRES.danioSed;
     if (F.agua.f >= ESTRES.sedGrave) nota('mal', TC.faltoAgua(sp));

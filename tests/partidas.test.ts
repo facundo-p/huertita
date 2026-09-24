@@ -31,7 +31,7 @@ describe('en el dispositivo', () => {
     const E = M.crearPartida(3),
       donde = autoguardado(storageFalso());
     expect(await guardar(E, donde, reloj)).toBe(true);
-    expect(E.guardado).toBe(reloj.ahora());
+    expect(E.meta.guardado).toBe(reloj.ahora());
     expect(await donde.cargar()).toEqual(E);
     expect((await donde.mirar())!.t).toBe(reloj.ahora());
   });
@@ -40,7 +40,7 @@ describe('en el dispositivo', () => {
       E = M.crearPartida(3);
     await guardar(E, ranura(2, st), reloj);
     expect(await ranura(1, st).cargar()).toBeNull();
-    expect((await ranura(2, st).cargar())!.semilla).toBe(3);
+    expect((await ranura(2, st).cargar())!.meta.semilla).toBe(3);
     expect(resumenDe((await ranura(2, st).mirar())!)).toMatch(/año 1/);
   });
   it('sin lugar para guardar no rompe nada: avisa que no pudo', async () => {
@@ -50,8 +50,8 @@ describe('en el dispositivo', () => {
     const st = storageFalso();
     st().setItem('huertita-v1', JSON.stringify(v1));
     const E = (await autoguardado(st).cargar())!;
-    expect(E.v).toBe(M.VERSION);
-    expect(E.patio).toBe('fondo');
+    expect(E.meta.v).toBe(M.VERSION);
+    expect(E.meta.plantilla).toBe('fondo');
   });
 });
 
@@ -60,7 +60,7 @@ describe('el código para llevar la partida a otro lado', () => {
     const E = M.crearPartida(5);
     M.despachar(E, { tipo: 'sembrar', slug: 'lechuga', celda: M.idCelda(0, 4) });
     const vuelta = deCodigo(aCodigo(E))!;
-    expect(vuelta).toEqual({ ...E, cuaderno: E.cuaderno.slice(-40) });
+    expect(vuelta).toEqual({ ...E, progreso: { ...E.progreso, cuaderno: E.progreso.cuaderno.slice(-40) } });
   });
   it('acepta también el contenido de un archivo, y rechaza lo que no es una partida', () => {
     const E = M.crearPartida(5);
@@ -78,8 +78,8 @@ describe('el código para llevar la partida a otro lado', () => {
     expect(nombreDeArchivo(M.crearPartida(5))).toBe('huertita-año1-principios-de-agosto.json');
   });
   it('una partida nueva toma la semilla del reloj', () => {
-    expect(nueva('balcon', reloj).patio).toBe('balcon');
-    expect(nueva('fondo', reloj).semilla).toBe(nueva('fondo', reloj).semilla);
+    expect(nueva('balcon', reloj).meta.plantilla).toBe('balcon');
+    expect(nueva('fondo', reloj).meta.semilla).toBe(nueva('fondo', reloj).meta.semilla);
   });
 });
 

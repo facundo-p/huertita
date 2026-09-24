@@ -6,21 +6,21 @@
 import * as M from '../../dominio';
 import type { CeldaId, Estado } from '../../dominio';
 
-let memo: { clave: string; horas: Record<CeldaId, number> } | null = null;
+let memo: { patio: M.Patio; clave: string; horas: Record<CeldaId, number> } | null = null;
 
 /** Qué hace sombra hoy, además del patio: las plantas que levantan (vacío con el espacio real apagado). */
 function claveDeSombra(E: Estado): string {
-  const altas = Object.values(E.plantas)
+  const altas = Object.values(E.mundo.plantas)
     .map((pl) => ({ id: pl.id, celdas: M.celdasDePlanta(pl), alto: Math.round(M.altoDe(pl) * 100) }))
     .filter((p) => p.alto >= 40);
-  return E.patio + '|' + E.dec + '|' + (M.espacioReal() ? JSON.stringify(altas) : '');
+  return E.tiempo.dec + '|' + (M.espacioReal() ? JSON.stringify(altas) : '');
 }
 
 export function horasDeSol(E: Estado): Record<CeldaId, number> {
   const clave = claveDeSombra(E);
-  if (memo && memo.clave === clave) return memo.horas;
+  if (memo && memo.patio === E.mundo.patio && memo.clave === clave) return memo.horas;
   const horas: Record<CeldaId, number> = {};
-  for (const k of Object.keys(E.celdas)) horas[k] = M.horasSol(E, k);
-  memo = { clave, horas };
+  for (const k of Object.keys(E.mundo.celdas)) horas[k] = M.horasSol(E, k);
+  memo = { patio: E.mundo.patio, clave, horas };
   return horas;
 }
