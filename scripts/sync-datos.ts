@@ -28,7 +28,10 @@ const RUTA_CAMBIOS = join(RAIZ, 'datos/CAMBIOS.md');
 const RUTA_HUECOS = join(RAIZ, 'datos/HUECOS.md');
 
 const args = process.argv.slice(2);
-const valorDe = (f: string) => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] : undefined; };
+const valorDe = (f: string) => {
+  const i = args.indexOf(f);
+  return i >= 0 ? args[i + 1] : undefined;
+};
 const soloMirar = args.includes('--check');
 const local = valorDe('--local');
 const ref = valorDe('--ref') ?? 'main';
@@ -47,16 +50,27 @@ async function leerFuente(): Promise<{ texto: string; origen: string }> {
 function diferencias(antes: Catalogo | null, ahora: Catalogo): string[] {
   if (!antes) return [`Primer catálogo: ${Object.keys(ahora.especies).length} especies.`];
   const out: string[] = [];
-  const a = antes.especies, b = ahora.especies;
-  for (const s of Object.keys(b)) if (!a[s]) out.push(`+ **${s}**: especie nueva. Necesita dibujo en \`src/arte/estilos.ts\` y familia en \`datos/juego/especies.ts\` (si no, usa los genéricos).`);
-  for (const s of Object.keys(a)) if (!b[s]) out.push(`- **${s}**: ya no está en huertapp. Las partidas guardadas que la tengan plantada hay que migrarlas.`);
+  const a = antes.especies,
+    b = ahora.especies;
+  for (const s of Object.keys(b))
+    if (!a[s])
+      out.push(
+        `+ **${s}**: especie nueva. Necesita dibujo en \`src/arte/estilos.ts\` y familia en \`datos/juego/especies.ts\` (si no, usa los genéricos).`,
+      );
+  for (const s of Object.keys(a))
+    if (!b[s])
+      out.push(`- **${s}**: ya no está en huertapp. Las partidas guardadas que la tengan plantada hay que migrarlas.`);
   for (const s of Object.keys(b)) {
     if (!a[s]) continue;
-    const ea = a[s] as unknown as Record<string, unknown>, eb = b[s] as unknown as Record<string, unknown>;
+    const ea = a[s] as unknown as Record<string, unknown>,
+      eb = b[s] as unknown as Record<string, unknown>;
     for (const campo of Object.keys(eb)) {
       if (JSON.stringify(ea[campo]) === JSON.stringify(eb[campo])) continue;
       const sistema = CAMPOS_Y_SISTEMAS[campo] ?? 'solo texto de ficha';
-      const corto = (v: unknown) => { const t = JSON.stringify(v) ?? 'null'; return t.length > 90 ? t.slice(0, 87) + '…' : t; };
+      const corto = (v: unknown) => {
+        const t = JSON.stringify(v) ?? 'null';
+        return t.length > 90 ? t.slice(0, 87) + '…' : t;
+      };
       out.push(`~ **${s}**.${campo} (${sistema}): ${corto(ea[campo])} → ${corto(eb[campo])}`);
     }
   }
@@ -76,25 +90,61 @@ if (errores.length) {
   process.exit(1);
 }
 
-const candadoViejo = existsSync(RUTA_CANDADO) ? JSON.parse(readFileSync(RUTA_CANDADO, 'utf8')) as { sha256?: string } : null;
-const catalogoViejo = existsSync(RUTA_CATALOGO) ? JSON.parse(readFileSync(RUTA_CATALOGO, 'utf8')) as Catalogo : null;
+const candadoViejo = existsSync(RUTA_CANDADO)
+  ? (JSON.parse(readFileSync(RUTA_CANDADO, 'utf8')) as { sha256?: string })
+  : null;
+const catalogoViejo = existsSync(RUTA_CATALOGO) ? (JSON.parse(readFileSync(RUTA_CATALOGO, 'utf8')) as Catalogo) : null;
 const catalogo = derivarCatalogo(fuente);
 const cambios = diferencias(catalogoViejo, catalogo);
 const igual = candadoViejo?.sha256 === sha256 && cambios.length === 0;
 
 console.log(`Fuente: ${origen}`);
-console.log(`sha256: ${sha256.slice(0, 16)}…  ·  ${Object.keys(catalogo.especies).length} especies  ·  generado en huertapp el ${catalogo.meta.generado ?? 's/d'}`);
-if (igual) { console.log('Sin cambios: el catálogo del juego está al día.'); process.exit(0); }
+console.log(
+  `sha256: ${sha256.slice(0, 16)}…  ·  ${Object.keys(catalogo.especies).length} especies  ·  generado en huertapp el ${catalogo.meta.generado ?? 's/d'}`,
+);
+if (igual) {
+  console.log('Sin cambios: el catálogo del juego está al día.');
+  process.exit(0);
+}
 console.log(`\n${cambios.length} cambio(s) que tocan al juego:`);
 for (const c of cambios.slice(0, 60)) console.log('  ' + c);
 if (cambios.length > 60) console.log(`  … y ${cambios.length - 60} más`);
 
-if (soloMirar) { console.log('\n--check: no se escribió nada. Corré `npm run datos:sync` y después `npm test`.'); process.exit(cambios.length ? 2 : 0); }
+if (soloMirar) {
+  console.log('\n--check: no se escribió nada. Corré `npm run datos:sync` y después `npm test`.');
+  process.exit(cambios.length ? 2 : 0);
+}
 
 writeFileSync(RUTA_CATALOGO, JSON.stringify(catalogo, null, 1) + '\n');
-writeFileSync(RUTA_CANDADO, JSON.stringify({ repo: REPO, ref: local ? 'local' : ref, archivo: ARCHIVO, sha256, bytes: Buffer.byteLength(texto), generado_en_huertapp: catalogo.meta.generado ?? null, sincronizado: new Date().toISOString().slice(0, 10), especies: Object.keys(catalogo.especies).length }, null, 2) + '\n');
-writeFileSync(RUTA_HUECOS, `# Huecos de huertapp que el juego completa con supuestos\n\nLo escribe \`npm run datos:sync\`. Cada línea es un dato que falta en huertapp y que el juego inventa de forma conservadora (ver \`datos/juego/especies.ts\`). Completarlo en huertapp mejora las dos apps.\n\n${avisos.map((a) => '- ' + a).join('\n')}\n`);
-const bitacora = existsSync(RUTA_CAMBIOS) ? readFileSync(RUTA_CAMBIOS, 'utf8') : '# Cambios de datos traídos de huertapp\n\nLo escribe `npm run datos:sync`. Lo más nuevo arriba.\n';
+writeFileSync(
+  RUTA_CANDADO,
+  JSON.stringify(
+    {
+      repo: REPO,
+      ref: local ? 'local' : ref,
+      archivo: ARCHIVO,
+      sha256,
+      bytes: Buffer.byteLength(texto),
+      generado_en_huertapp: catalogo.meta.generado ?? null,
+      sincronizado: new Date().toISOString().slice(0, 10),
+      especies: Object.keys(catalogo.especies).length,
+    },
+    null,
+    2,
+  ) + '\n',
+);
+writeFileSync(
+  RUTA_HUECOS,
+  `# Huecos de huertapp que el juego completa con supuestos\n\nLo escribe \`npm run datos:sync\`. Cada línea es un dato que falta en huertapp y que el juego inventa de forma conservadora (ver \`datos/juego/especies.ts\`). Completarlo en huertapp mejora las dos apps.\n\n${avisos.map((a) => '- ' + a).join('\n')}\n`,
+);
+const bitacora = existsSync(RUTA_CAMBIOS)
+  ? readFileSync(RUTA_CAMBIOS, 'utf8')
+  : '# Cambios de datos traídos de huertapp\n\nLo escribe `npm run datos:sync`. Lo más nuevo arriba.\n';
 const [cab, ...resto] = bitacora.split('\n## ');
-writeFileSync(RUTA_CAMBIOS, `${cab.trimEnd()}\n\n## ${new Date().toISOString().slice(0, 10)} · ${sha256.slice(0, 12)}\n\n${cambios.map((c) => '- ' + c).join('\n')}\n${resto.length ? '\n## ' + resto.join('\n## ') : ''}`);
-console.log('\nEscribí datos/catalogo.json, datos/fuente.lock.json, datos/CAMBIOS.md y datos/HUECOS.md. Ahora corré `npm test`: los tests dicen si algún cambio rompe una regla del juego.');
+writeFileSync(
+  RUTA_CAMBIOS,
+  `${cab.trimEnd()}\n\n## ${new Date().toISOString().slice(0, 10)} · ${sha256.slice(0, 12)}\n\n${cambios.map((c) => '- ' + c).join('\n')}\n${resto.length ? '\n## ' + resto.join('\n## ') : ''}`,
+);
+console.log(
+  '\nEscribí datos/catalogo.json, datos/fuente.lock.json, datos/CAMBIOS.md y datos/HUECOS.md. Ahora corré `npm test`: los tests dicen si algún cambio rompe una regla del juego.',
+);

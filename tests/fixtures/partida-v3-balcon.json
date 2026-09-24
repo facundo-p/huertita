@@ -1,0 +1,1653 @@
+{
+ "v": 3,
+ "patio": "balcon",
+ "semilla": 4,
+ "rng": 1792895012,
+ "dec": 36,
+ "turno": 14,
+ "anio": 1,
+ "caracter": "normal",
+ "ratosGastados": 0,
+ "riego": {
+  "macetas": 2,
+  "cajon": 2,
+  "almacigo": 2
+ },
+ "tunel": {},
+ "manta": {},
+ "goteo": false,
+ "celdas": {
+  "0,1": {
+   "zona": "macetas",
+   "mo": 49,
+   "mulch": false,
+   "fam": null,
+   "planta": "p2"
+  },
+  "1,1": {
+   "zona": "macetas",
+   "mo": 49,
+   "mulch": false,
+   "fam": null,
+   "planta": "p3"
+  },
+  "2,1": {
+   "zona": "macetas",
+   "mo": 49,
+   "mulch": false,
+   "fam": null,
+   "planta": "p4"
+  },
+  "3,1": {
+   "zona": "macetas",
+   "mo": 51,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p6"
+  },
+  "4,1": {
+   "zona": "macetas",
+   "mo": 51,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p18"
+  },
+  "5,1": {
+   "zona": "macetas",
+   "mo": 51,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p19"
+  },
+  "0,2": {
+   "zona": "cajon",
+   "mo": 56,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": null
+  },
+  "1,2": {
+   "zona": "cajon",
+   "mo": 56,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": null
+  },
+  "0,3": {
+   "zona": "cajon",
+   "mo": 56,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": null
+  },
+  "1,3": {
+   "zona": "cajon",
+   "mo": 60,
+   "mulch": false,
+   "fam": null,
+   "planta": null
+  },
+  "3,3": {
+   "zona": "almacigo",
+   "mo": 70,
+   "mulch": false,
+   "fam": null,
+   "planta": null
+  },
+  "4,3": {
+   "zona": "almacigo",
+   "mo": 70,
+   "mulch": false,
+   "fam": null,
+   "planta": "p20"
+  }
+ },
+ "plantas": {
+  "p2": {
+   "id": "p2",
+   "slug": "rucula",
+   "celda": "0,1",
+   "etapa": "cosechable",
+   "edad": 140,
+   "prog": 35.84603,
+   "germ": 6,
+   "salud": 19.904999999999994,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 3,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 1,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 22,
+     "turno": 0,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste rúcula en macetas de la baranda: 4 semillas juntas."
+      ],
+      [
+       "mal",
+       "Rúcula: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar."
+      ]
+     ]
+    },
+    {
+     "dec": 24,
+     "turno": 2,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó rúcula! Nacieron 3 de 4: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 25,
+     "turno": 3,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste rúcula: dejaste la más fuerte y sacaste 2. Van a la compostera."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 62,
+     "n": [
+      [
+       "mal",
+       "Rúcula pasa sed: las macetas se secan mucho más rápido que la tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 50,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.5 porciones."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 20,
+     "n": [
+      [
+       "mal",
+       "Rúcula sufrió el calor (máx 34.2 °C)."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 26.8 °C, ideal 10–20 °C)."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    }
+   ]
+  },
+  "p3": {
+   "id": "p3",
+   "slug": "rucula",
+   "celda": "1,1",
+   "etapa": "cosechable",
+   "edad": 140,
+   "prog": 35.84603,
+   "germ": 6,
+   "salud": 19.904999999999994,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 3,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 1,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 22,
+     "turno": 0,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste rúcula en macetas de la baranda: 4 semillas juntas."
+      ],
+      [
+       "mal",
+       "Rúcula: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar."
+      ]
+     ]
+    },
+    {
+     "dec": 24,
+     "turno": 2,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó rúcula! Nacieron 1 de 4: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 62,
+     "n": [
+      [
+       "mal",
+       "Rúcula pasa sed: las macetas se secan mucho más rápido que la tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "mal",
+       "Pulgones en rúcula. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 50,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.5 porciones."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 39,
+     "n": [
+      [
+       "mal",
+       "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ],
+      [
+       "bien",
+       "Sacaste las orugas a mano, revisando el envés de las hojas."
+      ],
+      [
+       "mal",
+       "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Sacaste las orugas a mano, revisando el envés de las hojas."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 20,
+     "n": [
+      [
+       "mal",
+       "Rúcula sufrió el calor (máx 34.2 °C)."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 26.8 °C, ideal 10–20 °C)."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    }
+   ]
+  },
+  "p4": {
+   "id": "p4",
+   "slug": "rucula",
+   "celda": "2,1",
+   "etapa": "creciendo",
+   "edad": 140,
+   "prog": 28.86328,
+   "germ": 6,
+   "salud": 19.904999999999994,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 3,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 22,
+     "turno": 0,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste rúcula en macetas de la baranda: 4 semillas juntas."
+      ],
+      [
+       "mal",
+       "Rúcula: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar."
+      ]
+     ]
+    },
+    {
+     "dec": 24,
+     "turno": 2,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó rúcula! Nacieron 1 de 4: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 62,
+     "n": [
+      [
+       "mal",
+       "Rúcula pasa sed: las macetas se secan mucho más rápido que la tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 50,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 39,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 39,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 23.6 °C, ideal 10–20 °C)."
+      ],
+      [
+       "mal",
+       "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 39,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ],
+      [
+       "bien",
+       "Sacaste las orugas a mano, revisando el envés de las hojas."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 39,
+     "n": [
+      [
+       "mal",
+       "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 20,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.4 porciones."
+      ],
+      [
+       "bien",
+       "Sacaste las orugas a mano, revisando el envés de las hojas."
+      ],
+      [
+       "mal",
+       "Rúcula sufrió el calor (máx 34.2 °C)."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 26.8 °C, ideal 10–20 °C)."
+      ]
+     ]
+    }
+   ]
+  },
+  "p6": {
+   "id": "p6",
+   "slug": "lechuga",
+   "celda": "3,1",
+   "etapa": "pasada",
+   "edad": 140,
+   "prog": 42.682889599999996,
+   "germ": 12,
+   "salud": 34.86749999999997,
+   "vigor": 0.8,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 22,
+     "turno": 0,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 23,
+     "turno": 1,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "El plantín de lechuga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.5 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.6 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.6 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 88,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.7 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 75,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 25.6 °C, ideal 13–18 °C)."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 65,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.7 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 53,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.7 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 35,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "mal",
+       "Lechuga sufrió el calor (máx 34.2 °C)."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 26.8 °C, ideal 13–18 °C)."
+      ],
+      [
+       "mal",
+       "Lechuga se subió a flor por el calor (media 26.8 °C) y amargó. A media sombra aguanta mucho más en verano. Todavía podés dejarla semillar."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoPasado": true
+  },
+  "p18": {
+   "id": "p18",
+   "slug": "lechuga",
+   "celda": "4,1",
+   "etapa": "pasada",
+   "edad": 140,
+   "prog": 42.777537439999996,
+   "germ": 12,
+   "salud": 34.86749999999997,
+   "vigor": 0.8,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 22,
+     "turno": 0,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 23,
+     "turno": 1,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "El plantín de lechuga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.5 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.6 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.6 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 88,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.7 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 75,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 25.6 °C, ideal 13–18 °C)."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 65,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.7 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 53,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (3.7 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 35,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "mal",
+       "Lechuga sufrió el calor (máx 34.2 °C)."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue la temperatura (media 26.8 °C, ideal 13–18 °C)."
+      ],
+      [
+       "mal",
+       "Lechuga se subió a flor por el calor (media 26.8 °C) y amargó. A media sombra aguanta mucho más en verano. Todavía podés dejarla semillar."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoPasado": true,
+   "avisoRaleo": false
+  },
+  "p19": {
+   "id": "p19",
+   "slug": "rabanito",
+   "celda": "5,1",
+   "etapa": "creciendo",
+   "edad": 10,
+   "prog": 6,
+   "germ": 6,
+   "salud": 100,
+   "vigor": 0.893,
+   "gen": 1,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste rabanito en macetas de la baranda: 4 semillas juntas. Repetís familia en la misma tierra: rinde menos y junta plagas."
+      ],
+      [
+       "bien",
+       "¡Germinó rabanito! Nacieron 1 de 4: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    }
+   ]
+  },
+  "p20": {
+   "id": "p20",
+   "slug": "acelga",
+   "celda": "4,3",
+   "etapa": "semilla",
+   "edad": 10,
+   "prog": 0,
+   "germ": 0,
+   "salud": 100,
+   "vigor": 0.85,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 0,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste acelga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "mal",
+       "Acelga: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar."
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "nextId": 21,
+ "sobres": {
+  "rabanito": 13,
+  "lechuga": 4,
+  "acelga": 2,
+  "arveja": 6,
+  "haba": 4,
+  "perejil": 0,
+  "calendula": 4,
+  "tomate": 4,
+  "albahaca": 4,
+  "zanahoria": 6,
+  "cebolla-de-verdeo": 4,
+  "rucula": 0,
+  "copete": 4,
+  "chaucha": 6,
+  "pimiento": 3,
+  "berenjena": 3,
+  "brocoli": 4,
+  "zapallito-de-tronco": 3,
+  "pepino": 3,
+  "borraja": 3,
+  "ajo": 6,
+  "puerro": 4,
+  "romero": 1,
+  "menta": 1,
+  "lavanda": 1,
+  "remolacha": 6,
+  "espinaca": 6,
+  "kale": 4
+ },
+ "gen": {
+  "rabanito": 1
+ },
+ "compost": {
+  "dosis": 2,
+  "carga": 3,
+  "tandas": [
+   {
+    "avance": 11.500000000000002
+   },
+   {
+    "avance": 6.5
+   },
+   {
+    "avance": 5.2
+   },
+   {
+    "avance": 2.6
+   }
+  ]
+ },
+ "cosechado": {
+  "rucula": 3.8
+ },
+ "porciones": 3.8,
+ "semillasGuardadas": 12,
+ "visitas": 0,
+ "moInicial": 57,
+ "misiones": {
+  "germina": 1,
+  "plantin": 5,
+  "cosecha1": 8,
+  "semillas": 12,
+  "socios": 13
+ },
+ "cuaderno": [
+  {
+   "turno": 7,
+   "dec": 29,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas). (×2)",
+   "celda": "0,1"
+  },
+  {
+   "turno": 7,
+   "dec": 29,
+   "tipo": "mal",
+   "texto": "Lechuga pasa sed: subí el riego o poné mulch. (×3)",
+   "celda": "1,2"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.5 porciones.",
+   "celda": "0,1"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "logro",
+   "texto": "Logro: Primera cosecha. Una vecina te pasa sobres de zapallito de tronco, pepino, borraja.",
+   "celda": null
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.5 porciones.",
+   "celda": "1,1"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "clima",
+   "texto": "Fines de octubre: máx 24.4 °C, mín 7.4 °C, 18 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas).",
+   "celda": "2,1"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "mal",
+   "texto": "Lechuga pasa sed: subí el riego o poné mulch. (×3)",
+   "celda": "1,2"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "mal",
+   "texto": "Lechuga recibe 2.9 h de sol y pide 4–6 h. Con poca luz se ahíla (se estira), forma hojas laxas y no acogolla bien; las cabezas quedan flojas.",
+   "celda": "1,2"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "mal",
+   "texto": "Lechuga recibe 2.6 h de sol y pide 4–6 h. Con poca luz se ahíla (se estira), forma hojas laxas y no acogolla bien; las cabezas quedan flojas.",
+   "celda": "0,2"
+  },
+  {
+   "turno": 8,
+   "dec": 30,
+   "tipo": "mal",
+   "texto": "Lechuga recibe 2 h de sol y pide 4–6 h. Con poca luz se ahíla (se estira), forma hojas laxas y no acogolla bien; las cabezas quedan flojas.",
+   "celda": "0,3"
+  },
+  {
+   "turno": 9,
+   "dec": 31,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "2,1"
+  },
+  {
+   "turno": 9,
+   "dec": 31,
+   "tipo": "clima",
+   "texto": "Principios de noviembre: máx 30.5 °C, mín 13.4 °C, 49 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 9,
+   "dec": 31,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas). (×2)",
+   "celda": "0,1"
+  },
+  {
+   "turno": 9,
+   "dec": 31,
+   "tipo": "mal",
+   "texto": "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle.",
+   "celda": "1,1"
+  },
+  {
+   "turno": 9,
+   "dec": 31,
+   "tipo": "bien",
+   "texto": "Rabanito está para cosechar. Raíz de 1-1,5 cm de diámetro que asoma en la superficie; cosechar a tiempo evita el sabor picante excesivo y el ahuecado. (×3)",
+   "celda": "4,1"
+  },
+  {
+   "turno": 9,
+   "dec": 31,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "0,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "1,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Sacaste las orugas a mano, revisando el envés de las hojas.",
+   "celda": "1,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "info",
+   "texto": "Dejás semillar rabanito. Va a ocupar el lugar unas 3 décadas más.",
+   "celda": "4,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "info",
+   "texto": "Dejás semillar rabanito. Va a ocupar el lugar unas 3 décadas más.",
+   "celda": "5,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "info",
+   "texto": "Dejás semillar rabanito. Va a ocupar el lugar unas 3 décadas más.",
+   "celda": "3,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "clima",
+   "texto": "Mediados de noviembre: máx 31 °C, mín 11.4 °C, 26 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "mal",
+   "texto": "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle. (×2)",
+   "celda": "1,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas).",
+   "celda": "2,1"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "mal",
+   "texto": "Lechuga se subió a flor por el calor (media 23.6 °C) y amargó.  Todavía podés dejarla semillar.",
+   "celda": "3,3"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "mal",
+   "texto": "Lechuga murió. Revisá en el cuaderno qué le venía faltando. (×3)",
+   "celda": "1,2"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Sacaste las orugas a mano, revisando el envés de las hojas.",
+   "celda": "1,1"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "2,1"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Sacaste las orugas a mano, revisando el envés de las hojas.",
+   "celda": "2,1"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Sacaste lechuga. Va a la compostera.",
+   "celda": "3,3"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Sembraste acelga en almaciguera: una tanda de 6 celdas.",
+   "celda": "3,3"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "clima",
+   "texto": "Fines de noviembre: máx 29.3 °C, mín 7 °C, 18 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas). (×2)",
+   "celda": "0,1"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "mal",
+   "texto": "Acelga: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar.",
+   "celda": "3,3"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "0,1"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "1,1"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "logro",
+   "texto": "Logro: Semilla propia. Una vecina te pasa sobres de ajo, puerro, romero, menta, lavanda.",
+   "celda": null
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "clima",
+   "texto": "Principios de diciembre: máx 30.3 °C, mín 9.9 °C, 51 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "mal",
+   "texto": "Orugas en rúcula: la mariposa blanca pone en las brasicáceas. Sin flores ni aromáticas cerca no hay quien las controle.",
+   "celda": "2,1"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas).",
+   "celda": "2,1"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Guardaste 4 sobres de rabanito (generación 1). Semilla criada en tu patio: se adapta un poco más cada año. (×3)",
+   "celda": "4,1"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.4 porciones.",
+   "celda": "2,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Sacaste las orugas a mano, revisando el envés de las hojas.",
+   "celda": "2,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga.",
+   "celda": "4,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga.",
+   "celda": "3,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Sembraste rabanito en macetas de la baranda: 4 semillas juntas. Repetís familia en la misma tierra: rinde menos y junta plagas.",
+   "celda": "5,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Sembraste acelga en almaciguera: una tanda de 6 celdas.",
+   "celda": "4,3"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "clima",
+   "texto": "Mediados de diciembre: máx 34.2 °C, mín 16.3 °C, 28 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "Rúcula sufrió el calor (máx 34.2 °C). (×3)",
+   "celda": "0,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas). (×2)",
+   "celda": "0,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "Lechuga sufrió el calor (máx 34.2 °C). (×2)",
+   "celda": "3,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "Lechuga se subió a flor por el calor (media 26.8 °C) y amargó. A media sombra aguanta mucho más en verano. Todavía podés dejarla semillar. (×2)",
+   "celda": "3,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "La semilla de acelga se perdió: pasaron 30 días sin condiciones para germinar.",
+   "celda": "3,3"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "¡Germinó rabanito! Nacieron 1 de 4: con el suelo fuera del rango ideal nacen menos.",
+   "celda": "5,1"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "Acelga: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar.",
+   "celda": "4,3"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "logro",
+   "texto": "Logro: Buenos vecinos. Una vecina te pasa sobres de remolacha, espinaca, kale (col rizada).",
+   "celda": null
+  }
+ ],
+ "prox": {
+  "real": {
+   "dec": 36,
+   "tmed": 22.5,
+   "tmax": 32,
+   "tmin": 12.1,
+   "lluvia": 25,
+   "helada": false,
+   "ola": false,
+   "estacion": "verano"
+  },
+  "pron": {
+   "tmin": 11,
+   "tmax": 31,
+   "pHelada": 0,
+   "lluvia": "normal"
+  }
+ },
+ "terminado": false,
+ "guardado": 1789000000000
+}

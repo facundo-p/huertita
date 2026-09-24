@@ -10,7 +10,20 @@ export { RATOS, RIEGOS, costoRiego, crearPartida, plantaEn, puntoDeTrasplante, r
 export { altoDe, bloqueDe, celdasDePlanta, conEspacioReal, espacioReal, marco, porCelda } from './espacio';
 export { bajoTunel, evaluarCelda, factoresPlanta, floresAbiertas, sueloDeCelda } from './factores';
 export { MISIONES } from './misiones';
-export { PATIOS, PATIO_INICIAL, celdasDe, horasSol, idsDeZonas, macetaDe, patioDe, zona, zonaDe, zonaDeCelda, zonaDeTunel, zonasDe } from './patio';
+export {
+  PATIOS,
+  PATIO_INICIAL,
+  celdasDe,
+  horasSol,
+  idsDeZonas,
+  macetaDe,
+  patioDe,
+  zona,
+  zonaDe,
+  zonaDeCelda,
+  zonaDeTunel,
+  zonasDe,
+} from './patio';
 export type { Patio, ZonaDePatio } from './patio';
 export { conHojas, horasSolGeometria, posicionSol } from './sol';
 export { pasarDecada } from './tiempo';

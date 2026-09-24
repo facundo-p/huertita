@@ -10,7 +10,8 @@ import * as M from '../src/motor';
 import { jugarUnAnio } from '../tools/jugador';
 import type { Estado, Planta } from '../src/motor';
 
-const CELDA_SUELO = '0,1', CRIA = '0,7';
+const CELDA_SUELO = '0,1',
+  CRIA = '0,7';
 const plantaDe = (E: Estado, celda: string): Planta => E.plantas[E.celdas[celda].planta!];
 function partida(sobres: Record<string, number> = {}): Estado {
   const E = M.crearPartida(5);
@@ -49,59 +50,68 @@ describe('con las reglas de espacio apagadas (como juega hoy)', () => {
     const pl = plantaDe(E, CELDA_SUELO);
     expect(pl.celdas).toBeUndefined();
     expect(E.celdas['1,1'].planta).toBeNull();
-    pl.n = 4; pl.etapa = 'creciendo';
+    pl.n = 4;
+    pl.etapa = 'creciendo';
     expect(M.despachar(E, { tipo: 'ralear', planta: pl.id }).ok).toBe(true);
     expect(pl.n).toBe(1);
   });
 });
 
 describe('con las reglas de espacio prendidas', () => {
-  it('un zapallo se lleva cuatro celdas y al sacarlo las devuelve', () => M.conEspacioReal(() => {
-    const E = partida({ zapallo: 2 });
-    expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
-    const pl = plantaDe(E, CELDA_SUELO);
-    expect(pl.celdas).toEqual(['0,1', '1,1', '0,2', '1,2']);
-    for (const k of pl.celdas!) expect(E.celdas[k].planta).toBe(pl.id);
-    expect(M.despachar(E, { tipo: 'arrancar', planta: pl.id }).ok).toBe(true);
-    for (const k of ['0,1', '1,1', '0,2', '1,2']) expect(E.celdas[k].planta).toBeNull();
-  }));
+  it('un zapallo se lleva cuatro celdas y al sacarlo las devuelve', () =>
+    M.conEspacioReal(() => {
+      const E = partida({ zapallo: 2 });
+      expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
+      const pl = plantaDe(E, CELDA_SUELO);
+      expect(pl.celdas).toEqual(['0,1', '1,1', '0,2', '1,2']);
+      for (const k of pl.celdas!) expect(E.celdas[k].planta).toBe(pl.id);
+      expect(M.despachar(E, { tipo: 'arrancar', planta: pl.id }).ok).toBe(true);
+      for (const k of ['0,1', '1,1', '0,2', '1,2']) expect(E.celdas[k].planta).toBeNull();
+    }));
 
-  it('no se siembra un zapallo donde no entra: ni contra el borde del cantero ni al lado de otra planta', () => M.conEspacioReal(() => {
-    const E = partida({ zapallo: 4, lechuga: 4 });
-    const alBorde = M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: '5,1' });
-    expect(alBorde.ok).toBe(false);
-    if (!alBorde.ok) expect(alBorde.error).toMatch(/4 celdas/);
-    expect(M.despachar(E, { tipo: 'sembrar', slug: 'lechuga', celda: '3,2' }).ok).toBe(true);
-    const tapado = M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: '2,1' });
-    expect(tapado.ok).toBe(false);
-    if (!tapado.ok) expect(tapado.error).toMatch(/al lado/);
-    expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
-  }));
+  it('no se siembra un zapallo donde no entra: ni contra el borde del cantero ni al lado de otra planta', () =>
+    M.conEspacioReal(() => {
+      const E = partida({ zapallo: 4, lechuga: 4 });
+      const alBorde = M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: '5,1' });
+      expect(alBorde.ok).toBe(false);
+      if (!alBorde.ok) expect(alBorde.error).toMatch(/4 celdas/);
+      expect(M.despachar(E, { tipo: 'sembrar', slug: 'lechuga', celda: '3,2' }).ok).toBe(true);
+      const tapado = M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: '2,1' });
+      expect(tapado.ok).toBe(false);
+      if (!tapado.ok) expect(tapado.error).toMatch(/al lado/);
+      expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
+    }));
 
-  it('en la almaciguera el plantín ocupa una celda: ahí el zapallo entra igual', () => M.conEspacioReal(() => {
-    const E = partida({ zapallo: 2 });
-    expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CRIA }).ok).toBe(true);
-    expect(plantaDe(E, CRIA).celdas).toBeUndefined();
-  }));
+  it('en la almaciguera el plantín ocupa una celda: ahí el zapallo entra igual', () =>
+    M.conEspacioReal(() => {
+      const E = partida({ zapallo: 2 });
+      expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CRIA }).ok).toBe(true);
+      expect(plantaDe(E, CRIA).celdas).toBeUndefined();
+    }));
 
-  it('la almaciguera cría de a bandeja entera y en tierra se siembra el marco con algo de más', () => M.conEspacioReal(() => {
-    const E = partida({ tomate: 2, rabanito: 2 });
-    M.despachar(E, { tipo: 'sembrar', slug: 'tomate', celda: CRIA });
-    expect(plantaDe(E, CRIA).semillas).toBe(M.zona(E, E.celdas[CRIA].zona).capacidad);
-    M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: CELDA_SUELO });
-    expect(plantaDe(E, CELDA_SUELO).semillas).toBe(12); // 9 que entran + 3 para ralear
-  }));
+  it('la almaciguera cría de a bandeja entera y en tierra se siembra el marco con algo de más', () =>
+    M.conEspacioReal(() => {
+      const E = partida({ tomate: 2, rabanito: 2 });
+      M.despachar(E, { tipo: 'sembrar', slug: 'tomate', celda: CRIA });
+      expect(plantaDe(E, CRIA).semillas).toBe(M.zona(E, E.celdas[CRIA].zona).capacidad);
+      M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: CELDA_SUELO });
+      expect(plantaDe(E, CELDA_SUELO).semillas).toBe(12); // 9 que entran + 3 para ralear
+    }));
 
-  it('el raleo deja las que entran en la celda, no una sola', () => M.conEspacioReal(() => {
-    const E = partida({ rabanito: 2 });
-    M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: CELDA_SUELO });
-    const pl = plantaDe(E, CELDA_SUELO); pl.n = 12; pl.etapa = 'creciendo'; pl.prog = 20;
-    const r = M.despachar(E, { tipo: 'ralear', planta: pl.id });
-    expect(r.ok).toBe(true);
-    expect(pl.n).toBe(9);
-    if (r.ok) expect(r.eventos[0].texto).toMatch(/dejaste las 9 más fuertes y sacaste 3/);
-    expect(M.despachar(E, { tipo: 'ralear', planta: pl.id }).ok).toBe(false); // ya entran todas
-  }));
+  it('el raleo deja las que entran en la celda, no una sola', () =>
+    M.conEspacioReal(() => {
+      const E = partida({ rabanito: 2 });
+      M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: CELDA_SUELO });
+      const pl = plantaDe(E, CELDA_SUELO);
+      pl.n = 12;
+      pl.etapa = 'creciendo';
+      pl.prog = 20;
+      const r = M.despachar(E, { tipo: 'ralear', planta: pl.id });
+      expect(r.ok).toBe(true);
+      expect(pl.n).toBe(9);
+      if (r.ok) expect(r.eventos[0].texto).toMatch(/dejaste las 9 más fuertes y sacaste 3/);
+      expect(M.despachar(E, { tipo: 'ralear', planta: pl.id }).ok).toBe(false); // ya entran todas
+    }));
 
   it('una celda llena de rabanitos rinde como lo que hay en ella, y apretados rinden menos', () => {
     const cosechar = (n: number, real: boolean): number => {
@@ -127,11 +137,16 @@ describe('con las reglas de espacio prendidas', () => {
     // (La sombra clásica del choclo sobre lo que tiene al sur va a verse en el fondo el día que ese
     // patio pase a sol por geometría: hoy sigue con la fórmula del prototipo. Ver #31.)
     const E = M.crearPartida(1, { patio: 'balcon' });
-    E.sobres.choclo = 2; E.ratosGastados = 0;
-    M.conEspacioReal(() => { expect(M.despachar(E, { tipo: 'sembrar', slug: 'choclo', celda: '1,1' }).ok).toBe(true); });
-    const pl = plantaDe(E, '1,1'), vecina = '0,1';
+    E.sobres.choclo = 2;
+    E.ratosGastados = 0;
+    M.conEspacioReal(() => {
+      expect(M.despachar(E, { tipo: 'sembrar', slug: 'choclo', celda: '1,1' }).ok).toBe(true);
+    });
+    const pl = plantaDe(E, '1,1'),
+      vecina = '0,1';
     Object.assign(pl, { etapa: 'creciendo', prog: M.objetivoCosecha(M.ESPECIES.choclo) });
-    const sinChoclo = M.horasSol(E, vecina, 4), conChoclo = M.conEspacioReal(() => M.horasSol(E, vecina, 4));
+    const sinChoclo = M.horasSol(E, vecina, 4),
+      conChoclo = M.conEspacioReal(() => M.horasSol(E, vecina, 4));
     expect(sinChoclo).toBeGreaterThan(5);
     expect(conChoclo).toBeLessThan(sinChoclo / 2);
     // la sombra es la del choclo hecho: recién nacido casi no tapa
@@ -142,16 +157,19 @@ describe('con las reglas de espacio prendidas', () => {
     expect(M.conEspacioReal(() => M.horasSol(E, '1,1', 4))).toBe(M.horasSol(E, '1,1', 4));
   });
 
-  it('el bot juega un año entero con el espacio prendido y el estado sigue siendo JSON', () => M.conEspacioReal(() => {
-    const E = jugarUnAnio(M, 7) as Estado;
-    expect(E.terminado).toBe(true);
-    expect(E.porciones).toBeGreaterThan(0);
-    expect(JSON.parse(JSON.stringify(E))).toEqual(E);
-    for (const pl of Object.values(E.plantas)) for (const k of M.celdasDePlanta(pl)) expect(E.celdas[k].planta).toBe(pl.id);
-  }));
+  it('el bot juega un año entero con el espacio prendido y el estado sigue siendo JSON', () =>
+    M.conEspacioReal(() => {
+      const E = jugarUnAnio(M, 7) as Estado;
+      expect(E.terminado).toBe(true);
+      expect(E.porciones).toBeGreaterThan(0);
+      expect(JSON.parse(JSON.stringify(E))).toEqual(E);
+      for (const pl of Object.values(E.plantas))
+        for (const k of M.celdasDePlanta(pl)) expect(E.celdas[k].planta).toBe(pl.id);
+    }));
 
   it('es determinista', () => {
-    const uno = M.conEspacioReal(() => jugarUnAnio(M, 11)), dos = M.conEspacioReal(() => jugarUnAnio(M, 11));
+    const uno = M.conEspacioReal(() => jugarUnAnio(M, 11)),
+      dos = M.conEspacioReal(() => jugarUnAnio(M, 11));
     expect(uno).toEqual(dos);
   });
 });

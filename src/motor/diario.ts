@@ -12,7 +12,11 @@ const MAXIMO = 16;
 export function apuntar(E: Pick<Estado, 'dec' | 'turno'>, pl: Planta, tipo: TipoEvento, texto: string): void {
   const hist = pl.hist || (pl.hist = []);
   let r = hist[hist.length - 1];
-  if (!r || r.turno !== E.turno) { r = { dec: E.dec, turno: E.turno, s: Math.round(pl.salud), n: [] }; hist.push(r); if (hist.length > MAXIMO) hist.shift(); }
+  if (!r || r.turno !== E.turno) {
+    r = { dec: E.dec, turno: E.turno, s: Math.round(pl.salud), n: [] };
+    hist.push(r);
+    if (hist.length > MAXIMO) hist.shift();
+  }
   if (!r.n.some((x) => x[1] === texto)) r.n.push([tipo, texto]);
   r.s = Math.round(pl.salud);
 }
@@ -20,5 +24,6 @@ export function apuntar(E: Pick<Estado, 'dec' | 'turno'>, pl: Planta, tipo: Tipo
 export function cerrar(E: Pick<Estado, 'dec' | 'turno'>, pl: Planta, saludAntes: number): void {
   const r = pl.hist && pl.hist[pl.hist.length - 1];
   if (r && r.turno === E.turno) r.s = Math.round(pl.salud);
-  else if (Math.round(pl.salud) !== Math.round(saludAntes)) apuntar(E, pl, pl.salud > saludAntes ? 'bien' : 'mal', pl.salud > saludAntes ? 'Recuperó salud.' : 'Perdió salud.');
+  else if (Math.round(pl.salud) !== Math.round(saludAntes))
+    apuntar(E, pl, pl.salud > saludAntes ? 'bien' : 'mal', pl.salud > saludAntes ? 'Recuperó salud.' : 'Perdió salud.');
 }

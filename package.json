@@ -15,12 +15,21 @@
     "bot": "tsx tools/bot.ts",
     "datos:sync": "tsx scripts/sync-datos.ts",
     "datos:check": "tsx scripts/sync-datos.ts --check",
-    "humo": "tsx tools/humo.ts"
+    "humo": "tsx tools/humo.ts",
+    "lint": "eslint . --max-warnings=57",
+    "formato": "prettier --write \"{src,datos,tests,tools,scripts}/**/*.{ts,tsx,css}\" \"*.{ts,js}\"",
+    "formato:ver": "prettier --check \"{src,datos,tests,tools,scripts}/**/*.{ts,tsx,css}\" \"*.{ts,js}\"",
+    "capturas": "tsx tools/capturas.ts"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@types/node": "^22.10.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.70.1",
     "vite": "^5.4.0",
     "vite-plugin-singlefile": "^2.0.0",
     "vitest": "^2.1.0"

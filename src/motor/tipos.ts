@@ -12,50 +12,118 @@ export type CaracterId = 'normal' | 'nina' | 'nino' | 'tardia';
 export type TipoEvento = 'info' | 'bien' | 'mal' | 'clima' | 'logro';
 
 export interface Planta {
-  id: string; slug: string; celda: CeldaId; etapa: Etapa;
+  id: string;
+  slug: string;
+  celda: CeldaId;
+  etapa: Etapa;
   /** si ocupa más de una celda, todas las que ocupa: la primera es `celda`, el ancla. Falta cuando ocupa una sola */
   celdas?: CeldaId[];
   /** días desde la siembra */ edad: number;
   /** días efectivos de crecimiento */ prog: number;
   /** días efectivos de germinación acumulados */ germ: number;
-  salud: number; vigor: number; gen: number; cosechas: number; listoHace: number;
-  plaga: Plaga | null; tutor: boolean; shock: number; dulce: boolean; semillar: number;
+  salud: number;
+  vigor: number;
+  gen: number;
+  cosechas: number;
+  listoHace: number;
+  plaga: Plaga | null;
+  tutor: boolean;
+  shock: number;
+  dulce: boolean;
+  semillar: number;
   /** ajuste de la maceta a lo que pide la especie, 0..1 */ pote: number;
   reserva: number;
   /** plantines vivos en esta siembra */ n: number;
   /** semillas que se pusieron */ semillas: number;
-  avisoRaleo?: boolean; avisoPasado?: boolean; avisoListo?: boolean;
+  avisoRaleo?: boolean;
+  avisoPasado?: boolean;
+  avisoListo?: boolean;
   /** diario de esta planta: lo que le fue pasando, década por década. Lo más nuevo al final; se guardan las últimas 16 entradas */
   hist?: Registro[];
 }
 /** Una entrada del diario de una planta. `s` es la salud con la que cerró; `n`, lo que le pasó: [tipo, texto]. */
-export interface Registro { dec: number; turno: number; s: number; n: [TipoEvento, string][] }
-export interface Celda { zona: ZonaId; mo: number; mulch: boolean; fam: string | null; planta: string | null }
-export interface Tiempo { dec: number; tmed: number; tmax: number; tmin: number; lluvia: number; helada: boolean; ola: boolean; estacion: string }
-export interface Pronostico { tmin: number; tmax: number; pHelada: number; lluvia: 'seca' | 'normal' | 'llovedora' }
-export interface Evento { turno: number; dec: number; tipo: TipoEvento; texto: string; celda: CeldaId | null }
+export interface Registro {
+  dec: number;
+  turno: number;
+  s: number;
+  n: [TipoEvento, string][];
+}
+export interface Celda {
+  zona: ZonaId;
+  mo: number;
+  mulch: boolean;
+  fam: string | null;
+  planta: string | null;
+}
+export interface Tiempo {
+  dec: number;
+  tmed: number;
+  tmax: number;
+  tmin: number;
+  lluvia: number;
+  helada: boolean;
+  ola: boolean;
+  estacion: string;
+}
+export interface Pronostico {
+  tmin: number;
+  tmax: number;
+  pHelada: number;
+  lluvia: 'seca' | 'normal' | 'llovedora';
+}
+export interface Evento {
+  turno: number;
+  dec: number;
+  tipo: TipoEvento;
+  texto: string;
+  celda: CeldaId | null;
+}
 
 export interface Estado {
   /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
   v: 3;
   /** id del patio en el que se juega (`datos/juego/patios`) */
   patio: string;
-  semilla: number; rng: number; dec: number; turno: number; anio: number; caracter: CaracterId;
-  ratosGastados: number; riego: Record<ZonaId, NivelRiego>; /** zonas con el microtúnel armado */ tunel: Partial<Record<ZonaId, boolean>>; manta: Partial<Record<ZonaId, boolean>>; goteo: boolean;
-  celdas: Record<CeldaId, Celda>; plantas: Record<string, Planta>; nextId: number;
-  sobres: Record<string, number>; gen: Record<string, number>;
+  semilla: number;
+  rng: number;
+  dec: number;
+  turno: number;
+  anio: number;
+  caracter: CaracterId;
+  ratosGastados: number;
+  riego: Record<ZonaId, NivelRiego>;
+  /** zonas con el microtúnel armado */ tunel: Partial<Record<ZonaId, boolean>>;
+  manta: Partial<Record<ZonaId, boolean>>;
+  goteo: boolean;
+  celdas: Record<CeldaId, Celda>;
+  plantas: Record<string, Planta>;
+  nextId: number;
+  sobres: Record<string, number>;
+  gen: Record<string, number>;
   compost: { dosis: number; carga: number; tandas: { avance: number }[] };
-  cosechado: Record<string, number>; porciones: number; semillasGuardadas: number; visitas: number; moInicial: number;
-  misiones: Record<string, number>; cuaderno: Evento[]; prox: { real: Tiempo; pron: Pronostico }; terminado: boolean;
+  cosechado: Record<string, number>;
+  porciones: number;
+  semillasGuardadas: number;
+  visitas: number;
+  moInicial: number;
+  misiones: Record<string, number>;
+  cuaderno: Evento[];
+  prox: { real: Tiempo; pron: Pronostico };
+  terminado: boolean;
   /** marca de tiempo del último guardado; la pone la interfaz, el motor no la mira */ guardado?: number;
 }
 
 export type Accion =
   | { tipo: 'sembrar'; slug: string; celda: CeldaId }
   | { tipo: 'trasplantar'; planta: string; celda: CeldaId }
-  | { tipo: 'cosechar'; planta: string } | { tipo: 'semillar'; planta: string } | { tipo: 'ralear'; planta: string }
-  | { tipo: 'arrancar'; planta: string } | { tipo: 'tutorar'; planta: string } | { tipo: 'tratar'; planta: string }
-  | { tipo: 'mulch'; celda: CeldaId } | { tipo: 'compost'; celda: CeldaId }
+  | { tipo: 'cosechar'; planta: string }
+  | { tipo: 'semillar'; planta: string }
+  | { tipo: 'ralear'; planta: string }
+  | { tipo: 'arrancar'; planta: string }
+  | { tipo: 'tutorar'; planta: string }
+  | { tipo: 'tratar'; planta: string }
+  | { tipo: 'mulch'; celda: CeldaId }
+  | { tipo: 'compost'; celda: CeldaId }
   | { tipo: 'riego'; zona: ZonaId; nivel: number }
   | { tipo: 'manta'; zona: ZonaId }
   | { tipo: 'tunel'; /** si falta, la primera zona del patio que lo admite */ zona?: ZonaId }

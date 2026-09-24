@@ -49,8 +49,23 @@ export interface ZonaDePatio {
 
 /** Coordenadas en celdas, con decimales. La celda (x,y) ocupa de x a x+1 y de y a y+1; y crece hacia el sur. Alturas en metros. */
 export type Obstaculo =
-  | { tipo: 'muro'; nombre: string; desde: [number, number]; hasta: [number, number]; alto: number; /** 1 = ciego; una baranda de barrotes, 0.4 */ opacidad?: number }
-  | { tipo: 'arbol'; nombre: string; en: [number, number]; alto: number; /** radio de la copa, en celdas */ copa: number; /** altura donde empieza la copa */ fuste: number; caduco: boolean }
+  | {
+      tipo: 'muro';
+      nombre: string;
+      desde: [number, number];
+      hasta: [number, number];
+      alto: number;
+      /** 1 = ciego; una baranda de barrotes, 0.4 */ opacidad?: number;
+    }
+  | {
+      tipo: 'arbol';
+      nombre: string;
+      en: [number, number];
+      alto: number;
+      /** radio de la copa, en celdas */ copa: number;
+      /** altura donde empieza la copa */ fuste: number;
+      caduco: boolean;
+    }
   | { tipo: 'losa'; nombre: string; desde: [number, number]; hasta: [number, number]; alto: number };
 
 export interface Patio {
@@ -86,29 +101,53 @@ export function validarPatio(p: Patio): string[] {
   const e: string[] = [];
   const ancho = p.plano[0]?.length ?? 0;
   if (!ancho || p.plano.length < 3) e.push('el plano está vacío o es muy chico');
-  p.plano.forEach((f, y) => { if (f.length !== ancho) e.push(`la fila ${y} del plano mide ${f.length} y la primera mide ${ancho}`); });
+  p.plano.forEach((f, y) => {
+    if (f.length !== ancho) e.push(`la fila ${y} del plano mide ${f.length} y la primera mide ${ancho}`);
+  });
   if (!(p.celdaM > 0.2 && p.celdaM <= 2)) e.push('celdaM fuera de rango');
   if (!(p.horizonte >= 0 && p.horizonte < 40)) e.push('horizonte fuera de rango');
-  const ids = new Set<string>(), letras = new Set<string>();
+  const ids = new Set<string>(),
+    letras = new Set<string>();
   for (const z of p.zonas) {
-    if (ids.has(z.id)) e.push(`zona repetida: ${z.id}`); ids.add(z.id);
-    if (z.letra.length !== 1 || RESERVADAS.includes(z.letra)) e.push(`${z.id}: la letra "${z.letra}" no sirve (reservadas: ${RESERVADAS})`);
-    if (letras.has(z.letra)) e.push(`letra repetida: ${z.letra}`); letras.add(z.letra);
+    if (ids.has(z.id)) e.push(`zona repetida: ${z.id}`);
+    ids.add(z.id);
+    if (z.letra.length !== 1 || RESERVADAS.includes(z.letra))
+      e.push(`${z.id}: la letra "${z.letra}" no sirve (reservadas: ${RESERVADAS})`);
+    if (letras.has(z.letra)) e.push(`letra repetida: ${z.letra}`);
+    letras.add(z.letra);
     const celdas: string[] = [];
-    p.plano.forEach((f, y) => [...f].forEach((ch, x) => { if (ch === z.letra) celdas.push(x + ',' + y); }));
+    p.plano.forEach((f, y) =>
+      [...f].forEach((ch, x) => {
+        if (ch === z.letra) celdas.push(x + ',' + y);
+      }),
+    );
     if (!celdas.length) e.push(`${z.id}: no tiene ninguna celda en el plano`);
     if (z.mo < 5 || z.mo > 100) e.push(`${z.id}: mo fuera de 5..100`);
-    if (z.riegoCosto.length !== 4 || z.riegoCosto[0] !== 0 || z.riegoCosto.some((c, i) => i > 0 && c < z.riegoCosto[i - 1])) e.push(`${z.id}: riegoCosto tiene que arrancar en 0 y no bajar`);
-    if (z.tipo === 'macetas') { for (const c of celdas) if (!z.macetas?.[c]) e.push(`${z.id}: a la maceta ${c} le falta tamaño`); }
-    for (const c in z.macetas ?? {}) if (!celdas.includes(c)) e.push(`${z.id}: hay tamaño para ${c}, que no es una celda de la zona`);
+    if (
+      z.riegoCosto.length !== 4 ||
+      z.riegoCosto[0] !== 0 ||
+      z.riegoCosto.some((c, i) => i > 0 && c < z.riegoCosto[i - 1])
+    )
+      e.push(`${z.id}: riegoCosto tiene que arrancar en 0 y no bajar`);
+    if (z.tipo === 'macetas') {
+      for (const c of celdas) if (!z.macetas?.[c]) e.push(`${z.id}: a la maceta ${c} le falta tamaño`);
+    }
+    for (const c in z.macetas ?? {})
+      if (!celdas.includes(c)) e.push(`${z.id}: hay tamaño para ${c}, que no es una celda de la zona`);
     if (z.cria && z.admiteTunel) e.push(`${z.id}: una zona de cría no lleva microtúnel`);
     if (z.capacidad != null && !z.cria) e.push(`${z.id}: capacidad es solo de las zonas de cría`);
     if (z.capacidad != null && !(z.capacidad >= 1 && z.capacidad <= 200)) e.push(`${z.id}: capacidad fuera de 1..200`);
   }
-  p.plano.forEach((f, y) => [...f].forEach((ch, x) => { if (!RESERVADAS.includes(ch) && !letras.has(ch)) e.push(`el plano usa "${ch}" en ${x},${y} y ninguna zona tiene esa letra`); }));
+  p.plano.forEach((f, y) =>
+    [...f].forEach((ch, x) => {
+      if (!RESERVADAS.includes(ch) && !letras.has(ch))
+        e.push(`el plano usa "${ch}" en ${x},${y} y ninguna zona tiene esa letra`);
+    }),
+  );
   if (!p.zonas.some((z) => z.cria)) e.push('no hay ninguna zona de cría (almaciguera)');
   if (!p.zonas.some((z) => !z.cria)) e.push('no hay ninguna zona de cultivo');
-  if (!(p.estrellas[0] > 0 && p.estrellas[0] < p.estrellas[1] && p.estrellas[1] < p.estrellas[2])) e.push('estrellas tiene que ser creciente');
+  if (!(p.estrellas[0] > 0 && p.estrellas[0] < p.estrellas[1] && p.estrellas[1] < p.estrellas[2]))
+    e.push('estrellas tiene que ser creciente');
   for (const o of p.obstaculos) if (!(o.alto > 0)) e.push(`${o.nombre}: alto inválido`);
   return e;
 }

@@ -21,8 +21,13 @@ let real = false;
 export const espacioReal = (): boolean => real;
 /** Corre `f` con las reglas de espacio prendidas y las deja como estaban. Para los tests y para el día que se prendan de verdad. */
 export function conEspacioReal<T>(f: () => T): T {
-  const antes = real; real = true;
-  try { return f(); } finally { real = antes; }
+  const antes = real;
+  real = true;
+  try {
+    return f();
+  } finally {
+    real = antes;
+  }
 }
 /** El marco que vale ahora mismo para una especie. */
 export const marco = (sp: Especie): Marco => (real ? sp.marco : SIN_ESPACIO);
@@ -39,27 +44,41 @@ export const celdasDePlanta = (pl: Pick<Planta, 'celda' | 'celdas'>): CeldaId[] 
  * plantín todavía no ocupa su marco.
  */
 export function bloqueDe(E: Pick<Estado, 'celdas'>, sp: Especie, ancla: CeldaId, cria: boolean): CeldaId[] | null {
-  const { huella } = marco(sp), base = E.celdas[ancla];
+  const { huella } = marco(sp),
+    base = E.celdas[ancla];
   if (!base) return null;
   if (huella === 1 || cria) return [ancla];
-  const p = ancla.split(','), x = +p[0], y = +p[1], largo = huella === 4 ? 2 : 1, bloque: CeldaId[] = [];
-  for (let dy = 0; dy < largo; dy++) for (let dx = 0; dx < 2; dx++) {
-    const k = (x + dx) + ',' + (y + dy), c = E.celdas[k];
-    if (!c || c.zona !== base.zona) return null;
-    bloque.push(k);
-  }
+  const p = ancla.split(','),
+    x = +p[0],
+    y = +p[1],
+    largo = huella === 4 ? 2 : 1,
+    bloque: CeldaId[] = [];
+  for (let dy = 0; dy < largo; dy++)
+    for (let dx = 0; dx < 2; dx++) {
+      const k = x + dx + ',' + (y + dy),
+        c = E.celdas[k];
+      if (!c || c.zona !== base.zona) return null;
+      bloque.push(k);
+    }
   return bloque;
 }
 /** La primera celda del bloque que ya está ocupada por otra planta, o null si entra. */
 export function ocupadaEn(E: Pick<Estado, 'celdas'>, bloque: CeldaId[], salvo?: string): CeldaId | null {
-  for (const k of bloque) { const p = E.celdas[k].planta; if (p && p !== salvo) return k; }
+  for (const k of bloque) {
+    const p = E.celdas[k].planta;
+    if (p && p !== salvo) return k;
+  }
   return null;
 }
 /** Cuántas celdas juntas pide una especie, para contarlo en un aviso. */
 export const pideCeldas = (sp: Especie): number => marco(sp).huella;
 
 /** [SUPUESTO] cuántas semillas van por siembra: la bandeja entera en la almaciguera, el marco (con algo de más para ralear) en directa. */
-export function semillasDeSiembra(sp: Especie, zona: { cria?: boolean; capacidad?: number }, porDefecto: number): number {
+export function semillasDeSiembra(
+  sp: Especie,
+  zona: { cria?: boolean; capacidad?: number },
+  porDefecto: number,
+): number {
   if (!real) return porDefecto;
   if (zona.cria) return zona.capacidad ?? porDefecto;
   const pc = porCelda(sp);
@@ -81,13 +100,28 @@ export function plantasQueSombrean(E: Pick<Estado, 'celdas' | 'plantas'>, salvo:
   if (!real) return [];
   const out: Obstaculo[] = [];
   for (const id in E.plantas) {
-    const pl = E.plantas[id], sp = ESPECIES[pl.slug], alto = altoDe(pl, sp);
+    const pl = E.plantas[id],
+      sp = ESPECIES[pl.slug],
+      alto = altoDe(pl, sp);
     if (alto < 0.4) continue;
     const celdas = celdasDePlanta(pl);
     if (celdas.includes(salvo)) continue;
-    let sx = 0, sy = 0;
-    for (const k of celdas) { const q = k.split(','); sx += +q[0] + 0.5; sy += +q[1] + 0.5; }
-    out.push({ tipo: 'arbol', nombre: sp.nombre, en: [sx / celdas.length, sy / celdas.length], alto, copa: Math.sqrt(marco(sp).huella) / 2, fuste: 0, caduco: false });
+    let sx = 0,
+      sy = 0;
+    for (const k of celdas) {
+      const q = k.split(',');
+      sx += +q[0] + 0.5;
+      sy += +q[1] + 0.5;
+    }
+    out.push({
+      tipo: 'arbol',
+      nombre: sp.nombre,
+      en: [sx / celdas.length, sy / celdas.length],
+      alto,
+      copa: Math.sqrt(marco(sp).huella) / 2,
+      fuste: 0,
+      caduco: false,
+    });
   }
   return out;
 }

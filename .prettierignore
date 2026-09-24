@@ -1,0 +1,16 @@
+dist
+dist-artifact
+node_modules
+.capturas
+docs
+tests/legado
+tests/fixtures
+datos/catalogo.json
+datos/fuente.lock.json
+package-lock.json
+# portados del prototipo con @ts-nocheck: se reescriben en la epic #39 (#53, #54, #55)
+src/ui/ui.ts
+src/render/pixel.ts
+src/render/texto.ts
+src/arte/sprites.ts
+src/arte/estilos.ts

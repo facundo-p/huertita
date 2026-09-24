@@ -14,7 +14,7 @@ Juego de huerta urbana agroecológica del GBA. Objetivo: divertido, disfrutable,
 9. Estética: añil, maíz, ladrillo, acequia, hoja. Nada desaturado ni genérico.
 
 ## Antes de dar algo por hecho
-`npm run tipos && npm test && npm run build:artifact && npm run humo`
+`npm run tipos && npm run lint && npm test && npm run build:artifact && npm run humo`. Si el cambio no debería tocar la gráfica, además `npm run capturas -- --comparar` (con referencias guardadas antes con `--guardar`). `npm run lint` tiene un tope de avisos que solo baja: si limpiás algo, bajalo en `package.json`.
 
 ## Dónde está cada cosa
 README (mapa de carpetas), docs/ARQUITECTURA.md, docs/DATOS.md, docs/CIMIENTOS.md (lo que falta, en orden). docs/traspaso/TRASPASO-huertita.md: estado, forma de trabajo y pendientes, para arrancar una sesión nueva. docs/REESTRUCTURA.md: la epic #39 (adónde va el código y en qué orden).
