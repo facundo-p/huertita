@@ -31,6 +31,7 @@ const PERMITIDAS: Record<string, string[]> = {
   datos: [],
   dominio: ['datos'],
   aplicacion: ['datos', 'dominio'],
+  infra: ['dominio'],
   arte: [],
   render: ['arte'],
   estilos: [],
