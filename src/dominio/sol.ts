@@ -8,18 +8,24 @@
  */
 import type { Obstaculo, Patio } from '../../datos/juego/patio';
 import { diaCentral } from './clima';
+import { enTramo, regionDelPatio, type Region } from './region';
 import { clamp, r1 } from './util';
 import { idCelda } from './vocabulario';
 
-const LATITUD = (-34.6 * Math.PI) / 180; // Gran Buenos Aires
 const PASO_MIN = 10;
 const ALTURA_PLANTA = 0.2;
-/** [SUPUESTO] el paraíso y otros caducos del GBA tienen hoja de octubre a abril; pelados dejan pasar el 70 % */
-export const conHojas = (dec: number): boolean => dec >= 28 || dec <= 12;
+/** Si los árboles caducos de la región tienen hoja en esta década. */
+export const conHojas = (R: Region, dec: number): boolean => enTramo(dec, R.caducos.conHojasDesde, R.caducos.hasta);
+/** [SUPUESTO] un caduco pelado deja pasar el 70 % del sol */
 const SOMBRA_SIN_HOJAS = 0.3;
 
-/** Hacia dónde está el sol: este, norte y arriba, para un día del año y una hora solar. */
-export function posicionSol(dia: number, horaSolar: number): { este: number; norte: number; arriba: number } {
+/** Hacia dónde está el sol: este, norte y arriba, para una latitud (en grados), un día del año y una hora solar. */
+export function posicionSol(
+  latitud: number,
+  dia: number,
+  horaSolar: number,
+): { este: number; norte: number; arriba: number } {
+  const LATITUD = (latitud * Math.PI) / 180;
   const decl = ((-23.44 * Math.PI) / 180) * Math.cos((2 * Math.PI * (dia + 10)) / 365);
   const H = ((horaSolar - 12) * 15 * Math.PI) / 180;
   return {
@@ -76,25 +82,29 @@ function sombraDe(
   return o.caduco && !hojas ? SOMBRA_SIN_HOJAS : 1;
 }
 
-const cache = new Map<string, number>();
+/** Horas ya calculadas, por patio (el objeto: una partida con el patio editado tiene el suyo). */
+const cache = new WeakMap<Patio, Map<string, number>>();
 /**
  * Horas de sol directo en el centro de la celda (x,y), en la década `dec`. `temporales` son
  * obstáculos que no son del patio y cambian con la partida (plantas altas): con ellos el resultado
  * ya no es fijo, así que no se guarda en caché.
  */
 export function horasSolGeometria(p: Patio, x: number, y: number, dec: number, temporales: Obstaculo[] = []): number {
-  const clave = p.id + '|' + dec + '|' + idCelda(x, y),
-    guardado = temporales.length ? undefined : cache.get(clave);
+  let delPatio = cache.get(p);
+  if (!delPatio) cache.set(p, (delPatio = new Map()));
+  const clave = dec + '|' + idCelda(x, y),
+    guardado = temporales.length ? undefined : delPatio.get(clave);
   if (guardado !== undefined) return guardado;
-  const dia = diaCentral(dec),
-    hojas = conHojas(dec),
+  const R = regionDelPatio(p),
+    dia = diaCentral(dec),
+    hojas = conHojas(R, dec),
     m = p.celdaM,
     px = (x + 0.5) * m,
     py = (y + 0.5) * m;
   const minimo = Math.sin((p.horizonte * Math.PI) / 180);
   let horas = 0;
   for (let t = 4; t < 20; t += PASO_MIN / 60) {
-    const s = posicionSol(dia, t + PASO_MIN / 120);
+    const s = posicionSol(R.latitud, dia, t + PASO_MIN / 120);
     if (s.arriba <= minimo) continue;
     const plano = Math.hypot(s.este, s.norte) || 1e-9,
       dx = s.este / plano,
@@ -113,7 +123,7 @@ export function horasSolGeometria(p: Patio, x: number, y: number, dec: number, t
     horas += (luz * PASO_MIN) / 60;
   }
   const h = r1(clamp(horas, 0, 12));
-  if (!temporales.length) cache.set(clave, h);
+  if (!temporales.length) delPatio.set(clave, h);
   return h;
 }
 
@@ -121,12 +131,12 @@ export function horasSolGeometria(p: Patio, x: number, y: number, dec: number, t
  * La fórmula a mano del prototipo v0.4, tal cual. Solo vale para el patio 'fondo' y solo existe
  * para que el test dorado siga verde. Se borra junto con él.
  */
-export function horasSolV04(x: number, y: number, dec: number): number {
+export function horasSolV04(R: Region, x: number, y: number, dec: number): number {
   const dia = diaCentral(dec);
   const inv = (Math.cos((6.2831853 * (dia - 172)) / 365) + 1) / 2;
   const base = 10 - 3.5 * inv;
   const pared = [0, 2 + 3.5 * inv, 3 * inv, 1.2 * inv, 0.5 * inv][y] || 0;
   const dist = Math.max(Math.abs(x - 7), Math.min(Math.abs(y - 1), Math.abs(y - 2)));
-  const arbol = (dist <= 1 ? 4.5 : dist === 2 ? 3 : dist === 3 ? 1.5 : 0) * (conHojas(dec) ? 1 : 0.3);
+  const arbol = (dist <= 1 ? 4.5 : dist === 2 ? 3 : dist === 3 ? 1.5 : 0) * (conHojas(R, dec) ? 1 : 0.3);
   return r1(clamp(base - pared - arbol, 0, 12));
 }

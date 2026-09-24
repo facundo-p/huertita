@@ -1,4 +1,5 @@
 /** [REPO] qué plaga ataca a qué y cuándo, del texto de plagas de cada ficha. [SUPUESTO] las probabilidades. */
+import { decadaEstacional, enTramo, regionDe } from '../region';
 import { REGLAS } from '../../../datos/juego/reglas';
 import { azar } from '../azar';
 import { objetivoCosecha } from '../catalogo';
@@ -28,10 +29,10 @@ export const plagas: SistemaDePlanta = ({ E, w, ev, nota, flores }, { pl, sp }) 
   const prot = clamp(1 - PLAGAS.proteccionPorAliado * aliadosCerca(E, pl.celda), PLAGAS.proteccionMaxima, 1),
     joven = pl.prog < objetivoCosecha(sp) * PLAGAS.jovenHasta,
     rot = E.mundo.celdas[pl.celda].fam === sp.familia ? PLAGAS.riesgoRepitiendoFamilia : 1,
-    d = w.dec,
+    d = decadaEstacional(regionDe(E), w.dec), // las épocas de plaga están escritas para el sur
     p = azar(E),
     sinAliados = prot === 1;
-  const epocaDeOruga = d >= 31 || d <= 12,
+  const epocaDeOruga = enTramo(d, 31, 12),
     epocaDePulgon = decadaEntre(d, 25, 33) || decadaEntre(d, 7, 12);
   if (sp.familia === 'brasicacea' && epocaDeOruga && p < PLAGAS.oruga.prob * prot * rot) {
     pl.plaga = 'oruga';

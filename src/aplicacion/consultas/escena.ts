@@ -95,6 +95,7 @@ function arboles(P: M.Patio): Escena['arboles'] {
 
 export function escena(E: Estado, vista: VistaDeEscena): Escena {
   const P = M.patioDe(E),
+    R = M.regionDe(E),
     K = M.compostera(E),
     sol = horasDeSol(E),
     celdas: Record<CeldaId, CeldaDeEscena> = {};
@@ -114,10 +115,10 @@ export function escena(E: Estado, vista: VistaDeEscena): Escena {
     arboles: arboles(P),
     compostera: K ? K.en : null,
     dec: E.tiempo.dec,
-    estacion: M.estacionDe(E.tiempo.dec),
-    arbolConHojas: M.conHojas(E.tiempo.dec),
+    estacion: M.estacionDe(R, E.tiempo.dec),
+    arbolConHojas: M.conHojas(R, E.tiempo.dec),
     // la sombra pintada del paredón es la de la fórmula v0.4; con sol por geometría, la capa de sol es la que cuenta
-    sombraPared: P.sol === 'v04' ? 0.35 + 1.9 * M.invierno(E.tiempo.dec) : 0,
+    sombraPared: P.sol === 'v04' ? 0.35 + 1.9 * M.invierno(R, E.tiempo.dec) : 0,
     tuneles: Object.keys(E.recursos.tunel).filter((z) => E.recursos.tunel[z]),
     mantas: E.recursos.manta,
     capa: vista.capa,

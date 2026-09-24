@@ -7,6 +7,7 @@ import type { CategoriaSuelo } from '../../datos/contrato';
 import type { Patio, ZonaDePatio } from '../../datos/juego/patio';
 import { PLANTILLAS, PLANTILLA_INICIAL } from '../../datos/juego/patios';
 import { plantasQueSombrean } from './espacio';
+import { regionDelPatio } from './region';
 import { horasSolGeometria, horasSolV04 } from './sol';
 import type { CeldaId, Estado, ZonaId } from './tipos';
 import { idCelda, xy } from './vocabulario';
@@ -90,5 +91,7 @@ export function horasSol(E: Pick<Estado, 'mundo' | 'tiempo'>, celda: CeldaId, de
   const p = patioDe(E),
     q = xy(celda),
     d = dec || E.tiempo.dec;
-  return p.sol === 'v04' ? horasSolV04(q.x, q.y, d) : horasSolGeometria(p, q.x, q.y, d, plantasQueSombrean(E, celda));
+  return p.sol === 'v04'
+    ? horasSolV04(regionDelPatio(p), q.x, q.y, d)
+    : horasSolGeometria(p, q.x, q.y, d, plantasQueSombrean(E, celda));
 }

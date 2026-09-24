@@ -12,7 +12,7 @@ export const macetaChica = (litros: number, hondo: number): string =>
 export const malVecino = (nombres: string[]): string => 'Mal vecino: ' + nombres.join(', ') + '.';
 export const buenVecino = (nombres: string[]): string => 'Buen vecino: ' + nombres.join(', ') + '.';
 export const rotar = (familia: string): string => 'Acá recién hubo otra ' + familia + ': conviene rotar.';
-export const fueraDeEpoca = (): string => 'Fuera de época de siembra en el GBA.';
+export const fueraDeEpoca = (enElLugar: string): string => `Fuera de época de siembra ${enElLugar}.`;
 export const epocaPosible = (): string => 'Época posible, no ideal.';
 export const sueloFrio = (t: number, necesita: number, enAlmacigo: boolean): string =>
   'Suelo frío para germinar (~' +

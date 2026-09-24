@@ -33,7 +33,7 @@ export function hud(E: Estado): Hud {
   const p = E.tiempo.pronostico;
   return {
     fecha: cap(M.fechaDe(E.tiempo.dec)),
-    estacion: M.estacionDe(E.tiempo.dec),
+    estacion: M.estacionDe(M.regionDe(E), E.tiempo.dec),
     anio: E.tiempo.anio,
     libres,
     ratos,

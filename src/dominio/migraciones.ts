@@ -33,7 +33,7 @@ const PASOS: Record<number, (e: Guardada) => void> = {
     const k = estructuras.find((s) => s.tipo === 'compostera');
     if (k) Object.assign(k, { carga: e.compost.carga, tandas: e.compost.tandas, dosis: e.compost.dosis });
     const v4: Estado = {
-      meta: { v: 4, semilla: e.semilla, rng: e.rng, region: 'gba', plantilla: e.patio },
+      meta: { v: 4, semilla: e.semilla, rng: e.rng, region: patio.region, plantilla: e.patio },
       mundo: { patio, celdas: e.celdas, plantas: e.plantas, estructuras },
       tiempo: {
         dec: e.dec,
@@ -81,6 +81,7 @@ export function esPartidaValida(E: unknown): E is Estado {
     Array.isArray(e.mundo.estructuras) &&
     e.mundo.patio &&
     validarPatio(e.mundo.patio).length === 0 &&
+    e.meta.region === e.mundo.patio.region &&
     e.tiempo?.clima &&
     e.recursos &&
     e.progreso

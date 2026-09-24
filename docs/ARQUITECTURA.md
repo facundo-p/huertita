@@ -12,7 +12,7 @@ Tres reglas sostienen todo lo demás.
 | --- | --- |
 | `tipos.ts` | `Estado`, `Planta`, `Accion` (unión discriminada), `Evento` |
 | `catalogo.ts` | Une `datos/catalogo.json` con `datos/juego/especies.ts`: especies sin huecos |
-| `clima.ts` | Normales SMN, heladas FAUBA, carácter del año, tiempo de cada década y su pronóstico |
+| `clima.ts` | El tiempo de cada década y su pronóstico, sorteados alrededor de las normales de la región |
 | `patio.ts` | Lo que el motor le pregunta al patio de la partida: qué zona es cada celda, qué propiedades tiene, cuánto sol le da |
 | `sol.ts` | Horas de sol por geometría: latitud, fecha y obstáculos. Y la fórmula vieja del fondo, mientras viva el test dorado |
 | `espacio.ts` | Cuánto lugar ocupa cada planta: huella en celdas, cuántas entran en una celda, qué sombra hace. Apagado hasta el paso 4 |
@@ -29,11 +29,19 @@ Un patio (`datos/juego/patio.ts`) es un plano de letras con el norte arriba, una
 
 - **Zona:** un grupo de celdas que se riega y se tapa junto. Sus propiedades son lo único que el motor mira: `cria` (almaciguera), `techo` (no le llueve), `abrigo` (reparo fijo contra heladas), `calor`, `admiteTunel`, `macetas` (tamaño por celda), más suelo, materia orgánica, drenaje, hondo y costo de riego. El `id` es libre y queda escrito en las partidas; el `tipo` (`suelo`, `cajon`, `macetas`, `almaciguera`) decide cómo se dibuja.
 - **Obstáculo:** `muro` (con `opacidad` para barandas), `arbol` (copa, fuste, caduco) o `losa` (el balcón de arriba). En celdas con decimales y alturas en metros.
-- **Sol:** `sol.ts` recorre el día cada 10 minutos, calcula dónde está el sol a 34,6° S y ve si algún obstáculo lo tapa. Cuenta desde que supera el `horizonte` del patio. `tests/sol.test.ts` comprueba que se porte como el sol de verdad: mediodía al norte, paredón norte que sombrea más en invierno, techo que tapa el sol alto del verano.
+- **Sol:** `sol.ts` recorre el día cada 10 minutos, calcula dónde está el sol en la latitud de la región del patio y ve si algún obstáculo lo tapa. Cuenta desde que supera el `horizonte` del patio. `tests/sol.test.ts` comprueba que se porte como el sol de verdad: mediodía al norte, paredón norte que sombrea más en invierno, techo que tapa el sol alto del verano.
 - **Regla:** ni el motor, ni los renderers, ni la interfaz nombran una zona o una celda de un patio en particular. Hay un test que lo vigila. Las frases se arman con `nombre` y `conArticulo`.
 - **Estado:** cada partida lleva su propia copia del patio (`mundo.patio`) y el id de la plantilla de la que salió (`meta.plantilla`). Corregir una plantilla no cambia las partidas empezadas; editar el patio de una partida no toca la plantilla. La compostera no es una letra del plano: es una estructura (`mundo.estructuras`) que la plantilla trae ubicada.
 
 Sumar un patio: crear el archivo, anotarlo en `patios/index.ts`, correr `npm test` (lo valida y hace jugar al bot un año en él) y `npm run bot -- --patio <id>` para ver cómo rinde.
+
+## La región es un dato
+
+Lo que es del lugar y no de la especie vive en `datos/juego/regiones/` (`region.ts` es el contrato y `validarRegion` lo revisa): hemisferio y latitud, normales mensuales de temperatura y lluvia, la temporada de heladas (modelo FAUBA de dos normales), los años típicos (Niña, Niño…), cuándo tienen hoja los caducos, cómo se nombra el lugar en las frases y el calendario de siembra y trasplante por especie. Hoy hay una sola, `gba.ts`, con el clima de Ezeiza y el calendario de huertapp.
+
+Cada patio declara su `region` y la partida la copia en `meta.region`. `clima.ts`, `sol.ts`, `estacionDe`, `invierno`, `conHojas` y `ventana` la reciben. Las reglas que dependen de la estación (épocas de plaga, qué es invierno) están escritas para el sur y pasan por `decadaEstacional`, que en el norte corre medio año. `tests/region.test.ts` juega un año en un GBA espejado en el hemisferio norte: el sol del mediodía da al sur, las estaciones se invierten y las heladas llegan en su otoño.
+
+La especie es la misma en todos lados: temperaturas, días a cosecha, familia y marco siguen viniendo de huertapp. Derivar el calendario de una región nueva a partir de su clima, y las especies o prácticas propias de un lugar, es #57.
 
 ## Cada planta ocupa lo que ocupa
 

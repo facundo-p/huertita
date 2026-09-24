@@ -8,6 +8,7 @@
  * Nada de acá viene de huertapp: es contenido propio del juego, y todos sus números son [SUPUESTO].
  */
 import type { CategoriaSuelo } from '../contrato';
+import { REGIONES } from './regiones';
 
 /** Cómo se comporta y cómo se dibuja una zona. El id es libre; el tipo no. */
 export type TipoZona = 'suelo' | 'cajon' | 'macetas' | 'almaciguera';
@@ -77,6 +78,8 @@ export interface EstructuraDePatio {
 export interface Patio {
   id: string;
   nombre: string;
+  /** la región donde queda (`datos/juego/regiones`): de ahí salen el clima, el sol y el calendario */
+  region: string;
   desc: string;
   /** lo que dice el cuaderno al arrancar una partida en este patio */
   bienvenida: string;
@@ -184,6 +187,7 @@ function erroresDeEstructuras(p: Patio): string[] {
 /** Errores de armado de un patio. Lista vacía = patio válido. Lo corren los tests sobre todos los patios y la carga de cada partida. */
 export function validarPatio(p: Patio): string[] {
   const e = [...erroresDelPlano(p), ...repetidas(p), ...p.zonas.flatMap((z) => erroresDeZona(p, z))];
+  if (!REGIONES[p.region]) e.push(`la región "${p.region}" no existe`);
   if (!(p.celdaM > 0.2 && p.celdaM <= 2)) e.push('celdaM fuera de rango');
   if (!(p.horizonte >= 0 && p.horizonte < 40)) e.push('horizonte fuera de rango');
   if (!p.zonas.some((z) => z.cria)) e.push('no hay ninguna zona de cría (almaciguera)');

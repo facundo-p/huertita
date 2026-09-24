@@ -1,4 +1,5 @@
 /** Piezas del almanaque: la ventana de época, el método de siembra, la franja de 36 décadas. */
+import { usarPartida } from '../estado';
 import * as M from '../../dominio';
 import type { Ventana } from '../../dominio';
 
@@ -29,7 +30,7 @@ function claseDe(
 
 /** Las 36 décadas del año: arriba la siembra, abajo el trasplante, marcada la de hoy. */
 export function Franja({ slug, hoy, grande }: { slug: string; hoy: number; grande?: boolean }) {
-  const d = M.ESPECIES[slug].dec || {};
+  const d = M.regionDe(usarPartida()).calendario[slug] ?? {};
   const decadas = Array.from({ length: 36 }, (_, i) => i + 1);
   const siembra = (x: number) => claseDe(d.siembra_ideal, d.siembra_posible, x, 'si', 'sp');
   const trasplante = (x: number) => claseDe(d.trasplante_ideal, d.trasplante_posible, x, 'ti', 'tp');

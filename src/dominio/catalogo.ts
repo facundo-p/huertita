@@ -4,6 +4,7 @@ import type { Catalogo } from '../../datos/contrato';
 import { completar, type Especie } from '../../datos/juego/especies';
 import { REGLAS } from '../../datos/juego/reglas';
 import { mesDe } from './clima';
+import type { Region } from './region';
 import type { Ventana } from './vocabulario';
 
 const CATALOGO = catalogoJson as unknown as Catalogo;
@@ -12,9 +13,9 @@ export const ESPECIES: Record<string, Especie> = {};
 for (const [slug, r] of Object.entries(CATALOGO.especies)) ESPECIES[slug] = completar(slug, r);
 
 export type { Ventana };
-/** [REPO] calendario.decadas.conurbano */
-export function ventana(slug: string, dec: number, que: 'siembra' | 'trasplante' = 'siembra'): Ventana {
-  const d = ESPECIES[slug].dec;
+/** Si una década es buena para sembrar o trasplantar una especie, según el calendario de la región. */
+export function ventana(R: Region, slug: string, dec: number, que: 'siembra' | 'trasplante' = 'siembra'): Ventana {
+  const d = R.calendario[slug] ?? {};
   if ((d[`${que}_ideal`] ?? []).includes(dec)) return 'ideal';
   if ((d[`${que}_posible`] ?? []).includes(dec)) return 'posible';
   return 'fuera';

@@ -1,4 +1,5 @@
 import { REGLAS } from '../../../datos/juego/reglas';
+import { regionDe } from '../region';
 import { ventana } from '../catalogo';
 import { bloqueDe, celdasDePlanta, ocupadaEn } from '../espacio';
 import { anotar } from '../estado';
@@ -92,7 +93,7 @@ function danioDelTrasplante(E: Estado, pl: Planta): T.ComoFueElTrasplante {
     pl.salud -= TRASPLANTE.danioChico;
     return 'chico';
   }
-  if (ventana(pl.slug, E.tiempo.dec, 'trasplante') === 'fuera') {
+  if (ventana(regionDe(E), pl.slug, E.tiempo.dec, 'trasplante') === 'fuera') {
     pl.vigor = r1(pl.vigor * TRASPLANTE.vigorFueraDeVentana) / 100;
     return 'fuera-de-ventana';
   }

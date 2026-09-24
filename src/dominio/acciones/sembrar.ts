@@ -1,4 +1,5 @@
 import { REGLAS } from '../../../datos/juego/reglas';
+import { regionDe } from '../region';
 import { ESPECIES, semillasPorSiembra, ventana } from '../catalogo';
 import { bloqueDe, ocupadaEn, semillasDeSiembra } from '../espacio';
 import { anotar } from '../estado';
@@ -31,7 +32,7 @@ export const sembrar: Regla<De<'sembrar'>> = {
       cria = !!Z.cria,
       bloque = bloqueDe(E, sp, a.celda, cria)!;
     E.recursos.sobres[a.slug]--;
-    const vent = ventana(a.slug, E.tiempo.dec),
+    const vent = ventana(regionDe(E), a.slug, E.tiempo.dec),
       gen = E.recursos.gen[a.slug] || 0,
       repite = c.fam === sp.familia;
     const vigor =

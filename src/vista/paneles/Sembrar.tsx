@@ -141,7 +141,10 @@ export function Sembrar() {
       {sobre ? (
         <FichaDelSobre slug={sobre} />
       ) : (
-        <p class="hz-dim">Verde: época ideal ahora. Amarillo: posible. Gris: fuera de época en el GBA.</p>
+        <p class="hz-dim">
+          Verde: época ideal ahora. Amarillo: posible. Gris: fuera de época {M.regionDe(usarPartida()).textos.enElLugar}
+          .
+        </p>
       )}
     </>
   );

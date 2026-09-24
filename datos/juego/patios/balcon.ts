@@ -9,6 +9,7 @@ import type { Patio } from '../patio';
  */
 export const balcon: Patio = {
   id: 'balcon',
+  region: 'gba',
   nombre: 'Balcón en esquina',
   desc: 'Un balcón de departamento que mira al norte, con el costado este abierto. Sol de mañana todo el año, sombra del balcón de arriba en los mediodías de verano, y todo en recipientes.',
   bienvenida:

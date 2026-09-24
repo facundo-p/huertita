@@ -13,6 +13,7 @@ import type { Patio } from '../patio';
  */
 export const fondo: Patio = {
   id: 'fondo',
+  region: 'gba',
   nombre: 'Fondo con paredón',
   desc: 'Un fondo chico del conurbano. El paredón del norte le saca sol en invierno y el paraíso da sombra en verano.',
   bienvenida:

@@ -29,8 +29,8 @@ export function fichaDeEspecie(E: Estado, slug: string): FichaDeEspecie | null {
   if (!sp) return null;
   return {
     sp,
-    ventana: M.ventana(slug, E.tiempo.dec),
-    ventanaDeTrasplante: M.ventana(slug, E.tiempo.dec, 'trasplante'),
+    ventana: M.ventana(M.regionDe(E), slug, E.tiempo.dec),
+    ventanaDeTrasplante: M.ventana(M.regionDe(E), slug, E.tiempo.dec, 'trasplante'),
     metodo: M.metodoDe(slug, E.tiempo.dec),
     luz: M.META.luces[sp.luz].nombre,
     suelo: M.META.suelos[sp.suelo].nombre,

@@ -1,7 +1,9 @@
 /** Sol por geometría: tiene que portarse como el sol de verdad en el Gran Buenos Aires. */
 import { describe, expect, it } from 'vitest';
 import type { Patio } from '../datos/juego/patio';
-import { horasSolGeometria, posicionSol } from '../src/dominio';
+import { REGIONES, horasSolGeometria, posicionSol as enLatitud } from '../src/dominio';
+
+const posicionSol = (dia: number, hora: number) => enLatitud(REGIONES.gba.latitud, dia, hora);
 
 const ZONA = {
   id: 'z',
@@ -20,6 +22,7 @@ let n = 0;
 const patio = (obstaculos: Patio['obstaculos'], horizonte = 0): Patio => ({
   estrellas: [1, 2, 3],
   estructuras: [],
+  region: 'gba',
   aspecto: { piso: 'pasto', norte: 'paredon' },
   id: 'prueba-' + n++,
   nombre: '',

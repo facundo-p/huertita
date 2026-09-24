@@ -16,11 +16,12 @@ export interface EspecieEnLista {
 }
 
 function ordenar(E: Estado, slugs: string[]): EspecieEnLista[] {
+  const R = M.regionDe(E);
   return slugs
     .map((slug) => ({
       slug,
       nombre: nombreCorto(M.ESPECIES[slug].nombre),
-      ventana: M.ventana(slug, E.tiempo.dec),
+      ventana: M.ventana(R, slug, E.tiempo.dec),
       sobres: E.recursos.sobres[slug] || 0,
       gen: E.recursos.gen[slug] || 0,
     }))

@@ -23,9 +23,8 @@ export type NivelRiego = (typeof NIVELES_DE_RIEGO)[number];
 export const VENTANAS = ['ideal', 'posible', 'fuera'] as const;
 export type Ventana = (typeof VENTANAS)[number];
 
-/** El carácter del año: cómo viene el clima. */
-export const CARACTERES_DEL_ANIO = ['normal', 'nina', 'nino', 'tardia'] as const;
-export type CaracterId = (typeof CARACTERES_DEL_ANIO)[number];
+/** El carácter del año (cómo viene el clima): uno de los de la región, `datos/juego/regiones`. */
+export type CaracterId = string;
 
 /** id de una zona del patio de la partida (ver `datos/juego/patio.ts`) */
 export type ZonaId = string;

@@ -2,7 +2,8 @@
 import type { CategoriaSuelo, RegimenRiego, TempCrecimiento } from '../../datos/contrato';
 import { REGLAS } from '../../datos/juego/reglas';
 import { ESPECIES, META, ventana } from './catalogo';
-import { CLIMA, diaCentral, interp } from './clima';
+import { diaCentral, interp } from './clima';
+import { regionDe } from './region';
 import { plantaEn } from './estado';
 import { bloqueDe, ocupadaEn } from './espacio';
 import { horasSol, macetaDe, sueloBase, vecinas, xy, zonaDe } from './patio';
@@ -218,6 +219,7 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
     c = E.mundo.celdas[celda];
   if (!c) return null;
   const razones: string[] = [],
+    R = regionDe(E),
     h = horasSol(E, celda, E.tiempo.dec);
   const h2 = horasSol(E, celda, ((E.tiempo.dec + F.decadasAdelante) % 36) + 1); // la planta va a vivir ahí
   const l = (fLuz(sp, h, F.temperaturaDeReferencia) + fLuz(sp, h2, F.temperaturaDeReferencia)) / 2,
@@ -225,7 +227,7 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
     m = fMaceta(E, sp, celda),
     ve = fVecinos(E, slug, celda);
   const enAlm = !!zonaDe(E, celda).cria,
-    vent = ventana(slug, E.tiempo.dec),
+    vent = ventana(R, slug, E.tiempo.dec),
     vig = REGLAS.siembra.vigorPorVentana[vent];
   const bloque = bloqueDe(E, sp, celda, enAlm),
     entra =
@@ -242,10 +244,10 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
   if (ve.malas.length) razones.push(TF.malVecino(ve.malas));
   if (ve.buenas.length) razones.push(TF.buenVecino(ve.buenas));
   if (c.fam && c.fam === sp.familia) razones.push(TF.rotar(sp.familia));
-  if (vent === 'fuera') razones.push(TF.fueraDeEpoca());
+  if (vent === 'fuera') razones.push(TF.fueraDeEpoca(R.textos.enElLugar));
   else if (vent === 'posible') razones.push(TF.epocaPosible());
   const tg = sp.tg,
-    ts = tempEfectiva(E, celda, { tmed: interp(CLIMA.media, diaCentral(E.tiempo.dec)) });
+    ts = tempEfectiva(E, celda, { tmed: interp(R.clima.media, diaCentral(E.tiempo.dec)) });
   if (ts < tg.min) razones.push(TF.sueloFrio(ts, tg.min, enAlm));
   if (ts > tg.max) razones.push(TF.sueloCaliente());
   if (enAlm && !sp.dt) razones.push(TF.noToleraTrasplante(sp));

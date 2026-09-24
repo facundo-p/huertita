@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import catalogo from '../datos/catalogo.json';
 import candado from '../datos/fuente.lock.json';
 import { derivarCatalogo, validarFuente } from '../datos/contrato';
-import { ESPECIES, MISIONES, crearPartida, despachar, pasarDecada, ventana } from '../src/dominio';
+import { ESPECIES, MISIONES, crearPartida, despachar, pasarDecada, REGIONES, ventana } from '../src/dominio';
 import { ESTILO } from '../src/arte/estilos';
 
 const slugs = Object.keys(ESPECIES);
@@ -75,7 +75,7 @@ const CONTRADICCIONES_CONOCIDAS: Record<string, string> = {
 
 describe('el juego no contradice a huertapp', () => {
   it.each(slugs)('%s germina si se siembra en época ideal y bien regada', (s) => {
-    const ideales = ESPECIES[s].dec.siembra_ideal ?? [];
+    const ideales = REGIONES.gba.calendario[s].siembra_ideal ?? [];
     if (!ideales.length) return;
     const sp = ESPECIES[s],
       celda = sp.dt ? '0,7' : '0,4'; // con trasplante va a la almaciguera; si no, directa al bancal elevado
@@ -95,6 +95,7 @@ describe('el juego no contradice a huertapp', () => {
     else expect(nacio, `${s} no logra germinar en ninguna de sus décadas ideales (${ideales.join(',')})`).toBe(true);
   });
   it('sembrar en década ideal nunca se marca como fuera de época', () => {
-    for (const s of slugs) for (const d of ESPECIES[s].dec.siembra_ideal ?? []) expect(ventana(s, d)).toBe('ideal');
+    for (const s of slugs)
+      for (const d of REGIONES.gba.calendario[s].siembra_ideal ?? []) expect(ventana(REGIONES.gba, s, d)).toBe('ideal');
   });
 });

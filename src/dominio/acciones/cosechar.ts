@@ -1,4 +1,5 @@
 import { REGLAS } from '../../../datos/juego/reglas';
+import { decadaEstacional, enTramo, regionDe } from '../region';
 import { alCompost } from '../estructuras';
 import { BIENALES, RALEO_SE_COME, objetivoCosecha } from '../catalogo';
 import { porCelda } from '../espacio';
@@ -51,7 +52,7 @@ function logrosDeCosecha(E: Estado, evs: Evento[]): void {
   if (E.progreso.cosechado.lechuga && E.progreso.cosechado.tomate && E.progreso.cosechado.albahaca)
     cumplir(E, 'ensalada', evs);
   if (Object.keys(E.progreso.cosechado).length >= 5) cumplir(E, 'cinco', evs);
-  if (E.tiempo.dec >= 16 && E.tiempo.dec <= 24) cumplir(E, 'invierno', evs);
+  if (enTramo(decadaEstacional(regionDe(E), E.tiempo.dec), 16, 24)) cumplir(E, 'invierno', evs);
 }
 
 export const cosechar: Regla<De<'cosechar'>> = {

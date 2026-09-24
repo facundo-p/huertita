@@ -4,10 +4,11 @@ import { usarPartida } from '../estado';
 
 export function Inicio() {
   const E = usarPartida(),
-    car = M.CARACTERES[E.tiempo.caracter];
+    R = M.regionDe(E),
+    car = R.caracteres[E.tiempo.caracter];
   return (
     <>
-      <h2>Tu patio en el conurbano</h2>
+      <h2>Tu patio en {R.textos.elLugar}</h2>
       <p>
         El norte está arriba: el paredón le hace sombra al bancal del fondo, y en invierno mucho más. El paraíso de la
         derecha da sombra solo cuando tiene hojas. Contra la casa, la almaciguera está reparada de las heladas.

@@ -1,6 +1,7 @@
 import { REGLAS } from '../../datos/juego/reglas';
 import { azar } from './azar';
-import { CARACTERES, fechaDe, generarTiempo } from './clima';
+import { fechaDe, generarTiempo } from './clima';
+import { regionPorId } from './region';
 import { celdasDePlanta } from './espacio';
 import { alCompost, estructurasIniciales } from './estructuras';
 import { PLANTILLA_INICIAL, celdasDe, copiarPlantilla, zona, zonaDe, zonasDe } from './patio';
@@ -90,7 +91,7 @@ export function crearPartida(
   const plantilla = opciones.patio || PLANTILLA_INICIAL,
     patio = copiarPlantilla(plantilla);
   const E: Estado = {
-    meta: { v: 4, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9e3779b9, region: 'gba', plantilla },
+    meta: { v: 4, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9e3779b9, region: patio.region, plantilla },
     mundo: { patio, celdas: {}, plantas: {}, estructuras: estructurasIniciales(patio, ARRANQUE.dosisDeCompost) },
     tiempo: {
       dec: opciones.decInicio || ARRANQUE.decada,
@@ -114,7 +115,8 @@ export function crearPartida(
       nextId: 1,
     },
   };
-  const ks = Object.keys(CARACTERES) as CaracterId[];
+  const R = regionPorId(patio.region),
+    ks = Object.keys(R.caracteres);
   E.tiempo.caracter = opciones.caracter || ks[Math.floor(azar(E) * ks.length)];
   for (const s in ARRANQUE.sobres) E.recursos.sobres[s] = ARRANQUE.sobres[s];
   for (const z of zonasDe(E)) {
@@ -126,7 +128,7 @@ export function crearPartida(
   const { real, pron } = generarTiempo(E, E.tiempo.dec);
   E.tiempo.clima = real;
   E.tiempo.pronostico = pron;
-  anotar(E, 'info', T.arranca(fechaDe(E.tiempo.dec), CARACTERES[E.tiempo.caracter]));
+  anotar(E, 'info', T.arranca(fechaDe(E.tiempo.dec), R.caracteres[E.tiempo.caracter]));
   anotar(E, 'info', T.bienvenida(patio.bienvenida));
   return E;
 }

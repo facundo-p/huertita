@@ -4,7 +4,10 @@ export interface MotorJugable {
   despachar(E: any, a: any): { ok: boolean };
   pasarDecada(E: any): { dec: number; tipo: string; texto: string }[];
   ESPECIES: Record<string, any>;
-  ventana(slug: string, dec: number, que?: any): string;
+  /** el prototipo: (slug, dec, que). El motor nuevo, con la región adelante: (región, slug, dec, que) */
+  ventana(...args: any[]): string;
+  /** solo el motor nuevo: el calendario depende de la región de la partida */
+  regionDe?(E: any): unknown;
   metodoDe(slug: string, dec: number): string | null;
   evaluarCelda(E: any, slug: string, celda: string): { puntaje: number } | null;
   ratosLibres(E: any): number;
@@ -48,6 +51,8 @@ export function jugarUnAnio(
   opciones?: { patio?: string; decadas?: number },
 ): any {
   const E = M.crearPartida(semilla, opciones);
+  const ventana = (slug: string, dec: number, que?: 'trasplante'): string =>
+    M.regionDe ? M.ventana(M.regionDe(E), slug, dec, que) : M.ventana(slug, dec, que);
   const zonas = M.zonasDe ? M.zonasDe(E) : ZONAS_V04,
     deCria = new Set(zonas.filter((z) => z.cria).map((z) => z.id)),
     deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
@@ -70,7 +75,7 @@ export function jugarUnAnio(
         enCria(pl.celda) &&
         sp.dt &&
         pl.prog >= sp.dt.min &&
-        M.ventana(pl.slug, V.dec, 'trasplante') !== 'fuera'
+        ventana(pl.slug, V.dec, 'trasplante') !== 'fuera'
       ) {
         let mejor: { c: string; p: number } | null = null;
         for (const c in V.celdas)
@@ -89,7 +94,7 @@ export function jugarUnAnio(
     while (M.ratosLibres(E) > 0 && guarda++ < 10) {
       let mejor: { s: string; c: string; p: number } | null = null;
       for (const s in V.sobres)
-        if (V.sobres[s] > 0 && M.ventana(s, V.dec) !== 'fuera')
+        if (V.sobres[s] > 0 && ventana(s, V.dec) !== 'fuera')
           for (const c in V.celdas)
             if (!V.celdas[c].planta) {
               const sp = M.ESPECIES[s],
