@@ -17,7 +17,7 @@ npm run build:artifact   # dist-artifact/huertita-artifact.html, una sola págin
 | Carpeta | Qué es | Puede importar |
 | --- | --- | --- |
 | `datos/` | Catálogo derivado de huertapp, su candado de versión, el contrato que lo valida y lo que agrega el juego | nada |
-| `src/motor/` | La simulación. TypeScript estricto, sin DOM. Estado JSON y azar con semilla | `datos/` |
+| `src/dominio/` | La simulación. TypeScript estricto, sin DOM. Estado JSON y azar con semilla | `datos/` |
 | `src/arte/` | Dibujos pixel-art de cada especie y estadío | nada |
 | `src/render/` | Renderers intercambiables. Reciben una escena plana, nunca el estado | `arte/` |
 | `src/ui/` | Paneles y flujo. Habla con el motor por acciones y con el renderer por su contrato | todo lo anterior |

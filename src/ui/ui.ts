@@ -4,7 +4,7 @@
  * Habla con el motor solo por acciones y consultas, y con el renderer solo por
  * su contrato de cuatro métodos. No dibuja plantas ni calcula agronomía.
  */
-import * as M from '../motor';
+import * as M from '../dominio';
 import * as SP from '../arte/sprites';
 import { RenderPixel } from '../render/pixel';
 import { RenderTexto } from '../render/texto';

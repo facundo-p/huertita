@@ -1,7 +1,7 @@
 /** Sol por geometría: tiene que portarse como el sol de verdad en el Gran Buenos Aires. */
 import { describe, expect, it } from 'vitest';
 import type { Patio } from '../datos/juego/patio';
-import { horasSolGeometria, posicionSol } from '../src/motor';
+import { horasSolGeometria, posicionSol } from '../src/dominio';
 
 const ZONA = {
   id: 'z',

@@ -1,6 +1,6 @@
 /** Bugs del prototipo que el tipado estricto sacó a la luz. Cada uno queda clavado con un test. */
 import { describe, expect, it } from 'vitest';
-import { ESPECIES, crearPartida, despachar, factoresPlanta, pasarDecada } from '../src/motor';
+import { ESPECIES, crearPartida, despachar, factoresPlanta, pasarDecada } from '../src/dominio';
 
 describe('huecos de temperatura en huertapp', () => {
   it('una especie sin máxima de germinación (girasol) igual puede germinar', () => {

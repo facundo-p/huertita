@@ -1,9 +1,9 @@
 /** El patio como dato: todos los patios son válidos y jugables, y las partidas viejas se migran. */
 import { describe, expect, it } from 'vitest';
 import { validarPatio } from '../datos/juego/patio';
-import * as M from '../src/motor';
+import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
-import type { Estado } from '../src/motor';
+import type { Estado } from '../src/dominio';
 
 const ids = Object.keys(M.PATIOS);
 
@@ -115,7 +115,7 @@ describe('nadie fuera de los datos conoce un patio en particular', () => {
   it('ni el motor, ni los renderers, ni la interfaz nombran zonas del fondo', async () => {
     const { readdirSync, readFileSync } = await import('node:fs');
     const culpables: string[] = [];
-    for (const dir of ['src/motor', 'src/render', 'src/ui', 'src/arte'])
+    for (const dir of ['src/dominio', 'src/render', 'src/ui', 'src/arte'])
       for (const f of readdirSync(dir)) {
         if (f === 'migraciones.ts') continue; // las migraciones sí saben cómo era la v1
         readFileSync(`${dir}/${f}`, 'utf8')

@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import catalogo from '../datos/catalogo.json';
 import candado from '../datos/fuente.lock.json';
 import { derivarCatalogo, validarFuente } from '../datos/contrato';
-import { ESPECIES, MISIONES, crearPartida, despachar, pasarDecada, ventana } from '../src/motor';
+import { ESPECIES, MISIONES, crearPartida, despachar, pasarDecada, ventana } from '../src/dominio';
 import { ESTILO } from '../src/arte/estilos';
 
 const slugs = Object.keys(ESPECIES);

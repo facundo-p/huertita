@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crearPartida, despachar, pasarDecada, type Estado, type ZonaId } from '../src/motor';
+import { crearPartida, despachar, pasarDecada, type Estado, type ZonaId } from '../src/dominio';
 
 function noche(zona: ZonaId, celda: string, slug: string, tmin: number, prep?: (E: Estado) => void) {
   const E = crearPartida(1, { decInicio: 30 });

@@ -4,7 +4,7 @@
  * El renderer no importa el motor ni lee el estado: solo recibe una `Escena` plana.
  */
 import type { TipoZona } from '../../datos/juego/patio';
-import type { CeldaId, Etapa, Plaga, ZonaId } from '../motor';
+import type { CeldaId, Etapa, Plaga, ZonaId } from '../dominio';
 
 export interface PlantaDeEscena {
   slug: string;

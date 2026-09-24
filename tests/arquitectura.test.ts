@@ -29,11 +29,11 @@ function capa(ruta: string): string {
 /** Qué capas puede importar cada capa (además de sí misma). */
 const PERMITIDAS: Record<string, string[]> = {
   datos: [],
-  motor: ['datos'],
+  dominio: ['datos'],
   arte: [],
   render: ['arte'],
   estilos: [],
-  ui: ['datos', 'motor', 'arte', 'render', 'estilos'],
+  ui: ['datos', 'dominio', 'arte', 'render', 'estilos'],
   raiz: ['ui', 'estilos'],
 };
 
@@ -56,8 +56,8 @@ describe('las dependencias van en un solo sentido', () => {
     }
     expect(malas).toEqual([]);
   });
-  it('el motor no toca el navegador', () => {
-    const culpables = archivos('src/motor').filter((r) =>
+  it('el dominio no toca el navegador', () => {
+    const culpables = archivos('src/dominio').filter((r) =>
       /\b(document|window|localStorage)\b/.test(
         readFileSync(join(RAIZ, r), 'utf8').replace(/\/\/.*|\/\*[\s\S]*?\*\//g, ''),
       ),
@@ -75,7 +75,7 @@ describe('la deuda solo baja', () => {
   /** tope de líneas de más de 200 caracteres por carpeta */
   const TOPE_LINEAS_LARGAS: Record<string, number> = {
     datos: 0,
-    motor: 0,
+    dominio: 0,
     ui: 98,
     render: 69,
     arte: 47,

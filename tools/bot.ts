@@ -4,7 +4,7 @@
  * `--espacio` juega con las reglas de espacio del paso 3 prendidas (huella, densidad y sombra
  * reales), que es lo que va a valer después del paso 4: sirve para ver cuánto hay que rebalancear.
  */
-import * as M from '../src/motor';
+import * as M from '../src/dominio';
 import { jugarUnAnio } from './jugador';
 const args = process.argv.slice(2),
   iP = args.indexOf('--patio'),

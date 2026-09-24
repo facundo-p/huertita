@@ -1,8 +1,8 @@
 /** El diario de cada planta tiene que explicar, con verdad, por qué tiene la salud que tiene. */
 import { describe, expect, it } from 'vitest';
-import * as M from '../src/motor';
+import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
-import type { Estado, Planta } from '../src/motor';
+import type { Estado, Planta } from '../src/dominio';
 
 const textos = (pl: Planta): string => (pl.hist || []).flatMap((r) => r.n.map((x) => x[1])).join(' | ');
 function sembrada(slug: string, celda: string): { E: Estado; pl: Planta } {

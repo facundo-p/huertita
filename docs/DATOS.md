@@ -21,7 +21,7 @@ Nada, hasta que sincronices: el juego está clavado a la versión del candado. C
 2. **Si cambiaron valores**, escribe el catálogo nuevo y lista cada cambio con el sistema que toca: "tomate.dec (almanaque y vigor de siembra)".
 3. `npm test` dice si algún valor nuevo rompe una regla: que toda especie pueda germinar en su época ideal, que ninguna asociación apunte a una especie inexistente, que los rangos tengan sentido.
 4. **Especie nueva**: entra sola con el dibujo genérico de su grupo. Para que se vea bien, sumale estilo en `src/arte/estilos.ts` y familia en `datos/juego/especies.ts`.
-5. **Especie que desaparece o cambia de slug**: el sync lo avisa; hay que escribir una migración de partidas en `src/motor/migraciones.ts`.
+5. **Especie que desaparece o cambia de slug**: el sync lo avisa; hay que escribir una migración de partidas en `src/dominio/migraciones.ts`.
 
 Una vez por semana, un workflow (`.github/workflows/datos.yml`) corre el sync solo y, si hay cambios, abre un PR con el reporte.
 

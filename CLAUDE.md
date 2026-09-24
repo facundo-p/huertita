@@ -6,9 +6,9 @@ Juego de huerta urbana agroecológica del GBA. Objetivo: divertido, disfrutable,
 1. **huertapp es la única fuente de datos agronómicos.** Nunca editar `datos/catalogo.json` ni `datos/fuente.lock.json` a mano: se regeneran con `npm run datos:sync`. Si un dato está mal, se corrige en huertapp.
 2. **El juego simplifica, nunca contradice.** Todo número va marcado `[REPO]` o `[SUPUESTO]`. Un supuesto nuevo se anota y, si completa un hueco de una especie, va en `datos/juego/especies.ts` para que aparezca en `sup`.
 3. **Agroecológico:** ningún producto de síntesis, ni en mecánicas ni en textos.
-4. **Dependencias en un sentido:** `datos → motor → ui`; `arte → render → ui`. El motor no toca DOM. El renderer no importa el motor.
+4. **Dependencias en un sentido:** `datos → dominio → ui`; `arte → render → ui`. El dominio (el motor del juego, `src/dominio`) no toca DOM. El renderer no importa el dominio.
 5. **El patio es un dato.** Nadie fuera de `datos/juego/patios/` nombra una zona o una celda concreta; el motor decide por propiedades de la zona (`cria`, `techo`, `abrigo`…), el renderer por su `tipo`. Hay un test que lo vigila.
-6. **El estado es JSON y el azar tiene semilla.** Nada de `Math.random()` ni `Date.now()` en `src/motor`. Si cambia la forma de `Estado`: subir `v` y escribir la migración.
+6. **El estado es JSON y el azar tiene semilla.** Nada de `Math.random()` ni `Date.now()` en `src/dominio`. Si cambia la forma de `Estado`: subir `v` y escribir la migración.
 7. **El orden de las llamadas a `azar` es parte del contrato** mientras viva el test dorado. Si una regla cambia a propósito, el test dorado se jubila en ese mismo PR y se anota en CHANGELOG.
 8. Textos en rioplatense, de vos. Cuando algo sale mal, el cuaderno dice por qué y qué lo habría evitado, y tiene que ser verdad (hay tests de eso).
 9. Estética: añil, maíz, ladrillo, acequia, hoja. Nada desaturado ni genérico.

@@ -6,7 +6,7 @@
  */
 import { createRequire } from 'node:module';
 import { describe, expect, it } from 'vitest';
-import * as Nuevo from '../src/motor';
+import * as Nuevo from '../src/dominio';
 import { jugarUnAnio, type MotorJugable } from '../tools/jugador';
 
 (globalThis as any).Huertita = { DATOS: { meta: Nuevo.META, especies: Nuevo.ESPECIES } }; // mismos datos para los dos

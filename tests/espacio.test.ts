@@ -1,14 +1,14 @@
 /**
  * Paso 3 de los cimientos: cada planta ocupa lo que ocupa.
  *
- * Las reglas de espacio están apagadas mientras viva el test dorado (ver `src/motor/espacio.ts`):
+ * Las reglas de espacio están apagadas mientras viva el test dorado (ver `src/dominio/espacio.ts`):
  * acá se prenden a propósito con `conEspacioReal` para probarlas, y el primer describe vigila que
  * apagadas el juego siga jugando como antes.
  */
 import { describe, expect, it } from 'vitest';
-import * as M from '../src/motor';
+import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
-import type { Estado, Planta } from '../src/motor';
+import type { Estado, Planta } from '../src/dominio';
 
 const CELDA_SUELO = '0,1',
   CRIA = '0,7';

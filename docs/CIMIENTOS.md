@@ -16,7 +16,7 @@ sin cambiar conducta; el paso 4 lo jubila. El paso 6 queda cubierto por #49–#5
 
 **El paso 3 está hecho pero todavía no se juega.** El motor ya sabe de huella, densidad y sombra
 entre plantas, y cada especie tiene su marco de plantación en `datos/juego/especies.ts`. La regla
-está apagada (`src/motor/espacio.ts`): mientras viva el test dorado el juego corre como venía —una
+está apagada (`src/dominio/espacio.ts`): mientras viva el test dorado el juego corre como venía —una
 planta, una celda—, porque prender los marcos reales cambia rendimientos, azar y balance. Se prende
 en el paso 4, que es donde el dorado se jubila y se rebalancea todo junto. `tests/espacio.test.ts`
 la prende a propósito y prueba las reglas nuevas.

@@ -3,7 +3,7 @@
 Tres reglas sostienen todo lo demás.
 
 1. **Las dependencias van en un solo sentido:** `datos → motor → ui`, y `arte → render → ui`. El motor no sabe que existe una pantalla. El renderer no conoce el motor: recibe una `Escena` plana (`src/render/contrato.ts`).
-2. **El estado es un JSON y el azar tiene semilla.** De ahí salen gratis el guardado, las partidas reproducibles, los tests sin navegador y el bot. Todo cambio de forma del estado sube `v` y agrega un paso en `src/motor/migraciones.ts`.
+2. **El estado es un JSON y el azar tiene semilla.** De ahí salen gratis el guardado, las partidas reproducibles, los tests sin navegador y el bot. Todo cambio de forma del estado sube `v` y agrega un paso en `src/dominio/migraciones.ts`.
 3. **El juego puede simplificar, nunca contradecir a huertapp.** `[REPO]` y `[SUPUESTO]` marcan de dónde sale cada número, y `tests/catalogo.test.ts` lo vigila.
 
 ## El motor por dentro
@@ -47,7 +47,7 @@ El motor lo usa entero: sembrar y trasplantar toman el bloque de celdas y avisan
 el raleo deja las que caben, la cosecha rinde por planta, la competencia empieza cuando se pasa de
 la densidad, y las plantas altas entran como obstáculos temporales en el cálculo de sol.
 
-**Está apagado** (`src/motor/espacio.ts`): mientras viva el test dorado, el juego corre con huella 1
+**Está apagado** (`src/dominio/espacio.ts`): mientras viva el test dorado, el juego corre con huella 1
 y una planta por celda, que es como venía jugando. Se prende en el paso 4 (ver `docs/CIMIENTOS.md`).
 `conEspacioReal(fn)` lo prende para los tests.
 
