@@ -4,6 +4,7 @@ import { sinStorage, usarPartida } from './estado';
 import { cuando } from './formato';
 import { hacer } from './mensajes';
 import { nube } from './persistencia';
+import './Hud.css';
 
 const CLASE_DE_HELADA = { alta: 'alto', media: 'medio' } as const;
 

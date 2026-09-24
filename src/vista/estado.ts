@@ -32,6 +32,8 @@ export const nota = signal('');
 /** cómo se mira el patio */
 export const capa = signal<'sol' | null>(null);
 export const camara = signal(0);
+/** el almanaque muestra todas las especies o solo tus sobres (se recuerda al ir y volver de una ficha) */
+export const almanaqueCompleto = signal(false);
 export const renderer = signal(0);
 export const zonaCerca = signal<string | null>(null);
 /** animación de clima después de pasar la década */

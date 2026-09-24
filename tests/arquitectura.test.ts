@@ -36,8 +36,7 @@ const PERMITIDAS: Record<string, string[]> = {
   arte: [],
   render: ['arte'],
   estilos: [],
-  ui: ['datos', 'dominio', 'aplicacion', 'arte', 'render', 'estilos'],
-  raiz: ['ui', 'vista', 'estilos'],
+  raiz: ['vista', 'estilos'],
 };
 
 describe('las dependencias van en un solo sentido', () => {
@@ -88,13 +87,15 @@ describe('la deuda solo baja', () => {
   const todos = [...archivos('src'), ...archivos('datos'), ...archivos('tools'), ...archivos('scripts')];
   it('archivos sin tipar (@ts-nocheck)', () => {
     const sinTipos = todos.filter((r) => readFileSync(join(RAIZ, r), 'utf8').includes('@ts-nocheck'));
-    expect(sinTipos.length, sinTipos.join(', ')).toBeLessThanOrEqual(5);
+    expect(sinTipos.length, sinTipos.join(', ')).toBeLessThanOrEqual(4);
   });
   /** tope de líneas de más de 200 caracteres por carpeta */
   const TOPE_LINEAS_LARGAS: Record<string, number> = {
     datos: 0,
     dominio: 0,
-    ui: 98,
+    vista: 0,
+    aplicacion: 0,
+    infra: 0,
     render: 69,
     arte: 47,
     tools: 0,

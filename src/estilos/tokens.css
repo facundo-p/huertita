@@ -1,0 +1,15 @@
+/* HUERTITA — un solo mundo visual, a propósito: añil de noche, maíz, ladrillo, acequia y hoja. Los colores y las letras, en un solo lugar. */
+:root {
+  --anil: #1d1b4b;
+  --anil-2: #2a2869;
+  --anil-3: #3b3a8a;
+  --tiza: #fff1d0;
+  --tiza-2: #cfc6e8;
+  --maiz: #ffc233;
+  --ladrillo: #e0502f;
+  --hoja: #3fc25a;
+  --acequia: #1fc2b8;
+  --rosa: #ff7aa8;
+  --pix: 'Pixelify Sans', 'Courier New', monospace;
+  --txt: 'Atkinson Hyperlegible', 'Trebuchet MS', Verdana, sans-serif;
+}

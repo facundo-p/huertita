@@ -23,6 +23,7 @@ import {
   zonaCerca,
 } from './estado';
 import { type EventoUI, type Interaccion, normalizar, transicion } from './modos';
+import { subirANube } from './guardado';
 import { almacenes } from './persistencia';
 
 // ── la escena que ve el renderer ──
@@ -54,6 +55,7 @@ export function guardar(): void {
 // ── cambiar la interacción ──
 function poner(i: Interaccion): void {
   const E = partida.value;
+  nota.value = '';
   const n = normalizar(i, E.sobres, (id) => !!E.plantas[id]);
   if (n.sel && E.celdas[n.sel]) zonaCerca.value = E.celdas[n.sel].zona;
   interaccion.value = n;
@@ -146,7 +148,7 @@ export function pasarDecada(): void {
       efecto('morir', { celda: e.celda });
   }
   guardar();
-  if (almacenes.nube) void guardarEn(E, almacenes.nube, almacenes.reloj);
+  void subirANube(false);
   if (animar.value) setTimeout(() => (animar.value = null), 2100);
 }
 
@@ -166,12 +168,12 @@ export function usarPartida(E: Estado, mensaje: string, esNueva = false): void {
   partida.value = E;
   ultimos.value = [];
   aviso.value = '';
-  nota.value = mensaje;
   zonaCerca.value = null;
   tocada();
   const ev: EventoUI = esNueva
     ? { tipo: 'partidaNueva', terminada: false }
     : { tipo: 'partidaCargada', terminada: E.terminado };
   poner(transicion(interaccion.value, ev, patio()).i);
+  nota.value = mensaje;
   guardar();
 }

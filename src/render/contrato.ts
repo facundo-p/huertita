@@ -32,7 +32,8 @@ export interface CeldaDeEscena {
   maceta: { litros: number; prof: number } | null;
   sol: number;
   planta: PlantaDeEscena | null;
-  /** false si la planta de esta celda está anclada en otra: una planta grande tapa varias celdas y se dibuja una sola vez */ ancla: boolean;
+  /** false si la planta de esta celda está anclada en otra: una planta grande tapa varias celdas y se dibuja una sola vez */
+  ancla: boolean;
   tinte: 'bien' | 'regular' | 'mal' | null;
   seleccion: boolean;
   borde: { n: boolean; s: boolean; e: boolean; o: boolean };

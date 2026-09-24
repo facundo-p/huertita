@@ -68,6 +68,11 @@ const slugs: string[] = await p.$$eval('.hz-alm-fila[data-slug]', (xs: Element[]
 );
 for (const s of slugs) {
   await p.click(`.hz-alm-fila[data-slug="${s}"]`);
+  // la tira se dibuja en un efecto después de montar: se espera a que el lienzo tenga su tamaño
+  await p.waitForFunction(() => {
+    const cv = document.querySelector<HTMLCanvasElement>('canvas[data-tira]');
+    return !!cv && cv.width !== 300;
+  });
   huellas[`tira/${s}`] = await p.$eval('canvas[data-tira]', new Function('return ' + HUELLA)());
   await p.click('[data-modo="almanaque"]');
 }

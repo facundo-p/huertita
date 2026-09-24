@@ -16,7 +16,7 @@
     "datos:sync": "tsx scripts/sync-datos.ts",
     "datos:check": "tsx scripts/sync-datos.ts --check",
     "humo": "tsx tools/humo.ts",
-    "lint": "eslint . --max-warnings=23",
+    "lint": "eslint . --max-warnings=22",
     "formato": "prettier --write \"{src,datos,tests,tools,scripts}/**/*.{ts,tsx,css}\" \"*.{ts,js}\"",
     "formato:ver": "prettier --check \"{src,datos,tests,tools,scripts}/**/*.{ts,tsx,css}\" \"*.{ts,js}\"",
     "capturas": "tsx tools/capturas.ts"

@@ -20,7 +20,9 @@ npm run build:artifact   # dist-artifact/huertita-artifact.html, una sola págin
 | `src/dominio/` | La simulación. TypeScript estricto, sin DOM. Estado JSON y azar con semilla | `datos/` |
 | `src/arte/` | Dibujos pixel-art de cada especie y estadío | nada |
 | `src/render/` | Renderers intercambiables. Reciben una escena plana, nunca el estado | `arte/` |
-| `src/ui/` | Paneles y flujo. Habla con el motor por acciones y con el renderer por su contrato | todo lo anterior |
+| `src/aplicacion/` | Consultas que arman lo que muestra la pantalla y casos de uso de las partidas | `datos/`, `src/dominio/` |
+| `src/infra/` | Adaptadores: dónde se guarda (dispositivo, nube, archivo) y el reloj | `src/dominio/` |
+| `src/vista/` | Componentes Preact con signals. Pregunta `puede()` al dominio y le pasa la escena al renderer | todo lo anterior |
 | `tests/` | Reglas, contrato de datos, regresiones y el test dorado contra el motor del prototipo | |
 | `tools/` | Bot que juega solo y prueba de humo en navegador | |
 

@@ -9,29 +9,7 @@
 <style>*{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}</style>
 </head>
 <body>
-<div class="hz" id="hz">
-  <header class="hz-hud" id="hz-hud"></header>
-  <main class="hz-main">
-    <section class="hz-patio" aria-label="El patio"><div id="hz-lienzo"></div><div class="hz-zonas" id="hz-zonas" hidden></div></section>
-    <section class="hz-panel" id="hz-panel" aria-live="polite"></section>
-    <nav class="hz-barra" id="hz-barra" aria-label="Acciones">
-      <button data-acc="modo" data-modo="semillas">Sembrar</button>
-      <button data-acc="modo" data-modo="riego">Regar</button>
-      <button data-acc="modo" data-modo="proteger">Proteger</button>
-      <button data-acc="capa" id="hz-capa">Ver sol</button>
-      <button data-acc="modo" data-modo="almanaque">Almanaque</button>
-      <button data-acc="modo" data-modo="cuaderno">Cuaderno</button>
-      <button data-acc="pasar" id="hz-pasar">Pasar 10 días ▶</button>
-    </nav>
-  </main>
-  <div class="hz-pie">
-    <button data-acc="camara" id="hz-camara">Cámara</button>
-    <button data-acc="render" id="hz-render">Gráfica</button>
-    <button data-acc="modo" data-modo="logros">Logros</button>
-    <button data-acc="modo" data-modo="inicio">Cómo se juega</button>
-    <button data-acc="modo" data-modo="partidas">Guardar y cargar</button>
-  </div>
-</div>
+<div id="app"></div>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

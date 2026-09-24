@@ -10,7 +10,7 @@ export type ModoUI =
   | { modo: 'celda' }
   | { modo: 'moviendo'; planta: string; desde: CeldaId }
   | { modo: 'ficha'; slug: string }
-  | { modo: 'almanaque'; todas: boolean }
+  | { modo: 'almanaque' }
   | { modo: 'riego' }
   | { modo: 'proteger' }
   | { modo: 'cuaderno' }
@@ -32,8 +32,6 @@ export function modoNuevo(nombre: Exclude<NombreDeModo, 'moviendo' | 'ficha'>): 
   switch (nombre) {
     case 'semillas':
       return { modo: 'semillas', sobre: null };
-    case 'almanaque':
-      return { modo: 'almanaque', todas: false };
     case 'partidas':
       return { modo: 'partidas', verCodigo: false };
     default:
@@ -53,7 +51,6 @@ export type EventoUI =
   | { tipo: 'cancelar' }
   | { tipo: 'zona' }
   | { tipo: 'verCodigo' }
-  | { tipo: 'almanaqueTodas'; todas: boolean }
   | { tipo: 'decadaPasada'; terminado: boolean }
   | { tipo: 'partidaNueva'; terminada: boolean }
   | { tipo: 'partidaCargada'; terminada: boolean };
@@ -116,7 +113,6 @@ const MANEJADORES: { [T in EventoUI['tipo']]: Manejador<T> } = {
   zona: (i) => quieto({ modo: i.modo.modo === 'celda' ? { modo: 'inicio' } : i.modo, sel: null }),
   verCodigo: (i) =>
     quieto(i.modo.modo === 'partidas' ? { ...i, modo: { modo: 'partidas', verCodigo: !i.modo.verCodigo } } : i),
-  almanaqueTodas: (i, ev) => quieto({ ...i, modo: { modo: 'almanaque', todas: ev.todas } }),
   decadaPasada: (i, ev, P) =>
     quieto({ modo: { modo: ev.terminado ? 'fin' : 'resumen' }, sel: i.sel && P.existe(i.sel) ? i.sel : null }),
   partidaNueva: () => quieto({ modo: { modo: 'inicio' }, sel: null }),

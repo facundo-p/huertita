@@ -1,0 +1,116 @@
+/* Arriba: la marca, el guardado, los ratos y el pronóstico. */
+.hz-hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+.hz-marca {
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+}
+.hz-marca h1 {
+  font-family: var(--pix);
+  font-size: 30px;
+  line-height: 1;
+  margin: 0;
+  color: var(--maiz);
+  letter-spacing: 1px;
+  text-shadow: 3px 3px 0 var(--ladrillo);
+}
+.hz-marca span {
+  font-family: var(--pix);
+  font-size: 15px;
+  color: var(--tiza-2);
+}
+.hz-ratos {
+  font-family: var(--pix);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hz-ratos b {
+  font-size: 26px;
+  color: var(--maiz);
+}
+.hz-pips {
+  display: grid;
+  grid-template-columns: repeat(7, 9px);
+  gap: 2px;
+}
+.hz-pips i {
+  width: 9px;
+  height: 9px;
+  background: var(--anil-3);
+}
+.hz-pips i.libre {
+  background: var(--maiz);
+}
+.hz-pips i.riego {
+  background: var(--acequia);
+}
+.hz-pips i.usado {
+  background: var(--ladrillo);
+}
+.hz-pron {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  font-family: var(--pix);
+  font-size: 16px;
+  background: var(--anil-2);
+  padding: 6px 10px;
+  box-shadow: 4px 4px 0 #0e0d2e;
+}
+.hz-pron .hz-eti {
+  flex-basis: 100%;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--tiza-2);
+}
+.hz-pron .medio {
+  color: var(--maiz);
+}
+.hz-pron .alto {
+  color: #fff;
+  background: var(--ladrillo);
+  padding: 0 5px;
+}
+@media (max-width: 859px) {
+  .hz-marca h1 {
+    font-size: 22px;
+    text-shadow: 2px 2px 0 var(--ladrillo);
+  }
+  .hz-marca span {
+    font-size: 13px;
+  }
+  .hz-ratos b {
+    font-size: 20px;
+  }
+  .hz-ratos {
+    font-size: 13px;
+    gap: 5px;
+  }
+  .hz-pron {
+    flex-basis: 100%;
+    font-size: 14px;
+    padding: 4px 8px;
+    box-shadow: none;
+  }
+  .hz-pron .hz-eti {
+    flex-basis: auto;
+    font-size: 11px;
+  }
+}
+.hz-guardada {
+  background: none;
+  border: 1px dashed var(--anil-3);
+  color: var(--tiza-2) !important;
+  font-family: var(--pix) !important;
+  font-size: 12px;
+  padding: 3px 8px;
+}

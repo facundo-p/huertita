@@ -1,0 +1,84 @@
+/* El patio: el lienzo del renderer pixel, la grilla del renderer de texto y los botones de cantero. */
+#hz-lienzo {
+  width: 100%;
+  box-shadow: 6px 6px 0 #0e0d2e;
+  background: #4f9d3a;
+  line-height: 0;
+}
+.hz-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.hz-texto {
+  display: grid;
+  gap: 2px;
+  padding: 4px;
+  background: #2d5a27;
+  line-height: 1;
+}
+.hz-tcelda {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  font-size: clamp(14px, 4.4vw, 24px);
+  border: 0;
+  padding: 0;
+  background: transparent;
+  min-width: 0;
+}
+button.hz-tcelda {
+  background: #8f5d38;
+}
+.hz-tcelda.z-cajon {
+  background: #b5793a;
+}
+.hz-tcelda.z-macetas {
+  background: #e0673a;
+  border-radius: 50%;
+}
+.hz-tcelda.z-almaciguera {
+  background: #3b3a8a;
+}
+.hz-tcelda.t-bien {
+  box-shadow: inset 0 0 0 4px #50ff78;
+}
+.hz-tcelda.t-regular {
+  box-shadow: inset 0 0 0 4px #ffd23c;
+}
+.hz-tcelda.t-mal {
+  box-shadow: inset 0 0 0 4px #ff463c;
+}
+.hz-tcelda.sel {
+  outline: 3px solid var(--tiza);
+}
+.hz-tcelda.lista {
+  background: var(--maiz);
+}
+.hz-tcelda.plaga {
+  filter: hue-rotate(40deg);
+}
+.hz-tcelda.floja {
+  box-shadow: inset 0 -4px 0 var(--rosa);
+}
+.hz-zonas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.hz-zonas button {
+  background: var(--anil-2);
+  border: 0;
+  padding: 6px 2px;
+  font-family: var(--pix) !important;
+  font-size: 12px;
+  color: var(--tiza);
+}
+.hz-zonas button.on {
+  background: var(--maiz);
+  color: var(--anil);
+}

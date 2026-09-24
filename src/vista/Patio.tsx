@@ -9,6 +9,7 @@ import type { Renderer } from '../render/contrato';
 import { activo, dispararEfectos, RENDERERS } from './efectos';
 import { interaccion, renderer, usarPartida, zonaCerca } from './estado';
 import { escenaActual, mirarZona, tocarCelda } from './mensajes';
+import './Patio.css';
 
 function Lienzo() {
   const lugar = useRef<HTMLDivElement>(null),

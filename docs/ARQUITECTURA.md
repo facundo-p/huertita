@@ -65,4 +65,4 @@ Preact y renderer por cámaras. El análisis, las alternativas y los issues est�
 
 ## Lo que todavía no está tipado
 
-`src/arte`, `src/render` y `src/ui` están portados tal cual del prototipo, con `// @ts-nocheck`. Funcionan y están probados en navegador (`npm run humo`), pero la interfaz arma HTML a mano en un solo archivo y no va a escalar: el paso 6 de los cimientos la reescribe por componentes.
+`src/arte` y `src/render` están portados tal cual del prototipo, con `// @ts-nocheck`. Funcionan y están probados en navegador (`npm run humo`) y al píxel (`npm run capturas`); #54 y #55 los tipan. La interfaz ya es `src/vista/`, por componentes (#49–#53).

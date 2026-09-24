@@ -1,0 +1,300 @@
+/* La carcasa de la interfaz y las piezas de texto y botones que usan todos los paneles. */
+html,
+body {
+  height: 100%;
+}
+body {
+  background: var(--anil);
+  color: var(--tiza);
+  font-family: var(--txt);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.hz {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  padding-block: 10px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hz button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+.hz button:focus-visible {
+  outline: 3px solid var(--maiz);
+  outline-offset: 2px;
+}
+.hz-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.hz-barra {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: var(--anil);
+  padding-block: 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  margin-block: -4px;
+}
+@media (min-width: 860px) {
+  .hz-main {
+    grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+    grid-template-areas: 'patio panel' 'barra panel';
+    grid-template-rows: auto 1fr;
+  }
+  .hz-patio {
+    grid-area: patio;
+  }
+  .hz-panel {
+    grid-area: panel;
+  }
+  .hz-barra {
+    grid-area: barra;
+    position: static;
+    padding: 0;
+    margin: 0;
+  }
+}
+@media (max-width: 859px) {
+  .hz {
+    gap: 8px;
+    padding-block: 8px 12px;
+  }
+  .hz-barra {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .hz-barra button {
+    font-size: 14px;
+    padding: 8px 2px;
+  }
+  #hz-pasar {
+    grid-column: span 2 !important;
+    font-size: 15px !important;
+    padding: 8px 2px !important;
+  }
+}
+.hz-patio {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.hz-barra {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.hz-barra button,
+.hz-btn {
+  font-family: var(--pix) !important;
+  font-size: 16px;
+  background: var(--anil-2);
+  border: 0;
+  padding: 9px 6px;
+  box-shadow: 3px 3px 0 #0e0d2e;
+  color: var(--tiza);
+}
+.hz-barra button.on,
+.hz-btn.on {
+  background: var(--acequia);
+  color: var(--anil);
+}
+.hz-barra button:active,
+.hz-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #0e0d2e;
+}
+#hz-pasar {
+  grid-column: 1/-1;
+  background: var(--maiz);
+  color: var(--anil);
+  font-size: 20px;
+  padding: 12px;
+}
+#hz-pasar:disabled {
+  opacity: 0.4;
+}
+.hz-pie {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.hz-pie button {
+  background: none;
+  border: 1px dashed var(--anil-3);
+  color: var(--tiza-2);
+  font-family: var(--pix) !important;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+.hz-panel {
+  background: var(--anil-2);
+  padding: 14px 16px 18px;
+  box-shadow: 6px 6px 0 #0e0d2e;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.hz-panel h2 {
+  font-family: var(--pix);
+  font-size: 22px;
+  margin: 0 0 6px;
+  color: var(--maiz);
+  text-wrap: balance;
+}
+.hz-panel h3 {
+  font-family: var(--pix);
+  font-size: 16px;
+  margin: 14px 0 4px;
+  color: var(--acequia);
+  font-weight: 400;
+}
+.hz-panel p {
+  margin: 6px 0;
+  max-width: 62ch;
+}
+.hz-sub {
+  font-family: var(--pix);
+  color: var(--tiza-2);
+}
+.hz-dim {
+  color: var(--tiza-2);
+  font-size: 13px;
+}
+.hz-mal {
+  color: var(--rosa);
+}
+.hz-aviso {
+  background: var(--ladrillo);
+  color: #fff;
+  padding: 6px 10px;
+  font-family: var(--pix);
+}
+.hz-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 4px;
+}
+.hz-btn {
+  padding: 8px 12px;
+  background: var(--anil-3);
+}
+.hz-btn.pri {
+  background: var(--hoja);
+  color: #0c2a14;
+}
+.hz-btn.sec {
+  background: none;
+  box-shadow: none;
+  border: 1px dashed var(--tiza-2);
+  color: var(--tiza-2);
+}
+.hz-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.hz-datos {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 3px 12px;
+  margin: 8px 0;
+  font-size: 14px;
+}
+.hz-datos dt {
+  font-family: var(--pix);
+  color: var(--tiza-2);
+}
+.hz-datos dd {
+  margin: 0;
+}
+.hz-cita {
+  border-left: 3px solid var(--acequia);
+  padding-left: 10px;
+  font-size: 14px;
+}
+.hz-cita span {
+  display: block;
+  font-family: var(--pix);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--acequia);
+}
+.hz-seg {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-top: 3px;
+}
+.hz-seg button {
+  background: var(--anil);
+  border: 0;
+  padding: 7px 0;
+  font-family: var(--pix) !important;
+  font-size: 13px;
+  letter-spacing: -0.3px;
+  color: var(--tiza);
+}
+.hz-seg button.on {
+  background: var(--acequia);
+  color: var(--anil);
+}
+.hz-seg small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hz-barra button:active,
+  .hz-btn:active {
+    transform: none;
+  }
+}
+.hz-seg.dos {
+  grid-template-columns: 1fr 1fr;
+}
+.hz-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  margin: 6px 0;
+}
+.hz-chips b {
+  font-family: var(--pix);
+  font-weight: 400;
+  margin-right: 4px;
+}
+.hz-bien {
+  color: var(--hoja);
+}
+.hz-chip {
+  background: var(--anil);
+  border: 0;
+  padding: 3px 8px;
+  font-family: var(--pix) !important;
+  font-size: 13px;
+  color: var(--tiza);
+}
+.hz-chip:hover {
+  background: var(--anil-3);
+}
+@media (max-width: 859px) {
+  .hz-barra button {
+    font-size: 13px !important;
+  }
+}
+.hz-nota {
+  background: var(--hoja);
+  color: #0c2a14;
+  padding: 6px 10px;
+  font-family: var(--pix);
+}
