@@ -290,10 +290,16 @@ export interface Marco {
   /** cuánto levanta cuando está hecha, en metros */
   alto: number;
 }
+/** Cuántas celdas de 0,5 m tapa una planta hecha, por su marco de plantación. */
+function huellaDe(cm: number): Marco['huella'] {
+  if (cm > 90) return 4;
+  return cm > 55 ? 2 : 1;
+}
+
 export function marcoDe(slug: string, grupo: string): Marco {
   const g = POR_GRUPO[grupo] ?? { cm: 25, alto: 0.4 };
   const cm = MARCO_CM[slug] ?? g.cm;
-  const huella: Marco['huella'] = cm > 90 ? 4 : cm > 55 ? 2 : 1;
+  const huella = huellaDe(cm);
   return {
     cm,
     huella,

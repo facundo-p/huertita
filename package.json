@@ -1,7 +1,7 @@
 {
   "name": "huertita",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "description": "Juego de huerta urbana agroecológica del Gran Buenos Aires. Las reglas salen de los datos de huertapp.",
   "scripts": {
@@ -16,7 +16,7 @@
     "datos:sync": "tsx scripts/sync-datos.ts",
     "datos:check": "tsx scripts/sync-datos.ts --check",
     "humo": "tsx tools/humo.ts",
-    "lint": "eslint . --max-warnings=19",
+    "lint": "eslint . --max-warnings=11",
     "formato": "prettier --write \"{src,datos,tests,tools,scripts}/**/*.{ts,tsx,css}\" \"*.{ts,js}\"",
     "formato:ver": "prettier --check \"{src,datos,tests,tools,scripts}/**/*.{ts,tsx,css}\" \"*.{ts,js}\"",
     "capturas": "tsx tools/capturas.ts"

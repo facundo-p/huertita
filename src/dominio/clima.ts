@@ -32,7 +32,8 @@ export const mesDe = (dec: number): number => Math.floor((dec - 1) / 3) + 1;
 export function diaCentral(dec: number): number {
   const mes = mesDe(dec),
     t = (dec - 1) % 3;
-  let d = t === 0 ? 5 : t === 1 ? 15 : Math.round((21 + DIAS_MES[mes - 1]) / 2);
+  // principios: el 5; mediados: el 15; fines: el medio entre el 21 y el último del mes
+  let d = t < 2 ? [5, 15][t] : Math.round((21 + DIAS_MES[mes - 1]) / 2);
   for (let m = 1; m < mes; m++) d += DIAS_MES[m - 1];
   return d;
 }
@@ -108,14 +109,14 @@ export function generarTiempo(E: Estado, dec: number): { real: Tiempo; pron: Pro
     tmin: Math.round(ftmin),
     tmax: Math.round(ftmax),
     pHelada: Math.round(clamp(phi((umbral - ftmin) / desvioPronostico), 0, 1) * 100),
-    lluvia:
-      azar(E) < 0.72
-        ? lluvia < 12
-          ? 'seca'
-          : lluvia > 45
-            ? 'llovedora'
-            : 'normal'
-        : (['seca', 'normal', 'llovedora'] as const)[Math.floor(azar(E) * 3)],
+    lluvia: lluviaPronosticada(E, lluvia),
   };
   return { real, pron };
+}
+
+/** [SUPUESTO] El pronóstico de lluvia acierta 72 de cada 100 veces; si no, dice cualquier cosa. */
+function lluviaPronosticada(E: Estado, lluvia: number): Pronostico['lluvia'] {
+  if (azar(E) >= 0.72) return (['seca', 'normal', 'llovedora'] as const)[Math.floor(azar(E) * 3)];
+  if (lluvia < 12) return 'seca';
+  return lluvia > 45 ? 'llovedora' : 'normal';
 }

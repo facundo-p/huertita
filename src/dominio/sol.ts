@@ -131,12 +131,15 @@ export function horasSolGeometria(p: Patio, x: number, y: number, dec: number, t
  * La fórmula a mano del prototipo v0.4, tal cual. Solo vale para el patio 'fondo' y solo existe
  * para que el test dorado siga verde. Se borra junto con él.
  */
+/** horas que le saca el árbol a una celda según a cuántas celdas está (0 y 1: al lado) */
+const SOMBRA_DEL_ARBOL_V04 = [4.5, 4.5, 3, 1.5];
+
 export function horasSolV04(R: Region, x: number, y: number, dec: number): number {
   const dia = diaCentral(dec);
   const inv = (Math.cos((6.2831853 * (dia - 172)) / 365) + 1) / 2;
   const base = 10 - 3.5 * inv;
   const pared = [0, 2 + 3.5 * inv, 3 * inv, 1.2 * inv, 0.5 * inv][y] || 0;
   const dist = Math.max(Math.abs(x - 7), Math.min(Math.abs(y - 1), Math.abs(y - 2)));
-  const arbol = (dist <= 1 ? 4.5 : dist === 2 ? 3 : dist === 3 ? 1.5 : 0) * (conHojas(R, dec) ? 1 : 0.3);
+  const arbol = (SOMBRA_DEL_ARBOL_V04[dist] ?? 0) * (conHojas(R, dec) ? 1 : 0.3);
   return r1(clamp(base - pared - arbol, 0, 12));
 }

@@ -64,7 +64,7 @@ button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3
   <header>
     <h1>Mapa de ideas de Huertita</h1>
     <p>Todo lo que se podría hacer, ordenado por cuánto cuesta y cuánto le suma al juego. Tocá un punto o un nombre para ver de qué se trata.</p>
-    <p class="dim">Al 18 de septiembre de 2026, con el juego en la versión 0.8. Costo e impacto son estimaciones mías, de 1 a 10; el costo supone los cimientos ya hechos.</p>
+    <p class="dim">Al 24 de septiembre de 2026, con el juego en la versión 0.9. Costo e impacto son estimaciones mías, de 1 a 10; el costo supone los cimientos ya hechos.</p>
     <p class="dim">Cada número de este mapa es ahora el número de un <a href="https://github.com/facundo-p/huertita/issues">issue en GitHub</a>: la idea 6 es el issue #6. Los cimientos y las deudas, que no están en el cuadro, son los issues #27 a #38.</p>
   </header>
   <nav aria-label="Secciones"><a href="#mapa">El cuadro</a><a href="#cuadrantes">Los 4 cuadrantes</a><a href="#propuestas">Mis 5 propuestas</a><a href="#eventos">Eventos sorpresa</a><a href="#orden">En qué orden</a></nav>
@@ -204,7 +204,7 @@ button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3
   document.getElementById('evs').innerHTML = '<thead><tr><th>Evento</th><th>Cuándo</th><th>Qué pasa</th><th>Respuesta que enseña</th></tr></thead><tbody>' + EVS.map(function (g) { return '<tr class="cab"><td colspan="4">' + g[0] + '</td></tr>' + g[1].map(function (e) { return '<tr><td>' + esc(e[0]) + (e[4] ? '<span class="r">repo</span>' : '') + '</td><td>' + esc(e[1]) + '</td><td>' + esc(e[2]) + '</td><td>' + esc(e[3]) + '</td></tr>'; }).join(''); }).join('') + '</tbody>';
 
   var PASOS = [
-    ['cim', 'Cimientos · 1 a 2 semanas', 'Hechos los pasos 1 a 3: TypeScript y tests (v0.5), el patio como dato (v0.6) y plantas con tamaño propio (v0.8, todavía apagado). Faltan el tiempo por día, el contenido como tablas y la interfaz por componentes. Son los issues #27 a #30. Desde el 21-9, antes del paso 4 va la epic #39 (reestructura: ver docs/REESTRUCTURA.md), con el test dorado como red.'],
+    ['cim', 'Cimientos · 1 a 2 semanas', 'Hechos los pasos 1 a 3: TypeScript y tests (v0.5), el patio como dato (v0.6) y plantas con tamaño propio (v0.8, todavía apagado). Hecha también la epic #39 (v0.9): el código reestructurado en capas, el estado con forma y el patio adentro de la partida, la región como dato, la interfaz por componentes y el renderer por cámaras, sin cambiar cómo se juega (el paso 6, salvo la PWA). Faltan el tiempo por día (#28, después de decidir el sol del fondo, #31) y el contenido como tablas (#29).'],
     ['rab', 'Tanda de rabanitos', 'Eventos sorpresa, pedidos de vecinos, vacaciones de enero, césped y poda para el compost, sonido, patios prediseñados.'],
     ['zap', 'Primer zapallo: jugar de a 1 a 10 días', 'Va primero porque condiciona el balance de todo lo demás: ratos por día con tope, pronóstico de 5 días, salto "hasta que pase algo".'],
     ['zap', 'Un zapallo por vez', 'Tamaño real de planta, después feria vecinal, después diagnóstico por síntomas. Editor y "mi patio" al final, apoyados en el patio como dato.'],

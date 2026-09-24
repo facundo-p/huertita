@@ -44,6 +44,11 @@ export function plantaEn(E: Estado, celda: CeldaId): Planta | null {
   return c && c.planta ? E.mundo.plantas[c.planta] : null;
 }
 
+const puntoEntre = (prog: number, min: number, max: number): 'chico' | 'listo' | 'pasado' => {
+  if (prog < min) return 'chico';
+  return prog < max ? 'listo' : 'pasado';
+};
+
 /** En qué punto está un plantín respecto del trasplante. `faltan` son días de buen crecimiento, no de calendario. */
 export function puntoDeTrasplante(
   pl: Planta,
@@ -51,7 +56,7 @@ export function puntoDeTrasplante(
   const dt = especieDe(pl).dt;
   if (pl.etapa !== 'plantin' || !dt) return null;
   return {
-    punto: pl.prog < dt.min ? 'chico' : pl.prog < dt.max ? 'listo' : 'pasado',
+    punto: puntoEntre(pl.prog, dt.min, dt.max),
     faltan: Math.max(0, Math.ceil(dt.min - pl.prog)),
     min: dt.min,
     max: dt.max,

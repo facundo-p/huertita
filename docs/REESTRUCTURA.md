@@ -1,8 +1,11 @@
 # Reestructura: la epic #39
 
+**Hecha en la v0.9 (24-9-2026).** Este documento queda como registro: por qué el código quedó como
+quedó, qué se descartó y cómo se hizo. Cómo es el código hoy lo cuenta `docs/ARQUITECTURA.md`.
+
 Versión corta y durable del análisis de arquitectura. La larga, con alternativas y pros y contras, es
-`docs/arquitectura.html` (publicada como artifact; el enlace está en la epic). Escrito el 21 de
-septiembre de 2026 sobre la versión 0.8.
+`docs/arquitectura.html` (publicada como artifact; el enlace está en la epic). El plan se escribió el
+21 de septiembre de 2026 sobre la versión 0.8.
 
 ## Por qué
 
@@ -18,7 +21,7 @@ renderer, el patio como dato, `[REPO]`/`[SUPUESTO]`, el test dorado.
 
 | Qué | Dónde |
 | --- | --- |
-| 5 archivos con `@ts-nocheck` | `src/ui`, `src/render`, `src/arte` |
+| 5 archivos con `@ts-nocheck` | la interfaz (`ui.ts`), el renderer y el arte |
 | Líneas de más de 200 caracteres | `ui.ts` 98/420, `pixel.ts` 69/348, `sprites.ts` 35, `tiempo.ts` 21 |
 | Ternarios | `ui.ts` 154, `pixel.ts` 103, `tiempo.ts` 36 |
 | Literales sueltos de etapa/zona/evento | 127 (`tiempo.ts` 53, `pixel.ts` 41, `acciones.ts` 33) |
@@ -28,7 +31,7 @@ renderer, el patio como dato, `[REPO]`/`[SUPUESTO]`, el test dorado.
 | Tubería de acciones repetida | 13 acciones, `return SIN_RATOS` ×8 |
 | Campos planos en `Estado` | 30 |
 
-## Adónde va
+## Adónde iba (y fue)
 
 ```
 datos/            contenido validado: catálogo huertapp, especies, patios (plantillas), regiones, reglas (los números), textos
@@ -100,9 +103,47 @@ Features habilitadas, fuera de la epic: #57 otras regiones (depende de #48), #58
 (#47, #53), #59 construir y quitar en la partida (#47, #44), #60 vista de cerca por celda (#55),
 #61 dinero (#47).
 
+## Cómo se hizo
+
+Un commit por sub-issue en la rama de la epic, cada uno con el gate verde y el dorado verde. Dos
+cambios de orden respecto del plan:
+
+- **La vista (#49–#53) fue antes que #47 y #48.** El estado v4 cambia cada acceso al estado; hacerlo
+  con la interfaz ya tipada hizo que el compilador encontrara cada lugar, en vez de buscarlos en un
+  archivo sin tipos.
+- **#49 y #50 fueron un solo commit:** el esqueleto de Preact sin la máquina de modos no tenía cómo
+  andar. #51 fue antes que los dos.
+
+Las redes que sostuvieron el cambio sin tocar el juego: el test dorado (el estado final del año,
+decimal por decimal, contra el prototipo), el bot (los mismos puntajes en los dos patios, con y sin
+espacio real, antes y después), partidas guardadas de verdad de cada versión en `tests/fixtures/`, y
+las capturas de píxeles: 63 huellas al empezar, 293 al terminar (el patio en tres cámaras y cuatro
+estaciones, cada cantero de cerca, el tinte de siembra, las 55 tiras y cuadro a cuadro de los efectos).
+El renderer nuevo se comparó contra el viejo con las 293.
+
+Lo que la epic cambió a propósito (en el CHANGELOG de la 0.9): cuatro condiciones de acciones que antes
+aplicaba solo la interfaz ahora las aplica el dominio; el formato de guardado es v4, con migración; y
+la vista de cerca muestra la manta en todas las zonas (buscaba por tipo y no por id).
+
+| Qué | Antes (21-9) | Después (24-9) |
+| --- | --- | --- |
+| Archivos con `@ts-nocheck` | 5 | 0 |
+| Líneas de más de 200 caracteres en `src/` | 223 | 0 |
+| `tiempo.ts` | 21 líneas largas, 36 ternarios | 12 líneas: corre dos tuberías de sistemas |
+| Campos sueltos en `Estado` | 30 | 0 (cinco partes) |
+| Reglas repetidas en la vista | varias | 0: la vista pregunta `puede()` |
+| Tests | 185 | 468 |
+| Avisos de lint (complejidad, anidamiento, funciones largas) | — | 11, con tope que solo baja |
+
+Lo que queda anotado para después: los 11 avisos de lint que siguen (la validación y la derivación
+del catálogo en `datos/contrato.ts`, `completar` de especies, `evaluarCelda`, tres sistemas del tiempo
+y la sombra por geometría: funciones largas que conviene partir cuando se las toque por otra cosa), los textos de algunos logros escritos para el GBA ("entre
+junio y agosto"), el texto del panel de inicio que describe el fondo aunque se juegue en el balcón, y
+`window.Huertita`, que se arma en `vista/arrancar.tsx` (la raíz de la vista) y no en `main.ts`.
+
 ## Relación con los cimientos
 
-- #30 (paso 6) queda cubierto por #49–#55.
+- #30 (paso 6) quedó cubierto por #49–#55, salvo la PWA.
 - #28 (paso 4) y #31 van después de la fase 1.
 - #29 (paso 5) se achica: #42 y #43 ya llevan números y textos a datos.
 

@@ -149,13 +149,25 @@ function erroresDeZona(p: Patio, z: ZonaDePatio): string[] {
   if (!celdas.length) e.push(`${z.id}: no tiene ninguna celda en el plano`);
   if (z.mo < 5 || z.mo > 100) e.push(`${z.id}: mo fuera de 5..100`);
   if (!riegoCrece(z.riegoCosto)) e.push(`${z.id}: riegoCosto tiene que arrancar en 0 y no bajar`);
+  if (z.cria && z.admiteTunel) e.push(`${z.id}: una zona de cría no lleva microtúnel`);
+  return [...e, ...erroresDeMacetas(z, celdas), ...erroresDeCapacidad(z)];
+}
+
+/** Cada maceta tiene su tamaño, y no hay tamaños de macetas que no existen. */
+function erroresDeMacetas(z: ZonaDePatio, celdas: string[]): string[] {
+  const e: string[] = [];
   if (z.tipo === 'macetas')
     for (const c of celdas) if (!z.macetas?.[c]) e.push(`${z.id}: a la maceta ${c} le falta tamaño`);
   for (const c in z.macetas ?? {})
     if (!celdas.includes(c)) e.push(`${z.id}: hay tamaño para ${c}, que no es una celda de la zona`);
-  if (z.cria && z.admiteTunel) e.push(`${z.id}: una zona de cría no lleva microtúnel`);
-  if (z.capacidad != null && !z.cria) e.push(`${z.id}: capacidad es solo de las zonas de cría`);
-  if (z.capacidad != null && !(z.capacidad >= 1 && z.capacidad <= 200)) e.push(`${z.id}: capacidad fuera de 1..200`);
+  return e;
+}
+
+function erroresDeCapacidad(z: ZonaDePatio): string[] {
+  if (z.capacidad == null) return [];
+  const e: string[] = [];
+  if (!z.cria) e.push(`${z.id}: capacidad es solo de las zonas de cría`);
+  if (!(z.capacidad >= 1 && z.capacidad <= 200)) e.push(`${z.id}: capacidad fuera de 1..200`);
   return e;
 }
 

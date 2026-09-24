@@ -4,6 +4,8 @@ Escrito el 18 de septiembre de 2026 por Claude, al cierre de una sesión larga d
 
 **Actualizado el 18 de septiembre de 2026, en una sesión de Claude Code en la nube**: se hizo el paso 3 de los cimientos (0.8.0) y se crearon los 38 issues. Los cambios de esa sesión están marcados abajo.
 
+**Actualizado el 24 de septiembre de 2026**: se ejecutó la epic #39 entera (reestructura, 0.9.0). El código cambió de lugar y de forma sin cambiar cómo se juega; §4 lo resume y `docs/ARQUITECTURA.md` lo cuenta entero. Lo que sigue es #31 y el paso 4 (§7c).
+
 **Todo lo de este traspaso vive en el repo, en `docs/traspaso/`:**
 
 | Archivo | Qué es |
@@ -50,9 +52,9 @@ pusheada la rama `claude/dazzling-wright-jghyog`, dos commits arriba de `main`:
 3. `Los 38 issues, creados; el mapa de ideas enlaza a cada uno`
 4. `El mapa de ideas marca los cimientos hechos` (y el artifact republicado)
 5. `Análisis de arquitectura y epic #39 de reestructura` (21-9: `docs/arquitectura.html`, `docs/REESTRUCTURA.md`, issues #39 a #61)
+6. La epic #39 (24-9): un commit por sub-issue, de `Herramientas que vigilan la arquitectura` (#40) a `Documentos y reglas al día; 0.9.0` (#56), más dos de apoyo (las capturas ampliadas y la manta de cerca). Cada commit dice `Closes #N`: los issues se cierran solos al mergear a `main`.
 
-Falta mergearla a `main` (por PR o directo, como prefiera Facu). Los issues ya están creados, así
-que un PR ahora no le pisa la numeración a nadie.
+Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 
 ## 3. Cómo trabaja Claude sobre el repo desde Cowork (el flujo que funcionó)
 
@@ -66,16 +68,20 @@ que un PR ahora no le pisa la numeración a nadie.
 
 ## 4. Arquitectura, en una página
 
-- TypeScript estricto, Vite 5, Vitest 2, tsx. `npm run dev|build|build:artifact|test|tipos|bot|humo|datos:sync|datos:check`.
-- Capas en un solo sentido: `datos → motor → ui` y `arte → render → ui`. El motor no toca DOM. El renderer no importa el motor: recibe una `Escena` plana (`src/render/contrato.ts`) y cumple `montar / dibujar / alTocar / desmontar` (+ `camaras`, `efecto`). Hay dos renderers: pixel (3 cámaras: cenital, oblicua, cerca con corte de suelo) y texto.
-- Estado JSON `v:3`, azar con semilla (mulberry32). **El orden de las llamadas a `azar` es contrato mientras viva el test dorado** (`tests/dorado.test.ts`: el motor nuevo juega 8 años con el motor v0.4 y exige estado idéntico; una proyección quita lo nuevo — `patio`, `tunel` por zona, `hist` — antes de comparar).
-- **Cada planta ocupa lo que ocupa (0.8, paso 3):** el marco de plantación de cada especie vive en `datos/juego/especies.ts` ([SUPUESTO]: cm entre plantas, y de ahí huella en celdas, cuántas entran en una celda y cuánto levanta). El motor lo usa entero desde `src/dominio/espacio.ts`: bloque de celdas al sembrar y trasplantar, raleo que deja las que caben, cosecha por planta, competencia pasada la densidad, `capacidad` de bandeja en las zonas de cría y plantas altas como obstáculos temporales del sol. **Está apagado** hasta el paso 4: `conEspacioReal(fn)` lo prende (lo usan `tests/espacio.test.ts` y `npm run bot -- --espacio`).
-- `src/dominio/`: tipos, azar, clima (SMN Ezeiza + heladas FAUBA umbral 3 °C, carácter del año normal/niña/niño/tardía), patio, sol, catalogo, estado, factores (luz, agua, temp, suelo, vecinos + fantasma de siembra), abrigo, misiones, acciones (`despachar`), tiempo (`pasarDecada` en fases: germinar → helar → semillar → crecer → estresar → plagas → espigar → madurar → suelos y compost), diario, balance, migraciones.
-- **Datos:** huertapp es la única fuente de verdad. `datos/catalogo.json` es un derivado; `datos/fuente.lock.json` guarda el sha256 de `data/huerta_gba_enriquecido.json`. `npm run datos:sync` (o `-- --local ../info-huerta`) valida contra `datos/contrato.ts`, regenera y escribe `datos/CAMBIOS.md` y `datos/HUECOS.md` (83 huecos que el juego completa con supuestos). `datos:check` sale 1 si se rompe el contrato, 2 si hay cambios sin sincronizar. Lo propio del juego vive en `datos/juego/` (`especies.ts` con familias, emoji, defaults; `patio.ts`; `patios/`). Nunca editar el catálogo a mano.
-- **El patio es un dato (0.6):** `datos/juego/patios/fondo.ts` y `balcon.ts`. Plano de letras con el norte arriba, zonas con propiedades (`cria`, `techo`, `abrigo`, `calor`, `admiteTunel`, `macetas`, suelo, mo, drenaje, hondo, riegoCosto, `tipo` para dibujar) y obstáculos (`muro` con opacidad, `arbol` caduco, `losa`). `src/dominio/sol.ts` calcula horas de sol por geometría a 34,6° S. Nadie fuera de esos archivos nombra una zona o celda concreta: hay un test que lo vigila.
-- `src/arte`, `src/render`, `src/ui` siguen con `// @ts-nocheck`, portados del prototipo (deuda del paso 6).
+- TypeScript estricto, Vite 5, Vitest 2, tsx, Preact + signals, ESLint + Prettier. `npm run dev|build|build:artifact|test|tipos|lint|formato|bot|humo|capturas|datos:sync|datos:check`.
+- Capas en un solo sentido: `datos → dominio → aplicacion → vista`, con `infra` como adaptadores (guardado, reloj); `arte → render → vista`. El dominio no toca DOM. El renderer no importa el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lo vigila leyendo los `import`.
+- **Estado v4**, JSON, azar con semilla (mulberry32): `meta` (v, semilla, rng, región, plantilla), `mundo` (el patio copiado de su plantilla, celdas, plantas, `estructuras` con la compostera), `tiempo` (década, turno, año, carácter, clima y pronóstico), `recursos` (ratos, riego, túnel, manta, sobres), `progreso` (cosechas, logros, cuaderno). Migra desde v1, v2 y v3; `tests/fixtures/` tiene una partida real de cada versión.
+- **El orden de las llamadas a `azar` es contrato mientras viva el test dorado** (`tests/dorado.test.ts`: el dominio juega 8 años con el motor v0.4 y exige estado idéntico; `aFormaV04` proyecta el estado v4 a la forma vieja antes de comparar). El orden vive declarado en `src/dominio/sistemas/index.ts`.
+- `src/dominio/`: `acciones/` (cada acción es `puede / costo / aplicar`; la vista pregunta `puede()`), `sistemas/` (el paso del tiempo como dos tuberías: por planta y del patio), `textos/` (cada frase del cuaderno es una función con código), clima, región, patio, sol, espacio, factores, abrigo, diario, misiones, balance, migraciones. Los números del balance, en `datos/juego/reglas.ts`.
+- `src/aplicacion/`: consultas para la pantalla (escena, HUD, fichas, almanaque) y casos de uso de la partida sobre el puerto `Almacen`. `src/infra/`: dispositivo (autoguardado y tres ranuras), nube del artifact, archivo, reloj.
+- `src/vista/`: Preact. Máquina de modos (`modos.ts`, `transicion` pura), un componente por panel con su CSS al lado, tokens de color en `src/estilos/tokens.css`.
+- `src/render/pixel/`: cámaras intercambiables (`camaras/`: cenital, oblicua, cerca); una cámara nueva es un archivo. `src/arte/`: una forma por archivo, estilos por especie. Nada con `@ts-nocheck`.
+- **Cada planta ocupa lo que ocupa (0.8, paso 3):** el marco de plantación de cada especie vive en `datos/juego/especies.ts`. **Está apagado** hasta el paso 4: `conEspacioReal(fn)` lo prende (lo usan `tests/espacio.test.ts` y `npm run bot -- --espacio`).
+- **Datos:** huertapp es la única fuente de verdad. `datos/catalogo.json` es un derivado con candado (`datos/fuente.lock.json`); `npm run datos:sync` lo regenera. Lo propio del juego vive en `datos/juego/`: `especies.ts`, `reglas.ts`, `patio.ts` + `patios/` (plantillas), `region.ts` + `regiones/` (hoy solo `gba.ts`: clima SMN Ezeiza, heladas FAUBA, años típicos, caducos, calendario de huertapp).
+- **El patio y la región son datos.** Nadie fuera de `datos/juego/patios/` nombra una zona o celda concreta; nada fuera de `regiones/` supone el GBA ni el hemisferio sur (`tests/region.test.ts` juega un año en un GBA espejado en el norte).
+- Redes para cambiar código sin cambiar el juego: el dorado, el bot, el humo y **las capturas** (`npm run capturas -- --guardar` antes, `--comparar` después: 293 huellas de píxeles de la gráfica, incluidos los efectos cuadro a cuadro).
 - Balance actual: 14 ratos por década; riego por zona 0–3 con costo; arranque en década 22; estrellas por patio (fondo 30/70/120); abrigo manta +4, microtúnel +5, reparo fijo por zona.
-- Tests: 185 verdes (dorado, heladas, catálogo por especie con 2 contradicciones conocidas, regresiones, patio, sol, diario, espacio). `docs/ARQUITECTURA.md`, `docs/DATOS.md`, `docs/CIMIENTOS.md` y `CLAUDE.md` (9 innegociables) tienen el detalle.
+- Tests: 468 verdes. `docs/ARQUITECTURA.md`, `docs/DATOS.md`, `docs/CIMIENTOS.md` y `CLAUDE.md` (13 innegociables) tienen el detalle.
 
 ## 5. Lo que se hizo en la sesión (para no repetirlo)
 
@@ -84,6 +90,7 @@ que un PR ahora no le pisa la numeración a nadie.
 - **0.7:** diario por planta (`pl.hist`, últimas 16 anotaciones; incluye lo que antes bajaba la salud en silencio: sed leve, plaga que sigue, y qué factor frenó el crecimiento); plantines con estado chico/listo/pasándose (`puntoDeTrasplante`) y flecha en el patio; la planta amarillea desde salud 80 y muestra una barrita bajo 60. Test: toda baja de salud de un año entero tiene explicación en el diario.
 - Skill global `mapa-de-pendientes` propuesto (ver §7).
 - **0.8 (sesión de Claude Code en la nube, 18-9):** paso 3 de los cimientos, con la regla de espacio apagada; `--espacio` en el bot; estado v3 con migración; `docs/traspaso/instalar-skill.sh`; `crear-issues.sh` regenerado desde `issues.json` (ahora también cierra el #27).
+- **0.9 (24-9): la epic #39 entera**, #40 a #56. Registro, números de antes y después, y lo que quedó anotado para después, en `docs/REESTRUCTURA.md`. Se juega igual: el dorado siguió verde en cada commit y el bot da los mismos puntajes.
 
 ## 6. Decisiones y deudas abiertas
 
@@ -185,30 +192,28 @@ El orden que queda, entonces:
 2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se jubila el test dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
 3. Cuando el espacio real se prenda, dos cosas de interfaz que quedaron pendientes a propósito: mostrar el marco en la ficha ("ocupa 4 celdas", "entran 9 por celda") y dibujar una planta grande como una sola planta grande, no como la misma planta repetida — la escena ya marca cuál es la celda ancla (`ancla`), los renderers ya dibujan una sola vez, pero el sprite no crece con la huella. Va con #30.
 
-### c bis) La reestructura: epic #39 (21-9) — planificada, no empezada
+### c bis) La reestructura: epic #39 — hecha (0.9, 24-9)
 
-Facu pidió una epic con sub-issues para reestructurar el código (magic strings, código repetido, ifs
-anidados, una vista que quiere ir cambiando) y un análisis de arquitectura con alternativas. Está hecho:
+Facu pidió una epic para reestructurar el código y un análisis de arquitectura con alternativas
+(artifact [Arquitectura de Huertita](https://claude.ai/artifact/Tn8F6G1vQ9qk2yUDK9kVS4), fuente
+`docs/arquitectura.html`). Lo aprobó y se ejecutó entera: los 17 sub-issues, un commit cada uno, en la
+rama de trabajo. Decisiones de Facu que se respetaron (no volver a preguntar): **Preact + signals**;
+epic = solo reestructura; dominio antes del paso 4 y de #31, con el dorado como red; regiones sin
+repetir lo universal de la especie.
 
-- Artifact [Arquitectura de Huertita](https://claude.ai/artifact/Tn8F6G1vQ9qk2yUDK9kVS4) (fuente
-  `docs/arquitectura.html`): diagnóstico con números, qué se usa para esto, alternativas con pros y
-  contras, la propuesta, features × habilitadores, la epic. Versión corta: `docs/REESTRUCTURA.md`.
-- Epic **#39** con 17 sub-issues (#40–#56, jerarquía de sub-issues de GitHub) y 5 issues de features
-  fuera de la epic (#57 regiones, #58 cosechado, #59 construir, #60 vista por celda, #61 dinero).
-- Decisiones de Facu (no volver a preguntar): vista con **Preact + signals**; epic = solo reestructura;
-  **la fase de dominio (#42–#48) va antes del paso 4 (#28) y de #31**, con el dorado como red; regiones
-  derivadas del clima sin repetir lo universal de la especie.
-
-**El orden nuevo, entonces:** #40, #41 (andamiaje) → fase 1 del dominio (#42–#48, dorado verde en
-cada una) → #31 y #28. Vista (#49–#53) y render (#54–#55) en paralelo; #52 espera a #44; #56 al final.
-Empezar por #40: es corto y deja el linter y el test de capas vigilando el resto.
+Quedan fuera de la epic, como issues propios: #57 otras regiones, #58 pantalla de cosechado, #59
+construir y quitar en la partida, #60 vista de cerca por celda, #61 dinero. La base para cada uno ya
+está (región como dato, estado v4 con `estructuras`, cámaras como archivos, consultas).
 
 ### d) Chequeos rápidos cuando se retome
 
 - ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
 - ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
-- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm test` (185 tests) y `npm run humo`
-  (necesita Playwright; en la nube alcanza con `ln -s $(npm root -g)/playwright node_modules/playwright`).
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (468 tests) y
+  `npm run humo` (necesita Playwright: se usa el del proyecto o, si no hay, el global; no hace falta
+  symlink). Antes de tocar la gráfica, `npm run build:artifact && npm run capturas -- --guardar`.
+- ¿Mergeó la rama de la epic #39? ¿Republicar el juego (el artifact sigue en 0.7)? La 0.9 no cambia
+  lo que se ve salvo la manta en la vista de cerca, así que puede esperar al paso 4.
 
 ## 8. Cosas que Facu ya dijo y no hay que volver a preguntar
 
