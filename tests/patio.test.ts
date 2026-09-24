@@ -112,19 +112,19 @@ describe('migración de partidas guardadas', () => {
 });
 
 describe('nadie fuera de los datos conoce un patio en particular', () => {
-  it('ni el motor, ni los renderers, ni la interfaz nombran zonas del fondo', async () => {
+  it('ni el dominio, ni los renderers, ni la interfaz nombran zonas del fondo', async () => {
     const { readdirSync, readFileSync } = await import('node:fs');
     const culpables: string[] = [];
-    for (const dir of ['src/dominio', 'src/render', 'src/ui', 'src/arte'])
-      for (const f of readdirSync(dir)) {
-        if (f === 'migraciones.ts') continue; // las migraciones sí saben cómo era la v1
-        readFileSync(`${dir}/${f}`, 'utf8')
-          .split('\n')
-          .forEach((l, i) => {
-            if (/['"](almacigo|elevado)['"]|['"]\d+,\d+['"]/.test(l) && !/^\s*(\/\/|\*)/.test(l))
-              culpables.push(`${dir}/${f}:${i + 1}`);
-          });
-      }
+    const dir = 'src';
+    for (const f of readdirSync(dir, { recursive: true }) as string[]) {
+      if (!/\.tsx?$/.test(f) || f.endsWith('migraciones.ts')) continue; // las migraciones sí saben cómo era la v1
+      readFileSync(`${dir}/${f}`, 'utf8')
+        .split('\n')
+        .forEach((l, i) => {
+          if (/['"](almacigo|elevado)['"]|['"]\d+,\d+['"]/.test(l) && !/^\s*(\/\/|\*)/.test(l))
+            culpables.push(`${dir}/${f}:${i + 1}`);
+        });
+    }
     expect(culpables).toEqual([]);
   });
 });

@@ -21,7 +21,12 @@ function noche(zona: ZonaId, celda: string, slug: string, tmin: number, prep?: (
     estacion: 'primavera',
   };
   const evs = pasarDecada(E);
-  return { viva: Object.keys(E.plantas).length === 1, texto: evs.map((e) => e.texto).join(' | '), E };
+  return {
+    viva: Object.keys(E.plantas).length === 1,
+    texto: evs.map((e) => e.texto).join(' | '),
+    codigos: evs.map((e) => e.codigo),
+    E,
+  };
 }
 const manta = (z: ZonaId) => (E: Estado) => {
   despachar(E, { tipo: 'manta', zona: z });
@@ -32,11 +37,13 @@ describe('protección contra heladas (el tomate muere con helada)', () => {
     const r = noche('suelo', '0,2', 'tomate', 1);
     expect(r.viva).toBe(false);
     expect(r.texto).toMatch(/Una manta antihelada/);
+    expect(r.codigos).toContain('helada.murio');
   });
   it('con manta y mín 1 °C vive, y el cuaderno lo cuenta', () => {
     const r = noche('suelo', '0,2', 'tomate', 1, manta('suelo'));
     expect(r.viva).toBe(true);
     expect(r.texto).toMatch(/se salvaron tomate/);
+    expect(r.codigos).toContain('helada.salvadas');
   });
   it('la manta aguanta hasta −1 °C', () => {
     expect(noche('suelo', '0,2', 'tomate', -0.9, manta('suelo')).viva).toBe(true);

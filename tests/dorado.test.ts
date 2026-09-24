@@ -28,7 +28,8 @@ function aFormaV04(E: any): any {
   const { patio, ...resto } = E;
   expect(patio).toBe('fondo');
   const plantas = Object.fromEntries(Object.entries<any>(E.plantas).map(([id, { hist, ...pl }]) => [id, pl])); // el diario por planta es nuevo (0.7) y no cambia ninguna regla
-  return { ...resto, plantas, v: 1, tunel: !!E.tunel.elevado };
+  const cuaderno = E.cuaderno.map(({ codigo, ...e }: any) => e); // el código de cada frase es nuevo (0.9) y no cambia ninguna regla
+  return { ...resto, plantas, cuaderno, v: 1, tunel: !!E.tunel.elevado };
 }
 
 describe('el motor en TypeScript juega igual que el prototipo', () => {

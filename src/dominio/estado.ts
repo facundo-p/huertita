@@ -6,13 +6,16 @@ import { PATIOS, PATIO_INICIAL, celdasDe, zona, zonaDe, zonasDe } from './patio'
 import type { CaracterId, CeldaId, Estado, Evento, Planta, TipoEvento } from './tipos';
 import { clamp } from './util';
 import { especieDe } from './planta';
+import type { Frase } from './textos/frase';
+import * as T from './textos/temporada';
 
 export const RATOS = REGLAS.ratos.porDecada;
 export const RIEGOS = ['nada', 'espaciado', 'parejo', 'constante'] as const;
 const { arranque: ARRANQUE, suelo: SUELO } = REGLAS;
 
-export function anotar(E: Estado, tipo: TipoEvento, texto: string, celda?: CeldaId | null): Evento {
-  const ev: Evento = { turno: E.turno, dec: E.dec, tipo, texto, celda: celda || null };
+/** Anota una frase en el cuaderno de la partida y la devuelve como evento. */
+export function anotar(E: Estado, tipo: TipoEvento, f: Frase, celda?: CeldaId | null): Evento {
+  const ev: Evento = { turno: E.turno, dec: E.dec, tipo, texto: f.texto, celda: celda || null, codigo: f.codigo };
   E.cuaderno.push(ev);
   if (E.cuaderno.length > ARRANQUE.cuaderno) E.cuaderno.shift();
   return ev;
@@ -122,16 +125,7 @@ export function crearPartida(
   }
   E.moInicial = moMedia(E);
   E.prox = generarTiempo(E, E.dec);
-  anotar(
-    E,
-    'info',
-    'Arranca la huerta a ' +
-      fechaDe(E.dec) +
-      '. ' +
-      CARACTERES[E.caracter].nombre +
-      ': ' +
-      CARACTERES[E.caracter].texto,
-  );
-  anotar(E, 'info', PATIOS[patio].bienvenida);
+  anotar(E, 'info', T.arranca(fechaDe(E.dec), CARACTERES[E.caracter]));
+  anotar(E, 'info', T.bienvenida(PATIOS[patio].bienvenida));
   return E;
 }

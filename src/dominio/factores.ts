@@ -9,6 +9,7 @@ import { horasSol, macetaDe, sueloBase, vecinas, xy, zonaDe } from './patio';
 import type { CeldaId, Especie, Estado, Planta, Tiempo } from './tipos';
 import { clamp, r1 } from './util';
 import { especieDe } from './planta';
+import * as TF from './textos/fantasma';
 
 const { agua: AGUA, luz: LUZ, maceta: MACETA, suelo: SUELO, temperatura: TEMP, vecinos: VECINOS } = REGLAS;
 const F = REGLAS.fantasma;
@@ -233,40 +234,21 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
         E,
         bloque.filter((k) => k !== celda),
       );
-  if (!entra) razones.push(sp.nombre + ' hecha ocupa ' + sp.marco.huella + ' celdas y ahí no entran.');
-  if (l < F.avisoPocaLuz)
-    razones.push('Poca luz: ' + h + ' h ahora, pide ' + sp.hmin + '–' + sp.hideal + ' h. ' + sp.luzNo);
+  if (!entra) razones.push(TF.noEntra(sp));
+  if (l < F.avisoPocaLuz) razones.push(TF.pocaLuz(sp, h));
   if (s < F.avisoMalSuelo)
-    razones.push(
-      'El suelo no le gusta (' +
-        META.suelos[sueloDeCelda(E, celda)].nombre +
-        ', pide ' +
-        META.suelos[sp.suelo].nombre +
-        '). ' +
-        sp.sueloNo,
-    );
-  if (m < 1)
-    razones.push(
-      'La maceta le queda chica: pide ' + macetaQuePide(sp).litros + ' L y ' + macetaQuePide(sp).prof + ' cm de hondo.',
-    );
-  if (ve.malas.length) razones.push('Mal vecino: ' + ve.malas.join(', ') + '.');
-  if (ve.buenas.length) razones.push('Buen vecino: ' + ve.buenas.join(', ') + '.');
-  if (c.fam && c.fam === sp.familia) razones.push('Acá recién hubo otra ' + sp.familia + ': conviene rotar.');
-  if (vent === 'fuera') razones.push('Fuera de época de siembra en el GBA.');
-  else if (vent === 'posible') razones.push('Época posible, no ideal.');
+    razones.push(TF.malSuelo(sp, META.suelos[sueloDeCelda(E, celda)].nombre, META.suelos[sp.suelo].nombre));
+  if (m < 1) razones.push(TF.macetaChica(macetaQuePide(sp).litros, macetaQuePide(sp).prof));
+  if (ve.malas.length) razones.push(TF.malVecino(ve.malas));
+  if (ve.buenas.length) razones.push(TF.buenVecino(ve.buenas));
+  if (c.fam && c.fam === sp.familia) razones.push(TF.rotar(sp.familia));
+  if (vent === 'fuera') razones.push(TF.fueraDeEpoca());
+  else if (vent === 'posible') razones.push(TF.epocaPosible());
   const tg = sp.tg,
     ts = tempEfectiva(E, celda, { tmed: interp(CLIMA.media, diaCentral(E.dec)) });
-  if (ts < tg.min)
-    razones.push(
-      'Suelo frío para germinar (~' +
-        Math.round(ts) +
-        ' °C, necesita ' +
-        tg.min +
-        ' °C)' +
-        (enAlm ? '.' : ': probá en la almaciguera.'),
-    );
-  if (ts > tg.max) razones.push('Suelo demasiado caliente para germinar.');
-  if (enAlm && !sp.dt) razones.push(sp.nombre + ' no tolera el trasplante: va de siembra directa.');
+  if (ts < tg.min) razones.push(TF.sueloFrio(ts, tg.min, enAlm));
+  if (ts > tg.max) razones.push(TF.sueloCaliente());
+  if (enAlm && !sp.dt) razones.push(TF.noToleraTrasplante(sp));
   const germ = ts < tg.min || ts > tg.max ? F.sueloFrio : 1;
   const rota = c.fam === sp.familia ? REGLAS.siembra.vigorRepitiendoFamilia : 1,
     sinTrasplante = enAlm && !sp.dt ? F.enAlmacigoSinTrasplante : 1;

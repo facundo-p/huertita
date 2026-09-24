@@ -4,6 +4,7 @@ import type { Especie } from '../../datos/juego/especies';
 import type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, ZonaId } from './vocabulario';
 
 export type { Especie };
+export type { ZonaDePatio } from '../../datos/juego/patio';
 export type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, Ventana, ZonaId } from './vocabulario';
 
 export interface Planta {
@@ -41,7 +42,8 @@ export interface Registro {
   dec: number;
   turno: number;
   s: number;
-  n: [TipoEvento, string][];
+  /** [tipo, texto, código de la frase] */
+  n: [TipoEvento, string, string?][];
 }
 export interface Celda {
   zona: ZonaId;
@@ -72,6 +74,8 @@ export interface Evento {
   tipo: TipoEvento;
   texto: string;
   celda: CeldaId | null;
+  /** qué pasó, estable (ver `textos/frase.ts`); falta en las partidas guardadas antes de la 0.9 */
+  codigo?: string;
 }
 
 export interface Estado {

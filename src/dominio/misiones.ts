@@ -1,6 +1,7 @@
 /** Logros. Hoy son código; el paso 5 de los cimientos los pasa a una tabla junto con eventos y pedidos. */
 import { ESPECIES } from './catalogo';
 import { anotar } from './estado';
+import { logro } from './textos/temporada';
 import type { Estado, Evento } from './tipos';
 import { nombreDe } from './planta';
 
@@ -66,17 +67,6 @@ export function cumplir(E: Estado, id: string, evs: Evento[]): void {
   if (!m) return;
   E.misiones[id] = E.turno;
   for (const s in m.premio) E.sobres[s] = (E.sobres[s] || 0) + m.premio[s];
-  evs.push(
-    anotar(
-      E,
-      'logro',
-      'Logro: ' +
-        m.titulo +
-        '. Una vecina te pasa sobres de ' +
-        Object.keys(m.premio)
-          .map((s) => nombreDe(ESPECIES[s]))
-          .join(', ') +
-        '.',
-    ),
-  );
+  const especies = Object.keys(m.premio).map((s) => nombreDe(ESPECIES[s]));
+  evs.push(anotar(E, 'logro', logro(m.titulo, especies)));
 }

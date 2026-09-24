@@ -39,6 +39,7 @@ describe('diario por planta', () => {
     E.riego.elevado = 2;
     M.pasarDecada(E);
     expect(textos(pl)).toMatch(/Sigue con pulgones/);
+    expect(pl.hist!.flatMap((r) => r.n.map((x) => x[2]))).toContain('plagas.sigue');
     E.ratosGastados = 0;
     expect(M.despachar(E, { tipo: 'tratar', planta: pl.id }).ok).toBe(true);
     expect(pl.hist![pl.hist!.length - 1].n.some((x) => x[0] === 'bien')).toBe(true);
