@@ -404,8 +404,7 @@ function debajo(g: CanvasRenderingContext2D, es: Escena, G: GeometriaCerca, t: n
     g.ellipse(128, 172, 126, 100, 0, 3.14, 6.29);
     g.stroke();
   }
-  // ojo: busca la manta por el tipo de la zona, no por su id (se corrige aparte)
-  if (es.mantas[z]) {
+  if (es.mantas[G.zona]) {
     g.fillStyle = 'rgba(255,255,255,0.45)';
     g.fillRect(G.x0 - 4, 96, G.cols.length * G.cw + 8, 76);
   }
