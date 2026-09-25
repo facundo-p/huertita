@@ -199,3 +199,17 @@ describe('compost', () => {
     expect(document.querySelector('.hz-bolsa')!.textContent).toBe(String(E.recursos.secos).replace('.', ','));
   });
 });
+
+describe('los pedidos de los vecinos', () => {
+  it('el panel de logros muestra el pedido abierto: cuánto, de qué, para cuándo y qué da', () => {
+    const E = M.crearPartida(3, { decInicio: 5 });
+    E.progreso.pedidos.abiertos.push({ id: 'acelga-del-comedor', desde: 0, vence: 14, base: 0, sembrado: null });
+    con(E);
+    hacer({ tipo: 'ir', modo: 'logros' });
+    const li = document.querySelector('.hz-pedidos li')!;
+    expect(li.textContent).toMatch(/6 de acelga para/);
+    expect(li.textContent).toMatch(/Llevás 0 de 6; faltan 14 décadas/);
+    expect(li.textContent).toMatch(/compost maduro/);
+    expect(document.querySelector('.hz-pedido')!.textContent).toMatch(/0\/6 acelga/);
+  });
+});
