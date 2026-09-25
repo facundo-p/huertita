@@ -117,6 +117,7 @@ export function crearPartida(
       // se llenan abajo, después de sortear el carácter del año: el orden del azar es parte del contrato
       clima: null as unknown as Tiempo,
       pronostico: null as unknown as Pronostico,
+      anunciada: null,
       terminado: false,
     },
     recursos: { ratosGastados: 0, riego: {}, tunel: {}, manta: {}, goteo: false, sobres: {}, gen: {}, secos: BOLSA },
@@ -127,6 +128,7 @@ export function crearPartida(
       visitas: 0,
       moInicial: 0,
       misiones: {},
+      sorpresas: {},
       cuaderno: [],
       nextId: 1,
     },

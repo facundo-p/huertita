@@ -44,6 +44,11 @@ export function Hud() {
         </span>
         <span class={h.alertaDeHelada ? CLASE_DE_HELADA[h.alertaDeHelada] : ''}>helada {p.pHelada} %</span>
         <span>{p.lluvia}</span>
+        {h.amenaza && (
+          <span class="hz-amenaza" title={h.amenaza.queHacer}>
+            {h.amenaza.titulo}: {h.amenaza.queHacer}
+          </span>
+        )}
       </div>
     </>
   );

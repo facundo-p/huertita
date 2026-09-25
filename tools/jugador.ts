@@ -12,6 +12,8 @@ export interface MotorJugable {
   ratosLibres(E: any): number;
   /** las zonas salen del patio de la partida */
   zonasDe(E: any): { id: string; cria?: boolean }[];
+  /** lo que previene la amenaza anunciada, si hay */
+  prevenciones(E: any): any[];
 }
 /** Lo que el jugador mira de una partida para decidir. */
 export interface Vistazo {
@@ -75,6 +77,7 @@ export function jugarUnAnio(
       }
     }
     if (V.pronostico.pHelada > 40) for (const z of deCultivo) M.despachar(E, { tipo: 'manta', zona: z });
+    for (const a of M.prevenciones(E)) M.despachar(E, a);
     const calor = V.pronostico.tmax > 29;
     for (const z of deCultivo) M.despachar(E, { tipo: 'riego', zona: z, nivel: calor ? 2 : 1 });
     let guarda = 0;

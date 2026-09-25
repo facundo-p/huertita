@@ -5,6 +5,8 @@ export { especieDe, nombreDe, vivas } from './planta';
 export { compostera, dosisDeCompost, mezclaDe, secosParaEnderezar, secosPorVerde } from './estructuras';
 export { faseDeCaducos, hayCaducos, jardinInicial, topeDePasto } from './jardin';
 export type { FaseDeCaducos } from './jardin';
+export { SORPRESAS, anunciada, blancos, prevenciones, sorpresaPorId } from './sorpresas';
+export type { Sorpresa } from './sorpresas';
 export { ABRIGO, abrigo, aguantaCon, enRiesgo, riesgoHelada } from './abrigo';
 export { costoDe, despachar, puede, puedeMoverse, recibeCompost } from './acciones';
 export { apuntar } from './diario';

@@ -471,6 +471,20 @@ export const REGLAS = {
     topeDeVisitas: 20,
   },
 
+  /** [SUPUESTO] cada cuánto hay eventos sorpresa (las filas están en `sorpresas.ts`) */
+  sorpresas: {
+    /** probabilidad por década de que llegue un regalo, si hay alguno que pueda llegar */
+    probRegalo: 0.3,
+    /** probabilidad por década de que se anuncie una amenaza para la que viene, si hay alguna que pueda pasar */
+    probAmenaza: 0.25,
+    /** décadas sin amenazas después de una: nunca dos seguidas */
+    respiro: 3,
+    /** décadas antes de que el mismo evento pueda repetirse */
+    mismaCada: 12,
+    /** un golpe lastima pero no mata de una: la salud no baja de esto */
+    saludMinima: 1,
+  },
+
   /** [SUPUESTO] el trasplante */
   trasplante: {
     /** se puede mover hasta esta cantidad de días de crecimiento después del máximo de trasplante */

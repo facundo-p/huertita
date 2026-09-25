@@ -135,6 +135,12 @@ export interface Mundo {
   jardin: Jardin;
 }
 
+/** Un evento sorpresa anunciado (`datos/juego/sorpresas.ts`) y el turno en que va a pasar. */
+export interface Anuncio {
+  id: string;
+  turno: number;
+}
+
 /** Dónde está la partida en el calendario y qué tiempo hace. */
 export interface Momento {
   /** década del año, 1..36 */
@@ -146,6 +152,8 @@ export interface Momento {
   clima: Tiempo;
   /** lo que se pronosticó para esta década */
   pronostico: Pronostico;
+  /** una amenaza anunciada (un evento sorpresa malo): pasa en el turno que dice, si nadie la previene */
+  anunciada: Anuncio | null;
   terminado: boolean;
 }
 
@@ -172,6 +180,8 @@ export interface Progreso {
   visitas: number;
   moInicial: number;
   misiones: Record<string, number>;
+  /** el último turno en que pasó cada evento sorpresa */
+  sorpresas: Record<string, number>;
   cuaderno: Evento[];
   /** el número de la próxima planta */
   nextId: number;

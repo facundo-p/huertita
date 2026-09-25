@@ -12,6 +12,10 @@ Tres arreglos de arquitectura que salieron de la revisión del PR de la reestruc
   - Partidas guardadas: formato v5, con migración desde v4 (probada con partidas v4 guardadas de verdad, en `tests/fixtures/`).
   - El bot junta hojas, poda, corta el pasto y reparte el compost maduro: el fondo termina el año con más materia orgánica que al empezar (antes perdía unos 16 puntos) y el balcón pasa de 12–37 a 35–65 puntos. El dorado se regeneró.
   - El pronóstico podía guardar `-0` como temperatura y la partida no volvía igual del JSON: ahora se redondea a entero sin signo.
+- Eventos sorpresa como tabla (#6, `datos/juego/sorpresas.ts`). Cada fila dice cuándo puede pasar, dónde y qué hace; un evento nuevo de una clase conocida es una fila y sus frases. Los buenos llegan sin aviso: el kit de semillas de estación (de lo que está en fecha ideal), las bolsas de hojas del vecino, lombrices para la compostera. Los malos se anuncian una década antes, en el cuaderno y arriba en el pronóstico, con lo que los frena: el granizo (manta o microtúnel, o techo), la sudestada (tutor en lo que lo pide) y la mariposa blanca en las brasicáceas (manta o microtúnel, y aliados cerca). Cuando pasan, el cuaderno y el diario de cada planta dicen a quién le pegaron y qué lo habría evitado. Nunca dos amenazas seguidas, ninguna se repite antes de 12 décadas y el daño no mata. Todas las filas y `REGLAS.sorpresas` son [SUPUESTO].
+  - Tiran con una tirada propia (`tirada`: semilla, turno y sal) y no con el azar de la partida: sumar una fila no le cambia a nadie el clima ni las plagas.
+  - Partidas guardadas: el formato v5 (todavía sin publicar) suma la amenaza anunciada y cuándo pasó cada evento; la migración desde v4 los arranca vacíos.
+  - El bot hace lo que dice el aviso (`prevenciones`). El dorado se regeneró.
 
 ## 0.9.0 · 2026-09-24 · La reestructura (epic #39)
 

@@ -3,10 +3,9 @@ import { decadaEstacional, enTramo, regionDe } from '../region';
 import { REGLAS } from '../../../datos/juego/reglas';
 import { azar } from '../azar';
 import { objetivoCosecha } from '../catalogo';
-import { aliadosCerca } from '../factores';
+import { riesgoConAliados } from '../factores';
 import { macetaDe } from '../patio';
 import * as TP from '../textos/plagas';
-import { clamp } from '../util';
 import type { SistemaDePlanta } from './contexto';
 
 const PLAGAS = REGLAS.plagas;
@@ -27,7 +26,7 @@ export const plagas: SistemaDePlanta = ({ E, w, ev, nota, flores }, { pl, sp }) 
     }
     return 'sigue';
   }
-  const prot = clamp(1 - PLAGAS.proteccionPorAliado * aliadosCerca(E, pl.celda), PLAGAS.proteccionMaxima, 1),
+  const prot = riesgoConAliados(E, pl.celda),
     joven = pl.prog < objetivoCosecha(sp) * PLAGAS.jovenHasta,
     rot = E.mundo.celdas[pl.celda].fam === sp.familia ? PLAGAS.riesgoRepitiendoFamilia : 1,
     d = decadaEstacional(regionDe(E), w.dec), // las épocas de plaga están escritas para el sur

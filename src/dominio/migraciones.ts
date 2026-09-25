@@ -75,7 +75,8 @@ const PASOS: Record<number, (e: Guardada) => void> = {
   },
   // v4 → v5 (0.10): la compostera separa verdes y secos y cada tanda sabe cómo quedó armada; aparecen
   // el jardín (pasto, hojas, poda) y la bolsa de secos. Lo que había se toma como bien tapado, que es
-  // como lo contaba el juego hasta acá, y la bolsa arranca como en una partida nueva.
+  // como lo contaba el juego hasta acá, y la bolsa arranca como en una partida nueva. Aparecen también
+  // los eventos sorpresa: ninguno anunciado y ninguno pasado.
   4: (e) => {
     const plantilla = PLANTILLAS[e.meta.plantilla];
     if (plantilla) {
@@ -92,6 +93,8 @@ const PASOS: Record<number, (e: Guardada) => void> = {
     }));
     e.mundo.jardin = jardinInicial(e.mundo.patio, e.tiempo.dec);
     e.recursos.secos = REGLAS.jardin.bolsaInicial;
+    e.tiempo.anunciada = null;
+    e.progreso.sorpresas = {};
     e.meta.v = 5;
   },
 };
@@ -117,8 +120,9 @@ export function esPartidaValida(E: unknown): E is Estado {
     mundoValido(e.mundo) &&
     e.meta.region === e.mundo!.patio.region &&
     e.tiempo?.clima &&
+    e.tiempo.anunciada !== undefined &&
     typeof e.recursos?.secos === 'number' &&
-    e.progreso
+    e.progreso?.sorpresas
   );
 }
 /** Las partidas del prototipo anteriores a la almaciguera real no tenían n ni semillas, ni mantas. */

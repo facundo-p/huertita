@@ -75,6 +75,13 @@
 .hz-pron .medio {
   color: var(--maiz);
 }
+.hz-pron .hz-amenaza {
+  flex-basis: 100%;
+  color: #fff;
+  background: var(--ladrillo);
+  padding: 2px 6px;
+  font-size: 14px;
+}
 .hz-pron .alto {
   color: #fff;
   background: var(--ladrillo);

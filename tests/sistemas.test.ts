@@ -28,10 +28,13 @@ describe('la tubería del tiempo', () => {
       'logroDeSocios',
       'suelosYCompost',
       'crecerElJardin',
+      'llegaSorpresa',
       'anotarAvisos',
       'cerrarTurno',
       'anotarAvisos',
       'pronosticar',
+      'anunciarSorpresa',
+      'anotarAvisos',
       'ajustarRiego',
     ]);
   });
