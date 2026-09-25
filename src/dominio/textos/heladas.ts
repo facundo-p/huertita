@@ -4,6 +4,7 @@
  */
 import type { Abrigo } from '../abrigo';
 import type { Especie, ZonaDePatio } from '../tipos';
+import { cap } from '../util';
 import { frase, type Frase } from './frase';
 
 /** Sin ningún abrigo: qué habría alcanzado. */
@@ -45,3 +46,34 @@ export const seSalvaron = (tmin: number, ab: Abrigo, z: ZonaDePatio, nombres: st
       nombres.join(', ').toLowerCase() +
       '.',
   );
+
+/**
+ * La ayuda del panel de proteger. Los números llegan del dominio (el umbral, lo que abriga cada
+ * cosa), así la ayuda no miente si cambia el balance.
+ */
+export const cuandoHiela = (umbral: number): string =>
+  'Hiela para la planta cuando la mínima, más el abrigo que tenga, no pasa de ' +
+  umbral +
+  ' °C. El pronóstico se equivoca un par de grados: es una apuesta.';
+/** Qué abrigo tiene una zona y hasta cuánto aguanta. */
+export const abrigoDeZona = (ab: Abrigo): string =>
+  ab.grados
+    ? ab.partes.join(' + ') + ': +' + ab.grados + ' °C, aguanta hasta ' + (ab.aguanta + 0.1).toFixed(0) + ' °C'
+    : 'sin abrigo: se hiela con ' + ab.aguanta + ' °C o menos';
+export const queAbrigaCada = (manta: number, tunel: number): string =>
+  'Cada manta tapa un solo cantero, abriga unos ' +
+  manta +
+  ' °C y dura esta década. El microtúnel abriga ' +
+  tunel +
+  ' °C y queda puesto, pero no deja entrar lluvia ni polinizadores y en verano cocina. ';
+export const yaTieneAbrigo = (z: ZonaDePatio, grados: number, nombre: string): string =>
+  cap(z.conArticulo) +
+  (/^l[ao]s /.test(z.conArticulo) ? ' ya tienen ' : ' ya tiene ') +
+  grados +
+  ' °C por ' +
+  nombre +
+  '. ';
+export const seSuman = (aguanta: number): string =>
+  'Los abrigos se suman: manta sobre microtúnel aguanta hasta ' +
+  aguanta +
+  ' °C. Una helada más fuerte que eso mata igual, y el cuaderno te lo va a decir.';

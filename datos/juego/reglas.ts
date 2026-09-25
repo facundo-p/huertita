@@ -82,6 +82,11 @@ export const REGLAS = {
     danioSensible: 45,
     /** error del pronóstico de mínima, para el riesgo que se muestra */
     desvioPronostico: 2.2,
+    /**
+     * [SUPUESTO] % de que hiele desde el que el riesgo de una zona se muestra medio (y se sugiere la
+     * manta) o alto
+     */
+    riesgo: { medio: 15, alto: 50 },
   },
 
   /**

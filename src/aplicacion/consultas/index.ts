@@ -6,6 +6,6 @@ export { escena, nombreCorto, zonaCerca, type VistaDeEscena } from './escena';
 export { horasDeSol } from './sol';
 export { hud, resumenDePartida, type Hud, type Rato } from './hud';
 export { almanaque, sobresDisponibles, type EspecieEnLista } from './almanaque';
-export { riesgoPorZona, type ZonaAbrigada } from './abrigos';
+export { proteccion, type AbrigoMovil, type Proteccion, type ZonaAbrigada } from './abrigos';
 export { fichaDeCelda, type AccionDePlanta, type FichaDeCelda, type PlantaEnFicha } from './celda';
 export { fichaDeEspecie, type FichaDeEspecie, type Vecino } from './especie';

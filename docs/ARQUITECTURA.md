@@ -55,13 +55,13 @@ Los números del balance (probabilidades, daños, ratos, arranque, épocas de pl
 
 ## La aplicación y la infraestructura
 
-`src/aplicacion/consultas/` arma, a partir del estado, lo que muestra cada parte de la pantalla: la escena para el renderer, el HUD, la ficha de una celda, la de una especie, el almanaque, el riesgo de helada por zona. Son funciones puras que devuelven objetos planos, sin HTML.
+`src/aplicacion/consultas/` arma, a partir del estado, lo que muestra cada parte de la pantalla: la escena para el renderer, el HUD, la ficha de una celda, la de una especie, el almanaque, la protección contra la helada por zona. Son funciones puras que devuelven objetos planos, sin HTML. Si un botón va, si se puede y cuántos ratos lleva lo preguntan al dominio (`puede`, `costoDe`), y los textos de ayuda que llevan números del balance salen armados de `src/dominio/textos/`: la vista no tiene ni una condición ni un número de regla.
 
 `src/aplicacion/partidas.ts` tiene los casos de uso de una partida (guardar, nueva, código para llevarla a otro lado, nombre del archivo) sobre un puerto `Almacen`. `src/infra/` tiene sus adaptadores: el autoguardado y las tres ranuras en el dispositivo, la nube del artifact de Claude, el archivo, el reloj. Sin `localStorage` se juega igual.
 
 ## La vista
 
-`src/vista/` es Preact con signals. El estado de la interfaz es una máquina de modos (`modos.ts`: `ModoUI` es una unión discriminada y `transicion(modo, evento)` es pura, con tests sin DOM). Cada panel es un componente en `paneles/`, las piezas que se repiten están en `piezas/`, y cada uno trae su CSS al lado; los colores son variables de `src/estilos/tokens.css`. Los botones de acción salen de `puede()`: la vista nunca repite una regla del dominio.
+`src/vista/` es Preact con signals. El estado de la interfaz es una máquina de modos (`modos.ts`: `ModoUI` es una unión discriminada y `transicion(modo, evento)` es pura, con tests sin DOM). Cada panel es un componente en `paneles/`, las piezas que se repiten están en `piezas/`, y cada uno trae su CSS al lado; los colores son variables de `src/estilos/tokens.css`. Los botones de acción salen de `puede()` y su costo de `costoDe()`, a través de las consultas: la vista nunca repite una regla del dominio.
 
 `arrancar.tsx` carga la partida guardada (o arranca una nueva), monta la app, busca la nube y deja `window.Huertita` para el humo y las capturas.
 
