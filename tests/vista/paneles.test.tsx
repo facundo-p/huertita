@@ -209,7 +209,7 @@ describe('los pedidos de los vecinos', () => {
       vence: 14,
       base: 0,
       sembrado: null,
-      limite: 5,
+      cuenta: [],
     });
     con(E);
     hacer({ tipo: 'ir', modo: 'logros' });
@@ -227,7 +227,7 @@ describe('los pedidos de los vecinos', () => {
       vence: 14,
       base: 0,
       sembrado: null,
-      limite: 5,
+      cuenta: [],
     });
     E.progreso.cosechado.acelga = 2.5;
     con(E);

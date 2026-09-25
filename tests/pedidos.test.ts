@@ -20,6 +20,7 @@ import {
   deUnPedido,
   diasHastaCosecha,
   hayFechaDeSiembra,
+  limiteDe,
   llegaA,
   pedidoQueLlega,
   ultimaSiembra,
@@ -197,7 +198,7 @@ describe('cumplir un pedido', () => {
 describe('cuando vence', () => {
   const limite = (E: Estado, id: string): string => {
     const pd = E.progreso.pedidos.abiertos.find((x) => x.id === id)!;
-    return fechaDe(M.decadaDelTurno(E, pd.limite));
+    return fechaDe(M.decadaDelTurno(E, limiteDe(pd)!));
   };
   it('no vence antes de la década de su fecha: lo cosechado esa década todavía cuenta', () => {
     const E = partida(5),
@@ -223,7 +224,7 @@ describe('cuando vence', () => {
       pd = abierto(E, 'acelga-del-comedor'),
       lim = limite(E, 'acelga-del-comedor');
     for (const c of Object.values(E.mundo.celdas)) c.mo = 0;
-    expect(ultimaSiembra(E, pd, pedido(pd.id))).not.toBe(pd.limite);
+    expect(ultimaSiembra(E, pd, pedido(pd.id))).not.toBe(limiteDe(pd));
     avanzar(E, pd.vence - E.tiempo.turno);
     expect(vencidos(E)[0].texto).toContain('a más tardar a ' + lim);
   });
@@ -236,8 +237,8 @@ describe('cuando vence', () => {
     const E = partida(5),
       pd = abierto(E, 'acelga-del-comedor'),
       p = pedido('acelga-del-comedor');
-    expect(pd.limite).toBe(ultimaSiembra(E, pd, p));
-    avanzar(E, pd.limite - E.tiempo.turno + 1);
+    expect(limiteDe(pd)).toBe(ultimaSiembra(E, pd, p));
+    avanzar(E, limiteDe(pd)! - E.tiempo.turno + 1);
     alSembrar(E, 'acelga');
     expect(pd.sembrado).toBe(E.tiempo.turno);
     avanzar(E, pd.vence - E.tiempo.turno);
@@ -256,11 +257,35 @@ describe('cuando vence', () => {
     expect(f.texto).toContain('cosechaste 2 de 6 porciones');
     expect(f.texto).toMatch(/sembrar de más/);
   });
+  it('sembrar justo en el límite, en los mejores lugares, cuenta como a tiempo: lo sembrado no cambia la cuenta', () => {
+    for (const [patio, id, dec] of [
+      ['balcon', 'albahaca-de-la-pizzeria', 22],
+      ['fondo', 'acelga-del-comedor', 9],
+    ] as const) {
+      const E = M.crearPartida(1, { decInicio: dec, patio }),
+        p = pedido(id),
+        pd = abierto(E, id),
+        lim = limiteDe(pd)!,
+        antes = pd.cuenta[lim - pd.desde];
+      E.recursos.sobres[p.especie] = 20;
+      avanzar(E, lim - E.tiempo.turno);
+      const mejores = Object.keys(E.mundo.celdas)
+        .filter((c) => !E.mundo.celdas[c].planta && !M.zonasDe(E).find((z) => z.id === E.mundo.celdas[c].zona)!.cria)
+        .sort((a, b) => M.evaluarCelda(E, p.especie, b)!.puntaje - M.evaluarCelda(E, p.especie, a)!.puntaje)
+        .slice(0, 5);
+      for (const c of mejores) expect(M.despachar(E, { tipo: 'sembrar', slug: p.especie, celda: c }).ok, c).toBe(true);
+      expect(pd.sembrado).toBe(lim);
+      avanzar(E, pd.vence - E.tiempo.turno);
+      const [f] = vencidos(E);
+      expect(f.codigo, id).toBe('pedido.no-alcanzo');
+      expect(pd.cuenta[lim - pd.desde], id).toBe(antes);
+    }
+  });
   it('si se sembró antes del límite pero en mala época, dice que con ese tiempo no llegaba', () => {
     const E = partida(22),
       pd = abierto(E, 'albahaca-de-la-pizzeria');
     expect(llegaA(E, 'albahaca', E.tiempo.turno, pd.vence)).toBe(false);
-    expect(pd.limite).toBeGreaterThan(E.tiempo.turno);
+    expect(limiteDe(pd)).toBeGreaterThan(E.tiempo.turno);
     alSembrar(E, 'albahaca');
     avanzar(E, pd.vence - E.tiempo.turno);
     const [f] = vencidos(E);
@@ -280,7 +305,7 @@ describe('cuando vence', () => {
         const E = partida(d),
           pd = abierto(E, p.id),
           u = ultimaSiembra(E, pd, p)!;
-        expect(pd.limite, p.id).toBe(u);
+        expect(limiteDe(pd), p.id).toBe(u);
         expect(llegaA(E, p.especie, u, pd.vence), p.id).toBe(true);
         for (let s = u + 1; s <= pd.vence; s++) expect(llegaA(E, p.especie, s, pd.vence), p.id + ' t' + s).toBe(false);
         expect(decadasHastaCosecha(E, p.especie, u) * 10, p.id).toBeGreaterThanOrEqual(diasHastaCosecha(p.especie));
@@ -315,7 +340,7 @@ function riegoCuidadoso(E: Estado, zona: string, slug: string): number {
 
 /**
  * La cuenta, contra el juego de verdad: desde el momento en que llega el pedido, alguien que planifica
- * siembra cinco lugares, riega según el pronóstico, cubre, trata, raleá, trasplanta cuando es época y
+ * siembra cinco lugares, riega según el pronóstico, cubre, trata, raleá, tutora, trasplanta cuando es época y
  * vuelve a sembrar si pierde la siembra. Dice si llega a la primera cosecha antes de la fecha.
  */
 function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'tarde'): boolean {
@@ -327,7 +352,7 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'ta
   E.progreso.pedidos.abiertos = [];
   const ajenas = new Set(Object.keys(E.mundo.plantas)),
     pd = abierto(E, p.id);
-  let siembra = pd.limite + 1;
+  let siembra = limiteDe(pd)! + 1;
   if (cuando === 'temprano')
     for (let s = pd.desde; s <= pd.vence; s++)
       if (M.ventana(R, p.especie, M.decadaDelTurno(E, s)) === 'ideal' && llegaA(E, p.especie, s, pd.vence)) {
@@ -344,13 +369,11 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'ta
     cria = zonas.find((z) => z.cria),
     deCria = (c: string): boolean => E.mundo.celdas[c].zona === cria?.id,
     puntaje = (c: string): number => M.evaluarCelda(E, p.especie, c)!.puntaje,
-    /** las n mejores celdas de la almaciguera o de la tierra; si están ocupadas, se hace lugar */
+    /** las n mejores celdas de la almaciguera o de la tierra; si están ocupadas, se hace lugar, como en la cuenta */
     lugares = (n: number, enCria: boolean): string[] => {
       const cs = Object.keys(E.mundo.celdas)
         .filter((c) => deCria(c) === enCria && !esNuestra(E.mundo.celdas[c].planta))
-        .sort(
-          (a, b) => Number(!!E.mundo.celdas[a].planta) - Number(!!E.mundo.celdas[b].planta) || puntaje(b) - puntaje(a),
-        )
+        .sort((a, b) => puntaje(b) - puntaje(a))
         .slice(0, n);
       for (const c of cs) {
         const id = E.mundo.celdas[c].planta;
@@ -379,6 +402,7 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'ta
         continue;
       }
       if (pl.n > 1) M.despachar(E, { tipo: 'ralear', planta: pl.id });
+      if (sp.cuidados.includes('tutorado') && !pl.tutor) M.despachar(E, { tipo: 'tutorar', planta: pl.id });
       if (pl.plaga) M.despachar(E, { tipo: 'tratar', planta: pl.id });
     }
     if (E.tiempo.pronostico.pHelada > 40) for (const z of zonas) M.despachar(E, { tipo: 'manta', zona: z.id });
@@ -391,7 +415,7 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'ta
   return false;
 }
 
-const SEMILLAS = [1, 2, 3, 4, 5, 6, 7, 8];
+const SEMILLAS = Array.from({ length: 16 }, (_, i) => i + 1);
 /** Las décadas del año en que puede llegar un pedido. */
 const decadasDe = (p: M.Pedido): number[] =>
   Array.from({ length: 36 }, (_, i) => i + 1).filter((d) => p.cuando.some(([a, b]) => enTramo(d, a, b)));
@@ -421,7 +445,7 @@ describe.each(Object.keys(M.PLANTILLAS))('la cuenta es verdad en el patio %s', (
       }
   });
   it('en el segundo año de una partida jugada, con el patio ocupado y la tierra trabajada', () => {
-    const llegadas = new Map<M.Pedido, Estado[]>();
+    const llegadas = new Map<string, [M.Pedido, Estado[]]>();
     for (const s of SEMILLAS)
       jugarUnAnio(M, s, undefined, {
         patio,
@@ -429,16 +453,20 @@ describe.each(Object.keys(M.PLANTILLAS))('la cuenta es verdad en el patio %s', (
         alEmpezarLaDecada: (E: Estado) => {
           if (E.tiempo.turno < 36) return;
           for (const p of M.PEDIDOS)
-            if (decadasDe(p).includes(E.tiempo.dec) && puedeCumplirse(E, p))
-              llegadas.set(p, [...(llegadas.get(p) ?? []), structuredClone(E)]);
+            if (decadasDe(p).includes(E.tiempo.dec) && puedeCumplirse(E, p)) {
+              const k = `${p.id}, década ${E.tiempo.dec}`;
+              llegadas.set(k, [p, [...(llegadas.get(k)?.[1] ?? []), structuredClone(E)]]);
+            }
         },
       });
-    for (const [p, Es] of llegadas) esVerdad(Es, p, p.id);
+    for (const [k, [p, Es]] of llegadas) esVerdad(Es, p, k);
   });
-  it('en una partida nueva, el tomate no llega al balcón: con la almaciguera a media sombra, el plantín no está a tiempo', () => {
-    const p = M.pedidoPorId('salsa-de-ines')!,
-      llega = decadasDe(p).some((d) => puedeCumplirse(M.crearPartida(1, { decInicio: d, patio }), p));
-    expect(llega).toBe(patio !== 'balcon');
+  it('en una partida nueva, cada pedido llega en alguna década: en cada patio hay dónde hacerle lugar', () => {
+    for (const p of M.PEDIDOS)
+      expect(
+        decadasDe(p).some((d) => SEMILLAS.some((s) => puedeCumplirse(M.crearPartida(s, { decInicio: d, patio }), p))),
+        p.id,
+      ).toBe(true);
   });
 });
 

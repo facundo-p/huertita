@@ -220,7 +220,7 @@ por costo e impacto: #11 vacaciones de enero y #10 patios prediseñados.
 
 - ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
 - ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
-- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (592 tests) y
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (593 tests) y
   `npm run humo` (necesita Playwright: se usa el del proyecto o, si no hay, el global; no hace falta
   symlink). Antes de tocar la gráfica, `npm run build:artifact && npm run capturas -- --guardar`.
 - El juego publicado está en 0.10 (versión 9 del artifact, desde la rama del PR #69): Facu lo está
