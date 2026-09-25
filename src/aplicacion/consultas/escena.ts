@@ -123,6 +123,6 @@ export function escena(E: Estado, vista: VistaDeEscena): Escena {
     mantas: E.recursos.manta,
     capa: vista.capa,
     animar: vista.animar,
-    compost: K ? { carga: K.carga, tandas: K.tandas.length, dosis: K.dosis } : { carga: 0, tandas: 0, dosis: 0 },
+    compost: K ? { carga: K.verdes, tandas: K.tandas.length, dosis: K.dosis } : { carga: 0, tandas: 0, dosis: 0 },
   };
 }

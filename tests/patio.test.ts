@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { validarPatio } from '../datos/juego/patio';
+import { REGLAS } from '../datos/juego/reglas';
 import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
 import type { Estado } from '../src/dominio';
@@ -87,8 +88,13 @@ describe('migración de partidas guardadas', () => {
       expect(E.tiempo.dec).toBe(vieja.dec);
       expect(E.mundo.patio).toEqual(M.PLANTILLAS[E.meta.plantilla]);
       expect(Object.keys(E.mundo.plantas)).toEqual(Object.keys(vieja.plantas));
-      expect(M.compostera(E)).toMatchObject({ dosis: vieja.compost.dosis, carga: vieja.compost.carga });
-      expect(M.compostera(E)!.tandas).toEqual(vieja.compost.tandas);
+      // lo que había en la compostera se toma como bien tapado: dos secos por cada verde
+      expect(M.compostera(E)).toMatchObject({
+        dosis: vieja.compost.dosis,
+        verdes: vieja.compost.carga,
+        secos: vieja.compost.carga * 2,
+      });
+      expect(M.compostera(E)!.tandas).toEqual(vieja.compost.tandas.map((t: any) => ({ ...t, mezcla: 'pareja' })));
       for (let i = 0; i < 12; i++) M.pasarDecada(E);
       expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
     },
@@ -101,6 +107,26 @@ describe('migración de partidas guardadas', () => {
   it('las plantas de la v2 ocupan una celda, que es como se jugaron', () => {
     const E = M.migrar(guardada('partida-v2-fondo'))!;
     for (const pl of Object.values(E.mundo.plantas)) expect(M.celdasDePlanta(pl)).toEqual([pl.celda]);
+  });
+  it.each(['partida-v4-fondo', 'partida-v4-balcon'])('%s gana jardín y bolsa de secos y sigue jugando', (nombre) => {
+    const vieja = guardada(nombre),
+      E = M.migrar(guardada(nombre))!;
+    expect(E.meta.v).toBe(M.VERSION);
+    expect(E.mundo.patio).toEqual(M.PLANTILLAS[E.meta.plantilla]);
+    expect(Object.keys(E.mundo.plantas)).toEqual(Object.keys(vieja.mundo.plantas));
+    const k = vieja.mundo.estructuras[0];
+    expect(M.compostera(E)).toEqual({
+      tipo: 'compostera',
+      en: k.en,
+      verdes: k.carga,
+      secos: k.carga * 2,
+      tandas: k.tandas.map((t: any) => ({ avance: t.avance, mezcla: 'pareja' })),
+      dosis: k.dosis,
+    });
+    expect(E.recursos.secos).toBe(REGLAS.jardin.bolsaInicial);
+    expect(E.mundo.jardin).toEqual(M.jardinInicial(E.mundo.patio, E.tiempo.dec));
+    for (let i = 0; i < 12; i++) M.pasarDecada(E);
+    expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
   });
   it('una partida de hoy pasa tal cual', () => {
     const E = M.crearPartida(3);

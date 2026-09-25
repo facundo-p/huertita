@@ -3,6 +3,7 @@ import type { JSX } from 'preact';
 import type { NombreDeModo } from '../modos';
 import { Almanaque } from './Almanaque';
 import { Celda } from './Celda';
+import { Compost } from './Compost';
 import { Cuaderno, Resumen } from './Cuaderno';
 import { Ficha } from './Ficha';
 import { Fin, Logros } from './Logros';
@@ -23,6 +24,7 @@ export const PANELES: Record<Exclude<NombreDeModo, 'moviendo'>, () => JSX.Elemen
   almanaque: Almanaque,
   riego: Riego,
   proteger: Proteger,
+  compost: Compost,
   cuaderno: Cuaderno,
   logros: Logros,
   partidas: Partidas,

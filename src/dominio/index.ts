@@ -2,7 +2,9 @@
 export * from './tipos';
 export { ETAPAS, NIVELES_DE_RIEGO, PLAGAS, TIPOS_DE_EVENTO, VENTANAS, idCelda, xy } from './vocabulario';
 export { especieDe, nombreDe, vivas } from './planta';
-export { compostera, dosisDeCompost } from './estructuras';
+export { compostera, dosisDeCompost, mezclaDe, secosParaEnderezar, secosPorVerde } from './estructuras';
+export { faseDeCaducos, hayCaducos, jardinInicial, topeDePasto } from './jardin';
+export type { FaseDeCaducos } from './jardin';
 export { ABRIGO, abrigo, aguantaCon, enRiesgo, riesgoHelada } from './abrigo';
 export { costoDe, despachar, puede, puedeMoverse, recibeCompost } from './acciones';
 export { apuntar } from './diario';

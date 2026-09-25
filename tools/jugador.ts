@@ -93,6 +93,20 @@ export function jugarUnAnio(
       if (!mejor || mejor.p < 0.45) break;
       M.despachar(E, { tipo: 'sembrar', slug: mejor.s, celda: mejor.c });
     }
+    // con lo que sobra: juntar secos para el compost y el mulch, y repartir el compost maduro
+    for (const a of [
+      { tipo: 'juntarHojas' },
+      { tipo: 'podar' },
+      { tipo: 'revolver' },
+      { tipo: 'cortarPasto', destino: 'secar' },
+    ])
+      M.despachar(E, a);
+    for (let dosis = 0; dosis < 3; dosis++) {
+      const pobre = Object.keys(V.celdas)
+        .filter((c) => !enCria(c))
+        .sort((a, b) => E.mundo.celdas[a].mo - E.mundo.celdas[b].mo)[0];
+      if (!pobre || !M.despachar(E, { tipo: 'compost', celda: pobre }).ok) break;
+    }
     const evs = M.pasarDecada(E);
     if (narrar) for (const e of evs) narrar(String(e.dec).padStart(2) + ' ' + e.tipo.padEnd(6) + ' ' + e.texto);
   }

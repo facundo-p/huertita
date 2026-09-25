@@ -370,16 +370,26 @@ export const REGLAS = {
     techo: 1.2,
   },
 
-  /** [REPO] compostaje.json: listo desde ~120 días, más rápido en verano; [SUPUESTO] las cantidades */
+  /**
+   * [REPO] compostaje.json: la receta (1 a 3 secos por cada verde; la más repetida, 2 a 1), qué es
+   * verde y qué es seco, las señales (huele y hay mosquitas: faltan secos; no pasa nada: sobran) y
+   * que está lista desde ~120 días, más rápido en verano. [SUPUESTO] las cantidades y los ritmos.
+   * La unidad es la carga: más o menos un balde de restos de cocina.
+   */
   compost: {
-    /** restos de cocina por década */
-    restosDeCocina: 1,
-    /** lo que suma cada cosa que va a la compostera */
+    /** lo que echa la cocina por década: yerba y cáscaras (verdes); cartón y papel (secos) */
+    cocina: { verdes: 1, secos: 0.5 },
+    /** lo que suma cada cosa que va a la compostera: una planta entera, los restos de una cosecha, un raleo */
     porPlanta: 1,
     porCosecha: 0.5,
     porRaleo: 0.5,
-    /** carga que cierra una tanda */
+    /** [REPO] secos por cada verde: la receta. Al echar verdes se tapan con secos de la bolsa hasta `ideal` */
+    receta: { min: 1, ideal: 2, max: 3 },
+    /** verdes que cierran una tanda */
     tanda: 6,
+    /** muy húmeda (menos secos que `receta.min`) se pudre y avanza a este ritmo; muy seca (más que `max`), a este */
+    ritmoHumeda: 0.5,
+    ritmoSeca: 0.6,
     /** avance por década según la temperatura media */
     avanceConCalor: 1.3,
     calorDesde: 20,
@@ -387,6 +397,44 @@ export const REGLAS = {
     frioDesde: 12,
     madura: 12,
     dosisPorTanda: 3,
+  },
+
+  /**
+   * [SUPUESTO] el patio como fuente de verdes y secos para el compost y el mulch. [REPO] compostaje.json:
+   * el pasto recién cortado es verde; el pasto seco, las hojas secas y la poda picada son secos.
+   * Los caducos pierden la hoja cuando la región dice que se les termina (`caducos.hasta`).
+   * En carga, como el compost.
+   */
+  jardin: {
+    /** pasto que crece por m² y década: el césped del GBA casi no crece con frío */
+    pastoPorM2: { calor: 0.15, templado: 0.08, frio: 0.02 },
+    pastoCalorDesde: 18,
+    pastoFrioBajo: 12,
+    /** sin cortar, el pasto llega como mucho a lo que crece en tantas décadas de calor */
+    pastoTopeDecadas: 3,
+    /** con menos pasto crecido que esto no hay nada que cortar */
+    pastoMinimo: 0.5,
+    /** lo que queda del pasto cuando se seca al sol */
+    pastoSeco: 0.5,
+    /** décadas que tardan en caer las hojas de los caducos */
+    caidaDecadas: 5,
+    /** hojas por década de caída: por cada celda de radio de copa de un caduco del patio, y de la vereda */
+    hojasPorCopa: 1.2,
+    hojasDeVereda: 2,
+    /** las hojas que no se juntan se vuelan o se deshacen: lo que queda cada década fuera de la caída */
+    hojasQuedan: 0.5,
+    /** menos que esto ya no se junta: se deshizo */
+    hojasMinimas: 0.2,
+    /** ramas de la poda de invierno, por celda de radio de copa */
+    podaPorCopa: 1,
+    /** ratos: cortar el pasto, juntar hojas, podar */
+    ratosCortar: 1,
+    ratosJuntar: 1,
+    ratosPodar: 2,
+    /** los secos con los que arranca la bolsa */
+    bolsaInicial: 6,
+    /** secos que se lleva cubrir una celda de mulch */
+    secosPorMulch: 1,
   },
 
   /** [SUPUESTO] polinizadores */

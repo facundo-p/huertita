@@ -5,6 +5,7 @@ import { generarTiempo } from './clima';
 import { regionPorId } from './region';
 import { celdasDePlanta } from './espacio';
 import { alCompost, estructurasIniciales } from './estructuras';
+import { jardinInicial } from './jardin';
 import { PLANTILLA_INICIAL, celdasDe, copiarPlantilla, zona, zonaDe, zonasDe } from './patio';
 import type { CaracterId, CeldaId, Estado, Evento, Planta, Pronostico, Tiempo, TipoEvento } from './tipos';
 import { clamp } from './util';
@@ -14,7 +15,8 @@ import * as T from './textos/temporada';
 
 export const RATOS = REGLAS.ratos.porDecada;
 export const RIEGOS = ['nada', 'espaciado', 'parejo', 'constante'] as const;
-const { arranque: ARRANQUE, suelo: SUELO } = REGLAS;
+const { arranque: ARRANQUE, suelo: SUELO } = REGLAS,
+  BOLSA = REGLAS.jardin.bolsaInicial;
 
 /** Anota una frase en el cuaderno de la partida y la devuelve como evento. */
 export function anotar(E: Estado, tipo: TipoEvento, f: Frase, celda?: CeldaId | null): Evento {
@@ -87,7 +89,9 @@ export function quitarPlanta(E: Estado, pl: Planta, vaAlCompost: boolean): void 
     c.planta = null;
   }
   delete E.mundo.plantas[pl.id];
-  if (vaAlCompost) alCompost(E, REGLAS.compost.porPlanta);
+  // [REPO] compostaje.json: la planta verde es verde; la que ya se pasó o dio semilla, seca
+  if (vaAlCompost)
+    alCompost(E, REGLAS.compost.porPlanta, pl.etapa === 'pasada' || pl.etapa === 'semillando' ? 'seco' : 'verde');
 }
 
 export function crearPartida(
@@ -97,8 +101,14 @@ export function crearPartida(
   const plantilla = opciones.patio || PLANTILLA_INICIAL,
     patio = copiarPlantilla(plantilla);
   const E: Estado = {
-    meta: { v: 4, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9e3779b9, region: patio.region, plantilla },
-    mundo: { patio, celdas: {}, plantas: {}, estructuras: estructurasIniciales(patio, ARRANQUE.dosisDeCompost) },
+    meta: { v: 5, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9e3779b9, region: patio.region, plantilla },
+    mundo: {
+      patio,
+      celdas: {},
+      plantas: {},
+      estructuras: estructurasIniciales(patio, ARRANQUE.dosisDeCompost),
+      jardin: jardinInicial(patio, opciones.decInicio || ARRANQUE.decada),
+    },
     tiempo: {
       dec: opciones.decInicio || ARRANQUE.decada,
       turno: 0,
@@ -109,7 +119,7 @@ export function crearPartida(
       pronostico: null as unknown as Pronostico,
       terminado: false,
     },
-    recursos: { ratosGastados: 0, riego: {}, tunel: {}, manta: {}, goteo: false, sobres: {}, gen: {} },
+    recursos: { ratosGastados: 0, riego: {}, tunel: {}, manta: {}, goteo: false, sobres: {}, gen: {}, secos: BOLSA },
     progreso: {
       cosechado: {},
       porciones: 0,

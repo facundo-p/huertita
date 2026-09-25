@@ -11,10 +11,6 @@ export function climaDeLaDecada(fecha: string, w: Tiempo): Frase {
   else if (w.ola) cierre = '. Ola de calor.';
   return frase('clima.decada', cap(fecha) + ': máx ' + w.tmax + ' °C, mín ' + w.tmin + ' °C, ' + lluvia + cierre);
 }
-export const tandaCerrada = (): Frase =>
-  frase('compost.tanda', 'Cerraste una tanda de compost. En unos 4 meses va a estar madura.');
-export const tandaMadura = (dosis: number): Frase =>
-  frase('compost.madura', 'Una tanda de compost maduró: huele a tierra de monte. +' + dosis + ' dosis.');
 export const anioTerminado = (): Frase =>
   frase('partida.fin-de-anio', 'Pasó un año entero en la huerta. Mirá el balance.');
 export const empiezaAnio = (anio: number): Frase =>

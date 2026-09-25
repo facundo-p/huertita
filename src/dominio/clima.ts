@@ -9,7 +9,7 @@ import { azar, gauss } from './azar';
 import { DECADAS_POR_MES, DIAS_DEL_ANIO, diaCentral, estacionDe, interp, mesDe } from './calendario';
 import { regionDe, type Region } from './region';
 import type { Estado, Pronostico, Tiempo } from './tipos';
-import { clamp, phi, r1 } from './util';
+import { clamp, entero, phi, r1 } from './util';
 
 export type { Caracter };
 const C = REGLAS.clima;
@@ -62,8 +62,8 @@ export function generarTiempo(E: Estado, dec: number): { real: Tiempo; pron: Pro
   const ftmin = tmin + gauss(E) * C.pronostico.errorMinima,
     ftmax = tmax + gauss(E) * C.pronostico.errorMaxima;
   const pron: Pronostico = {
-    tmin: Math.round(ftmin),
-    tmax: Math.round(ftmax),
+    tmin: entero(ftmin),
+    tmax: entero(ftmax),
     pHelada: Math.round(clamp(phi((umbral - ftmin) / desvioPronostico), 0, 1) * 100),
     lluvia: lluviaPronosticada(E, lluvia),
   };

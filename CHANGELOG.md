@@ -7,6 +7,11 @@ Tres arreglos de arquitectura que salieron de la revisión del PR de la reestruc
 - Los números del modelo de clima, de las épocas de plaga y de los logros pasaron a `datos/juego/reglas.ts`, con su marca y su unidad; el calendario (décadas, meses, fechas) quedó en `src/dominio/calendario.ts`. Un test vigila que ninguna regla tenga un número suelto (#63).
 - El panel de protección y la ficha de una celda preguntan al dominio si un botón va, si se puede y cuántos ratos lleva (`puede`, `costoDe`). La ayuda de las heladas sale con el umbral y los abrigos del dominio, así no miente si cambia el balance (#64).
 - La escena se arma una sola vez por cambio: una señal derivada que leen todos, y cada gesto cambia sus señales juntas (#65).
+- El test dorado deja de comparar contra el motor v0.4 y pasa a ser una foto propia del bot (`npm run dorado`, `tests/fixtures/dorado.json`): cuando una regla cambia a propósito se regenera y el diff va en el PR (#68).
+- Compost con verdes y secos (#7). La compostera junta verdes (restos de cocina, raleos, plantas arrancadas, pasto recién cortado) y cada balde se tapa con secos de una bolsa, hasta la receta de compostaje.json (1 a 3 secos por verde). Una tanda con pocos secos se humedece, huele y tarda; con demasiados, tarda también; revolverla con secos la endereza. Los secos son un recurso finito: salen de juntar las hojas de los caducos en otoño (los del patio y los de la vereda), de la poda de invierno y del pasto cortado y secado, y el mulch ahora también los gasta. Panel nuevo "Compost" con la bolsa, la tanda abierta y las que maduran. Cuánto da cada cosa es [SUPUESTO] (`REGLAS.jardin`).
+  - Partidas guardadas: formato v5, con migración desde v4 (probada con partidas v4 guardadas de verdad, en `tests/fixtures/`).
+  - El bot junta hojas, poda, corta el pasto y reparte el compost maduro: el fondo termina el año con más materia orgánica que al empezar (antes perdía unos 16 puntos) y el balcón pasa de 12–37 a 35–65 puntos. El dorado se regeneró.
+  - El pronóstico podía guardar `-0` como temperatura y la partida no volvía igual del JSON: ahora se redondea a entero sin signo.
 
 ## 0.9.0 · 2026-09-24 · La reestructura (epic #39)
 

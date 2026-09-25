@@ -292,3 +292,41 @@ button.hz-alm-fila:hover .nom {
     grid-column: 1/-1;
   }
 }
+
+/* compost: la tanda abierta y las que maduran, con el color de su mezcla */
+.hz-tanda {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  background: var(--anil);
+  padding: 6px 10px;
+  margin: 4px 0;
+  border-left: 6px solid var(--hoja);
+}
+.hz-tanda.abierta {
+  grid-template-columns: auto 1fr;
+}
+.hz-tanda.m-humeda {
+  border-color: var(--ladrillo);
+}
+.hz-tanda.m-seca {
+  border-color: var(--maiz);
+}
+.hz-tanda b {
+  font-family: var(--pix);
+  color: var(--maiz);
+}
+.hz-barrita {
+  display: block;
+  height: 8px;
+  background: var(--anil-2);
+}
+.hz-barrita i {
+  display: block;
+  height: 100%;
+  background: var(--hoja);
+}
+.hz-bolsa {
+  color: var(--maiz);
+}

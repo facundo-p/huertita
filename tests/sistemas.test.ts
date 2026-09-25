@@ -27,6 +27,7 @@ describe('la tubería del tiempo', () => {
       'anotarAvisos',
       'logroDeSocios',
       'suelosYCompost',
+      'crecerElJardin',
       'anotarAvisos',
       'cerrarTurno',
       'anotarAvisos',

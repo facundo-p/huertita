@@ -93,6 +93,9 @@ export const fondo: Patio = {
     { tipo: 'arbol', nombre: 'Paraíso', en: [7.5, 2], alto: 7, copa: 5, fuste: 2, caduco: true },
   ],
   horizonte: 15,
+  /** [SUPUESTO] el piso del fondo es pasto: la franja del medio y los bordes, unos 6 m² */
+  pastoM2: 6,
+  vereda: true,
   sol: 'v04',
   estrellas: [30, 70, 120],
   aspecto: { piso: 'pasto', norte: 'paredon' },

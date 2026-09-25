@@ -82,7 +82,7 @@ export interface Evento {
 /** De qué está hecha una partida, más allá de lo que se juega: formato, azar, lugar. */
 export interface Meta {
   /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
-  v: 4;
+  v: 5;
   semilla: number;
   rng: number;
   /** la región del clima y el calendario (`datos/juego/regiones`) */
@@ -93,17 +93,38 @@ export interface Meta {
   guardado?: number;
 }
 
-/** Una compostera: lo que se le echa (`carga`) se vuelve tandas, y cada tanda madura en dosis de compost. */
+/**
+ * Cómo quedó armada una tanda: con la receta de secos y verdes (`pareja`), con pocos secos (`humeda`:
+ * se pudre, huele y tarda) o con muchos (`seca`: no pasa nada, tarda).
+ */
+export type Mezcla = 'pareja' | 'humeda' | 'seca';
+export interface Tanda {
+  avance: number;
+  mezcla: Mezcla;
+}
+/**
+ * Una compostera: lo que se le echa va a la tanda abierta, verdes por un lado y secos por el otro.
+ * Cuando junta bastantes verdes, la tanda se cierra y madura en dosis de compost.
+ */
 export interface Compostera {
   tipo: 'compostera';
   en: CeldaId;
-  carga: number;
-  tandas: { avance: number }[];
+  /** verdes y secos de la tanda abierta, en carga */
+  verdes: number;
+  secos: number;
+  tandas: Tanda[];
   /** dosis de compost listas para usar */
   dosis: number;
 }
 /** Lo que se construye en el patio y no es una zona de cultivo. Hoy, solo la compostera. */
 export type Estructura = Compostera;
+
+/** Lo que el patio va dando para juntar, en carga: pasto crecido, hojas caídas, ramas para podar. */
+export interface Jardin {
+  pasto: number;
+  hojas: number;
+  poda: number;
+}
 
 /** Lo que hay en el patio: el patio mismo (una copia de su plantilla), la tierra, las plantas y lo construido. */
 export interface Mundo {
@@ -111,6 +132,7 @@ export interface Mundo {
   celdas: Record<CeldaId, Celda>;
   plantas: Record<string, Planta>;
   estructuras: Estructura[];
+  jardin: Jardin;
 }
 
 /** Dónde está la partida en el calendario y qué tiempo hace. */
@@ -138,6 +160,8 @@ export interface Recursos {
   sobres: Record<string, number>;
   /** generaciones de semilla propia, por especie */
   gen: Record<string, number>;
+  /** la bolsa de secos (hojas, pasto seco, poda picada), en carga: tapan el compost y hacen mulch */
+  secos: number;
 }
 
 /** Lo que va quedando de la partida: cosechas, logros y el cuaderno. */
@@ -172,6 +196,13 @@ export type Accion =
   | { tipo: 'tratar'; planta: string }
   | { tipo: 'mulch'; celda: CeldaId }
   | { tipo: 'compost'; celda: CeldaId }
+  | {
+      tipo: 'cortarPasto';
+      /** 'compost': va verde a la compostera; 'secar': se seca y va a la bolsa */ destino: 'compost' | 'secar';
+    }
+  | { tipo: 'juntarHojas' }
+  | { tipo: 'podar' }
+  | { tipo: 'revolver' }
   | { tipo: 'riego'; zona: ZonaId; nivel: number }
   | { tipo: 'manta'; zona: ZonaId }
   | { tipo: 'tunel'; /** si falta, la primera zona del patio que lo admite */ zona?: ZonaId }

@@ -7,6 +7,7 @@ const MODOS: [Exclude<NombreDeModo, 'moviendo' | 'ficha'>, string][] = [
   ['semillas', 'Sembrar'],
   ['riego', 'Regar'],
   ['proteger', 'Proteger'],
+  ['compost', 'Compost'],
 ];
 const DESPUES: [Exclude<NombreDeModo, 'moviendo' | 'ficha'>, string][] = [
   ['almanaque', 'Almanaque'],
