@@ -49,12 +49,18 @@ function lugar(E: Estado, sp: Especie, celda: CeldaId, turno: number): number {
   return fLuz(sp, h, P.temperaturaDeReferencia) * fSuelo(E, sp, celda) * fMaceta(E, sp, celda);
 }
 
-/** La mejor celda del patio para la especie, fuera de la almaciguera: donde la sembraría quien planifica. */
+/**
+ * La mejor celda libre del patio para la especie, fuera de la almaciguera: donde la sembraría quien
+ * planifica. Si no queda ninguna libre, la mejor ocupada: lo que tarda si se hace lugar.
+ */
 function mejorCelda(E: Estado, sp: Especie, turno: number): CeldaId | null {
+  return mejorEntre(E, sp, turno, true) ?? mejorEntre(E, sp, turno, false);
+}
+function mejorEntre(E: Estado, sp: Especie, turno: number, soloLibres: boolean): CeldaId | null {
   let mejor: CeldaId | null = null,
     f = -1;
   for (const c in E.mundo.celdas) {
-    if (zonaDe(E, c).cria) continue;
+    if (zonaDe(E, c).cria || (soloLibres && E.mundo.celdas[c].planta)) continue;
     const fc = lugar(E, sp, c, turno);
     if (fc > f) [mejor, f] = [c, fc];
   }
@@ -138,10 +144,13 @@ function decadasHastaCrecer(s: Siembra, desde: number): number {
 export const llegaA = (E: Estado, slug: string, turno: number, vence: number): boolean =>
   turno + decadasHastaCosecha(E, slug, turno) <= vence;
 
-/** El último turno en que una siembra todavía llega a cosecharse para la fecha, en un año normal. */
-export function ultimaSiembra(E: Estado, pd: PedidoAbierto, p: Pedido): number {
-  for (let s = pd.vence; s > pd.desde; s--) if (llegaA(E, p.especie, s, pd.vence)) return s;
-  return pd.desde;
+/**
+ * El último turno en que una siembra todavía llega a cosecharse para la fecha, en un año normal, o
+ * `null` si ninguna llega. Un pedido solo llega si hay alguna (`hayFechaDeSiembra`).
+ */
+export function ultimaSiembra(E: Estado, pd: Pick<PedidoAbierto, 'desde' | 'vence'>, p: Pedido): number | null {
+  for (let s = pd.vence; s >= pd.desde; s--) if (llegaA(E, p.especie, s, pd.vence)) return s;
+  return null;
 }
 
 /** Si entre `desde` y `vence` hay una década ideal para sembrar la especie que llegue a cosecharse. */
@@ -196,13 +205,16 @@ export const deUnPedido = (E: Estado, pd: PedidoAbierto, p: Pedido): T.DeUnPedid
 
 /** Abre el pedido: desde ahora cuenta lo que se coseche de la especie. */
 export function abrir(E: Estado, p: Pedido): Frase {
-  const pd: PedidoAbierto = {
-    id: p.id,
-    desde: E.tiempo.turno,
-    vence: E.tiempo.turno + p.plazo,
-    base: E.progreso.cosechado[p.especie] || 0,
-    sembrado: null,
-  };
+  const desde = E.tiempo.turno,
+    vence = desde + p.plazo,
+    pd: PedidoAbierto = {
+      id: p.id,
+      desde,
+      vence,
+      base: E.progreso.cosechado[p.especie] || 0,
+      sembrado: null,
+      limite: ultimaSiembra(E, { desde, vence }, p) ?? desde,
+    };
   E.progreso.pedidos.abiertos.push(pd);
   return T.llegaPedido(deUnPedido(E, pd, p));
 }
@@ -254,13 +266,13 @@ export function cumplirPedidos(E: Estado, evs: Evento[]): void {
 /** Por qué no se llegó: no se sembró, se sembró tarde, se sembró en una época en que no llegaba, o no alcanzó. */
 function porQueNo(E: Estado, pd: PedidoAbierto, p: Pedido): Frase {
   const de = deUnPedido(E, pd, p),
-    ultima = ultimaSiembra(E, pd, p),
+    ultima = pd.limite,
     dias = diasHastaCosecha(p.especie),
     decadas = decadasHastaCosecha(E, p.especie, ultima),
     c: T.Cuenta = {
       dias,
       decadas,
-      masLento: decadas * DIAS_POR_TURNO >= dias + DIAS_POR_TURNO,
+      masLento: Number.isFinite(decadas) && decadas * DIAS_POR_TURNO >= dias + DIAS_POR_TURNO,
       limite: fechaDe(decadaDelTurno(E, ultima)),
       llevas: Math.max(0, llevas(E, pd, p)),
     };

@@ -203,7 +203,14 @@ describe('compost', () => {
 describe('los pedidos de los vecinos', () => {
   it('el panel de logros muestra el pedido abierto: cuánto, de qué, para cuándo y qué da', () => {
     const E = M.crearPartida(3, { decInicio: 5 });
-    E.progreso.pedidos.abiertos.push({ id: 'acelga-del-comedor', desde: 0, vence: 14, base: 0, sembrado: null });
+    E.progreso.pedidos.abiertos.push({
+      id: 'acelga-del-comedor',
+      desde: 0,
+      vence: 14,
+      base: 0,
+      sembrado: null,
+      limite: 5,
+    });
     con(E);
     hacer({ tipo: 'ir', modo: 'logros' });
     const li = document.querySelector('.hz-pedidos li')!;
@@ -214,7 +221,14 @@ describe('los pedidos de los vecinos', () => {
   });
   it('lo cosechado con decimales se lee con coma', () => {
     const E = M.crearPartida(3, { decInicio: 5 });
-    E.progreso.pedidos.abiertos.push({ id: 'acelga-del-comedor', desde: 0, vence: 14, base: 0, sembrado: null });
+    E.progreso.pedidos.abiertos.push({
+      id: 'acelga-del-comedor',
+      desde: 0,
+      vence: 14,
+      base: 0,
+      sembrado: null,
+      limite: 5,
+    });
     E.progreso.cosechado.acelga = 2.5;
     con(E);
     hacer({ tipo: 'ir', modo: 'logros' });

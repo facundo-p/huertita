@@ -183,6 +183,8 @@ export interface PedidoAbierto {
   base: number;
   /** el turno de la primera siembra de la especie después de que llegó, si hubo */
   sembrado: number | null;
+  /** la última siembra que llegaba a la fecha, contada cuando llegó: lo que dice el cuaderno si vence */
+  limite: number;
 }
 export interface PedidosDeLaPartida {
   abiertos: PedidoAbierto[];

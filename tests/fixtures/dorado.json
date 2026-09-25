@@ -33,7 +33,7 @@
     },
     "vivas": 24,
     "cuaderno": 400,
-    "huella": "fda53a022f09ded3"
+    "huella": "df8fc9488544524f"
   },
   {
     "patio": "fondo",
@@ -51,7 +51,7 @@
     },
     "vivas": 24,
     "cuaderno": 400,
-    "huella": "05094818c59d9f17"
+    "huella": "d85daec992bb1c0d"
   },
   {
     "patio": "fondo",
@@ -87,25 +87,25 @@
     },
     "vivas": 25,
     "cuaderno": 400,
-    "huella": "7b5ee290eebcdb88"
+    "huella": "98f46a55a6d49783"
   },
   {
     "patio": "fondo",
     "semilla": 6,
     "caracter": "nino",
     "balance": {
-      "porciones": 67.5,
+      "porciones": 54.3,
       "especies": 8,
       "semillas": 24,
-      "dMo": 6,
-      "visitas": 40,
+      "dMo": 5.4,
+      "visitas": 39,
       "logros": 7,
-      "puntos": 114,
+      "puntos": 100,
       "estrellas": 2
     },
     "vivas": 24,
     "cuaderno": 400,
-    "huella": "dccc7651d852068f"
+    "huella": "7f7a511c95a8dc1c"
   },
   {
     "patio": "fondo",
@@ -123,7 +123,7 @@
     },
     "vivas": 20,
     "cuaderno": 400,
-    "huella": "a456667f6c45de8d"
+    "huella": "ce00b44c29e19077"
   },
   {
     "patio": "fondo",
@@ -158,44 +158,44 @@
       "estrellas": 2
     },
     "vivas": 11,
-    "cuaderno": 377,
-    "huella": "6f2ecde4fb2a7a5b"
+    "cuaderno": 376,
+    "huella": "309ecacf5be85286"
   },
   {
     "patio": "balcon",
     "semilla": 2,
     "caracter": "nino",
     "balance": {
-      "porciones": 26,
-      "especies": 5,
+      "porciones": 23.5,
+      "especies": 3,
       "semillas": 12,
-      "dMo": 12.3,
+      "dMo": 15.5,
       "visitas": 0,
-      "logros": 7,
-      "puntos": 59,
+      "logros": 6,
+      "puntos": 54,
       "estrellas": 3
     },
-    "vivas": 12,
+    "vivas": 9,
     "cuaderno": 400,
-    "huella": "b6b387b4837b70e5"
+    "huella": "40ddcb7d545529c6"
   },
   {
     "patio": "balcon",
     "semilla": 3,
     "caracter": "tardia",
     "balance": {
-      "porciones": 24.2,
-      "especies": 3,
+      "porciones": 24.6,
+      "especies": 4,
       "semillas": 12,
-      "dMo": 20.2,
+      "dMo": 19.1,
       "visitas": 0,
       "logros": 6,
-      "puntos": 59,
+      "puntos": 62,
       "estrellas": 3
     },
-    "vivas": 10,
-    "cuaderno": 379,
-    "huella": "199a6d3bc5b2bb11"
+    "vivas": 9,
+    "cuaderno": 366,
+    "huella": "386d46eae35aaabb"
   },
   {
     "patio": "balcon",
@@ -213,7 +213,7 @@
     },
     "vivas": 11,
     "cuaderno": 400,
-    "huella": "15c721396f8333c5"
+    "huella": "550cac2a5dd506e3"
   },
   {
     "patio": "balcon",
@@ -231,7 +231,7 @@
     },
     "vivas": 11,
     "cuaderno": 365,
-    "huella": "722b40b8dda96fe7"
+    "huella": "14dad8ed7de13d20"
   },
   {
     "patio": "balcon",
@@ -249,7 +249,7 @@
     },
     "vivas": 11,
     "cuaderno": 386,
-    "huella": "7367af0925a15099"
+    "huella": "6f2c7660040aea56"
   },
   {
     "patio": "balcon",
@@ -267,7 +267,7 @@
     },
     "vivas": 12,
     "cuaderno": 387,
-    "huella": "ec7a844589946d51"
+    "huella": "07653deafe901806"
   },
   {
     "patio": "balcon",
@@ -285,6 +285,6 @@
     },
     "vivas": 10,
     "cuaderno": 388,
-    "huella": "42707c50998ac2fb"
+    "huella": "33ef412e3640c73f"
   }
 ]

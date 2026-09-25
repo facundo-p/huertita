@@ -496,11 +496,12 @@ export const REGLAS = {
     /** décadas desde que se cerró antes de que el mismo pedido pueda volver: el año que viene, no antes */
     mismoCada: 24,
     /**
-     * cuánto crece una huerta bien cuidada por lo que no se sabe de antemano (el agua, las plagas, los
-     * vecinos), como factor de 0 a 1. Con esto, la temperatura normal y la luz y el suelo del patio se
-     * cuenta hasta cuándo se puede sembrar para llegar a la fecha
+     * cuánto crece una huerta bien cuidada respecto de lo que da el tiempo, como factor de 0 a 1. Con
+     * esto, la temperatura normal y la luz y el suelo del patio se cuenta hasta cuándo se puede sembrar
+     * para llegar a la fecha. Es 1 porque quien riega según el pronóstico, trata y resiembra crece eso:
+     * con menos, en el balcón se llegaba sembrando después de «a más tardar» (tests/pedidos.test.ts)
      */
-    cuidado: 0.85,
+    cuidado: 1,
     /** la máxima, en °C, con la que se cuenta la luz de media sombra al estimar */
     temperaturaDeReferencia: 20,
   },
