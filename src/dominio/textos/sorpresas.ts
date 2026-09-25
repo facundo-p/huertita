@@ -145,8 +145,8 @@ export function mariposas(g: Golpe): Frase {
   if (g.expuestas)
     return frase(
       'sorpresa.mariposa-blanca-zafaron',
-      'Las mariposas blancas anduvieron por el patio y esta vez no dejaron orugas en las brasicáceas sin tapar: ' +
-        'las flores y aromáticas cerca traen quien las controle, pero una manta o el microtúnel es lo seguro.',
+      'Las mariposas blancas anduvieron por el patio y esta vez no dejaron orugas en las brasicáceas sin tapar. ' +
+        'Fue suerte: las flores y aromáticas cerca bajan el riesgo, pero lo seguro es una manta o el microtúnel.',
     );
   if (g.protegidas)
     return frase(
