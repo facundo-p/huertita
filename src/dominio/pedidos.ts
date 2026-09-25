@@ -56,11 +56,11 @@ function lugar(E: Estado, sp: Especie, celda: CeldaId, turno: number): number {
 function mejorCelda(E: Estado, sp: Especie, turno: number): CeldaId | null {
   return mejorEntre(E, sp, turno, true) ?? mejorEntre(E, sp, turno, false);
 }
-function mejorEntre(E: Estado, sp: Especie, turno: number, soloLibres: boolean): CeldaId | null {
+function mejorEntre(E: Estado, sp: Especie, turno: number, soloLibres: boolean, enCria = false): CeldaId | null {
   let mejor: CeldaId | null = null,
     f = -1;
   for (const c in E.mundo.celdas) {
-    if (zonaDe(E, c).cria || (soloLibres && E.mundo.celdas[c].planta)) continue;
+    if (!!zonaDe(E, c).cria !== enCria || (soloLibres && E.mundo.celdas[c].planta)) continue;
     const fc = lugar(E, sp, c, turno);
     if (fc > f) [mejor, f] = [c, fc];
   }
@@ -72,8 +72,9 @@ function mejorEntre(E: Estado, sp: Especie, turno: number, soloLibres: boolean):
  * patio. Es el mismo modelo que `germinar` y `crecer`: la temperatura normal de cada década, la luz,
  * el suelo y la maceta del mejor lugar del patio, el vigor de la ventana de siembra y una huerta bien
  * cuidada (`REGLAS.pedidos.cuidado`). Si en esa época la especie va a almácigo y el patio tiene dónde
- * criar, nace ahí y se trasplanta cuando el plantín está hecho. Si no llega a nacer, o tarda más de un
- * año, da `Infinity`.
+ * criar, nace y crece ahí, con la luz de la almaciguera, y se trasplanta cuando el plantín está hecho
+ * y es época de trasplante; si espera de más, se pasa. Si no llega a nacer, o tarda más de un año, da
+ * `Infinity`.
  */
 export function decadasHastaCosecha(E: Estado, slug: string, turno: number): number {
   const sp = ESPECIES[slug],
@@ -81,11 +82,15 @@ export function decadasHastaCosecha(E: Estado, slug: string, turno: number): num
     celda = mejorCelda(E, sp, turno);
   if (!celda) return Infinity;
   const dec = decadaDelTurno(E, turno),
+    enAlmacigo = !!(sp.dt && cria && /almacigo/.test(metodoDe(slug, dec) || '')),
+    almaciguera = enAlmacigo ? mejorEntre(E, sp, turno, false, true) : null,
     s: Siembra = {
       E,
       sp,
       celda,
-      cria: sp.dt && cria && /almacigo/.test(metodoDe(slug, dec) || '') ? cria.calor || 0 : null,
+      cria: almaciguera ? cria!.calor || 0 : null,
+      almaciguera,
+      sembrada: turno,
       vigor: REGLAS.siembra.vigorPorVentana[ventana(regionDe(E), slug, dec)],
     };
   const nace = decadasHastaNacer(s, turno);
@@ -99,6 +104,10 @@ interface Siembra {
   celda: CeldaId;
   /** el calor de la zona de cría, si nace en almácigo; `null` si va directo a la tierra */
   cria: number | null;
+  /** la mejor celda de la zona de cría, si nace en almácigo */
+  almaciguera: CeldaId | null;
+  /** el turno en que se siembra: de ahí se cuenta la edad del plantín */
+  sembrada: number;
   vigor: number;
 }
 const tempEn = (s: Siembra, t: number, enAlmacigo: boolean): number =>
@@ -118,23 +127,55 @@ function decadasHastaNacer(s: Siembra, turno: number): number {
   return Infinity;
 }
 
-/** Como `crecer`: décadas desde que nace hasta que se puede cosechar, trasplante incluido. */
+/** Un plantín que se estima: dónde está, cuánto creció y si ya se pasó en la almaciguera. */
+interface Brote {
+  prog: number;
+  enAlmacigo: boolean;
+  vigor: number;
+  pasado: boolean;
+  shock: boolean;
+}
+
+/** El plantín hecho se trasplanta recién cuando es época de trasplante. */
+function trasplantaSiEsEpoca(s: Siembra, b: Brote, t: number): void {
+  const dt = s.sp.dt;
+  if (!b.enAlmacigo || !dt || b.prog < dt.min) return;
+  if (ventana(regionDe(s.E), s.sp.slug, decadaDelTurno(s.E, t), 'trasplante') === 'fuera') return;
+  b.enAlmacigo = false;
+  b.shock = true;
+}
+
+/** Como `plantinEnAlmacigo`: si espera hecho de más, se pasa y pierde vigor. */
+function sePasaSiEspera(s: Siembra, b: Brote, t: number): void {
+  const dt = s.sp.dt;
+  if (!b.enAlmacigo || !dt || b.pasado || b.prog < dt.max) return;
+  if ((t - s.sembrada + 1) * DIAS_POR_TURNO <= dt.max + CREC.diasHastaPasarse) return;
+  b.pasado = true;
+  b.vigor *= CREC.vigorPlantinPasado / 100;
+}
+
+/**
+ * Como `crecer`: décadas desde que nace hasta que se puede cosechar. En la almaciguera crece con su
+ * luz; el plantín hecho se trasplanta recién cuando es época, y si espera de más se pasa y pierde vigor.
+ */
 function decadasHastaCrecer(s: Siembra, desde: number): number {
-  const { sp } = s,
-    dt = s.cria !== null ? sp.dt : undefined;
-  let prog = Math.round((sp.dg.min + sp.dg.max) / 2),
-    enAlmacigo = !!dt,
-    shock = false,
-    t = desde;
-  while (prog < objetivoCosecha(sp)) {
-    if (enAlmacigo && dt && prog >= dt.min) {
-      enAlmacigo = false;
-      shock = true;
-    }
-    const aca = enAlmacigo ? 1 : lugar(s.E, sp, s.celda, t),
-      g = fTemp(sp, tempEn(s, t, enAlmacigo)) * aca * s.vigor * P.cuidado * (shock ? CREC.conShock : 1);
-    if (!(enAlmacigo && dt && prog >= dt.max)) prog += DIAS_POR_TURNO * clamp(g, 0, CREC.factorMaximo);
-    shock = false;
+  const { sp, E } = s,
+    b: Brote = {
+      prog: Math.round((sp.dg.min + sp.dg.max) / 2),
+      enAlmacigo: !!(s.almaciguera && sp.dt),
+      vigor: s.vigor,
+      pasado: false,
+      shock: false,
+    };
+  let t = desde;
+  while (b.prog < objetivoCosecha(sp)) {
+    trasplantaSiEsEpoca(s, b, t);
+    const aca = lugar(E, sp, b.enAlmacigo ? s.almaciguera! : s.celda, t),
+      g = fTemp(sp, tempEn(s, t, b.enAlmacigo)) * aca * b.vigor * P.cuidado * (b.shock ? CREC.conShock : 1),
+      esperaHecho = b.enAlmacigo && sp.dt && b.prog >= sp.dt.max;
+    if (!esperaHecho) b.prog += DIAS_POR_TURNO * clamp(g, 0, CREC.factorMaximo);
+    b.shock = false;
+    sePasaSiEspera(s, b, t);
     if (++t - desde > DECADAS_DEL_ANIO) return Infinity;
   }
   return t - desde;

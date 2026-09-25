@@ -10,6 +10,7 @@ import { hud } from '../src/aplicacion/consultas/hud';
 import * as M from '../src/dominio';
 import type { Estado, Evento } from '../src/dominio';
 import { fechaDe } from '../src/dominio/calendario';
+import { quitarPlanta } from '../src/dominio/estado';
 import { DESEO_AGUA, humedad } from '../src/dominio/factores';
 import {
   abrir,
@@ -313,18 +314,19 @@ function riegoCuidadoso(E: Estado, zona: string, slug: string): number {
 }
 
 /**
- * La cuenta, contra el juego de verdad y en cada patio: alguien que planifica siembra cinco lugares,
- * riega según el pronóstico, cubre, trata, raleá y trasplanta. Sembrando temprano, casi siempre llega
- * a la primera cosecha; sembrando una década después del límite, casi nunca. Así «a más tardar» es
- * verdad, también en el balcón.
+ * La cuenta, contra el juego de verdad: desde el momento en que llega el pedido, alguien que planifica
+ * siembra cinco lugares, riega según el pronóstico, cubre, trata, raleá, trasplanta cuando es época y
+ * vuelve a sembrar si pierde la siembra. Dice si llega a la primera cosecha antes de la fecha.
  */
-function primeraCosechaATiempo(p: M.Pedido, semilla: number, cuando: 'temprano' | 'tarde', patio: string): boolean {
-  const [dec] = p.cuando[0],
-    E = M.crearPartida(semilla, { decInicio: dec, patio }),
+function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'tarde'): boolean {
+  const E = structuredClone(E0),
     R = M.regionDe(E),
     sp = M.ESPECIES[p.especie];
   E.recursos.sobres[p.especie] = 20;
-  const pd = abierto(E, p.id);
+  // en una partida jugada: lo que ya estaba plantado no cuenta, se prueba la siembra nueva
+  E.progreso.pedidos.abiertos = [];
+  const ajenas = new Set(Object.keys(E.mundo.plantas)),
+    pd = abierto(E, p.id);
   let siembra = pd.limite + 1;
   if (cuando === 'temprano')
     for (let s = pd.desde; s <= pd.vence; s++)
@@ -332,31 +334,46 @@ function primeraCosechaATiempo(p: M.Pedido, semilla: number, cuando: 'temprano' 
         siembra = s;
         break;
       }
-  while (E.tiempo.turno < siembra) M.pasarDecada(E);
+  // si el año termina antes de la fecha, se sigue otro año en el mismo patio
+  const pasar = (): void => {
+    if (E.tiempo.terminado) M.despachar(E, { tipo: 'seguir' });
+    M.pasarDecada(E);
+  };
+  while (E.tiempo.turno < siembra) pasar();
   const zonas = M.zonasDe(E),
     cria = zonas.find((z) => z.cria),
     deCria = (c: string): boolean => E.mundo.celdas[c].zona === cria?.id,
-    libres = (): string[] =>
-      Object.keys(E.mundo.celdas)
-        .filter((c) => !deCria(c) && !E.mundo.celdas[c].planta)
-        .sort((a, b) => M.evaluarCelda(E, p.especie, b)!.puntaje - M.evaluarCelda(E, p.especie, a)!.puntaje),
+    puntaje = (c: string): number => M.evaluarCelda(E, p.especie, c)!.puntaje,
+    /** las n mejores celdas de la almaciguera o de la tierra; si están ocupadas, se hace lugar */
+    lugares = (n: number, enCria: boolean): string[] => {
+      const cs = Object.keys(E.mundo.celdas)
+        .filter((c) => deCria(c) === enCria && !esNuestra(E.mundo.celdas[c].planta))
+        .sort(
+          (a, b) => Number(!!E.mundo.celdas[a].planta) - Number(!!E.mundo.celdas[b].planta) || puntaje(b) - puntaje(a),
+        )
+        .slice(0, n);
+      for (const c of cs) {
+        const id = E.mundo.celdas[c].planta;
+        if (id && E.mundo.plantas[id]) quitarPlanta(E, E.mundo.plantas[id], false);
+      }
+      return cs;
+    },
+    esNuestra = (id: string | null): boolean => !!id && !ajenas.has(id),
+    nuestras = () => Object.values(E.mundo.plantas).filter((pl) => esNuestra(pl.id)),
     almacigo = !!(sp.dt && cria && /almacigo/.test(M.metodoDe(p.especie, E.tiempo.dec) || ''));
   const sembrar = (): void => {
-    let n = 0;
-    for (const c of almacigo ? Object.keys(E.mundo.celdas).filter(deCria) : libres())
-      if (n < 5 && M.despachar(E, { tipo: 'sembrar', slug: p.especie, celda: c }).ok) n++;
+    for (const c of lugares(5, almacigo)) M.despachar(E, { tipo: 'sembrar', slug: p.especie, celda: c });
   };
   sembrar();
   while (E.tiempo.turno <= pd.vence) {
     // si una primavera fría se llevó la siembra, se vuelve a sembrar
-    if (!Object.values(E.mundo.plantas).some((pl) => pl.slug === p.especie)) sembrar();
-    for (const pl of Object.values(E.mundo.plantas)) {
-      if (pl.slug !== p.especie) continue;
+    if (!nuestras().length) sembrar();
+    for (const pl of nuestras()) {
       if (pl.etapa === 'cosechable') return true;
       if (deCria(pl.celda)) {
         if (pl.avisoListo && M.ventana(R, pl.slug, E.tiempo.dec, 'trasplante') !== 'fuera')
           for (let i = 0; i < 6 && E.mundo.plantas[pl.id]; i++) {
-            const c = libres()[0];
+            const [c] = lugares(1, false);
             if (!c || !M.despachar(E, { tipo: 'trasplantar', planta: pl.id, celda: c }).ok) break;
           }
         continue;
@@ -369,29 +386,59 @@ function primeraCosechaATiempo(p: M.Pedido, semilla: number, cuando: 'temprano' 
     // la almaciguera, bajo techo y abrigada, se riega a fondo para que nazca
     for (const z of zonas)
       M.despachar(E, { tipo: 'riego', zona: z.id, nivel: z.cria ? 3 : riegoCuidadoso(E, z.id, p.especie) });
-    M.pasarDecada(E);
+    pasar();
   }
   return false;
 }
 
+const SEMILLAS = [1, 2, 3, 4, 5, 6, 7, 8];
+/** Las décadas del año en que puede llegar un pedido. */
+const decadasDe = (p: M.Pedido): number[] =>
+  Array.from({ length: 36 }, (_, i) => i + 1).filter((d) => p.cuando.some(([a, b]) => enTramo(d, a, b)));
+const puedeCumplirse = (E: Estado, p: M.Pedido): boolean =>
+  hayFechaDeSiembra(E, p.especie, E.tiempo.turno, E.tiempo.turno + p.plazo);
+
+/**
+ * «A más tardar» es verdad si la mayoría de los años alcanza con sembrar temprano y no alcanza con
+ * sembrar una década después del límite. La cuenta es la de un año normal: en un año fresco o caluroso
+ * la cosecha puede adelantarse o atrasarse una década, así que no se pide todos los años.
+ */
+function esVerdad(llegadas: Estado[], p: M.Pedido, que: string): void {
+  const temprano = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'temprano')).length,
+    tarde = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'tarde')).length;
+  expect(temprano, `${que}: sembrando temprano`).toBeGreaterThan(llegadas.length / 2);
+  expect(tarde, `${que}: sembrando tarde`).toBeLessThan(llegadas.length / 2);
+}
+
 describe.each(Object.keys(M.PLANTILLAS))('la cuenta es verdad en el patio %s', (patio) => {
-  const SEMILLAS = [1, 2, 3, 4, 5, 6, 7, 8];
-  /** Los pedidos que pueden llegar a este patio: los demás no se prueban acá. */
-  const posibles = M.PEDIDOS.filter((p) => {
-    const E = M.crearPartida(1, { decInicio: p.cuando[0][0], patio });
-    return hayFechaDeSiembra(E, p.especie, E.tiempo.turno, E.tiempo.turno + p.plazo);
+  it('en una partida nueva, llegue el pedido en la década que llegue', () => {
+    for (const p of M.PEDIDOS)
+      for (const d of decadasDe(p)) {
+        const llegadas = SEMILLAS.map((s) => M.crearPartida(s, { decInicio: d, patio })).filter((E) =>
+          puedeCumplirse(E, p),
+        );
+        if (llegadas.length) esVerdad(llegadas, p, `${p.id}, década ${d}`);
+      }
   });
-  it('sembrando temprano, en la mayoría de los años se llega a la primera cosecha', () => {
-    for (const p of posibles) {
-      const llegan = SEMILLAS.filter((s) => primeraCosechaATiempo(p, s, 'temprano', patio)).length;
-      expect(llegan, p.id).toBeGreaterThanOrEqual(SEMILLAS.length / 2);
-    }
+  it('en el segundo año de una partida jugada, con el patio ocupado y la tierra trabajada', () => {
+    const llegadas = new Map<M.Pedido, Estado[]>();
+    for (const s of SEMILLAS)
+      jugarUnAnio(M, s, undefined, {
+        patio,
+        decadas: 72,
+        alEmpezarLaDecada: (E: Estado) => {
+          if (E.tiempo.turno < 36) return;
+          for (const p of M.PEDIDOS)
+            if (decadasDe(p).includes(E.tiempo.dec) && puedeCumplirse(E, p))
+              llegadas.set(p, [...(llegadas.get(p) ?? []), structuredClone(E)]);
+        },
+      });
+    for (const [p, Es] of llegadas) esVerdad(Es, p, p.id);
   });
-  it('sembrando después del límite, casi nunca se llega', () => {
-    for (const p of posibles) {
-      const llegan = SEMILLAS.filter((s) => primeraCosechaATiempo(p, s, 'tarde', patio)).length;
-      expect(llegan, p.id).toBeLessThanOrEqual(SEMILLAS.length / 4);
-    }
+  it('en una partida nueva, el tomate no llega al balcón: con la almaciguera a media sombra, el plantín no está a tiempo', () => {
+    const p = M.pedidoPorId('salsa-de-ines')!,
+      llega = decadasDe(p).some((d) => puedeCumplirse(M.crearPartida(1, { decInicio: d, patio }), p));
+    expect(llega).toBe(patio !== 'balcon');
   });
 });
 

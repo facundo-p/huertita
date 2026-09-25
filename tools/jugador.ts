@@ -38,7 +38,7 @@ export function jugarUnAnio(
   M: MotorJugable,
   semilla: number,
   narrar?: (linea: string) => void,
-  opciones?: { patio?: string; decadas?: number },
+  opciones?: { patio?: string; decadas?: number; alEmpezarLaDecada?: (E: any) => void },
 ): any {
   const E = M.crearPartida(semilla, opciones);
   const ventana = (slug: string, dec: number, que?: 'trasplante'): string => M.ventana(M.regionDe(E), slug, dec, que);
@@ -47,6 +47,9 @@ export function jugarUnAnio(
     deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
   const enCria = (celda: string): boolean => deCria.has(leer(E).celdas[celda].zona);
   for (let t = 0; t < (opciones?.decadas ?? 36); t++) {
+    // con más de un año, al terminar cada uno se sigue en el mismo patio
+    if (t > 0 && t % 36 === 0) M.despachar(E, { tipo: 'seguir' });
+    opciones?.alEmpezarLaDecada?.(E);
     const V = leer(E);
     for (const pl of Object.values<any>(V.plantas)) {
       const sp = M.ESPECIES[pl.slug];
