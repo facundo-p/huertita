@@ -8,7 +8,8 @@ import * as M from '../../dominio';
 import * as SP from '../../arte';
 import { interaccion, usarPartida } from '../estado';
 import { corto } from '../formato';
-import { cuidarPlanta, cuidarSuelo, escenaActual, hacer } from '../mensajes';
+import { escena } from '../escena';
+import { cuidarPlanta, cuidarSuelo, hacer } from '../mensajes';
 import { Epoca } from '../piezas/Almanaque';
 import { Diario } from '../piezas/Diario';
 import { EscalaDeAgua, EscalaDeLuz, EscalaDeTemperatura, Medidor } from '../piezas/Escala';
@@ -35,19 +36,14 @@ function Lugar({ f }: { f: FichaDeCelda }) {
       </b>{' '}
       · {f.horasDeSol} h de sol hoy · {f.suelo} · materia orgánica {f.mo} %{f.mulch && ' · con mulch'}
       <div class="hz-fila">
-        {f.puedeMulch && (
+        {f.ponerMulch.va && (
           <button class="hz-btn" data-acc="mulch" onClick={() => cuidarSuelo('mulch')}>
-            Poner mulch · 1
+            Poner mulch · {f.ponerMulch.costo}
           </button>
         )}
-        {f.admiteCompost && (
-          <button
-            class="hz-btn"
-            data-acc="compost"
-            disabled={f.dosisDeCompost < 1}
-            onClick={() => cuidarSuelo('compost')}
-          >
-            Compost · 1 (tenés {f.dosisDeCompost})
+        {f.compost.va && (
+          <button class="hz-btn" data-acc="compost" disabled={!f.compost.se} onClick={() => cuidarSuelo('compost')}>
+            Compost · {f.compost.costo} (tenés {f.compost.dosis})
           </button>
         )}
       </div>
@@ -124,16 +120,17 @@ function Factores({ p }: { p: PlantaEnFicha }) {
   );
 }
 
-const BOTONES: Record<AccionDePlanta, (p: PlantaEnFicha) => { clase: string; texto: string }> = {
-  cosechar: () => ({ clase: 'pri', texto: 'Cosechar' }),
-  semillar: () => ({ clase: '', texto: 'Dejar semillar' }),
-  mover: ({ pl, sp }) => ({
+/** El texto de cada botón; `ratos` es lo que lleva, si lleva algo. */
+const BOTONES: Record<AccionDePlanta, (p: PlantaEnFicha, ratos: string) => { clase: string; texto: string }> = {
+  cosechar: (_p, r) => ({ clase: 'pri', texto: 'Cosechar' + r }),
+  semillar: (_p, r) => ({ clase: '', texto: 'Dejar semillar' + r }),
+  mover: ({ pl, sp }, r) => ({
     clase: sp.dt && pl.prog >= sp.dt.min ? 'pri' : '',
-    texto: M.vivas(pl) > 1 ? 'Trasplantar uno · 1 (hay ' + pl.n + ')' : 'Trasplantar · 1',
+    texto: M.vivas(pl) > 1 ? 'Trasplantar uno' + r + ' (hay ' + pl.n + ')' : 'Trasplantar' + r,
   }),
-  ralear: () => ({ clase: 'pri', texto: 'Ralear: dejar una · 1' }),
-  tutorar: () => ({ clase: '', texto: 'Poner tutor · 1' }),
-  tratar: () => ({ clase: 'pri', texto: 'Tratar plaga · 1' }),
+  ralear: (_p, r) => ({ clase: 'pri', texto: 'Ralear: dejar una' + r }),
+  tutorar: (_p, r) => ({ clase: '', texto: 'Poner tutor' + r }),
+  tratar: (_p, r) => ({ clase: 'pri', texto: 'Tratar plaga' + r }),
 };
 
 function Acciones({ p }: { p: PlantaEnFicha }) {
@@ -141,7 +138,8 @@ function Acciones({ p }: { p: PlantaEnFicha }) {
   return (
     <div class="hz-fila">
       {p.acciones.map((a) => {
-        const b = BOTONES[a](p);
+        const costo = p.costos[a] ?? 0,
+          b = BOTONES[a](p, costo ? ' · ' + costo : '');
         return (
           <button key={a} class={'hz-btn' + (b.clase ? ' ' + b.clase : '')} data-acc={a} onClick={() => hacerla(a)}>
             {b.texto}
@@ -182,7 +180,7 @@ function Cabecera({ p }: { p: PlantaEnFicha }) {
 
 function Avance({ p, celda }: { p: PlantaEnFicha; celda: string }) {
   const { pl, punto } = p,
-    vista = escenaActual().celdas[celda]?.planta;
+    vista = escena.value.celdas[celda]?.planta;
   return (
     <>
       <TiraDeEstadios slug={pl.slug} actual={vista ? SP.etapaDeTira(vista) : null} />

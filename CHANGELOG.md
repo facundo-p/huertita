@@ -1,5 +1,13 @@
 # Cambios
 
+## Sin publicar
+
+Tres arreglos de arquitectura que salieron de la revisión del PR de la reestructura. El juego se juega igual: dorado verde, el bot da los mismos puntajes y las 293 capturas son iguales.
+
+- Los números del modelo de clima, de las épocas de plaga y de los logros pasaron a `datos/juego/reglas.ts`, con su marca y su unidad; el calendario (décadas, meses, fechas) quedó en `src/dominio/calendario.ts`. Un test vigila que ninguna regla tenga un número suelto (#63).
+- El panel de protección y la ficha de una celda preguntan al dominio si un botón va, si se puede y cuántos ratos lleva (`puede`, `costoDe`). La ayuda de las heladas sale con el umbral y los abrigos del dominio, así no miente si cambia el balance (#64).
+- La escena se arma una sola vez por cambio: una señal derivada que leen todos, y cada gesto cambia sus señales juntas (#65).
+
 ## 0.9.0 · 2026-09-24 · La reestructura (epic #39)
 
 El mismo juego, con el código reordenado para que siga creciendo: capas en un solo sentido

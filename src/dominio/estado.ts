@@ -1,6 +1,7 @@
 import { REGLAS } from '../../datos/juego/reglas';
 import { azar } from './azar';
-import { fechaDe, generarTiempo } from './clima';
+import { fechaDe } from './calendario';
+import { generarTiempo } from './clima';
 import { regionPorId } from './region';
 import { celdasDePlanta } from './espacio';
 import { alCompost, estructurasIniciales } from './estructuras';

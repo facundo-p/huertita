@@ -3,6 +3,7 @@ import { compostera, dosisDeCompost } from '../estructuras';
 import { anotar } from '../estado';
 import { zona } from '../patio';
 import { especieDe } from '../planta';
+import type { CeldaId, Estado } from '../tipos';
 import { clamp } from '../util';
 import * as T from '../textos/acciones';
 import { tratada } from '../textos/plagas';
@@ -53,11 +54,17 @@ export const mulch: Regla<De<'mulch'>> = {
   },
 };
 
+/** Si esa celda recibe compost (haya o no dosis): la almaciguera no, que lleva sustrato. */
+export function recibeCompost(E: Estado, celda: CeldaId): boolean {
+  const c = E.mundo.celdas[celda];
+  return !!c && !zona(E, c.zona).cria;
+}
+
 export const compost: Regla<De<'compost'>> = {
   puede(E, a) {
     const c = E.mundo.celdas[a.celda];
     if (!c) return T.compostNoVa();
-    if (zona(E, c.zona).cria) return T.compostEnAlmacigo();
+    if (!recibeCompost(E, a.celda)) return T.compostEnAlmacigo();
     if (dosisDeCompost(E) < 1) return T.sinCompost();
     return null;
   },

@@ -1,4 +1,5 @@
 /** Logros. Hoy son código; el paso 5 de los cimientos los pasa a una tabla junto con eventos y pedidos. */
+import { REGLAS } from '../../datos/juego/reglas';
 import { ESPECIES } from './catalogo';
 import { anotar } from './estado';
 import { logro } from './textos/temporada';
@@ -51,7 +52,7 @@ export const MISIONES: Mision[] = [
   {
     id: 'cinco',
     titulo: 'Diversidad',
-    texto: 'Cosechá 5 especies distintas.',
+    texto: 'Cosechá ' + REGLAS.misiones.diversidad + ' especies distintas.',
     premio: { frutilla: 4, girasol: 3, capuchina: 3, cilantro: 4 },
   },
   {

@@ -6,7 +6,7 @@
  * guardadas y rompe el test dorado. `tests/sistemas.test.ts` vigila que sea este.
  */
 import { cerrar } from '../diario';
-import { fechaDe } from '../clima';
+import { fechaDe } from '../calendario';
 import { especieDe } from '../planta';
 import * as TT from '../textos/temporada';
 import type { Estado, Evento, Planta } from '../tipos';

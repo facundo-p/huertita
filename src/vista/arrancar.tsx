@@ -9,7 +9,8 @@ import type { Estado } from '../dominio';
 import { App } from './App';
 import { interaccion, partida, tocada } from './estado';
 import { activo } from './efectos';
-import { cambiarPartida, escenaActual, guardar } from './mensajes';
+import { escena } from './escena';
+import { cambiarPartida, guardar } from './mensajes';
 import { almacenes, conectar } from './persistencia';
 
 interface Hot {
@@ -54,7 +55,7 @@ export function arrancar(raiz: HTMLElement): void {
         return partida.value;
       },
       get escena() {
-        return escenaActual();
+        return escena.value;
       },
       get renderer() {
         return activo.value;

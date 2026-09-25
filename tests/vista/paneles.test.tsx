@@ -5,6 +5,7 @@
  */
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { REGLAS } from '../../datos/juego/reglas';
 import * as M from '../../src/dominio';
 import type { Estado } from '../../src/dominio';
 import { App } from '../../src/vista/App';
@@ -52,6 +53,24 @@ describe('la ficha de una celda', () => {
     expect(screen.getByText('Celda libre')).toBeTruthy();
     expect(screen.getByText(/Lo último que hubo acá fue una solanacea/)).toBeTruthy();
   });
+  it('el compost se ofrece donde va, y sin dosis no se puede', () => {
+    const E = M.crearPartida(2),
+      [almacigo] = Object.keys(E.mundo.celdas).filter((k) => M.zona(E, E.mundo.celdas[k].zona).cria),
+      [cantero] = Object.keys(E.mundo.celdas).filter((k) => !M.zona(E, E.mundo.celdas[k].zona).cria);
+    expect(almacigo && cantero).toBeTruthy();
+    con(E);
+    hacer({ tipo: 'irACelda', celda: almacigo });
+    expect(botones()).not.toContain('compost');
+    hacer({ tipo: 'irACelda', celda: cantero });
+    const compost = () => document.querySelector<HTMLButtonElement>('[data-acc="compost"]')!;
+    expect(compost().disabled).toBe(M.dosisDeCompost(E) < 1);
+    act(() => {
+      M.compostera(E)!.dosis = 0;
+      tocada();
+    });
+    expect(compost().disabled).toBe(true);
+    expect(compost().textContent).toContain('tenés 0');
+  });
   it('cosechar desde el botón cosecha de verdad', () => {
     const E = M.crearPartida(2);
     E.recursos.sobres.rabanito = 3;
@@ -94,6 +113,42 @@ describe('riego y protección', () => {
     expect(screen.getByText('Manta puesta')).toBeTruthy();
     fireEvent.click(document.querySelector('[data-acc="tunel"]')!);
     expect(E.recursos.tunel).toEqual({ [M.zonaDeTunel(E)!]: true });
+  });
+  it('la ayuda y los costos salen del dominio: si cambia el balance, el panel lo sigue', () => {
+    const R = REGLAS as unknown as {
+        ratos: { accion: number; tunel: number };
+        abrigo: { manta: number; tunel: number };
+      },
+      antes = structuredClone({ ratos: R.ratos, abrigo: R.abrigo });
+    Object.assign(R.ratos, { accion: 3, tunel: 5 });
+    Object.assign(R.abrigo, { manta: 4, tunel: 6 });
+    try {
+      con(M.crearPartida(2));
+      hacer({ tipo: 'ir', modo: 'proteger' });
+      const panel = document.querySelector('#hz-panel')!.textContent!,
+        umbral = M.aguantaCon(0);
+      expect(panel).toContain('no pasa de ' + umbral + ' °C');
+      expect(panel).toContain('abriga unos 4 °C');
+      expect(panel).toContain('El microtúnel abriga 6 °C');
+      expect(panel).toContain('manta sobre microtúnel aguanta hasta ' + (umbral - 10) + ' °C');
+      expect(screen.getAllByText('Manta · 3').length).toBeGreaterThan(0);
+      expect(document.querySelector('[data-acc="tunel"]')!.textContent).toMatch(/ · 5$/);
+    } finally {
+      Object.assign(R.ratos, antes.ratos);
+      Object.assign(R.abrigo, antes.abrigo);
+    }
+  });
+  it('la manta se puede poner donde el dominio dice, y el túnel se ofrece donde se arma', () => {
+    const E = M.crearPartida(2);
+    con(E);
+    hacer({ tipo: 'ir', modo: 'proteger' });
+    for (const z of M.zonasDe(E)) {
+      const manta = document.querySelector<HTMLButtonElement>('.hz-abrigo [data-zona="' + z.id + '"]')!;
+      expect(manta.disabled, z.id).toBe(M.puede(E, { tipo: 'manta', zona: z.id }, { sinMirarRatos: true }) !== null);
+      expect(!!document.querySelector('[data-acc="tunel"][data-zona="' + z.id + '"]'), z.id).toBe(
+        M.puede(E, { tipo: 'tunel', zona: z.id }, { sinMirarRatos: true }) === null,
+      );
+    }
   });
   it('si no alcanzan los ratos, el aviso lo explica', () => {
     const E = M.crearPartida(2);

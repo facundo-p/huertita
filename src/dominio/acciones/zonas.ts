@@ -3,6 +3,7 @@ import { ABRIGO, abrigo } from '../abrigo';
 import { anotar, ratosLibres } from '../estado';
 import { zona, zonaDeTunel } from '../patio';
 import type { NivelRiego } from '../tipos';
+import { NIVELES_DE_RIEGO } from '../vocabulario';
 import * as T from '../textos/acciones';
 import { empiezaAnio } from '../textos/temporada';
 import { type De, type Regla, gratis } from './regla';
@@ -10,7 +11,8 @@ import { type De, type Regla, gratis } from './regla';
 /** El riego no se cobra al elegirlo: queda puesto y se come ratos cada década (ver `costoRiego`). */
 export const riego: Regla<De<'riego'>> = {
   puede(E, a) {
-    if (!(a.zona in E.recursos.riego) || a.nivel < 0 || a.nivel > 3) return T.riegoInvalido();
+    if (!(a.zona in E.recursos.riego) || !(NIVELES_DE_RIEGO as readonly number[]).includes(a.nivel))
+      return T.riegoInvalido();
     const antes = E.recursos.riego[a.zona];
     E.recursos.riego[a.zona] = a.nivel as NivelRiego; // se prueba y se deja como estaba
     const alcanza = ratosLibres(E) >= 0;

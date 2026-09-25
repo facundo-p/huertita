@@ -7,13 +7,13 @@ import { ratosLibres } from '../estado';
 import type { Accion, Estado, Evento, Resultado } from '../tipos';
 import * as T from '../textos/acciones';
 import { arrancar, cosechar, ralear, semillar } from './cosechar';
-import { compost, mulch, tratar, tutorar } from './cuidados';
+import { compost, mulch, recibeCompost, tratar, tutorar } from './cuidados';
 import type { Regla } from './regla';
 import { sembrar } from './sembrar';
 import { puedeMoverse, trasplantar } from './trasplantar';
 import { manta, riego, seguir, tunel } from './zonas';
 
-export { puedeMoverse };
+export { puedeMoverse, recibeCompost };
 export type { Regla };
 
 const ACCIONES: { [T in Accion['tipo']]: Regla<Extract<Accion, { tipo: T }>> } = {
@@ -49,6 +49,9 @@ export function puede(E: Estado, accion: Accion, opciones: { sinMirarRatos?: boo
   if (costo > 0 && ratosLibres(E) < costo) return regla.sinRatos ?? T.sinRatos();
   return null;
 }
+
+/** Cuántos ratos lleva una acción: lo que la interfaz escribe en el botón. */
+export const costoDe = (E: Estado, accion: Accion): number => reglaDe(accion)?.costo(E, accion) ?? 0;
 
 export function despachar(E: Estado, accion: Accion): Resultado {
   const razon = puede(E, accion);

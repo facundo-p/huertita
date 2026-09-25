@@ -3,7 +3,7 @@ import catalogoJson from '../../datos/catalogo.json';
 import type { Catalogo } from '../../datos/contrato';
 import { completar, type Especie } from '../../datos/juego/especies';
 import { REGLAS } from '../../datos/juego/reglas';
-import { mesDe } from './clima';
+import { mesDe } from './calendario';
 import type { Region } from './region';
 import type { Ventana } from './vocabulario';
 

@@ -89,6 +89,16 @@ describe('la ficha de una celda decide lo mismo que el dominio', () => {
       expect(f.acciones.includes('mover')).toBe(M.puedeMoverse(E, pl) === null);
     }
   });
+  it('el mulch y el compost se ofrecen donde el dominio los deja, con su costo', () => {
+    const E = partida();
+    for (const k of Object.keys(E.mundo.celdas)) {
+      const f = C.fichaDeCelda(E, k)!;
+      expect(f.ponerMulch.va, k).toBe(M.puede(E, { tipo: 'mulch', celda: k }, { sinMirarRatos: true }) === null);
+      expect(f.compost.se, k).toBe(M.puede(E, { tipo: 'compost', celda: k }, { sinMirarRatos: true }) === null);
+      expect(f.compost.va, k).toBe(M.recibeCompost(E, k));
+      expect(f.compost.costo).toBe(M.costoDe(E, { tipo: 'compost', celda: k }));
+    }
+  });
   it('una celda que no existe no tiene ficha', () => {
     expect(C.fichaDeCelda(partida(), '99,99')).toBeNull();
   });

@@ -12,6 +12,8 @@ import { especieDe } from './planta';
 /** El reparo fijo de cada zona (alero, pared, techo) está en los datos del patio. */
 export const ABRIGO = REGLAS.abrigo;
 const { umbral: UMBRAL, desvioPronostico } = REGLAS.helada;
+/** Hasta qué mínima aguanta sin daño (exclusiva) una planta con tantos grados de abrigo. */
+export const aguantaCon = (grados: number): number => UMBRAL - grados;
 export interface Abrigo {
   grados: number;
   partes: string[];
@@ -33,7 +35,7 @@ export function abrigo(E: Estado, zona: ZonaId): Abrigo {
     g += ABRIGO.manta;
     partes.push('manta');
   }
-  return { grados: g, partes, aguanta: UMBRAL - g };
+  return { grados: g, partes, aguanta: aguantaCon(g) };
 }
 /** % de que la helada le llegue a esa zona esta década, con el abrigo puesto y el pronóstico a la vista. */
 export const riesgoHelada = (E: Estado, zona: ZonaId): number =>

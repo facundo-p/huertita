@@ -2,6 +2,7 @@
 import { compostera } from '../estructuras';
 import { REGLAS } from '../../../datos/juego/reglas';
 import { abrigo } from '../abrigo';
+import { DECADAS_DEL_ANIO } from '../calendario';
 import { generarTiempo } from '../clima';
 import { ratosLibres } from '../estado';
 import { fVecinos, floresAbiertas } from '../factores';
@@ -67,8 +68,8 @@ export const cerrarTurno: SistemaDelPatio = ({ E, ev }) => {
   E.recursos.manta = {};
   E.recursos.ratosGastados = 0;
   E.tiempo.turno++;
-  E.tiempo.dec = (E.tiempo.dec % 36) + 1;
-  if (E.tiempo.turno % 36 === 0) {
+  E.tiempo.dec = (E.tiempo.dec % DECADAS_DEL_ANIO) + 1;
+  if (E.tiempo.turno % DECADAS_DEL_ANIO === 0) {
     E.tiempo.terminado = true;
     ev('logro', TT.anioTerminado());
   }
