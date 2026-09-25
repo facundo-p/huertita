@@ -10,7 +10,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import * as M from '../src/dominio';
-import { canon, foto, guardada } from '../tools/dorado';
+import { canon, foto, guardada, SEMILLAS } from '../tools/dorado';
 import { jugarUnAnio } from '../tools/jugador';
 
 describe('el dominio juega como en la foto dorada', () => {
@@ -18,6 +18,15 @@ describe('el dominio juega como en la foto dorada', () => {
     it(`${f.patio}, semilla ${f.semilla}`, () => {
       expect(foto(f.patio, f.semilla)).toEqual(f);
     });
+  it('la foto cubre todos los patios con todas las semillas: sumar un patio obliga a regenerarla', () => {
+    const tiene = guardada()
+      .map((f) => f.patio + ':' + f.semilla)
+      .sort();
+    const deberia = Object.keys(M.PLANTILLAS)
+      .flatMap((p) => SEMILLAS.map((s) => p + ':' + s))
+      .sort();
+    expect(tiene).toEqual(deberia);
+  });
   it('es determinista: misma semilla, misma partida', () => {
     expect(canon(jugarUnAnio(M, 5))).toBe(canon(jugarUnAnio(M, 5)));
   });
