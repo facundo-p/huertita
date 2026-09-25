@@ -61,7 +61,7 @@ Los números del balance (probabilidades, daños, ratos, arranque, épocas de pl
 
 ## La vista
 
-`src/vista/` es Preact con signals. El estado de la interfaz es una máquina de modos (`modos.ts`: `ModoUI` es una unión discriminada y `transicion(modo, evento)` es pura, con tests sin DOM). Cada panel es un componente en `paneles/`, las piezas que se repiten están en `piezas/`, y cada uno trae su CSS al lado; los colores son variables de `src/estilos/tokens.css`. Los botones de acción salen de `puede()` y su costo de `costoDe()`, a través de las consultas: la vista nunca repite una regla del dominio.
+`src/vista/` es Preact con signals. El estado de la interfaz es una máquina de modos (`modos.ts`: `ModoUI` es una unión discriminada y `transicion(modo, evento)` es pura, con tests sin DOM). Cada panel es un componente en `paneles/`, las piezas que se repiten están en `piezas/`, y cada uno trae su CSS al lado; los colores son variables de `src/estilos/tokens.css`. Los botones de acción salen de `puede()` y su costo de `costoDe()`, a través de las consultas: la vista nunca repite una regla del dominio. La escena que dibuja el renderer es una señal derivada (`escena.ts`): se arma una vez por cambio y la leen de ahí el lienzo, los botones de las zonas, la tira de la planta y las animaciones; cada gesto de `mensajes.ts` cambia sus señales en un solo `batch`, así la pantalla se rearma una vez por gesto (hay un test que lo cuenta).
 
 `arrancar.tsx` carga la partida guardada (o arranca una nueva), monta la app, busca la nube y deja `window.Huertita` para el humo y las capturas.
 

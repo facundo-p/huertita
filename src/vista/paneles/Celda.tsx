@@ -8,7 +8,8 @@ import * as M from '../../dominio';
 import * as SP from '../../arte';
 import { interaccion, usarPartida } from '../estado';
 import { corto } from '../formato';
-import { cuidarPlanta, cuidarSuelo, escenaActual, hacer } from '../mensajes';
+import { escena } from '../escena';
+import { cuidarPlanta, cuidarSuelo, hacer } from '../mensajes';
 import { Epoca } from '../piezas/Almanaque';
 import { Diario } from '../piezas/Diario';
 import { EscalaDeAgua, EscalaDeLuz, EscalaDeTemperatura, Medidor } from '../piezas/Escala';
@@ -179,7 +180,7 @@ function Cabecera({ p }: { p: PlantaEnFicha }) {
 
 function Avance({ p, celda }: { p: PlantaEnFicha; celda: string }) {
   const { pl, punto } = p,
-    vista = escenaActual().celdas[celda]?.planta;
+    vista = escena.value.celdas[celda]?.planta;
   return (
     <>
       <TiraDeEstadios slug={pl.slug} actual={vista ? SP.etapaDeTira(vista) : null} />

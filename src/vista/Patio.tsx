@@ -3,12 +3,12 @@
  * elegir qué cantero mirar. El renderer solo recibe la escena y avisa qué celda se tocó.
  */
 import { useEffect, useRef } from 'preact/hooks';
-import { zonaCerca as elegirZonaCerca } from '../aplicacion/consultas';
 import * as M from '../dominio';
 import type { Renderer } from '../render/contrato';
 import { activo, dispararEfectos, RENDERERS } from './efectos';
-import { interaccion, renderer, usarPartida, zonaCerca } from './estado';
-import { escenaActual, mirarZona, tocarCelda } from './mensajes';
+import { escena } from './escena';
+import { renderer, usarPartida } from './estado';
+import { mirarZona, tocarCelda } from './mensajes';
 import './Patio.css';
 
 function Lienzo() {
@@ -26,12 +26,11 @@ function Lienzo() {
       montado.current = null;
     };
   }, [cual]);
-  usarPartida();
-  const escena = escenaActual();
+  const es = escena.value;
   useEffect(() => {
     const r = montado.current;
     if (!r) return;
-    r.dibujar(escena);
+    r.dibujar(es);
     dispararEfectos(r);
   });
   return <div id="hz-lienzo" ref={lugar} />;
@@ -39,12 +38,11 @@ function Lienzo() {
 
 function Zonas() {
   const E = usarPartida(),
-    escena = escenaActual(E),
-    actual = elegirZonaCerca(E, interaccion.value.sel, zonaCerca.value);
+    { camara, cerca } = escena.value;
   return (
-    <div class="hz-zonas" id="hz-zonas" hidden={escena.camara !== 'cerca'}>
+    <div class="hz-zonas" id="hz-zonas" hidden={camara !== 'cerca'}>
       {M.idsDeZonas(E).map((z) => (
-        <button key={z} data-zona={z} class={z === actual ? 'on' : ''} onClick={() => mirarZona(z)}>
+        <button key={z} data-zona={z} class={z === cerca.zona ? 'on' : ''} onClick={() => mirarZona(z)}>
           {M.zona(E, z).nombre}
         </button>
       ))}
