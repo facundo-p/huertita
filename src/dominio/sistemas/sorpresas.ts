@@ -27,8 +27,12 @@ export const llegaSorpresa: SistemaDelPatio = ({ E, ev }) => {
   ev('bien', T.llega(r.que, r.cuanto));
 };
 
-/** Al empezar la década que viene, con el pronóstico ya hecho: puede anunciarse una amenaza. */
+/**
+ * Al empezar la década que viene, con el pronóstico ya hecho: puede anunciarse una amenaza. Con el año
+ * terminado, no: anunciaría algo que no pasa.
+ */
 export const anunciarSorpresa: SistemaDelPatio = ({ E, ev }) => {
+  if (E.tiempo.terminado) return;
   const s = amenazaParaAnunciar(E),
     T = s && TEXTOS[s.id];
   if (!s || T?.clase !== 'amenaza') return;

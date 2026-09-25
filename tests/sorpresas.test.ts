@@ -193,6 +193,21 @@ describe('el anuncio', () => {
       expect(E.tiempo.anunciada).toBeNull();
     }
   });
+  it('con el año terminado no anuncia nada: no pasaría', () => {
+    let probados = 0;
+    for (let semilla = 1; semilla < 400; semilla++) {
+      const E = M.crearPartida(semilla, { decInicio: 32 });
+      crecida(E, 'lechuga', SUELO);
+      const F = structuredClone(E);
+      anunciarSorpresa(crearContexto(E));
+      if (!E.tiempo.anunciada) continue;
+      probados++;
+      F.tiempo.terminado = true;
+      anunciarSorpresa(crearContexto(F));
+      expect(F.tiempo.anunciada).toBeNull();
+    }
+    expect(probados).toBeGreaterThan(0);
+  });
 });
 
 describe('en partidas jugadas', () => {
