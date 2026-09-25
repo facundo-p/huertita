@@ -347,9 +347,11 @@ describe('cuando vence', () => {
     expect(pedidoADestiempo(de, c, { ...s, decadas: 16, justo: true }).texto).toMatch(
       /tardaba unas 16 décadas, y en un año normal llegaba, pero sin margen/,
     );
+    // en una hoja, lo primero que dice es el espigado: la cuenta la da por perdida por eso
     expect(pedidoADestiempo(de, c, { ...s, decadas: Infinity, puedeEspigar: true }).texto).toMatch(
-      /no llegaba a dar cosecha, o se arriesgaba a espigar antes/,
+      /pero con el calor de esa época se arriesgaba a espigar antes de la cosecha, o ni llegaba a darla/,
     );
+    expect(pedidoADestiempo(de, c, { ...s, decadas: Infinity }).texto).not.toMatch(/espigar/);
   });
   it('el límite es el último turno que llega: después ya no llega ninguno', () => {
     for (const p of M.PEDIDOS)
@@ -395,7 +397,7 @@ function riegoCuidadoso(E: Estado, zona: string, slug: string): number {
  * siembra cinco lugares, riega según el pronóstico, cubre, trata, raleá, tutora, trasplanta cuando es época y
  * vuelve a sembrar si pierde la siembra. Dice si llega a la primera cosecha antes de la fecha.
  */
-function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'limite' | 'tarde'): boolean | null {
+function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'limite' | 'tarde'): boolean {
   const E = structuredClone(E0),
     R = M.regionDe(E),
     sp = M.ESPECIES[p.especie];
@@ -405,13 +407,18 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'li
   const ajenas = new Set(Object.keys(E.mundo.plantas)),
     pd = abierto(E, p.id);
   // tarde: una década después de la última siembra que llega en un año normal, sin el margen. Si ahí
-  // el cuaderno solo dice que una hoja se arriesgaba a espigar, no dice que no llegaba: no se cuenta
+  // una hoja solo se arriesgaba a espigar (el cuaderno no dice que no llegaba), la primera siembra
+  // después que da cosecha, que el cuaderno dice que ya era tarde; si no hay, pasado el margen
   let siembra = limiteDe(pd)!;
   if (cuando === 'tarde') {
     siembra = pd.vence;
     while (!llegabaJusto(pd, siembra)) siembra--;
     siembra++;
-    if (!Number.isFinite(tardaba(pd, siembra)) && puedeEspigar(sp)) return null;
+    if (puedeEspigar(sp)) {
+      const primera = siembra;
+      while (siembra <= pd.vence && !Number.isFinite(tardaba(pd, siembra))) siembra++;
+      if (siembra > pd.vence) siembra = primera + P.margen;
+    }
   }
   if (cuando === 'temprano')
     for (let s = pd.desde; s <= pd.vence; s++)
@@ -491,10 +498,10 @@ const puedeCumplirse = (E: Estado, p: M.Pedido): boolean =>
 function esVerdad(llegadas: Estado[], p: M.Pedido, que: string): void {
   const temprano = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'temprano')).length,
     enElLimite = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'limite')).length,
-    tarde = llegadas.map((E) => primeraCosechaATiempo(E, p, 'tarde')).filter((x) => x !== null);
+    tarde = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'tarde')).length;
   expect(temprano, `${que}: sembrando temprano`).toBeGreaterThan(llegadas.length / 2);
   expect(enElLimite, `${que}: sembrando en el límite`).toBeGreaterThan(llegadas.length / 2);
-  expect(tarde.filter(Boolean).length, `${que}: sembrando tarde`).toBeLessThan(tarde.length / 2 || 1);
+  expect(tarde, `${que}: sembrando tarde`).toBeLessThan(llegadas.length / 2);
 }
 
 describe.each(Object.keys(M.PLANTILLAS))('la cuenta es verdad en el patio %s', (patio) => {

@@ -151,8 +151,12 @@ describe('migración de partidas guardadas', () => {
     const vieja = guardada('partida-v5-balcon'),
       [pd] = vieja.progreso.pedidos.abiertos;
     vieja.progreso.pedidos.abiertos.push({ ...pd, id: 'acelga-del-comedor', desde: undefined });
+    // sin lo cosechado al llegar, lo que llevás sería NaN y el pedido se daría por cumplido
+    vieja.progreso.pedidos.abiertos.push({ ...pd, id: 'verdeo-de-la-feria', base: undefined });
     pd.cuenta = [99];
-    const [p] = M.migrar(vieja)!.progreso.pedidos.abiertos;
+    const abiertos = M.migrar(vieja)!.progreso.pedidos.abiertos,
+      [p] = abiertos;
+    expect(abiertos.map((x) => x.id)).toEqual([pd.id]);
     expect(p.cuenta).toHaveLength(pd.vence - pd.desde + 1);
     expect(p.cuenta).not.toContain(99);
     expect(M.migrar(guardada('partida-v5-balcon'))!.progreso.pedidos.abiertos).toHaveLength(1);
@@ -168,6 +172,14 @@ describe('migración de partidas guardadas', () => {
     for (const c of Object.values(zonaRara.mundo.celdas) as any[]) c.zona = 'no-existe';
     expect(() => M.migrar(zonaRara)).not.toThrow();
     expect(M.migrar(zonaRara)).toBeNull();
+  });
+  it('una partida de antes de v4 rota no se carga, y no rompe la carga', () => {
+    for (const nombre of ['partida-v1', 'partida-v2-fondo', 'partida-v3-fondo', 'partida-v3-balcon']) {
+      const vieja = guardada(nombre);
+      delete vieja.compost;
+      expect(() => M.migrar(vieja), nombre).not.toThrow();
+      expect(M.migrar(vieja), nombre).toBeNull();
+    }
   });
   it('una partida de hoy pasa tal cual', () => {
     const E = M.crearPartida(3);

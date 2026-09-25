@@ -120,8 +120,9 @@ function porQueNoLlegaba(s: Sembrado, tarde: boolean): string {
   if (!Number.isFinite(s.decadas))
     return (
       (tarde ? ', pasado el límite, y' : ', pero') +
-      ' con el tiempo de esa época no llegaba a dar cosecha' +
-      (s.puedeEspigar ? ', o se arriesgaba a espigar antes. ' : '. ')
+      (s.puedeEspigar
+        ? ' con el calor de esa época se arriesgaba a espigar antes de la cosecha, o ni llegaba a darla. '
+        : ' con el tiempo de esa época no llegaba a dar cosecha. ')
     );
   return tarde
     ? ' y ya era tarde: en un año normal no llegaba a la fecha. '

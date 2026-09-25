@@ -102,13 +102,14 @@ const PASOS: Record<number, (e: Guardada) => void> = {
   // v5 → v6 (0.10): un pedido abierto guarda lo que tardaba cada siembra posible (`cuenta`) en vez del
   // último turno para sembrar. Se cuenta con el patio de cuando se carga, que es lo más parecido que
   // queda al de cuando llegó, y con las reglas de hoy aunque ya trajera una; un pedido que ya no existe,
-  // o sin fechas, se deja de lado.
+  // o sin fechas o sin lo cosechado al llegar (`base`), se deja de lado.
   5: (e) => {
     const P = e.progreso?.pedidos;
     if (Array.isArray(P?.abiertos))
       P.abiertos = P.abiertos.flatMap((pd: Guardada) => {
         const p = pedidoPorId(pd?.id);
-        if (!p || !Number.isInteger(pd.desde) || !Number.isInteger(pd.vence) || pd.vence < pd.desde) return [];
+        const fechas = Number.isInteger(pd?.desde) && Number.isInteger(pd?.vence) && pd.vence >= pd.desde;
+        if (!p || !fechas || typeof pd.base !== 'number') return [];
         const { limite: _, cuenta: __, ...resto } = pd;
         return [{ ...resto, cuenta: cuentaDe(e as Estado, p.especie, pd.desde, pd.vence) }];
       });
@@ -170,15 +171,15 @@ function desplegar(e: Guardada): boolean {
 export function migrar(E: unknown): Estado | null {
   const e = E as Guardada | null;
   if (!e || typeof e !== 'object') return null;
-  if (!e.meta && !desplegar(e)) return null;
   try {
+    if (!e.meta && !desplegar(e)) return null;
     while (typeof e.meta?.v === 'number' && e.meta.v < VERSION && e.mundo?.estructuras) {
       const paso = PASOS[e.meta.v];
       if (!paso) return null;
       paso(e);
     }
   } catch {
-    // un paso que usa el dominio (la cuenta de los pedidos) con una partida rota: no se carga
+    // una partida rota que un paso no sabe leer: no se carga (queda a medio migrar; nadie la reusa)
     return null;
   }
   return esPartidaValida(e) ? e : null;
