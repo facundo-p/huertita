@@ -120,7 +120,7 @@ export const pedidoADestiempo = (p: DeUnPedido, c: Cuenta, sembraste: string, de
       sembraste +
       (Number.isFinite(decadas)
         ? ', pero con el tiempo de esa época tardaba unas ' + decadas + ' décadas y no llegaba. '
-        : ', pero con el tiempo de esa época no llegaba a nacer. ') +
+        : ', pero con el tiempo de esa época no llegaba a dar cosecha. ') +
       cuenta(p, c),
   );
 export const pedidoNoAlcanzo = (p: DeUnPedido, c: Cuenta, sembraste: string): Frase =>

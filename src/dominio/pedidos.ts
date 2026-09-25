@@ -18,6 +18,7 @@ import { horasSol, zonaDe, zonasDe } from './patio';
 import { nombreDe } from './planta';
 import { decadaEstacional, enTramo, regionDe } from './region';
 import { DIAS_POR_TURNO } from './sistemas/contexto';
+import { probEspigar } from './sistemas/madurar';
 import * as T from './textos/pedidos';
 import type { Frase } from './textos/frase';
 import type { CeldaId, Especie, Estado, Evento, PedidoAbierto } from './tipos';
@@ -49,10 +50,13 @@ function tempNormal(E: Estado, turno: number): number {
  * sacó, y quien planifica hace lugar. La de las paredes y los árboles del patio sí.
  */
 function lugar(E: Estado, sp: Especie, celda: CeldaId, turno: number): number {
-  const sinPlantas = { tiempo: E.tiempo, mundo: { ...E.mundo, plantas: {} } },
-    h = horasSol(sinPlantas, celda, decadaDelTurno(E, turno));
-  return fLuz(sp, h, P.temperaturaDeReferencia) * clamp(fSuelo(E, sp, celda) * fMaceta(E, sp, celda), 0, 1);
+  return (
+    fLuz(sp, horasSinPlantas(E, celda, turno), P.temperaturaDeReferencia) *
+    clamp(fSuelo(E, sp, celda) * fMaceta(E, sp, celda), 0, 1)
+  );
 }
+const horasSinPlantas = (E: Estado, celda: CeldaId, turno: number): number =>
+  horasSol({ tiempo: E.tiempo, mundo: { ...E.mundo, plantas: {} } }, celda, decadaDelTurno(E, turno));
 
 /** La celda de la almaciguera con más luz para la especie cuando se siembra. */
 function mejorAlmaciguera(E: Estado, sp: Especie, turno: number): CeldaId | null {
@@ -75,7 +79,8 @@ function mejorAlmaciguera(E: Estado, sp: Especie, turno: number): CeldaId | null
  * la estación, así que se cuenta década por década y no solo la del día de la siembra. Si en esa
  * época la especie va a almácigo y el patio tiene dónde criar, nace y crece en la almaciguera, con su
  * luz, y se trasplanta cuando el plantín está hecho y es época de trasplante; si espera de más, se
- * pasa. Si no llega a nacer, o tarda más de un año, da `Infinity`.
+ * pasa. Una hoja que con el calor espiga antes de la cosecha más de `REGLAS.pedidos.espigaComoMucho`
+ * de las veces no llega. Si no llega a nacer, espiga o tarda más de un año, da `Infinity`.
  */
 export function decadasHastaCosecha(E: Estado, slug: string, turno: number): number {
   const sp = ESPECIES[slug],
@@ -141,11 +146,17 @@ interface Brote {
   shock: boolean;
 }
 
-/** El plantín hecho se trasplanta recién cuando es época de trasplante. */
+/**
+ * El plantín hecho se trasplanta recién cuando es época de trasplante. Con margen: en un año más
+ * fresco está hecho unas décadas después, así que se cuenta que llega a esta época solo si sigue
+ * abierta `REGLAS.pedidos.margen` décadas más; si no, espera la próxima.
+ */
 function trasplantaSiEsEpoca(s: Siembra, b: Brote, t: number): void {
-  const dt = s.sp.dt;
+  const dt = s.sp.dt,
+    esEpoca = (turno: number): boolean =>
+      ventana(regionDe(s.E), s.sp.slug, decadaDelTurno(s.E, turno), 'trasplante') !== 'fuera';
   if (!b.enAlmacigo || !dt || b.prog < dt.min) return;
-  if (ventana(regionDe(s.E), s.sp.slug, decadaDelTurno(s.E, t), 'trasplante') === 'fuera') return;
+  if (!esEpoca(t) || !esEpoca(t + P.margen)) return;
   b.enAlmacigo = false;
   b.shock = true;
 }
@@ -173,24 +184,29 @@ function decadasHastaCrecer(s: Siembra, desde: number, tope: number): number {
       pasado: false,
       shock: false,
     };
-  let t = desde;
+  let t = desde,
+    sinEspigar = 1;
   while (b.prog < objetivoCosecha(sp)) {
     trasplantaSiEsEpoca(s, b, t);
-    const aca = lugar(E, sp, b.enAlmacigo ? s.almaciguera! : s.celda, t),
+    const donde = b.enAlmacigo ? s.almaciguera! : s.celda,
+      aca = lugar(E, sp, donde, t),
       g = fTemp(sp, tempEn(s, t, b.enAlmacigo)) * aca * b.vigor * P.cuidado * (b.shock ? CREC.conShock : 1),
       esperaHecho = b.enAlmacigo && sp.dt && b.prog >= sp.dt.max;
     if (!esperaHecho) b.prog += DIAS_POR_TURNO * clamp(g, 0, CREC.factorMaximo);
     b.shock = false;
     sePasaSiEspera(s, b, t);
+    // como `espigar`: con calor, una hoja se sube a flor antes de la cosecha
+    sinEspigar *= 1 - clamp(probEspigar(sp, b.prog, tempNormal(E, t), horasSinPlantas(E, donde, t)), 0, 1);
+    if (1 - sinEspigar > P.espigaComoMucho) return Infinity;
     // más de un año no llega; más que `tope`, ya hay un lugar mejor
     if (++t - desde > Math.min(DECADAS_DEL_ANIO, tope)) return Infinity;
   }
   return t - desde;
 }
 
-/** Si una siembra en `turno` llega a cosecharse para `vence`, en un año normal. */
+/** Si una siembra en `turno` llega a cosecharse para `vence`, en un año normal y con margen (`REGLAS.pedidos.margen`). */
 export const llegaA = (E: Estado, slug: string, turno: number, vence: number): boolean =>
-  turno + decadasHastaCosecha(E, slug, turno) <= vence;
+  turno + decadasHastaCosecha(E, slug, turno) <= vence - P.margen;
 
 /** Cuánto tarda cada siembra posible entre que llega el pedido y la fecha (`PedidoAbierto.cuenta`). */
 export function cuentaDe(E: Estado, slug: string, desde: number, vence: number): (number | null)[] {
@@ -201,8 +217,8 @@ export function cuentaDe(E: Estado, slug: string, desde: number, vence: number):
 }
 /** Lo que tardaba una siembra en ese turno, según la cuenta de cuando llegó el pedido. */
 export const tardaba = (pd: PedidoAbierto, turno: number): number => pd.cuenta[turno - pd.desde] ?? Infinity;
-/** Si una siembra en ese turno llegaba a la fecha, según la cuenta de cuando llegó el pedido. */
-export const llegaba = (pd: PedidoAbierto, turno: number): boolean => turno + tardaba(pd, turno) <= pd.vence;
+/** Si una siembra en ese turno llegaba a la fecha con margen, según la cuenta de cuando llegó el pedido. */
+export const llegaba = (pd: PedidoAbierto, turno: number): boolean => turno + tardaba(pd, turno) <= pd.vence - P.margen;
 /** La última siembra que llegaba a la fecha, según la cuenta de cuando llegó el pedido, o `null`. */
 export function limiteDe(pd: PedidoAbierto): number | null {
   for (let s = pd.vence; s >= pd.desde; s--) if (llegaba(pd, s)) return s;

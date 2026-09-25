@@ -82,7 +82,7 @@ export interface Evento {
 /** De qué está hecha una partida, más allá de lo que se juega: formato, azar, lugar. */
 export interface Meta {
   /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
-  v: 5;
+  v: 6;
   semilla: number;
   rng: number;
   /** la región del clima y el calendario (`datos/juego/regiones`) */
@@ -181,11 +181,14 @@ export interface PedidoAbierto {
   vence: number;
   /** lo que ya se había cosechado de la especie cuando llegó: cuenta lo que se coseche después */
   base: number;
-  /** el turno de la primera siembra de la especie después de que llegó, si hubo */
+  /**
+   * una siembra de la especie después de que llegó, si hubo: la primera que llegaba a la fecha y, mientras
+   * no haya una, la última (`alSembrar`)
+   */
   sembrado: number | null;
   /**
    * Cuántas décadas tardaba en llegar a cosecha cada siembra posible, contado cuando llegó: `cuenta[i]`
-   * es sembrando en el turno `desde + i`, y `null` si no llegaba a nacer. Lo que dice el cuaderno si
+   * es sembrando en el turno `desde + i`, y `null` si no llegaba a dar cosecha. Lo que dice el cuaderno si
    * vence sale de acá, así no cambia con lo que pase después en el patio.
    */
   cuenta: (number | null)[];

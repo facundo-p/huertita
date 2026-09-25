@@ -101,7 +101,7 @@ export function crearPartida(
   const plantilla = opciones.patio || PLANTILLA_INICIAL,
     patio = copiarPlantilla(plantilla);
   const E: Estado = {
-    meta: { v: 5, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9e3779b9, region: patio.region, plantilla },
+    meta: { v: 6, semilla: semilla | 0, rng: (semilla | 0) ^ 0x9e3779b9, region: patio.region, plantilla },
     mundo: {
       patio,
       celdas: {},

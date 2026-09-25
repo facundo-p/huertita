@@ -23,7 +23,7 @@ Los `import type` no cuentan: se borran al compilar y no acoplan nada en ejecuci
 
 ## El estado
 
-`Estado` (`src/dominio/tipos.ts`, formato v4) tiene cinco partes y ningún campo suelto:
+`Estado` (`src/dominio/tipos.ts`, formato v6) tiene cinco partes y ningún campo suelto:
 
 | Parte | Qué guarda |
 | --- | --- |

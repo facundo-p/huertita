@@ -128,6 +128,25 @@ describe('migración de partidas guardadas', () => {
     for (let i = 0; i < 12; i++) M.pasarDecada(E);
     expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
   });
+  it('un pedido abierto de la v5 gana su cuenta y, al vencer, el cuaderno dice por qué', () => {
+    const vieja = guardada('partida-v5-balcon'),
+      [pv] = vieja.progreso.pedidos.abiertos,
+      E = M.migrar(guardada('partida-v5-balcon'))!;
+    expect(E.meta.v).toBe(M.VERSION);
+    const [pd] = E.progreso.pedidos.abiertos as any[];
+    expect(pd.limite).toBeUndefined();
+    expect(pd).toMatchObject({ id: pv.id, desde: pv.desde, vence: pv.vence, base: pv.base });
+    expect(pd.cuenta).toHaveLength(pv.vence - pv.desde + 1);
+    while (E.tiempo.turno <= pv.vence) M.pasarDecada(E);
+    expect(E.progreso.pedidos.abiertos).toEqual([]);
+    expect(E.progreso.cuaderno.some((e) => e.codigo === 'pedido.sin-sembrar')).toBe(true);
+    expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
+  });
+  it('un pedido que ya no existe se deja de lado al migrar', () => {
+    const vieja = guardada('partida-v5-balcon');
+    vieja.progreso.pedidos.abiertos[0].id = 'el-que-ya-no-esta';
+    expect(M.migrar(vieja)!.progreso.pedidos.abiertos).toEqual([]);
+  });
   it('una partida de hoy pasa tal cual', () => {
     const E = M.crearPartida(3);
     expect(M.migrar(JSON.parse(JSON.stringify(E)))).toEqual(E);

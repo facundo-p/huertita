@@ -7,9 +7,10 @@ import { validarPatio } from '../../datos/juego/patio';
 import { REGLAS } from '../../datos/juego/reglas';
 import { jardinInicial } from './jardin';
 import { PLANTILLAS, copiarPlantilla } from './patio';
+import { cuentaDe, pedidoPorId } from './pedidos';
 import type { Estado } from './tipos';
 
-export const VERSION = 5;
+export const VERSION = 6;
 type Guardada = Record<string, any>;
 
 /** Cada paso lleva una partida de la versión de su clave a la siguiente. */
@@ -97,6 +98,19 @@ const PASOS: Record<number, (e: Guardada) => void> = {
     e.progreso.sorpresas = {};
     e.progreso.pedidos = { abiertos: [], cerrados: {}, cumplidos: 0 };
     e.meta.v = 5;
+  },
+  // v5 → v6 (0.10): un pedido abierto guarda lo que tardaba cada siembra posible (`cuenta`) en vez del
+  // último turno para sembrar. Se cuenta con el patio de cuando se carga, que es lo más parecido que
+  // queda al de cuando llegó; un pedido que ya no existe se deja de lado.
+  5: (e) => {
+    const P = e.progreso.pedidos;
+    P.abiertos = P.abiertos.flatMap((pd: Guardada) => {
+      const p = pedidoPorId(pd.id);
+      if (!p) return [];
+      const { limite: _, ...resto } = pd;
+      return [{ ...resto, cuenta: pd.cuenta ?? cuentaDe(e as Estado, p.especie, pd.desde, pd.vence) }];
+    });
+    e.meta.v = 6;
   },
 };
 

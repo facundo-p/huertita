@@ -504,6 +504,19 @@ export const REGLAS = {
     cuidado: 1,
     /** la máxima, en °C, con la que se cuenta la luz de media sombra al estimar */
     temperaturaDeReferencia: 20,
+    /**
+     * décadas de margen entre la cosecha de la cuenta y la fecha: la cuenta es la de un año normal, y de
+     * un año a otro la cosecha se corre una década o dos. Con esto, sembrando a más tardar en el límite
+     * que se dice se llega la mayoría de los años (tests/pedidos.test.ts). El mismo margen se deja antes
+     * de que cierre la época de trasplante: un plantín que en un año normal está hecho justo al final,
+     * en uno fresco se la pierde
+     */
+    margen: 2,
+    /**
+     * una siembra de hoja no llega si, en un año normal, espiga antes de la cosecha más de esta parte de
+     * las veces (`probEspigar`)
+     */
+    espigaComoMucho: 0.05,
   },
 
   /** [SUPUESTO] el trasplante */

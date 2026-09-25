@@ -93,7 +93,7 @@ Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 - Skill global `mapa-de-pendientes` propuesto (ver §7).
 - **0.8 (sesión de Claude Code en la nube, 18-9):** paso 3 de los cimientos, con la regla de espacio apagada; `--espacio` en el bot; estado v3 con migración; `docs/traspaso/instalar-skill.sh`; `crear-issues.sh` regenerado desde `issues.json` (ahora también cierra el #27).
 - **0.9 (24-9): la epic #39 entera**, #40 a #56. Registro, números de antes y después, y lo que quedó anotado para después, en `docs/REESTRUCTURA.md`. Se juega igual: el dorado siguió verde en cada commit y el bot da los mismos puntajes.
-- **0.10 (25-9):** #63–#65 (arreglos de la revisión de la epic), #67 (Proceso en `CLAUDE.md`), #68 (dorado propio), y las ideas #7 compost, #6 sorpresas, #8 pedidos, #9 sonido. Estado v5 (migración desde v4). Detalle en el CHANGELOG.
+- **0.10 (25-9):** #63–#65 (arreglos de la revisión de la epic), #67 (Proceso en `CLAUDE.md`), #68 (dorado propio), y las ideas #7 compost, #6 sorpresas, #8 pedidos, #9 sonido. Estado v6 (migración desde v4 y v5). Detalle en el CHANGELOG.
 
 ## 6. Decisiones y deudas abiertas
 
@@ -220,7 +220,7 @@ por costo e impacto: #11 vacaciones de enero y #10 patios prediseñados.
 
 - ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
 - ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
-- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (593 tests) y
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (595 tests) y
   `npm run humo` (necesita Playwright: se usa el del proyecto o, si no hay, el global; no hace falta
   symlink). Antes de tocar la gráfica, `npm run build:artifact && npm run capturas -- --guardar`.
 - El juego publicado está en 0.10 (versión 9 del artifact, desde la rama del PR #69): Facu lo está

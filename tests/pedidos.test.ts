@@ -291,7 +291,7 @@ describe('cuando vence', () => {
     const [f] = vencidos(E);
     expect(f.codigo).toBe('pedido.a-destiempo');
     expect(f.texto).toMatch(
-      /Sembraste albahaca a principios de agosto, pero con el tiempo de esa época no llegaba a nacer/,
+      /Sembraste albahaca a principios de agosto, pero con el tiempo de esa época no llegaba a dar cosecha/,
     );
     expect(f.texto).toMatch(/crece más lento: un año normal son unas \d+ décadas/);
     const c = { dias: 94, decadas: 14, masLento: true, limite: 'fines de septiembre', llevas: 0 };
@@ -343,7 +343,7 @@ function riegoCuidadoso(E: Estado, zona: string, slug: string): number {
  * siembra cinco lugares, riega según el pronóstico, cubre, trata, raleá, tutora, trasplanta cuando es época y
  * vuelve a sembrar si pierde la siembra. Dice si llega a la primera cosecha antes de la fecha.
  */
-function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'tarde'): boolean {
+function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'limite' | 'tarde'): boolean {
   const E = structuredClone(E0),
     R = M.regionDe(E),
     sp = M.ESPECIES[p.especie];
@@ -352,7 +352,8 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'ta
   E.progreso.pedidos.abiertos = [];
   const ajenas = new Set(Object.keys(E.mundo.plantas)),
     pd = abierto(E, p.id);
-  let siembra = limiteDe(pd)! + 1;
+  // tarde: una década después de lo que tarda en un año normal, sin el margen
+  let siembra = limiteDe(pd)! + (cuando === 'tarde' ? REGLAS.pedidos.margen + 1 : 0);
   if (cuando === 'temprano')
     for (let s = pd.desde; s <= pd.vence; s++)
       if (M.ventana(R, p.especie, M.decadaDelTurno(E, s)) === 'ideal' && llegaA(E, p.especie, s, pd.vence)) {
@@ -423,14 +424,17 @@ const puedeCumplirse = (E: Estado, p: M.Pedido): boolean =>
   hayFechaDeSiembra(E, p.especie, E.tiempo.turno, E.tiempo.turno + p.plazo);
 
 /**
- * «A más tardar» es verdad si la mayoría de los años alcanza con sembrar temprano y no alcanza con
- * sembrar una década después del límite. La cuenta es la de un año normal: en un año fresco o caluroso
- * la cosecha puede adelantarse o atrasarse una década, así que no se pide todos los años.
+ * «A más tardar» es verdad si la mayoría de los años alcanza con sembrar temprano o justo en el límite,
+ * y no alcanza con sembrar una década después de lo que da la cuenta sin margen. La cuenta es la de un
+ * año normal: en un año fresco o caluroso la cosecha se adelanta o se atrasa, así que no se pide todos
+ * los años.
  */
 function esVerdad(llegadas: Estado[], p: M.Pedido, que: string): void {
   const temprano = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'temprano')).length,
+    enElLimite = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'limite')).length,
     tarde = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'tarde')).length;
   expect(temprano, `${que}: sembrando temprano`).toBeGreaterThan(llegadas.length / 2);
+  expect(enElLimite, `${que}: sembrando en el límite`).toBeGreaterThan(llegadas.length / 2);
   expect(tarde, `${que}: sembrando tarde`).toBeLessThan(llegadas.length / 2);
 }
 
