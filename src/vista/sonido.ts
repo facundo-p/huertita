@@ -67,6 +67,8 @@ export function arrancarSonido(): void {
   if (recordado() && globalThis.document) {
     const GESTOS = ['pointerdown', 'keydown'] as const;
     const alPrimerGesto = (e: Event): void => {
+      // Escape no cuenta como gesto para el navegador: el sonido quedaría prendido y mudo
+      if (e instanceof KeyboardEvent && e.key === 'Escape') return;
       for (const g of GESTOS) document.removeEventListener(g, alPrimerGesto);
       // el botón de sonido decide solo: si no, lo prenderíamos acá y su click lo volvería a apagar
       const enElBoton = e.target instanceof Element && !!e.target.closest('#hz-sonido');

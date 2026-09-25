@@ -79,6 +79,15 @@ describe('el sonido', () => {
       expect(sonido.value, gesto).toBe(true);
     }
   });
+  it('Escape no cuenta como primer gesto: el navegador no deja sonar con esa tecla', () => {
+    prenderSonido(true);
+    sonido.value = false;
+    arrancarSonido();
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    expect(sonido.value).toBe(false);
+    fireEvent.keyDown(document.body, { key: 'a' });
+    expect(sonido.value).toBe(true);
+  });
   it('si el primer gesto es el botón de sonido, manda el botón: un toque lo prende, no lo prende y lo apaga', () => {
     prenderSonido(true);
     sonido.value = false;
