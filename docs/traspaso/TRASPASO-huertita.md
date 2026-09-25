@@ -6,6 +6,8 @@ Escrito el 18 de septiembre de 2026 por Claude, al cierre de una sesión larga d
 
 **Actualizado el 24 de septiembre de 2026**: se ejecutó la epic #39 entera (reestructura, 0.9.0). El código cambió de lugar y de forma sin cambiar cómo se juega; §4 lo resume y `docs/ARQUITECTURA.md` lo cuenta entero. Lo que sigue es #31 y el paso 4 (§7c).
 
+**Actualizado el 25 de septiembre de 2026**: 0.10.0. Se sumó la sección Proceso a `CLAUDE.md` (toda tarea es un issue, cada issue se cierra con un PR), se jubiló el dorado v0.4 (#68) y entró la primera tanda del cuadro: compost con secos y verdes (#7), eventos sorpresa (#6), pedidos de vecinos (#8) y sonido (#9). Todo en un PR que espera la revisión de Facu (§7e).
+
 **Todo lo de este traspaso vive en el repo, en `docs/traspaso/`:**
 
 | Archivo | Qué es |
@@ -91,6 +93,7 @@ Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 - Skill global `mapa-de-pendientes` propuesto (ver §7).
 - **0.8 (sesión de Claude Code en la nube, 18-9):** paso 3 de los cimientos, con la regla de espacio apagada; `--espacio` en el bot; estado v3 con migración; `docs/traspaso/instalar-skill.sh`; `crear-issues.sh` regenerado desde `issues.json` (ahora también cierra el #27).
 - **0.9 (24-9): la epic #39 entera**, #40 a #56. Registro, números de antes y después, y lo que quedó anotado para después, en `docs/REESTRUCTURA.md`. Se juega igual: el dorado siguió verde en cada commit y el bot da los mismos puntajes.
+- **0.10 (25-9):** #63–#65 (arreglos de la revisión de la epic), #67 (Proceso en `CLAUDE.md`), #68 (dorado propio), y las ideas #7 compost, #6 sorpresas, #8 pedidos, #9 sonido. Estado v5 (migración desde v4). Detalle en el CHANGELOG.
 
 ## 6. Decisiones y deudas abiertas
 
@@ -205,11 +208,19 @@ Quedan fuera de la epic, como issues propios: #57 otras regiones, #58 pantalla d
 construir y quitar en la partida, #60 vista de cerca por celda, #61 dinero. La base para cada uno ya
 está (región como dato, estado v4 con `estructuras`, cámaras como archivos, consultas).
 
+### e) La primera tanda del cuadro: #6, #7, #8, #9 — hecha (0.10, 25-9), esperando revisión
+
+Un PR con un commit por issue. Todo lo que no sale de huertapp va [SUPUESTO] y el PR lo lista aparte
+para Facu: las filas de `datos/juego/sorpresas.ts` y `datos/juego/pedidos.ts`, `REGLAS.sorpresas`,
+`REGLAS.pedidos` y `REGLAS.jardin` (cuántos secos y verdes da cada cosa). El bot todavía no mira los
+pedidos. #29 (contenido como tablas) sigue abierto: faltan logros e ítems. Lo que sigue en el cuadro,
+por costo e impacto: #11 vacaciones de enero y #10 patios prediseñados.
+
 ### d) Chequeos rápidos cuando se retome
 
 - ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
 - ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
-- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (468 tests) y
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (572 tests) y
   `npm run humo` (necesita Playwright: se usa el del proyecto o, si no hay, el global; no hace falta
   symlink). Antes de tocar la gráfica, `npm run build:artifact && npm run capturas -- --guardar`.
 - ¿Mergeó la rama de la epic #39? ¿Republicar el juego (el artifact sigue en 0.7)? La 0.9 no cambia

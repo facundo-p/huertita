@@ -7,7 +7,7 @@
 | 2 | El patio como dato: zonas con propiedades y obstáculos con altura; sol por geometría y fecha; segundo patio de prueba; estado v2 con migración | **Hecho** (v0.6) |
 | 3 | Plantas con huella propia y contenedores con capacidad (almacigueras de 50 celdas, zapallo de 4 celdas) | **Hecho** (v0.8), con los marcos reales apagados hasta el paso 4 |
 | 4 | Tic diario y `avanzar(estado, días)`; ratos por día con tope; pronóstico de 5 días | Pendiente. Rebalancea todo junto (el dorado v0.4 ya se jubiló en la 0.10, #68) |
-| 5 | Contenido como tablas: eventos, logros, pedidos e ítems son filas con condición y efecto | Pendiente |
+| 5 | Contenido como tablas: eventos, logros, pedidos e ítems son filas con condición y efecto | **En parte** (v0.10): los eventos sorpresa (`datos/juego/sorpresas.ts`) y los pedidos (`datos/juego/pedidos.ts`) ya son filas; faltan los logros y los ítems (#29) |
 | 6 | Interfaz por componentes, arte y renderer tipados | **Hecho** (v0.9, epic #39). Falta la PWA instalable |
 
 **La epic #39 (reestructura) está hecha en la v0.9** y fue antes del paso 4, con el test dorado vivo:

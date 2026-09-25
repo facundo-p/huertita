@@ -1,8 +1,8 @@
 # Cambios
 
-## Sin publicar
+## 0.10.0 · 2026-09-25 · Compost, sorpresas, pedidos y sonido
 
-Tres arreglos de arquitectura que salieron de la revisión del PR de la reestructura. El juego se juega igual: dorado verde, el bot da los mismos puntajes y las 293 capturas son iguales.
+La primera tanda del cuadro de ideas (#6, #7, #8, #9) sobre la arquitectura nueva, más los tres arreglos que salieron de la revisión del PR de la reestructura (#63, #64, #65). Los arreglos no cambian cómo se juega; las ideas sí, a propósito: el test dorado dejó de compararse con el motor v0.4 y pasó a ser una foto propia del bot, regenerada en cada commit que cambia una regla (#68). Todo lo nuevo que no sale de huertapp está marcado [SUPUESTO] y espera la revisión de Facu. Partidas guardadas: formato v5, con migración desde v4.
 
 - Los números del modelo de clima, de las épocas de plaga y de los logros pasaron a `datos/juego/reglas.ts`, con su marca y su unidad; el calendario (décadas, meses, fechas) quedó en `src/dominio/calendario.ts`. Un test vigila que ninguna regla tenga un número suelto (#63).
 - El panel de protección y la ficha de una celda preguntan al dominio si un botón va, si se puede y cuántos ratos lleva (`puede`, `costoDe`). La ayuda de las heladas sale con el umbral y los abrigos del dominio, así no miente si cambia el balance (#64).
