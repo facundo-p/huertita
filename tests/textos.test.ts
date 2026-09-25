@@ -6,6 +6,9 @@ import { describe, expect, it } from 'vitest';
 import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
 import type { Estado } from '../src/dominio';
+import * as TC from '../src/dominio/textos/crecimiento';
+import * as TG from '../src/dominio/textos/germinacion';
+import * as TH from '../src/dominio/textos/heladas';
 
 const CODIGO = /^[a-z]+(\.[a-z-]+)?$/;
 
@@ -29,5 +32,19 @@ describe('todo lo que se anota tiene código', () => {
     const secas = evs.filter((e) => e.codigo === 'germinacion.tierra-seca');
     expect(secas.length).toBe(1);
     expect(secas[0].texto).toMatch(/\(×3\)$/);
+  });
+});
+
+describe('la interfaz reconoce las pérdidas por el código, no por la prosa', () => {
+  const sp = M.ESPECIES.tomate;
+  it('una planta que murió o una semilla que se perdió es una pérdida', () => {
+    expect(M.esPerdida(TC.murio(sp).codigo)).toBe(true);
+    expect(M.esPerdida(TH.murio(sp, -2, '').codigo)).toBe(true);
+    expect(M.esPerdida(TG.semillaPerdida(sp, 30).codigo)).toBe(true);
+  });
+  it('lo demás no, aunque hable de secarse', () => {
+    expect(M.esPerdida(TC.pasadaSeSeco(sp).codigo)).toBe(false);
+    expect(M.esPerdida('germinacion.tierra-seca')).toBe(false);
+    expect(M.esPerdida(undefined)).toBe(false);
   });
 });

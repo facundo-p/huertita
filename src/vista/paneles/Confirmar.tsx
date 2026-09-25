@@ -16,8 +16,10 @@ interface Props {
 export function Confirmar({ pregunta, alConfirmar, sinPreguntar, children, ...resto }: Props) {
   const [dudando, setDudando] = useState(false);
   const tocar = () => {
-    if (dudando || sinPreguntar) alConfirmar();
-    else setDudando(true);
+    if (!dudando && !sinPreguntar) return setDudando(true);
+    // confirmado: el botón vuelve a pedir el segundo toque la próxima vez
+    setDudando(false);
+    alConfirmar();
   };
   return (
     <button {...resto} onClick={tocar}>

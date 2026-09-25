@@ -10,6 +10,7 @@ import { frase, type Frase } from './frase';
 export const sinRatos = (): string => 'No te quedan ratos esta década.';
 export const tunelLleva = (ratos: number): string => 'Armar o sacar el microtúnel lleva ' + ratos + ' ratos.';
 export const anioTerminado = (): string => 'El año terminó.';
+export const anioSinTerminar = (): string => 'Todavía no terminó el año: seguí jugando este.';
 export const desconocida = (tipo: string): string => 'Acción desconocida: ' + tipo;
 export const noSeSiembraAhi = (): string => 'No se puede sembrar ahí.';
 export const noEntra = (sp: Especie): string =>

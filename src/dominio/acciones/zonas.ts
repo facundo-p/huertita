@@ -59,7 +59,7 @@ export const manta: Regla<De<'manta'>> = {
 
 /** Empezar otro año con la misma huerta. */
 export const seguir: Regla<De<'seguir'>> = {
-  puede: () => null,
+  puede: (E) => (E.tiempo.terminado ? null : T.anioSinTerminar()),
   costo: gratis,
   aplicar(E, _a, evs) {
     E.tiempo.terminado = false;

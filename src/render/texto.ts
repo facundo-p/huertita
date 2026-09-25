@@ -29,8 +29,9 @@ function textoDe(es: Escena, c: CeldaDeEscena): string {
   return t;
 }
 
-/** Lo que no es cantero: pared, casa, árbol (pelado en invierno) o nada. */
-function fondoDe(es: Escena, ch: string): string {
+/** Lo que no es cantero: la compostera, pared, casa, árbol (pelado en invierno) o nada. */
+function fondoDe(es: Escena, k: CeldaId, ch: string): string {
+  if (k === es.compostera) return '♻️';
   const f = FONDO[ch] || '';
   return f === '🌳' && !es.arbolConHojas ? '🪾' : f;
 }
@@ -61,7 +62,7 @@ export class RenderTexto implements Renderer {
           b = document.createElement(c ? 'button' : 'div');
         if (!c) {
           b.className = 'hz-tcelda';
-          b.textContent = fondoDe(es, es.plano[y][x]);
+          b.textContent = fondoDe(es, k, es.plano[y][x]);
         } else {
           b.className = claseDe(c);
           b.textContent = textoDe(es, c);

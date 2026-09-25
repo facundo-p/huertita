@@ -20,6 +20,7 @@ const TRASPLANTE = REGLAS.trasplante;
  * especie que tolere el trasplante, joven o con varias juntas para repicar.
  */
 export function puedeMoverse(E: Estado, pl: Planta): string | null {
+  if (E.tiempo.terminado) return T.anioTerminado();
   if (pl.etapa === 'semilla') return T.noGermino();
   if (pl.etapa !== 'plantin' && pl.etapa !== 'creciendo') return T.noEsDeMover();
   const sp = especieDe(pl);
@@ -34,14 +35,16 @@ export const trasplantar: Regla<De<'trasplantar'>> = {
     const pl = E.mundo.plantas[a.planta],
       dest = E.mundo.celdas[a.celda];
     if (!pl || !dest) return T.noSeTrasplantaAhi();
-    if (dest.planta) return T.celdaOcupada();
+    // una planta sola puede correrse sobre sus propias celdas; de un grupo sale un plantín y el grupo se queda
+    const salvo = vivas(pl) > 1 ? undefined : pl.id;
+    if (a.celda === pl.celda || (dest.planta && dest.planta !== salvo)) return T.celdaOcupada();
     if (zona(E, dest.zona).cria) return T.almacigueraNoRecibe();
     const origen = puedeMoverse(E, pl);
     if (origen) return origen;
     const sp = especieDe(pl),
       bloque = bloqueDe(E, sp, a.celda, false);
     if (!bloque) return T.noEntra(sp);
-    if (ocupadaEn(E, bloque)) return T.laDeAlLadoOcupada(sp);
+    if (ocupadaEn(E, bloque, salvo)) return T.laDeAlLadoOcupada(sp);
     return null;
   },
   costo: () => REGLAS.ratos.accion,

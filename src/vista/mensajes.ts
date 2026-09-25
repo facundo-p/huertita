@@ -147,8 +147,7 @@ export function pasarDecada(): void {
   animar.value = animacionDelClima(w);
   for (const e of ultimos.value) {
     if (e.tipo === 'logro') efecto('logro');
-    else if (e.tipo === 'mal' && e.celda && /murió|se perdió|se secó/.test(e.texto))
-      efecto('morir', { celda: e.celda });
+    else if (e.celda && M.esPerdida(e.codigo)) efecto('morir', { celda: e.celda });
   }
   guardar();
   void subirANube(false);
@@ -167,7 +166,7 @@ export function mirarZona(zona: string): void {
 }
 
 /** Usar otra partida (cargada, traída, importada o nueva). */
-export function usarPartida(E: Estado, mensaje: string, esNueva = false): void {
+export function cambiarPartida(E: Estado, mensaje: string, esNueva = false): void {
   partida.value = E;
   ultimos.value = [];
   aviso.value = '';

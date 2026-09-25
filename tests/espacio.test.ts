@@ -82,6 +82,28 @@ describe('con las reglas de espacio prendidas', () => {
       expect(M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO }).ok).toBe(true);
     }));
 
+  it('una planta de varias celdas se puede correr una celda: las suyas no le estorban', () =>
+    M.conEspacioReal(() => {
+      // Hoy ninguna especie de varias celdas tolera el trasplante en tierra: se prueba con un
+      // zapallo que sí, para el día que el catálogo traiga una.
+      const zapallo = M.ESPECIES.zapallo,
+        dt = zapallo.dt;
+      zapallo.dt = { min: 10, max: 60 };
+      try {
+        const E = partida({ zapallo: 2 });
+        M.despachar(E, { tipo: 'sembrar', slug: 'zapallo', celda: CELDA_SUELO });
+        const pl = plantaDe(E, CELDA_SUELO);
+        Object.assign(pl, { etapa: 'creciendo', n: 1, prog: 20 });
+        expect(M.puede(E, { tipo: 'trasplantar', planta: pl.id, celda: CELDA_SUELO })).toMatch(/ocupada/);
+        expect(M.despachar(E, { tipo: 'trasplantar', planta: pl.id, celda: '1,1' }).ok).toBe(true);
+        expect(pl.celdas).toEqual(['1,1', '2,1', '1,2', '2,2']);
+        for (const k of ['0,1', '0,2']) expect(E.mundo.celdas[k].planta).toBeNull();
+        for (const k of pl.celdas!) expect(E.mundo.celdas[k].planta).toBe(pl.id);
+      } finally {
+        zapallo.dt = dt;
+      }
+    }));
+
   it('en la almaciguera el plantín ocupa una celda: ahí el zapallo entra igual', () =>
     M.conEspacioReal(() => {
       const E = partida({ zapallo: 2 });

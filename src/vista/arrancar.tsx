@@ -9,7 +9,7 @@ import type { Estado } from '../dominio';
 import { App } from './App';
 import { interaccion, partida, tocada } from './estado';
 import { activo } from './efectos';
-import { escenaActual, usarPartida } from './mensajes';
+import { cambiarPartida, escenaActual, guardar } from './mensajes';
 import { almacenes, conectar } from './persistencia';
 
 interface Hot {
@@ -31,12 +31,14 @@ async function empezar(raiz: HTMLElement, previa: unknown): Promise<void> {
   partida.value = E;
   interaccion.value = { modo: E.tiempo.terminado ? { modo: 'fin' } : { modo: 'inicio' }, sel: null };
   tocada();
+  // una partida recién empezada queda guardada desde ya, como cualquier otra
+  if (!guardada) guardar();
   render(<App />, raiz);
   const remota = await conectar();
   // sin partida en este dispositivo, se sigue la de la nube si hay
   if (!guardada && remota && almacenes.nube && partida.value.tiempo.turno === 0) {
     const deLaNube = await almacenes.nube.cargar();
-    if (deLaNube) usarPartida(deLaNube, 'Seguís la partida que tenías en la nube.');
+    if (deLaNube) cambiarPartida(deLaNube, 'Seguís la partida que tenías en la nube.');
   }
 }
 

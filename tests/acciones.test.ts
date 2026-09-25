@@ -92,6 +92,20 @@ describe('lo que la interfaz ya no dejaba hacer, ahora lo decide el dominio', ()
     pl.etapa = 'pasada';
     expect(M.puedeMoverse(E, pl)).toMatch(/plantín o una planta que está creciendo/);
   });
+  it('con el año terminado no se trasplanta nada, y seguir otro año solo cuando terminó', () => {
+    const E = partida();
+    M.despachar(E, { tipo: 'sembrar', slug: 'tomate', celda: CRIA });
+    const pl = M.plantaEn(E, CRIA)!;
+    Object.assign(pl, { etapa: 'plantin', n: 1, prog: 30 });
+    expect(M.puede(E, { tipo: 'seguir' })).toMatch(/Todavía no terminó el año/);
+    expect(M.despachar(E, { tipo: 'seguir' }).ok).toBe(false);
+    expect(E.tiempo.anio).toBe(1);
+    E.tiempo.terminado = true;
+    expect(M.puedeMoverse(E, pl)).toBe('El año terminó.');
+    expect(M.despachar(E, { tipo: 'seguir' }).ok).toBe(true);
+    expect(E.tiempo.anio).toBe(2);
+    expect(M.puedeMoverse(E, pl)).toBeNull();
+  });
   it('sin ratos, la razón es la falta de ratos', () => {
     const E = partida();
     E.recursos.ratosGastados = M.RATOS;

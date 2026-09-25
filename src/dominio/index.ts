@@ -33,4 +33,5 @@ export {
 export type { Patio, ZonaDePatio } from './patio';
 export { conHojas, horasSolGeometria, posicionSol } from './sol';
 export { pasarDecada } from './tiempo';
+export { esPerdida } from './textos/frase';
 export { VERSION, esPartidaValida, migrar } from './migraciones';

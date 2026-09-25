@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import * as M from '../../src/dominio';
 import type { Estado } from '../../src/dominio';
 import { App } from '../../src/vista/App';
+import { Confirmar } from '../../src/vista/paneles/Confirmar';
 import { aviso, interaccion, partida, renderer, tocada } from '../../src/vista/estado';
 import { hacer as hacerYa } from '../../src/vista/mensajes';
 import type { EventoUI } from '../../src/vista/modos';
@@ -101,5 +102,25 @@ describe('riego y protección', () => {
     hacer({ tipo: 'ir', modo: 'proteger' });
     fireEvent.click(screen.getAllByText('Manta · 1')[0]);
     expect(screen.getByRole('alert').textContent).toBe('No te quedan ratos esta década.');
+  });
+});
+
+describe('los botones que piden confirmación', () => {
+  it('después de confirmar, vuelven a preguntar', () => {
+    let veces = 0;
+    render(
+      <Confirmar pregunta="¿Seguro?" alConfirmar={() => veces++}>
+        Cargar
+      </Confirmar>,
+    );
+    const boton = screen.getByRole('button');
+    fireEvent.click(boton);
+    expect(boton.textContent).toBe('¿Seguro?');
+    expect(veces).toBe(0);
+    fireEvent.click(boton);
+    expect(veces).toBe(1);
+    expect(boton.textContent).toBe('Cargar');
+    fireEvent.click(boton);
+    expect(veces).toBe(1);
   });
 });

@@ -12,3 +12,7 @@ export interface Frase {
   texto: string;
 }
 export const frase = (codigo: string, texto: string): Frase => ({ codigo, texto });
+
+/** Los códigos de las frases que cuentan que una planta o una semilla se perdió (la interfaz lo anima). */
+const PERDIDAS: ReadonlySet<string> = new Set(['helada.murio', 'madurez.murio', 'germinacion.perdida']);
+export const esPerdida = (codigo: string | undefined): boolean => !!codigo && PERDIDAS.has(codigo);
