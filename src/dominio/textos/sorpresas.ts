@@ -13,10 +13,14 @@ function lista(xs: string[]): string {
 }
 const plantas = (k: number): string => k + (k === 1 ? ' planta' : ' plantas');
 
-/** Cómo terminó una amenaza: a cuántas les pegó (y de qué especies), y cuántas estaban protegidas. */
+/**
+ * Cómo terminó una amenaza: a cuántas les pegó (y de qué especies), cuántas estaban expuestas y
+ * cuántas protegidas. Una plaga puede no prender en una expuesta: `expuestas` puede ser más que `cuantas`.
+ */
 export interface Golpe {
   cuantas: number;
   especies: string[];
+  expuestas: number;
   protegidas: number;
 }
 
@@ -137,6 +141,12 @@ export function mariposas(g: Golpe): Frase {
         ' (' +
         lista(g.especies) +
         '). Tapadas con manta o microtúnel no habrían llegado. Revisá el envés de las hojas.',
+    );
+  if (g.expuestas)
+    return frase(
+      'sorpresa.mariposa-blanca-zafaron',
+      'Las mariposas blancas anduvieron por el patio y esta vez no dejaron orugas en las brasicáceas sin tapar: ' +
+        'las flores y aromáticas cerca traen quien las controle, pero una manta o el microtúnel es lo seguro.',
     );
   if (g.protegidas)
     return frase(

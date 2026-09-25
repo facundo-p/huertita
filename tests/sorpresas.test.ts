@@ -57,7 +57,7 @@ describe('la tabla de sorpresas', () => {
       if (T.clase !== 'amenaza') continue;
       expect(T.queHacer()).toMatch(/manta|tutor/);
       expect(T.aviso().texto).toMatch(/manta|tutor/);
-      expect(T.paso({ cuantas: 2, especies: ['tomate'], protegidas: 0 }).texto).toMatch(/habría|habrían/);
+      expect(T.paso({ cuantas: 2, especies: ['tomate'], expuestas: 2, protegidas: 0 }).texto).toMatch(/habría|habrían/);
     }
   });
 });
@@ -148,6 +148,21 @@ describe('la mariposa blanca', () => {
     expect(M.despachar(F, { tipo: 'manta', zona: 'suelo' }).ok).toBe(true);
     expect(pasa(F, 'mariposa-blanca')).toEqual(['sorpresa.mariposa-blanca-evitada']);
     expect(plF.plaga).toBeFalsy();
+  });
+  it('si una destapada zafa, no dice que estaban tapadas', () => {
+    let zafo = false;
+    for (let semilla = 1; semilla < 200 && !zafo; semilla++) {
+      const E = M.crearPartida(semilla, { decInicio: 30 }),
+        pl = crecida(E, 'rucula', SUELO),
+        [codigo] = pasa(E, 'mariposa-blanca');
+      if (pl.plaga) continue;
+      zafo = true;
+      expect(codigo).toBe('sorpresa.mariposa-blanca-zafaron');
+      const T = TEXTOS['mariposa-blanca'];
+      if (T.clase === 'amenaza')
+        expect(T.paso({ cuantas: 0, especies: [], expuestas: 1, protegidas: 1 }).texto).not.toMatch(/tapadas/);
+    }
+    expect(zafo).toBe(true);
   });
 });
 

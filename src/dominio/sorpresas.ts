@@ -182,6 +182,7 @@ export function descargar(E: Estado, s: Sorpresa, enLaPlanta: Parameters<typeof 
   return {
     cuantas: lastimadas.length,
     especies: [...new Set(lastimadas.map((pl) => nombreDe(especieDe(pl))))],
+    expuestas: expuestas.length,
     protegidas: protegidas.length,
   };
 }
