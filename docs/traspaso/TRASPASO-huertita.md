@@ -39,7 +39,7 @@ Para que una instancia nueva arranque con todo: "Leé `docs/traspaso/TRASPASO-hu
 | Copia local en la Mac | `~/Desarrollos/Personales/App-info-huerta/huertita/` (rama `main`, remoto HTTPS) |
 | huertapp (fuente de datos) | https://github.com/facundo-p/huertapp · local: `~/Desarrollos/Personales/App-info-huerta/info-huerta/` |
 | Prototipo viejo v0.4 (referencia, no se toca) | `~/Desarrollos/Personales/App-info-huerta/huertita-juego/` |
-| Juego publicado (artifact de Claude) | https://claude.ai/artifact/4qfBdRJGaRFdEjczwVLq4q — versión 8 = v0.10 (25-9, desde la rama del PR #69). Capacidades `db`, `user`, `downloads` (guardado en la nube por persona). Se republica con `npm run build:artifact` y publicando `dist-artifact/huertita-artifact.html` pasando ese `url`; las capacidades se conservan si no se pasa el campo. |
+| Juego publicado (artifact de Claude) | https://claude.ai/artifact/4qfBdRJGaRFdEjczwVLq4q — versión 9 = v0.10 (25-9, desde la rama del PR #69, con la cuenta de pedidos de la tercera revisión). Capacidades `db`, `user`, `downloads` (guardado en la nube por persona). Se republica con `npm run build:artifact` y publicando `dist-artifact/huertita-artifact.html` pasando ese `url`; las capacidades se conservan si no se pasa el campo. |
 | Mapa de ideas (cuadro 2×2 interactivo, 31 ideas) | https://claude.ai/artifact/SeF5Jr9GeytaMYqMmzbkwQ — versión 5, al día con 0.10 (25-9), con enlace al issue de cada idea. Fuente `docs/mapa-ideas.html` en el repo. Se pone al día con el skill `mapa-de-ideas` (`.claude/skills/mapa-de-ideas/SKILL.md`): ideas hechas, ideas nuevas, orden, y republicar con ese `url`. |
 | GDD (Claude Docs) | https://claude.ai/code/artifact/19fb4257-8c56-40ea-97d5-f804bba4bde3 — exportado a `docs/traspaso/GDD-documento-de-diseno.md`. A Facu le resultó poco visible; no seguir engordándolo. |
 | Doc de estado en el Project "Desarrollo De Soft" | `claude/huertita-juego-estado.md` (actualizado a v0.7) |
@@ -220,10 +220,10 @@ por costo e impacto: #11 vacaciones de enero y #10 patios prediseñados.
 
 - ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
 - ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
-- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (590 tests) y
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (592 tests) y
   `npm run humo` (necesita Playwright: se usa el del proyecto o, si no hay, el global; no hace falta
   symlink). Antes de tocar la gráfica, `npm run build:artifact && npm run capturas -- --guardar`.
-- El juego publicado está en 0.10 (versión 8 del artifact, desde la rama del PR #69): Facu lo está
+- El juego publicado está en 0.10 (versión 9 del artifact, desde la rama del PR #69): Facu lo está
   probando. Si pide cambios de lo que ve, van en issues nuevos.
 
 ## 8. Cosas que Facu ya dijo y no hay que volver a preguntar
