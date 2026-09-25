@@ -17,6 +17,13 @@ Juego de huerta urbana agroecológica del GBA. Objetivo: divertido, disfrutable,
 12. **La vista pregunta `puede()`**, nunca repite una regla del dominio. Si un botón no debería estar, la condición va en la acción (`src/dominio/acciones/`).
 13. **Una cámara nueva es un archivo** en `src/render/pixel/camaras/`; un patio, en `datos/juego/patios/`; una región, en `datos/juego/regiones/`. Si sumar uno obliga a tocar otro lado, algo está mal repartido.
 
+## Proceso
+- **Toda tarea es primero un issue**, aunque sea chica. Lo que aparece en el camino y no entra en el trabajo actual se anota como issue nuevo, no queda en un comentario.
+- **Cada issue se cierra con un PR** que lo nombra (`Closes #N`) y lo cierra al mergearse. Un PR por issue cuando se puede; si varios van juntos, un commit por issue, cada uno con su `Closes #N`, y el PR los lista todos.
+- Un issue que el PR no termina no se cierra: el PR dice qué queda y el issue sigue abierto.
+- Mecánicas, eventos o números que no salen de huertapp llevan `[SUPUESTO]` y **necesitan la revisión de Facu antes de entrar**: el PR los lista en una sección aparte.
+- El merge lo decide Facu.
+
 ## Antes de dar algo por hecho
 `npm run tipos && npm run lint && npm test && npm run build:artifact && npm run humo`. Si el cambio no debería tocar la gráfica, además `npm run capturas -- --comparar`, con la referencia guardada con `--guardar` **antes** de tocar nada (queda en `.capturas/`, fuera de git). `npm run lint` tiene un tope de avisos que solo baja: si limpiás algo, bajalo en `package.json`. `npm run formato` antes de commitear.
 
