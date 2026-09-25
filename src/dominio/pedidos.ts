@@ -4,26 +4,28 @@
  * se cuenta lo que se coseche de la especie desde que llegó.
  *
  * Solo llega un pedido que se puede cumplir: entre que llega y la fecha tiene que haber una década
- * ideal de siembra con tiempo para crecer. Tira con `tirada`, no con `azar`.
+ * ideal de siembra desde la que, en un año normal, se llega a cosechar. Tira con `tirada`, no con `azar`.
  */
 import { PEDIDOS, type Pedido, type PremioDePedido } from '../../datos/juego/pedidos';
 import { REGLAS } from '../../datos/juego/reglas';
 import { tirada } from './azar';
-import { DECADAS_DEL_ANIO, fechaDe } from './calendario';
-import { ESPECIES, objetivoCosecha, ventana } from './catalogo';
+import { DECADAS_DEL_ANIO, diaCentral, fechaDe, interp } from './calendario';
+import { ESPECIES, metodoDe, objetivoCosecha, ventana } from './catalogo';
 import { anotar } from './estado';
 import { compostera } from './estructuras';
+import { fLuz, fMaceta, fSuelo, fTemp } from './factores';
+import { horasSol, zonaDe, zonasDe } from './patio';
 import { nombreDe } from './planta';
 import { decadaEstacional, enTramo, regionDe } from './region';
 import { DIAS_POR_TURNO } from './sistemas/contexto';
 import * as T from './textos/pedidos';
 import type { Frase } from './textos/frase';
-import type { Estado, Evento, PedidoAbierto } from './tipos';
-import { r1 } from './util';
+import type { CeldaId, Especie, Estado, Evento, PedidoAbierto } from './tipos';
+import { clamp, r1 } from './util';
 
 export { PEDIDOS, type Pedido };
 
-const P = REGLAS.pedidos;
+const { pedidos: P, germinacion: GERM, crecimiento: CREC } = REGLAS;
 
 export const pedidoPorId = (id: string): Pedido | null => PEDIDOS.find((p) => p.id === id) ?? null;
 
@@ -33,19 +35,120 @@ export function decadaDelTurno(E: Pick<Estado, 'tiempo'>, turno: number): number
   return (((d % DECADAS_DEL_ANIO) + DECADAS_DEL_ANIO) % DECADAS_DEL_ANIO) + 1;
 }
 
-/** Días de la siembra a la cosecha con buen tiempo, y cuántas décadas son. */
+/** Días de la siembra a la cosecha con buen tiempo, según la ficha. */
 export const diasHastaCosecha = (slug: string): number => Math.round(objetivoCosecha(ESPECIES[slug]));
-export const decadasHastaCosecha = (slug: string): number =>
-  Math.ceil(objetivoCosecha(ESPECIES[slug]) / DIAS_POR_TURNO);
 
-/** El último turno en que una siembra todavía llega a cosecharse para la fecha. */
-export const ultimaSiembra = (pd: PedidoAbierto, p: Pedido): number => pd.vence - decadasHastaCosecha(p.especie);
+/** La temperatura media normal de la región en la década de ese turno, sin el azar del año. */
+function tempNormal(E: Estado, turno: number): number {
+  return interp(regionDe(E).clima.media, diaCentral(decadaDelTurno(E, turno)));
+}
 
-/** Si entre `desde` y la última siembra que llega a `vence` hay una década ideal para sembrar la especie. */
+/** Luz, suelo y maceta de una celda para la especie en la década de ese turno. */
+function lugar(E: Estado, sp: Especie, celda: CeldaId, turno: number): number {
+  const h = horasSol(E, celda, decadaDelTurno(E, turno));
+  return fLuz(sp, h, P.temperaturaDeReferencia) * fSuelo(E, sp, celda) * fMaceta(E, sp, celda);
+}
+
+/** La mejor celda del patio para la especie, fuera de la almaciguera: donde la sembraría quien planifica. */
+function mejorCelda(E: Estado, sp: Especie, turno: number): CeldaId | null {
+  let mejor: CeldaId | null = null,
+    f = -1;
+  for (const c in E.mundo.celdas) {
+    if (zonaDe(E, c).cria) continue;
+    const fc = lugar(E, sp, c, turno);
+    if (fc > f) [mejor, f] = [c, fc];
+  }
+  return mejor;
+}
+
+/**
+ * Cuántas décadas pasan, en un año normal, de sembrar en `turno` a tener algo para cosechar en este
+ * patio. Es el mismo modelo que `germinar` y `crecer`: la temperatura normal de cada década, la luz,
+ * el suelo y la maceta del mejor lugar del patio, el vigor de la ventana de siembra y una huerta bien
+ * cuidada (`REGLAS.pedidos.cuidado`). Si en esa época la especie va a almácigo y el patio tiene dónde
+ * criar, nace ahí y se trasplanta cuando el plantín está hecho. Si no llega a nacer, o tarda más de un
+ * año, da `Infinity`.
+ */
+export function decadasHastaCosecha(E: Estado, slug: string, turno: number): number {
+  const sp = ESPECIES[slug],
+    cria = zonasDe(E).find((z) => z.cria),
+    celda = mejorCelda(E, sp, turno);
+  if (!celda) return Infinity;
+  const dec = decadaDelTurno(E, turno),
+    s: Siembra = {
+      E,
+      sp,
+      celda,
+      cria: sp.dt && cria && /almacigo/.test(metodoDe(slug, dec) || '') ? cria.calor || 0 : null,
+      vigor: REGLAS.siembra.vigorPorVentana[ventana(regionDe(E), slug, dec)],
+    };
+  const nace = decadasHastaNacer(s, turno);
+  return nace === Infinity ? Infinity : decadasHastaCrecer(s, turno + nace) + nace;
+}
+
+/** Una siembra que se estima: dónde crece y, si nace en almácigo, cuánto abriga la zona de cría. */
+interface Siembra {
+  E: Estado;
+  sp: Especie;
+  celda: CeldaId;
+  /** el calor de la zona de cría, si nace en almácigo; `null` si va directo a la tierra */
+  cria: number | null;
+  vigor: number;
+}
+const tempEn = (s: Siembra, t: number, enAlmacigo: boolean): number =>
+  tempNormal(s.E, t) + ((enAlmacigo ? s.cria : zonaDe(s.E, s.celda).calor) || 0);
+
+/** Como `germinar`: décadas hasta que nace, o `Infinity` si la semilla se pierde. */
+function decadasHastaNacer(s: Siembra, turno: number): number {
+  const { tg, dg } = s.sp,
+    necesita = (dg.min + dg.max) / 2;
+  let germ = 0;
+  for (let n = 1; n * DIAS_POR_TURNO <= GERM.diasHastaPerderse; n++) {
+    const T = tempEn(s, turno + n - 1, s.cria !== null);
+    if (T >= tg.min && T <= tg.max)
+      germ += DIAS_POR_TURNO * (T >= tg.ideal_min && T <= tg.ideal_max ? 1 : GERM.ritmoFueraDeIdeal);
+    if (germ >= necesita) return n;
+  }
+  return Infinity;
+}
+
+/** Como `crecer`: décadas desde que nace hasta que se puede cosechar, trasplante incluido. */
+function decadasHastaCrecer(s: Siembra, desde: number): number {
+  const { sp } = s,
+    dt = s.cria !== null ? sp.dt : undefined;
+  let prog = Math.round((sp.dg.min + sp.dg.max) / 2),
+    enAlmacigo = !!dt,
+    shock = false,
+    t = desde;
+  while (prog < objetivoCosecha(sp)) {
+    if (enAlmacigo && dt && prog >= dt.min) {
+      enAlmacigo = false;
+      shock = true;
+    }
+    const aca = enAlmacigo ? 1 : lugar(s.E, sp, s.celda, t),
+      g = fTemp(sp, tempEn(s, t, enAlmacigo)) * aca * s.vigor * P.cuidado * (shock ? CREC.conShock : 1);
+    if (!(enAlmacigo && dt && prog >= dt.max)) prog += DIAS_POR_TURNO * clamp(g, 0, CREC.factorMaximo);
+    shock = false;
+    if (++t - desde > DECADAS_DEL_ANIO) return Infinity;
+  }
+  return t - desde;
+}
+
+/** Si una siembra en `turno` llega a cosecharse para `vence`, en un año normal. */
+export const llegaA = (E: Estado, slug: string, turno: number, vence: number): boolean =>
+  turno + decadasHastaCosecha(E, slug, turno) <= vence;
+
+/** El último turno en que una siembra todavía llega a cosecharse para la fecha, en un año normal. */
+export function ultimaSiembra(E: Estado, pd: PedidoAbierto, p: Pedido): number {
+  for (let s = pd.vence; s > pd.desde; s--) if (llegaA(E, p.especie, s, pd.vence)) return s;
+  return pd.desde;
+}
+
+/** Si entre `desde` y `vence` hay una década ideal para sembrar la especie que llegue a cosecharse. */
 export function hayFechaDeSiembra(E: Estado, slug: string, desde: number, vence: number): boolean {
   const R = regionDe(E);
-  for (let s = desde; s <= vence - decadasHastaCosecha(slug); s++)
-    if (ventana(R, slug, decadaDelTurno(E, s)) === 'ideal') return true;
+  for (let s = desde; s <= vence; s++)
+    if (ventana(R, slug, decadaDelTurno(E, s)) === 'ideal' && llegaA(E, slug, s, vence)) return true;
   return false;
 }
 
@@ -106,10 +209,14 @@ export function abrir(E: Estado, p: Pedido): Frase {
 
 // ── mientras está abierto ──
 
-/** Anota la primera siembra de la especie de cada pedido abierto: el cuaderno la usa si no se llega. */
+/**
+ * Anota la siembra de la especie de cada pedido abierto, para que el cuaderno diga por qué no se llegó:
+ * se queda con la primera que llegaba a la fecha y, mientras no haya una, con la última.
+ */
 export function alSembrar(E: Estado, slug: string): void {
   for (const pd of E.progreso.pedidos.abiertos)
-    if (pd.sembrado == null && pedidoPorId(pd.id)?.especie === slug) pd.sembrado = E.tiempo.turno;
+    if (pedidoPorId(pd.id)?.especie === slug && (pd.sembrado == null || !llegaA(E, slug, pd.sembrado, pd.vence)))
+      pd.sembrado = E.tiempo.turno;
 }
 
 function darPremio(E: Estado, pr: PremioDePedido): string {
@@ -144,18 +251,24 @@ export function cumplirPedidos(E: Estado, evs: Evento[]): void {
   }
 }
 
-/** Por qué no se llegó: no se sembró, se sembró tarde, o se sembró a tiempo y no alcanzó. */
+/** Por qué no se llegó: no se sembró, se sembró tarde, se sembró en una época en que no llegaba, o no alcanzó. */
 function porQueNo(E: Estado, pd: PedidoAbierto, p: Pedido): Frase {
   const de = deUnPedido(E, pd, p),
-    ultima = ultimaSiembra(pd, p),
+    ultima = ultimaSiembra(E, pd, p),
+    dias = diasHastaCosecha(p.especie),
+    decadas = decadasHastaCosecha(E, p.especie, ultima),
     c: T.Cuenta = {
-      dias: diasHastaCosecha(p.especie),
+      dias,
+      decadas,
+      masLento: decadas * DIAS_POR_TURNO >= dias + DIAS_POR_TURNO,
       limite: fechaDe(decadaDelTurno(E, ultima)),
       llevas: Math.max(0, llevas(E, pd, p)),
     };
   if (pd.sembrado == null) return T.pedidoSinSembrar(de, c);
   const cuando = fechaDe(decadaDelTurno(E, pd.sembrado));
-  return pd.sembrado > ultima ? T.pedidoTarde(de, c, cuando) : T.pedidoNoAlcanzo(de, c, cuando);
+  if (llegaA(E, p.especie, pd.sembrado, pd.vence)) return T.pedidoNoAlcanzo(de, c, cuando);
+  if (pd.sembrado > ultima) return T.pedidoTarde(de, c, cuando);
+  return T.pedidoADestiempo(de, c, cuando, decadasHastaCosecha(E, p.especie, pd.sembrado));
 }
 
 /** Al terminar la década de la fecha: los pedidos que no se cumplieron vencen, y el cuaderno dice por qué. */

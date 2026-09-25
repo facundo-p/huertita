@@ -4,12 +4,14 @@
  * Un pedido llega con una fecha (`plazo` décadas después de llegar) y se cumple cosechando lo pedido
  * antes de esa fecha. No dice cuándo sembrar: eso se cuenta para atrás con la ficha de la especie en
  * la mano, que es planificar una huerta (#8). Si no se llega, el cuaderno dice hasta cuándo había que
- * sembrar, con los días a cosecha de huertapp.
+ * sembrar: con los días a cosecha de huertapp y lo que tarda de más fuera de su temperatura.
  *
  * Un pedido nuevo es una fila acá; sus frases son las mismas para todos (`src/dominio/textos/pedidos.ts`).
  * Qué especie y cuánto tarda es [REPO] (catálogo); quién, cuánto, cuándo llega, el plazo y el premio
  * son [SUPUESTO]: todas las filas esperan la revisión de Facu. Un test exige que cada fila se pueda
- * cumplir: que entre que llega y la fecha haya una década ideal de siembra con tiempo para crecer.
+ * cumplir: que entre que llega y la fecha haya una década ideal de siembra desde la que, en un año
+ * normal, se llegue a cosechar (`decadasHastaCosecha`), con margen para juntar las porciones. En un
+ * patio donde no se llega (el tomate en el balcón, por la sombra), ese pedido no llega.
  */
 
 /** Lo que da el vecino cuando le llevás lo que pidió. */
@@ -57,11 +59,11 @@ export const PEDIDOS: Pedido[] = [
     // [SUPUESTO]
     id: 'ensalada-de-rosa',
     quien: 'Rosa, la vecina de al lado',
-    para: 'para la ensalada de las fiestas',
+    para: 'para las ensaladas de enero',
     especie: 'lechuga',
     porciones: 4,
     cuando: [[22, 24]],
-    plazo: 12,
+    plazo: 16,
     premio: { tipo: 'sobres', sobres: { radicchio: 3, eneldo: 3 } },
   },
   {
@@ -71,8 +73,8 @@ export const PEDIDOS: Pedido[] = [
     para: 'para las pizzas del verano',
     especie: 'albahaca',
     porciones: 3,
-    cuando: [[20, 23]],
-    plazo: 15,
+    cuando: [[22, 25]],
+    plazo: 20,
     premio: { tipo: 'goteo' },
   },
   {
@@ -82,8 +84,8 @@ export const PEDIDOS: Pedido[] = [
     para: 'para las tartas del invierno',
     especie: 'acelga',
     porciones: 6,
-    cuando: [[4, 7]],
-    plazo: 14,
+    cuando: [[7, 10]],
+    plazo: 17,
     premio: { tipo: 'compost', dosis: 3 },
   },
   {
@@ -93,7 +95,7 @@ export const PEDIDOS: Pedido[] = [
     para: 'para hacer la salsa del año',
     especie: 'tomate',
     porciones: 6,
-    cuando: [[20, 24]],
+    cuando: [[22, 26]],
     plazo: 18,
     premio: { tipo: 'sobres', sobres: { melon: 3, sandia: 2 } },
   },
@@ -104,8 +106,8 @@ export const PEDIDOS: Pedido[] = [
     para: 'para el puesto de la feria del sábado',
     especie: 'cebolla-de-verdeo',
     porciones: 4,
-    cuando: [[3, 6]],
-    plazo: 15,
+    cuando: [[5, 8]],
+    plazo: 18,
     premio: { tipo: 'sobres', sobres: { ciboulette: 2, oregano: 1, tomillo: 1 } },
   },
 ];

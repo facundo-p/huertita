@@ -495,6 +495,14 @@ export const REGLAS = {
     desdeLogros: 2,
     /** décadas desde que se cerró antes de que el mismo pedido pueda volver: el año que viene, no antes */
     mismoCada: 24,
+    /**
+     * cuánto crece una huerta bien cuidada por lo que no se sabe de antemano (el agua, las plagas, los
+     * vecinos), como factor de 0 a 1. Con esto, la temperatura normal y la luz y el suelo del patio se
+     * cuenta hasta cuándo se puede sembrar para llegar a la fecha
+     */
+    cuidado: 0.85,
+    /** la máxima, en °C, con la que se cuenta la luz de media sombra al estimar */
+    temperaturaDeReferencia: 20,
   },
 
   /** [SUPUESTO] el trasplante */

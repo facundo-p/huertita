@@ -15,13 +15,16 @@ import {
   alSembrar,
   cumplirPedidos,
   decadasHastaCosecha,
+  deUnPedido,
   diasHastaCosecha,
   hayFechaDeSiembra,
+  llegaA,
   pedidoQueLlega,
   ultimaSiembra,
   vencidos,
 } from '../src/dominio/pedidos';
 import { enTramo } from '../src/dominio/region';
+import { pedidoADestiempo } from '../src/dominio/textos/pedidos';
 import { jugarUnAnio } from '../tools/jugador';
 import v4 from './fixtures/partida-v4-fondo.json';
 
@@ -176,7 +179,7 @@ describe('cumplir un pedido', () => {
 describe('cuando vence', () => {
   const limite = (E: Estado, id: string): string => {
     const pd = E.progreso.pedidos.abiertos.find((x) => x.id === id)!;
-    return fechaDe(M.decadaDelTurno(E, ultimaSiembra(pd, pedido(id))));
+    return fechaDe(M.decadaDelTurno(E, ultimaSiembra(E, pd, pedido(id))));
   };
   it('no vence antes de la década de su fecha: lo cosechado esa década todavía cuenta', () => {
     const E = partida(5),
@@ -201,7 +204,7 @@ describe('cuando vence', () => {
     const E = partida(5),
       pd = abierto(E, 'acelga-del-comedor'),
       p = pedido('acelga-del-comedor');
-    avanzar(E, ultimaSiembra(pd, p) - E.tiempo.turno + 1);
+    avanzar(E, ultimaSiembra(E, pd, p) - E.tiempo.turno + 1);
     alSembrar(E, 'acelga');
     expect(pd.sembrado).toBe(E.tiempo.turno);
     avanzar(E, pd.vence - E.tiempo.turno);
@@ -220,12 +223,105 @@ describe('cuando vence', () => {
     expect(f.texto).toContain('cosechaste 2 de 6 porciones');
     expect(f.texto).toMatch(/sembrar de más/);
   });
-  it('la cuenta es verdad: sembrando en el límite, con buen tiempo, se llega a la fecha', () => {
-    for (const p of M.PEDIDOS) {
-      const k = decadasHastaCosecha(p.especie);
-      expect(k * 10, p.id).toBeGreaterThanOrEqual(diasHastaCosecha(p.especie));
-      expect(k, p.id).toBeLessThan(p.plazo);
+  it('si se sembró antes del límite pero en mala época, dice que con ese tiempo no llegaba', () => {
+    const E = partida(22),
+      pd = abierto(E, 'albahaca-de-la-pizzeria');
+    expect(llegaA(E, 'albahaca', E.tiempo.turno, pd.vence)).toBe(false);
+    expect(ultimaSiembra(E, pd, pedido('albahaca-de-la-pizzeria'))).toBeGreaterThan(E.tiempo.turno);
+    alSembrar(E, 'albahaca');
+    avanzar(E, pd.vence - E.tiempo.turno);
+    const [f] = vencidos(E);
+    expect(f.codigo).toBe('pedido.a-destiempo');
+    expect(f.texto).toMatch(
+      /Sembraste albahaca a principios de agosto, pero con el tiempo de esa época no llegaba a nacer/,
+    );
+    expect(f.texto).toMatch(/crece más lento: un año normal son unas \d+ décadas/);
+    const c = { dias: 94, decadas: 14, masLento: true, limite: 'fines de septiembre', llevas: 0 };
+    expect(pedidoADestiempo(deUnPedido(E, pd, pedido(pd.id)), c, 'agosto', 20).texto).toMatch(
+      /tardaba unas 20 décadas y no llegaba/,
+    );
+  });
+  it('el límite es el último turno que llega: después ya no llega ninguno', () => {
+    for (const p of M.PEDIDOS)
+      for (const [d] of p.cuando) {
+        const E = partida(d),
+          pd = abierto(E, p.id),
+          u = ultimaSiembra(E, pd, p);
+        expect(llegaA(E, p.especie, u, pd.vence), p.id).toBe(true);
+        for (let s = u + 1; s <= pd.vence; s++) expect(llegaA(E, p.especie, s, pd.vence), p.id + ' t' + s).toBe(false);
+        expect(decadasHastaCosecha(E, p.especie, u) * 10, p.id).toBeGreaterThanOrEqual(diasHastaCosecha(p.especie));
+      }
+  });
+});
+
+/**
+ * La cuenta, contra el juego de verdad: alguien que planifica siembra cinco lugares, riega, cubre,
+ * trata, raleá y trasplanta. Sembrando temprano, casi siempre llega a la primera cosecha; sembrando
+ * una década después del límite, casi nunca. Así «a más tardar» es verdad.
+ */
+function primeraCosechaATiempo(p: M.Pedido, semilla: number, cuando: 'temprano' | 'tarde'): boolean {
+  const [dec] = p.cuando[0],
+    E = M.crearPartida(semilla, { decInicio: dec }),
+    R = M.regionDe(E),
+    sp = M.ESPECIES[p.especie];
+  E.recursos.sobres[p.especie] = 20;
+  const pd = abierto(E, p.id);
+  let siembra = ultimaSiembra(E, pd, p) + 1;
+  if (cuando === 'temprano')
+    for (let s = pd.desde; s <= pd.vence; s++)
+      if (M.ventana(R, p.especie, M.decadaDelTurno(E, s)) === 'ideal' && llegaA(E, p.especie, s, pd.vence)) {
+        siembra = s;
+        break;
+      }
+  while (E.tiempo.turno < siembra) M.pasarDecada(E);
+  const zonas = M.zonasDe(E),
+    cria = zonas.find((z) => z.cria),
+    deCria = (c: string): boolean => E.mundo.celdas[c].zona === cria?.id,
+    libres = (): string[] =>
+      Object.keys(E.mundo.celdas)
+        .filter((c) => !deCria(c) && !E.mundo.celdas[c].planta)
+        .sort((a, b) => M.evaluarCelda(E, p.especie, b)!.puntaje - M.evaluarCelda(E, p.especie, a)!.puntaje),
+    almacigo = !!(sp.dt && cria && /almacigo/.test(M.metodoDe(p.especie, E.tiempo.dec) || ''));
+  let n = 0;
+  for (const c of almacigo ? Object.keys(E.mundo.celdas).filter(deCria) : libres())
+    if (n < 5 && M.despachar(E, { tipo: 'sembrar', slug: p.especie, celda: c }).ok) n++;
+  while (E.tiempo.turno <= pd.vence) {
+    for (const pl of Object.values(E.mundo.plantas)) {
+      if (pl.slug !== p.especie) continue;
+      if (pl.etapa === 'cosechable') return true;
+      if (deCria(pl.celda)) {
+        if (pl.avisoListo && M.ventana(R, pl.slug, E.tiempo.dec, 'trasplante') !== 'fuera')
+          for (let i = 0; i < 6 && E.mundo.plantas[pl.id]; i++) {
+            const c = libres()[0];
+            if (!c || !M.despachar(E, { tipo: 'trasplantar', planta: pl.id, celda: c }).ok) break;
+          }
+        continue;
+      }
+      if (pl.n > 1) M.despachar(E, { tipo: 'ralear', planta: pl.id });
+      if (pl.plaga) M.despachar(E, { tipo: 'tratar', planta: pl.id });
     }
+    const calor = E.tiempo.pronostico.tmax > 29 ? 2 : 1;
+    if (E.tiempo.pronostico.pHelada > 40) for (const z of zonas) M.despachar(E, { tipo: 'manta', zona: z.id });
+    for (const a of M.prevenciones(E)) M.despachar(E, a);
+    // la almaciguera, bajo techo y abrigada, se riega a fondo para que nazca
+    for (const z of zonas) M.despachar(E, { tipo: 'riego', zona: z.id, nivel: z.cria ? 3 : calor });
+    M.pasarDecada(E);
+  }
+  return false;
+}
+
+describe('la cuenta es verdad', () => {
+  const SEMILLAS = [1, 2, 3, 4];
+  it('sembrando temprano, en la mayoría de los años se llega a la primera cosecha', () => {
+    for (const p of M.PEDIDOS) {
+      const llegan = SEMILLAS.filter((s) => primeraCosechaATiempo(p, s, 'temprano')).length;
+      expect(llegan, p.id).toBeGreaterThanOrEqual(SEMILLAS.length / 2);
+    }
+  });
+  it('sembrando después del límite, casi nunca se llega', () => {
+    let llegan = 0;
+    for (const p of M.PEDIDOS) llegan += SEMILLAS.filter((s) => primeraCosechaATiempo(p, s, 'tarde')).length;
+    expect(llegan).toBeLessThanOrEqual((M.PEDIDOS.length * SEMILLAS.length) / 4);
   });
 });
 
