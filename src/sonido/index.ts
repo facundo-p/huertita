@@ -44,7 +44,7 @@ export function crearParlante(g: ConContexto = globalThis as ConContexto): Parla
     if (reloj) clearTimeout(reloj);
     reloj = null;
     const cada = actual.pajaros;
-    if (!prendido || cada == null) return;
+    if (!prendido || cada == null || !ctx) return;
     reloj = setTimeout(
       () => {
         if (ctx && salida) pajaro(ctx, salida);
@@ -57,7 +57,6 @@ export function crearParlante(g: ConContexto = globalThis as ConContexto): Parla
     const m = prendido ? actual : SILENCIO;
     fondos?.lluvia.volumen(m.lluvia);
     fondos?.chicharras.volumen(m.chicharras ? 1 : 0);
-    cantar();
   }
   return {
     prender(si) {
@@ -65,13 +64,17 @@ export function crearParlante(g: ConContexto = globalThis as ConContexto): Parla
       if (si) abrir();
       else void ctx?.suspend();
       mezclar();
+      cantar();
     },
     sonar(s) {
       if (prendido && abrir() && salida) SONIDOS[s](ctx!, salida);
     },
     ambiente(m) {
+      // los pájaros se reprograman solo si cambia cada cuánto cantan: si no, cada redibujo los atrasaría
+      const antes = actual.pajaros;
       actual = m;
       mezclar();
+      if (m.pajaros !== antes) cantar();
     },
   };
 }

@@ -2,7 +2,7 @@
  * #9: el sonido. Lo que suena de fondo sale del clima de la década; con `prefers-reduced-motion` no
  * hay ambiente continuo; sin Web Audio no hace nada y no rompe.
  */
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { crearParlante, mezcla, SILENCIO } from '../src/sonido';
 
 const decada = { lluvia: 20, estacion: 'primavera', helada: false, ola: false };
@@ -55,4 +55,48 @@ describe('el parlante', () => {
     p.sonar('pop');
     expect(abiertos).toBe(0);
   });
+  it('sin Web Audio no programa pájaros', () => {
+    const reloj = vi.spyOn(globalThis, 'setTimeout'),
+      p = crearParlante({});
+    p.prender(true);
+    p.ambiente(mezcla(decada, false));
+    expect(reloj).not.toHaveBeenCalled();
+  });
+  it('los pájaros se reprograman solo cuando cambia cada cuánto cantan', () => {
+    const reloj = vi.spyOn(globalThis, 'setTimeout'),
+      p = crearParlante({ AudioContext: Falso as unknown as new () => AudioContext });
+    p.ambiente(mezcla(decada, false));
+    p.prender(true);
+    const n = reloj.mock.calls.length;
+    expect(n).toBeGreaterThan(0);
+    for (let i = 0; i < 5; i++) p.ambiente(mezcla(decada, false));
+    expect(reloj.mock.calls.length).toBe(n);
+    p.ambiente(mezcla({ ...decada, estacion: 'invierno' }, false));
+    expect(reloj.mock.calls.length).toBe(n + 1);
+    p.prender(false);
+  });
 });
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+/** Un AudioContext de mentira: cualquier nodo, parámetro o método da otro igual. */
+function falso(): unknown {
+  return new Proxy(function () {}, {
+    get(_t, k) {
+      if (k === 'currentTime') return 0;
+      if (k === 'sampleRate') return 100;
+      if (k === 'state') return 'running';
+      if (k === 'getChannelData') return () => new Float32Array(100);
+      if (k === 'then') return undefined;
+      return falso();
+    },
+    apply: () => falso(),
+    set: () => true,
+  });
+}
+class Falso {
+  constructor() {
+    return falso() as Falso;
+  }
+}

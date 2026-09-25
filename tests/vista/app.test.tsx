@@ -8,7 +8,7 @@ import { App } from '../../src/vista/App';
 import { arrancar } from '../../src/vista/arrancar';
 import { interaccion, partida, renderer, tocada } from '../../src/vista/estado';
 import { almacenes } from '../../src/vista/persistencia';
-import { prenderSonido, sonido } from '../../src/vista/sonido';
+import { arrancarSonido, prenderSonido, sonido } from '../../src/vista/sonido';
 
 beforeEach(() => {
   renderer.value = 1; // el renderer de texto: happy-dom no tiene canvas
@@ -69,6 +69,26 @@ describe('el sonido', () => {
     expect(localStorage.getItem('huertita-sonido')).toBe('si');
     fireEvent.click(b);
     expect(sonido.value).toBe(false);
+  });
+  it('si quedó prendido, se prende con el primer gesto, del mouse o del teclado', () => {
+    for (const gesto of ['pointerDown', 'keyDown'] as const) {
+      prenderSonido(true);
+      sonido.value = false;
+      arrancarSonido();
+      fireEvent[gesto](document.body);
+      expect(sonido.value, gesto).toBe(true);
+    }
+  });
+  it('si el primer gesto es el botón de sonido, manda el botón: un toque lo prende, no lo prende y lo apaga', () => {
+    prenderSonido(true);
+    sonido.value = false;
+    arrancarSonido();
+    render(<App />);
+    const b = document.getElementById('hz-sonido')!;
+    fireEvent.pointerDown(b);
+    fireEvent.click(b);
+    expect(sonido.value).toBe(true);
+    expect(b.textContent).toBe('Sonido: sí');
   });
 });
 

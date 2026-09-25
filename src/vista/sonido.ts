@@ -65,11 +65,14 @@ export function sonar(e: Efecto): void {
  */
 export function arrancarSonido(): void {
   if (recordado() && globalThis.document) {
-    const alPrimerGesto = (): void => {
-      document.removeEventListener('pointerdown', alPrimerGesto);
-      if (!sonido.value) prenderSonido(true);
+    const GESTOS = ['pointerdown', 'keydown'] as const;
+    const alPrimerGesto = (e: Event): void => {
+      for (const g of GESTOS) document.removeEventListener(g, alPrimerGesto);
+      // el botón de sonido decide solo: si no, lo prenderíamos acá y su click lo volvería a apagar
+      const enElBoton = e.target instanceof Element && !!e.target.closest('#hz-sonido');
+      if (!enElBoton && !sonido.value) prenderSonido(true);
     };
-    document.addEventListener('pointerdown', alPrimerGesto);
+    for (const g of GESTOS) document.addEventListener(g, alPrimerGesto);
   }
   effect(() => {
     void version.value;
