@@ -56,19 +56,20 @@ export function jardinInicial(p: Patio, dec: number): Jardin {
 
 /**
  * Una década de jardín. `dec` es la década que termina y `tmed` su temperatura media. Crece el pasto;
- * en la caída se juntan hojas en el piso y fuera de ella se vuelan; al entrar en reposo aparece la
- * poda del invierno, y cuando los árboles brotan ya no se poda.
+ * en la caída se juntan hojas en el piso y fuera de ella se vuelan. La poda mira la década que empieza:
+ * si arranca el reposo, aparece la del invierno (así se puede podar desde su primera década), y si los
+ * árboles brotan, ya no se poda.
  */
 export function pasarJardin(j: Jardin, p: Patio, dec: number, tmed: number): void {
   const R = regionDelPatio(p),
     fase = faseDeCaducos(R, dec),
-    antes = faseDeCaducos(R, dec === 1 ? DECADAS_DEL_ANIO : dec - 1);
+    sigue = faseDeCaducos(R, (dec % DECADAS_DEL_ANIO) + 1);
   j.pasto = r1(Math.min(topeDePasto(p), j.pasto + pastoQueCrece(p, tmed)));
   if (fase === 'caida') j.hojas = r1(j.hojas + hojasPorDecada(p));
   else {
     j.hojas = r1(j.hojas * J.hojasQuedan);
     if (j.hojas < J.hojasMinimas) j.hojas = 0;
   }
-  if (fase === 'hoja') j.poda = 0;
-  else if (fase === 'reposo' && antes === 'caida') j.poda = podaDelInvierno(p);
+  if (sigue === 'hoja') j.poda = 0;
+  else if (sigue === 'reposo' && fase !== 'reposo') j.poda = podaDelInvierno(p);
 }

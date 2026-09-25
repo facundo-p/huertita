@@ -56,7 +56,7 @@ export const juntaste = (carga: number): Frase =>
     'jardin.hojas',
     'Juntaste las hojas caídas: ' +
       n(carga) +
-      ' de secos a la bolsa. Guardadas, alcanzan para tapar el compost hasta el verano.',
+      ' de secos a la bolsa. Guardadas secas no se pierden: tapan el compost y sirven de mulch cuando ya no caen más.',
   );
 export const podaste = (carga: number): Frase =>
   frase('jardin.poda', 'Podaste en reposo, sin hojas: ' + n(carga) + ' de ramitas picadas a la bolsa de secos.');

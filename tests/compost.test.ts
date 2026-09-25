@@ -146,6 +146,19 @@ describe('el jardín', () => {
     const G = M.crearPartida(1, { decInicio: R.caducos.hasta + 1 });
     expect(M.puede(G, { tipo: 'podar' })).toMatch(/cayendo/);
   });
+  it('la poda aparece con la primera década de reposo, y una partida que arranca ahí poda una sola vez', () => {
+    const reposo = R.caducos.hasta + J.caidaDecadas + 1;
+    expect(M.faseDeCaducos(R, reposo)).toBe('reposo');
+    expect(M.faseDeCaducos(R, reposo - 1)).toBe('caida');
+    const E = M.crearPartida(1, { decInicio: reposo - 1 });
+    decada(E);
+    expect(E.tiempo.dec).toBe(reposo);
+    expect(M.puede(E, { tipo: 'podar' })).toBeNull();
+    const F = M.crearPartida(1, { decInicio: reposo });
+    expect(M.despachar(F, { tipo: 'podar' }).ok).toBe(true);
+    decada(F);
+    expect(M.puede(F, { tipo: 'podar' })).toMatch(/Ya podaste/);
+  });
 
   it('el pasto crece con calor y se corta verde o se seca', () => {
     const E = M.crearPartida(1);
