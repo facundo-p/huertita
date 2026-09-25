@@ -7,7 +7,7 @@
  * entran como obstáculos temporales (`temporales`) y por eso no se guardan en caché.
  */
 import type { Obstaculo, Patio } from '../../datos/juego/patio';
-import { diaCentral } from './clima';
+import { diaCentral } from './calendario';
 import { enTramo, regionDelPatio, type Region } from './region';
 import { clamp, r1 } from './util';
 import { idCelda } from './vocabulario';

@@ -83,6 +83,36 @@ describe('el vocabulario del dominio vive en un solo lugar', () => {
   });
 });
 
+describe('los números del balance viven en datos/juego/reglas.ts (innegociable 11)', () => {
+  /**
+   * En las reglas (acciones, sistemas y el modelo de clima) no hay números sueltos: solo 0, 1, 2
+   * (mitades y promedios) y 100 (la escala de la salud). Una constante con nombre en MAYÚSCULAS
+   * declarada en el archivo también vale: es un nombre, no un número suelto. Se miran sin
+   * comentarios ni textos.
+   */
+  const REGLAS_DEL_JUEGO = [
+    ...archivos('src/dominio/acciones'),
+    ...archivos('src/dominio/sistemas'),
+    'src/dominio/clima.ts',
+  ];
+  const PERMITIDOS = new Set(['0', '1', '2', '100']);
+  const numerosSueltos = (ruta: string): string[] =>
+    readFileSync(join(RAIZ, ruta), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .split('\n')
+      .map((l) => l.replace(/\/\/.*$/, '').replace(/'(?:[^'\\]|\\.)*'|`[^`]*`/g, "''"))
+      .flatMap((l, i) =>
+        /^\s*(export )?const [A-Z_]+ = /.test(l)
+          ? []
+          : (l.match(/(?<![\w.])\d+(\.\d+)?(?![\w.])/g) ?? [])
+              .filter((n) => !PERMITIDOS.has(n))
+              .map((n) => `${ruta}:${i + 1} ${n}`),
+      );
+  it('ninguna regla tiene un número suelto', () => {
+    expect(REGLAS_DEL_JUEGO.flatMap(numerosSueltos)).toEqual([]);
+  });
+});
+
 describe('la deuda solo baja', () => {
   const todos = [...archivos('src'), ...archivos('datos'), ...archivos('tools'), ...archivos('scripts')];
   it('archivos sin tipar (@ts-nocheck)', () => {

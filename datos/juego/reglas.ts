@@ -84,6 +84,38 @@ export const REGLAS = {
     desvioPronostico: 2.2,
   },
 
+  /**
+   * [SUPUESTO] El modelo de clima: cómo se sortea cada década alrededor de las normales de la región
+   * (que están en `regiones/`). Es el mismo en todos lados; lo del lugar va en la región.
+   */
+  clima: {
+    /** desvío de la anomalía de temperatura de la década (°C) */
+    desvioAnomalia: 2.1,
+    /** la máxima de la década es la del día más caluroso: la normal, más esto, más un extra al azar con este desvío (°C) */
+    maxima: { sobreLaNormal: 1, desvio: 1.5 },
+    /** la mínima es la de la noche más fría: la normal, menos esto, menos un extra al azar con este desvío (°C) */
+    minima: { bajoLaNormal: 3, desvio: 1.8 },
+    /**
+     * dentro de la temporada de heladas, esta fracción de las décadas trae una noche helada: la
+     * mínima baja hasta `hasta` menos un tanto al azar de hasta `rango` (°C)
+     */
+    helada: { enTemporada: 0.35, hasta: 2.5, rango: 3 },
+    /** la lluvia del mes, repartida en sus décadas y multiplicada por exp(desvío·z − sesgo), con tope (adimensional) */
+    lluvia: { desvio: 0.75, sesgo: 0.2, tope: 3.5 },
+    /** ola de calor: una máxima de la década desde esto (°C) */
+    olaDesde: 35,
+    pronostico: {
+      /** error del pronóstico de mínima y de máxima (°C) */
+      errorMinima: 1.8,
+      errorMaxima: 1.5,
+      /** fracción de las veces que el pronóstico de lluvia acierta; si no, dice cualquier cosa */
+      aciertoLluvia: 0.72,
+      /** lo que dice el pronóstico de lluvia: seca por debajo de esto, llovedora por encima (mm en la década) */
+      secaHasta: 12,
+      llovedoraDesde: 45,
+    },
+  },
+
   /** [SUPUESTO] grados que suma cada abrigo a la mínima de la noche; el reparo fijo de cada zona está en el patio */
   abrigo: { manta: 4, tunel: 5 },
 
@@ -139,9 +171,19 @@ export const REGLAS = {
     riesgoRepitiendoFamilia: 1.5,
     /** una planta es joven hasta el 40 % del camino a la cosecha */
     jovenHasta: 0.4,
-    oruga: { prob: 0.1 },
+    /**
+     * las épocas van en décadas estacionales (1 = principios de enero en el sur, ver `region.ts`),
+     * como tramos [desde, hasta] que pueden cruzar el año nuevo; la lluvia, en mm de la década
+     */
+    oruga: { prob: 0.1, epocas: [[31, 12]] },
     babosa: { prob: 0.15, lluviaDesde: 40 },
-    pulgon: { prob: 0.06 },
+    pulgon: {
+      prob: 0.06,
+      epocas: [
+        [25, 33],
+        [7, 12],
+      ],
+    },
     danioPorDecada: 12,
     /** con al menos 2 flores abiertas pueden llegar vaquitas */
     floresParaVaquitas: 2,
@@ -358,6 +400,14 @@ export const REGLAS = {
     altoInicial: 0.15,
     /** lo que levanta menos que esto no le hace sombra a nadie (m) */
     sombreaDesde: 0.4,
+  },
+
+  /** [SUPUESTO] lo que piden los logros (`src/dominio/misiones.ts`) */
+  misiones: {
+    /** especies distintas cosechadas para "Diversidad" */
+    diversidad: 5,
+    /** "Huerta de invierno": cosechar entre estas décadas estacionales (junio a agosto en el sur) */
+    invierno: [16, 24],
   },
 
   /** [SUPUESTO] el puntaje de fin de año */

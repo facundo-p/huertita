@@ -10,7 +10,8 @@ import { clamp } from '../util';
 import type { SistemaDePlanta } from './contexto';
 
 const PLAGAS = REGLAS.plagas;
-const decadaEntre = (d: number, desde: number, hasta: number): boolean => d >= desde && d <= hasta;
+const enEpoca = (d: number, epocas: readonly (readonly [number, number])[]): boolean =>
+  epocas.some(([desde, hasta]) => enTramo(d, desde, hasta));
 
 /**
  * Una planta sana puede agarrar una plaga (una sola tirada de azar por turno: el mismo número decide
@@ -32,8 +33,8 @@ export const plagas: SistemaDePlanta = ({ E, w, ev, nota, flores }, { pl, sp }) 
     d = decadaEstacional(regionDe(E), w.dec), // las épocas de plaga están escritas para el sur
     p = azar(E),
     sinAliados = prot === 1;
-  const epocaDeOruga = enTramo(d, 31, 12),
-    epocaDePulgon = decadaEntre(d, 25, 33) || decadaEntre(d, 7, 12);
+  const epocaDeOruga = enEpoca(d, PLAGAS.oruga.epocas),
+    epocaDePulgon = enEpoca(d, PLAGAS.pulgon.epocas);
   if (sp.familia === 'brasicacea' && epocaDeOruga && p < PLAGAS.oruga.prob * prot * rot) {
     pl.plaga = 'oruga';
     ev('mal', TP.orugas(sp, sinAliados), pl.celda);

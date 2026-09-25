@@ -2,7 +2,7 @@
 import type { CategoriaSuelo, RegimenRiego, TempCrecimiento } from '../../datos/contrato';
 import { REGLAS } from '../../datos/juego/reglas';
 import { ESPECIES, META, ventana } from './catalogo';
-import { diaCentral, interp } from './clima';
+import { DECADAS_DEL_ANIO, diaCentral, interp } from './calendario';
 import { regionDe } from './region';
 import { plantaEn } from './estado';
 import { bloqueDe, ocupadaEn } from './espacio';
@@ -221,7 +221,7 @@ export function evaluarCelda(E: Estado, slug: string, celda: CeldaId): Evaluacio
   const razones: string[] = [],
     R = regionDe(E),
     h = horasSol(E, celda, E.tiempo.dec);
-  const h2 = horasSol(E, celda, ((E.tiempo.dec + F.decadasAdelante) % 36) + 1); // la planta va a vivir ahí
+  const h2 = horasSol(E, celda, ((E.tiempo.dec + F.decadasAdelante) % DECADAS_DEL_ANIO) + 1); // la planta va a vivir ahí
   const l = (fLuz(sp, h, F.temperaturaDeReferencia) + fLuz(sp, h2, F.temperaturaDeReferencia)) / 2,
     s = fSuelo(E, sp, celda),
     m = fMaceta(E, sp, celda),

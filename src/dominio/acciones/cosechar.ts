@@ -13,7 +13,7 @@ import { clamp, r1 } from '../util';
 import * as T from '../textos/acciones';
 import { type De, type Regla, gratis } from './regla';
 
-const { cosecha: COSECHA, suelo: SUELO, compost: COMPOST, raleo: RALEO } = REGLAS;
+const { cosecha: COSECHA, suelo: SUELO, compost: COMPOST, raleo: RALEO, misiones: LOGROS } = REGLAS;
 
 /** Qué parte de las flores de un fruto cuaja: bajo el microtúnel casi nada; afuera, más con más flores cerca. */
 function polinizacion(E: Estado, bajoTunel: boolean): number {
@@ -51,8 +51,8 @@ function logrosDeCosecha(E: Estado, evs: Evento[]): void {
   cumplir(E, 'cosecha1', evs);
   if (E.progreso.cosechado.lechuga && E.progreso.cosechado.tomate && E.progreso.cosechado.albahaca)
     cumplir(E, 'ensalada', evs);
-  if (Object.keys(E.progreso.cosechado).length >= 5) cumplir(E, 'cinco', evs);
-  if (enTramo(decadaEstacional(regionDe(E), E.tiempo.dec), 16, 24)) cumplir(E, 'invierno', evs);
+  if (Object.keys(E.progreso.cosechado).length >= LOGROS.diversidad) cumplir(E, 'cinco', evs);
+  if (enTramo(decadaEstacional(regionDe(E), E.tiempo.dec), ...LOGROS.invierno)) cumplir(E, 'invierno', evs);
 }
 
 export const cosechar: Regla<De<'cosechar'>> = {
