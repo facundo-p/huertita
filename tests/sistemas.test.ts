@@ -29,11 +29,13 @@ describe('la tubería del tiempo', () => {
       'suelosYCompost',
       'crecerElJardin',
       'llegaSorpresa',
+      'vencerPedidos',
       'anotarAvisos',
       'cerrarTurno',
       'anotarAvisos',
       'pronosticar',
       'anunciarSorpresa',
+      'llegaPedido',
       'anotarAvisos',
       'ajustarRiego',
     ]);

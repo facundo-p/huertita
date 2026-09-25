@@ -129,6 +129,7 @@ export function crearPartida(
       moInicial: 0,
       misiones: {},
       sorpresas: {},
+      pedidos: { abiertos: [], cerrados: {}, cumplidos: 0 },
       cuaderno: [],
       nextId: 1,
     },

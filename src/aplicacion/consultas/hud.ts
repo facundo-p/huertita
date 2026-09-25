@@ -3,6 +3,7 @@ import * as M from '../../dominio';
 import type { Estado, Pronostico } from '../../dominio';
 import { TEXTOS } from '../../dominio/textos/sorpresas';
 import { cap } from '../../dominio/util';
+import { pedidos } from './pedidos';
 
 export type Rato = 'libre' | 'usado' | 'riego';
 export interface Hud {
@@ -17,6 +18,8 @@ export interface Hud {
   alertaDeHelada: 'alta' | 'media' | null;
   /** la amenaza anunciada para esta década (un evento sorpresa): qué es y qué la frena */
   amenaza: { titulo: string; queHacer: string } | null;
+  /** el pedido abierto de fecha más cercana, y cuántos hay */
+  pedido: { especie: string; porciones: number; llevas: number; fecha: string; abiertos: number } | null;
 }
 
 /** De qué es el rato i: primero los libres, después los que ya usaste, al final los que se come el riego. */
@@ -28,6 +31,13 @@ function amenaza(E: Estado): Hud['amenaza'] {
   const s = M.anunciada(E),
     T = s && TEXTOS[s.id];
   return T?.clase === 'amenaza' ? { titulo: T.titulo, queHacer: T.queHacer() } : null;
+}
+function pedidoMasCerca(E: Estado): Hud['pedido'] {
+  const { abiertos } = pedidos(E),
+    p = abiertos[0];
+  return p
+    ? { especie: p.especie, porciones: p.porciones, llevas: p.llevas, fecha: p.fecha, abiertos: abiertos.length }
+    : null;
 }
 function alertaDeHelada(pHelada: number): Hud['alertaDeHelada'] {
   if (pHelada >= 50) return 'alta';
@@ -48,6 +58,7 @@ export function hud(E: Estado): Hud {
     pronostico: p,
     alertaDeHelada: alertaDeHelada(p.pHelada),
     amenaza: amenaza(E),
+    pedido: pedidoMasCerca(E),
   };
 }
 

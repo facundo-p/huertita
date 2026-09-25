@@ -7,6 +7,7 @@ import { anotar, quitarPlanta } from '../estado';
 import { bajoTunel as estaBajoTunel, floresAbiertas } from '../factores';
 import { cumplir } from '../misiones';
 import { zona } from '../patio';
+import { cumplirPedidos } from '../pedidos';
 import { especieDe, vivas } from '../planta';
 import type { Especie, Estado, Evento, Planta } from '../tipos';
 import { clamp, r1 } from '../util';
@@ -84,6 +85,7 @@ export const cosechar: Regla<De<'cosechar'>> = {
       pl.prog = objetivoCosecha(sp) - (sp.perenne ? COSECHA.vuelveAtras.perenne : COSECHA.vuelveAtras.resto);
     }
     logrosDeCosecha(E, evs);
+    cumplirPedidos(E, evs);
   },
 };
 

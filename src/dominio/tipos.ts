@@ -172,6 +172,25 @@ export interface Recursos {
   secos: number;
 }
 
+/** Un pedido de un vecino (`datos/juego/pedidos.ts`) que todavía no se cumplió ni venció. */
+export interface PedidoAbierto {
+  id: string;
+  /** el turno en que llegó */
+  desde: number;
+  /** el turno de la fecha: lo cosechado hasta ese turno inclusive cuenta */
+  vence: number;
+  /** lo que ya se había cosechado de la especie cuando llegó: cuenta lo que se coseche después */
+  base: number;
+  /** el turno de la primera siembra de la especie después de que llegó, si hubo */
+  sembrado: number | null;
+}
+export interface PedidosDeLaPartida {
+  abiertos: PedidoAbierto[];
+  /** el último turno en que se cerró cada pedido, cumplido o vencido */
+  cerrados: Record<string, number>;
+  cumplidos: number;
+}
+
 /** Lo que va quedando de la partida: cosechas, logros y el cuaderno. */
 export interface Progreso {
   cosechado: Record<string, number>;
@@ -182,6 +201,7 @@ export interface Progreso {
   misiones: Record<string, number>;
   /** el último turno en que pasó cada evento sorpresa */
   sorpresas: Record<string, number>;
+  pedidos: PedidosDeLaPartida;
   cuaderno: Evento[];
   /** el número de la próxima planta */
   nextId: number;

@@ -37,6 +37,17 @@ export function Hud() {
           ))}
         </span>
       </div>
+      {h.pedido && (
+        <button
+          class="hz-pedido"
+          data-modo="logros"
+          title="Pedidos de los vecinos"
+          onClick={() => hacer({ tipo: 'ir', modo: 'logros' })}
+        >
+          <span class="hz-eti">{h.pedido.abiertos > 1 ? h.pedido.abiertos + ' pedidos' : 'Pedido'}</span>
+          {h.pedido.llevas}/{h.pedido.porciones} {h.pedido.especie} · {h.pedido.fecha}
+        </button>
+      )}
       <div class="hz-pron">
         <span class="hz-eti">Pronóstico de la década</span>
         <span>

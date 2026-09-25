@@ -485,6 +485,18 @@ export const REGLAS = {
     saludMinima: 1,
   },
 
+  /** [SUPUESTO] los pedidos de los vecinos (`datos/juego/pedidos.ts`) */
+  pedidos: {
+    /** probabilidad por década de que llegue un pedido, si hay alguno que pueda llegar */
+    prob: 0.35,
+    /** pedidos abiertos a la vez, como mucho */
+    maxAbiertos: 2,
+    /** logros cumplidos antes del primer pedido: los vecinos piden cuando ven que ya cosechás */
+    desdeLogros: 2,
+    /** décadas desde que se cerró antes de que el mismo pedido pueda volver: el año que viene, no antes */
+    mismoCada: 24,
+  },
+
   /** [SUPUESTO] el trasplante */
   trasplante: {
     /** se puede mover hasta esta cantidad de días de crecimiento después del máximo de trasplante */

@@ -155,6 +155,24 @@
 .hz-logros small {
   color: var(--tiza-2);
 }
+.hz-panel h3 {
+  font-family: var(--pix);
+  font-weight: 400;
+  font-size: 18px;
+  margin: 14px 0 0;
+  color: var(--tiza);
+}
+.hz-nota {
+  margin: 6px 0;
+  font-size: 14px;
+  color: var(--tiza-2);
+}
+.hz-pedidos li {
+  border-left-color: var(--hoja);
+}
+.hz-pedidos li.ok {
+  border-color: var(--maiz);
+}
 .hz-estrellas {
   font-size: 44px;
   color: var(--maiz);

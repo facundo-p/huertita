@@ -7,6 +7,8 @@ export { faseDeCaducos, hayCaducos, jardinInicial, topeDePasto } from './jardin'
 export type { FaseDeCaducos } from './jardin';
 export { SORPRESAS, anunciada, blancos, prevenciones, sorpresaPorId } from './sorpresas';
 export type { Sorpresa } from './sorpresas';
+export { PEDIDOS, decadaDelTurno, llevas, pedidoPorId } from './pedidos';
+export type { Pedido } from './pedidos';
 export { ABRIGO, abrigo, aguantaCon, enRiesgo, riesgoHelada } from './abrigo';
 export { costoDe, despachar, puede, puedeMoverse, recibeCompost } from './acciones';
 export { apuntar } from './diario';

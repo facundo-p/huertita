@@ -16,6 +16,9 @@ Tres arreglos de arquitectura que salieron de la revisión del PR de la reestruc
   - Tiran con una tirada propia (`tirada`: semilla, turno y sal) y no con el azar de la partida: sumar una fila no le cambia a nadie el clima ni las plagas.
   - Partidas guardadas: el formato v5 (todavía sin publicar) suma la amenaza anunciada y cuándo pasó cada evento; la migración desde v4 los arranca vacíos.
   - El bot hace lo que dice el aviso (`prevenciones`). El dorado se regeneró.
+- Pedidos de los vecinos con fecha (#8, `datos/juego/pedidos.ts`). Pasados los primeros logros, algún vecino pide porciones de una especie para una fecha: la maestra de la escuela, Rosa, la pizzería, el comedor, doña Inés, la huerta comunitaria. El pedido no dice cuándo sembrar: eso se cuenta para atrás con la ficha. Se cumple cosechando lo pedido antes de la fecha y paga con sobres que no vienen en el arranque, compost maduro o un kit de riego por goteo (riega cada zona con un rato menos; el goteo estaba en el estado y nada lo daba). Solo llega un pedido que se puede cumplir: entre que llega y la fecha hay una década ideal de siembra con tiempo para crecer. Si vence, el cuaderno dice por qué (no sembraste, sembraste tarde o no alcanzó) y hasta cuándo había que sembrar, con los días a cosecha del catálogo. Se ven arriba en el hud y en el panel de logros. Todas las filas y `REGLAS.pedidos` son [SUPUESTO].
+  - Tiran con `tirada`, no con el azar de la partida. Partidas guardadas: el formato v5 suma los pedidos abiertos y cerrados; la migración desde v4 los arranca vacíos.
+  - El bot no los mira: en las 16 partidas del dorado llegan 40 pedidos y cumple 7 de 29 cerrados. El dorado se regeneró.
 
 ## 0.9.0 · 2026-09-24 · La reestructura (epic #39)
 

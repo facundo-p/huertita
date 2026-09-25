@@ -95,6 +95,7 @@ const PASOS: Record<number, (e: Guardada) => void> = {
     e.recursos.secos = REGLAS.jardin.bolsaInicial;
     e.tiempo.anunciada = null;
     e.progreso.sorpresas = {};
+    e.progreso.pedidos = { abiertos: [], cerrados: {}, cumplidos: 0 };
     e.meta.v = 5;
   },
 };
@@ -122,7 +123,8 @@ export function esPartidaValida(E: unknown): E is Estado {
     e.tiempo?.clima &&
     e.tiempo.anunciada !== undefined &&
     typeof e.recursos?.secos === 'number' &&
-    e.progreso?.sorpresas
+    e.progreso?.sorpresas &&
+    Array.isArray(e.progreso.pedidos?.abiertos)
   );
 }
 /** Las partidas del prototipo anteriores a la almaciguera real no tenían n ni semillas, ni mantas. */

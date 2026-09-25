@@ -10,3 +10,4 @@ export { proteccion, type AbrigoMovil, type Proteccion, type ZonaAbrigada } from
 export { fichaDeCelda, type AccionDePlanta, type FichaDeCelda, type PlantaEnFicha } from './celda';
 export { fichaDeEspecie, type FichaDeEspecie, type Vecino } from './especie';
 export { compost, type AccionDelCompost, type Compost } from './compost';
+export { pedidos, type PedidoALaVista, type Pedidos } from './pedidos';

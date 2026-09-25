@@ -25,6 +25,7 @@ import {
   pronosticar,
   suelosYCompost,
 } from './patio';
+import { llegaPedido, vencerPedidos } from './pedidos';
 import { plagas } from './plagas';
 import { anunciarSorpresa, llegaSorpresa } from './sorpresas';
 
@@ -51,11 +52,13 @@ export const SISTEMAS_DEL_PATIO: SistemaDelPatio[] = [
   suelosYCompost,
   crecerElJardin,
   llegaSorpresa,
+  vencerPedidos,
   anotarAvisos,
   cerrarTurno,
   anotarAvisos,
   pronosticar,
   anunciarSorpresa,
+  llegaPedido,
   anotarAvisos,
   ajustarRiego,
 ];
