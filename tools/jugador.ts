@@ -1,18 +1,17 @@
-/** Un jugador automático simple. Sirve de test de humo, de oráculo para el test dorado y para balancear. */
+/** Un jugador automático simple. Sirve de test de humo, para la foto del test dorado y para balancear. */
 export interface MotorJugable {
   crearPartida(semilla: number, opciones?: { patio?: string }): any;
   despachar(E: any, a: any): { ok: boolean };
   pasarDecada(E: any): { dec: number; tipo: string; texto: string }[];
   ESPECIES: Record<string, any>;
-  /** el prototipo: (slug, dec, que). El motor nuevo, con la región adelante: (región, slug, dec, que) */
-  ventana(...args: any[]): string;
-  /** solo el motor nuevo: el calendario depende de la región de la partida */
-  regionDe?(E: any): unknown;
+  ventana(region: any, slug: string, dec: number, que?: 'trasplante'): string;
+  /** el calendario depende de la región de la partida */
+  regionDe(E: any): any;
   metodoDe(slug: string, dec: number): string | null;
   evaluarCelda(E: any, slug: string, celda: string): { puntaje: number } | null;
   ratosLibres(E: any): number;
-  /** solo el motor nuevo: las zonas salen del patio de la partida. El prototipo tenía estas cuatro fijas. */
-  zonasDe?(E: any): { id: string; cria?: boolean }[];
+  /** las zonas salen del patio de la partida */
+  zonasDe(E: any): { id: string; cria?: boolean }[];
 }
 /** Lo que el jugador mira de una partida para decidir. */
 export interface Vistazo {
@@ -23,27 +22,16 @@ export interface Vistazo {
   dec: number;
   pronostico: { pHelada: number; tmax: number };
 }
-/** El estado del motor nuevo viene en partes (v4); el del prototipo, todo suelto. */
 function leer(E: any): Vistazo {
-  if (E.mundo)
-    return {
-      celdas: E.mundo.celdas,
-      plantas: E.mundo.plantas,
-      sobres: E.recursos.sobres,
-      misiones: E.progreso.misiones,
-      dec: E.tiempo.dec,
-      pronostico: E.tiempo.pronostico,
-    };
   return {
-    celdas: E.celdas,
-    plantas: E.plantas,
-    sobres: E.sobres,
-    misiones: E.misiones,
-    dec: E.dec,
-    pronostico: E.prox.pron,
+    celdas: E.mundo.celdas,
+    plantas: E.mundo.plantas,
+    sobres: E.recursos.sobres,
+    misiones: E.progreso.misiones,
+    dec: E.tiempo.dec,
+    pronostico: E.tiempo.pronostico,
   };
 }
-const ZONAS_V04 = [{ id: 'suelo' }, { id: 'elevado' }, { id: 'macetas' }, { id: 'almacigo', cria: true }];
 export function jugarUnAnio(
   M: MotorJugable,
   semilla: number,
@@ -51,9 +39,8 @@ export function jugarUnAnio(
   opciones?: { patio?: string; decadas?: number },
 ): any {
   const E = M.crearPartida(semilla, opciones);
-  const ventana = (slug: string, dec: number, que?: 'trasplante'): string =>
-    M.regionDe ? M.ventana(M.regionDe(E), slug, dec, que) : M.ventana(slug, dec, que);
-  const zonas = M.zonasDe ? M.zonasDe(E) : ZONAS_V04,
+  const ventana = (slug: string, dec: number, que?: 'trasplante'): string => M.ventana(M.regionDe(E), slug, dec, que);
+  const zonas = M.zonasDe(E),
     deCria = new Set(zonas.filter((z) => z.cria).map((z) => z.id)),
     deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
   const enCria = (celda: string): boolean => deCria.has(leer(E).celdas[celda].zona);

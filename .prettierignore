@@ -3,7 +3,6 @@ dist-artifact
 node_modules
 .capturas
 docs
-tests/legado
 tests/fixtures
 datos/catalogo.json
 datos/fuente.lock.json

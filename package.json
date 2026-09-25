@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "tipos": "tsc --noEmit",
     "bot": "tsx tools/bot.ts",
+    "dorado": "tsx tools/dorado.ts",
     "datos:sync": "tsx scripts/sync-datos.ts",
     "datos:check": "tsx scripts/sync-datos.ts --check",
     "humo": "tsx tools/humo.ts",

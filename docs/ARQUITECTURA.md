@@ -46,7 +46,7 @@ Las partidas guardadas en v1, v2 y v3 migran solas al cargarse. `tests/fixtures/
 | `textos/` | Cada frase del cuaderno y del diario es una función con nombre que devuelve `{ codigo, texto }`. Las reglas no arman frases |
 | `calendario.ts`, `clima.ts`, `region.ts` | El calendario (décadas, meses, la estación y cuánto es invierno); el tiempo de cada década y su pronóstico, sorteados alrededor de las normales de la región con el modelo de `REGLAS.clima` |
 | `patio.ts`, `estructuras.ts` | Lo que el dominio le pregunta al patio de la partida (qué zona es cada celda, cuánto sol le da) y a la compostera |
-| `sol.ts` | Horas de sol por geometría: latitud de la región, fecha y obstáculos. Y la fórmula vieja del fondo, mientras viva el test dorado |
+| `sol.ts` | Horas de sol por geometría: latitud de la región, fecha y obstáculos. Y la fórmula vieja del fondo, hasta que se decida #31 |
 | `espacio.ts` | Cuánto lugar ocupa cada planta: huella en celdas, cuántas entran en una celda, qué sombra hace. Apagado hasta el paso 4 |
 | `factores.ts`, `abrigo.ts` | Luz, agua, temperatura, suelo, vecinos, el fantasma de siembra; manta, microtúnel y reparo fijo contra la helada |
 | `diario.ts`, `misiones.ts`, `balance.ts`, `migraciones.ts` | El diario de cada planta, los logros, el puntaje, las partidas viejas |
@@ -106,13 +106,13 @@ El dominio lo usa entero: sembrar y trasplantar toman el bloque de celdas y avis
 el raleo deja las que caben, la cosecha rinde por planta, la competencia empieza cuando se pasa de
 la densidad, y las plantas altas entran como obstáculos temporales en el cálculo de sol.
 
-**Está apagado** (`src/dominio/espacio.ts`): mientras viva el test dorado, el juego corre con huella 1
+**Está apagado** (`src/dominio/espacio.ts`): hasta el rebalanceo del paso 4, el juego corre con huella 1
 y una planta por celda, que es como venía jugando. Se prende en el paso 4 (ver `docs/CIMIENTOS.md`).
 `conEspacioReal(fn)` lo prende para los tests.
 
 ## Lo que vigila todo esto
 
-- **El test dorado** (`tests/dorado.test.ts`) hace jugar al bot un año entero con 8 semillas en el dominio y en el motor del prototipo (`tests/legado/motor-v04.cjs`) y exige el mismo estado final, decimal por decimal (proyectando el estado v4 a la forma vieja). Mientras esté verde, mover código es seguro. Cuando una regla cambie a propósito, el test se jubila en el mismo PR y el cambio se anota en el CHANGELOG.
+- **El test dorado** (`tests/dorado.test.ts`) hace jugar al bot un año entero con 8 semillas en cada patio y exige lo mismo que la foto guardada en `tests/fixtures/dorado.json`: el balance de cada partida y una huella del estado final. Mientras esté verde, mover código es seguro. Cuando una regla cambia a propósito, la foto se regenera en el mismo PR (`npm run dorado -- --guardar`; `npm run dorado` solo compara y dice qué partidas cambiaron), el diff se revisa y el cambio se anota en el CHANGELOG. Hasta la 0.9 comparaba contra el motor del prototipo v0.4; se jubiló en la 0.10 (#68).
 - **Las capturas** (`npm run capturas -- --guardar | --comparar`) toman la huella de los píxeles de cada lienzo: el patio en las tres cámaras y las cuatro estaciones, cada cantero de cerca, el tinte de siembra, la tira de estadíos de las 55 especies y cuadro por cuadro de todos los efectos animados, con el reloj del navegador quieto. Si un cambio no debería tocar la gráfica, tienen que dar iguales.
 - **El humo** (`npm run humo`) juega en un navegador de verdad, en celular y escritorio, incluida una partida guardada con el formato de la v1.
 - **La arquitectura** (`tests/arquitectura.test.ts`): capas, que nadie repita el vocabulario del dominio, que las reglas (acciones, sistemas y modelo de clima) no tengan números sueltos, y la deuda que solo baja (líneas larguísimas por carpeta). `npm run lint` tiene un tope de avisos (complejidad, anidamiento, funciones largas) que solo baja.

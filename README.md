@@ -7,6 +7,7 @@ npm install
 npm run dev              # jugar en local
 npm test                 # reglas, contrato de datos, arquitectura, vista y test dorado
 npm run bot              # 8 años jugados por un bot, para balancear
+npm run dorado           # compara contra la foto dorada (-- --guardar la regenera)
 npm run lint             # reglas de legibilidad, con un tope de avisos que solo baja
 npm run humo             # juega en un navegador de verdad (necesita Playwright)
 npm run capturas         # huellas de píxeles de la gráfica: --guardar antes, --comparar después
@@ -26,7 +27,7 @@ npm run build:artifact   # dist-artifact/huertita-artifact.html, una sola págin
 | `src/aplicacion/` | Consultas que arman lo que muestra la pantalla y casos de uso de las partidas | `datos/`, `src/dominio/` |
 | `src/infra/` | Adaptadores: dónde se guarda (dispositivo, nube, archivo) y el reloj | `src/dominio/` |
 | `src/vista/` | Componentes Preact con signals. Pregunta `puede()` al dominio y le pasa la escena al renderer | todo lo anterior |
-| `tests/` | Reglas, contrato de datos, arquitectura, vista, regresiones, partidas guardadas de cada versión y el test dorado contra el motor del prototipo | |
+| `tests/` | Reglas, contrato de datos, arquitectura, vista, regresiones, partidas guardadas de cada versión y el test dorado (la foto del bot en `tests/fixtures/dorado.json`) | |
 | `tools/` | Bot que juega solo, prueba de humo y capturas en navegador | |
 
 Detalle en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md). De dónde salen los datos y qué pasa cuando huertapp cambia, en [docs/DATOS.md](docs/DATOS.md). Lo que falta, en [docs/CIMIENTOS.md](docs/CIMIENTOS.md). Por qué el código quedó como quedó (epic #39), en [docs/REESTRUCTURA.md](docs/REESTRUCTURA.md).

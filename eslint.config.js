@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'dist-artifact/**', 'node_modules/**', '.capturas/**', 'tests/legado/**', 'docs/**'],
+    ignores: ['dist/**', 'dist-artifact/**', 'node_modules/**', '.capturas/**', 'docs/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

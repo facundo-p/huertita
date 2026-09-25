@@ -9,7 +9,7 @@ Juego de huerta urbana agroecológica del GBA. Objetivo: divertido, disfrutable,
 4. **Dependencias en un sentido:** `datos → dominio → aplicacion → vista`, con `infra` como adaptadores; `arte → render → vista`. El dominio (el motor del juego, `src/dominio`) no toca DOM. El renderer no importa el dominio. `tests/arquitectura.test.ts` lo vigila.
 5. **El patio es un dato.** Nadie fuera de `datos/juego/patios/` nombra una zona o una celda concreta; el motor decide por propiedades de la zona (`cria`, `techo`, `abrigo`…), el renderer por su `tipo`. Hay un test que lo vigila.
 6. **El estado es JSON y el azar tiene semilla.** Nada de `Math.random()` ni `Date.now()` en `src/dominio`. Si cambia la forma de `Estado`: subir `v` y escribir la migración.
-7. **El orden de las llamadas a `azar` es parte del contrato** mientras viva el test dorado. Si una regla cambia a propósito, el test dorado se jubila en ese mismo PR y se anota en CHANGELOG.
+7. **El orden de las llamadas a `azar` es parte del contrato:** el test dorado (`tests/fixtures/dorado.json`) lo vigila. Si una regla cambia a propósito, la foto se regenera en ese mismo PR (`npm run dorado -- --guardar`), el diff queda para revisar y el cambio se anota en CHANGELOG.
 8. Textos en rioplatense, de vos. Cuando algo sale mal, el cuaderno dice por qué y qué lo habría evitado, y tiene que ser verdad (hay tests de eso).
 9. Estética: añil, maíz, ladrillo, acequia, hoja. Nada desaturado ni genérico.
 10. **Los textos viven en `src/dominio/textos/`.** Cada frase es una función con nombre que devuelve `{ codigo, texto }`; las reglas no arman frases.

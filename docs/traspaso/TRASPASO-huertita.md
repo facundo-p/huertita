@@ -71,7 +71,7 @@ Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 - TypeScript estricto, Vite 5, Vitest 2, tsx, Preact + signals, ESLint + Prettier. `npm run dev|build|build:artifact|test|tipos|lint|formato|bot|humo|capturas|datos:sync|datos:check`.
 - Capas en un solo sentido: `datos → dominio → aplicacion → vista`, con `infra` como adaptadores (guardado, reloj); `arte → render → vista`. El dominio no toca DOM. El renderer no importa el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lo vigila leyendo los `import`.
 - **Estado v4**, JSON, azar con semilla (mulberry32): `meta` (v, semilla, rng, región, plantilla), `mundo` (el patio copiado de su plantilla, celdas, plantas, `estructuras` con la compostera), `tiempo` (década, turno, año, carácter, clima y pronóstico), `recursos` (ratos, riego, túnel, manta, sobres), `progreso` (cosechas, logros, cuaderno). Migra desde v1, v2 y v3; `tests/fixtures/` tiene una partida real de cada versión.
-- **El orden de las llamadas a `azar` es contrato mientras viva el test dorado** (`tests/dorado.test.ts`: el dominio juega 8 años con el motor v0.4 y exige estado idéntico; `aFormaV04` proyecta el estado v4 a la forma vieja antes de comparar). El orden vive declarado en `src/dominio/sistemas/index.ts`.
+- **El orden de las llamadas a `azar` es contrato** y lo vigila el test dorado (`tests/dorado.test.ts`: el bot juega 8 años en cada patio y tiene que dar la foto guardada en `tests/fixtures/dorado.json`, balance y huella del estado). Si una regla cambia a propósito, `npm run dorado -- --guardar` y el diff va en el PR. El orden vive declarado en `src/dominio/sistemas/index.ts`. La comparación con el motor v0.4 se jubiló en la 0.10 (#68).
 - `src/dominio/`: `acciones/` (cada acción es `puede / costo / aplicar`; la vista pregunta `puede()`), `sistemas/` (el paso del tiempo como dos tuberías: por planta y del patio), `textos/` (cada frase del cuaderno es una función con código), clima, región, patio, sol, espacio, factores, abrigo, diario, misiones, balance, migraciones. Los números del balance, en `datos/juego/reglas.ts`.
 - `src/aplicacion/`: consultas para la pantalla (escena, HUD, fichas, almanaque) y casos de uso de la partida sobre el puerto `Almacen`. `src/infra/`: dispositivo (autoguardado y tres ranuras), nube del artifact, archivo, reloj.
 - `src/vista/`: Preact. Máquina de modos (`modos.ts`, `transicion` pura), un componente por panel con su CSS al lado, tokens de color en `src/estilos/tokens.css`.
@@ -94,7 +94,7 @@ Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 
 ## 6. Decisiones y deudas abiertas
 
-- **Sol del patio original.** El fondo sigue con `sol: 'v04'` (la fórmula del prototipo) para que el test dorado siga valiendo. Con geometría real, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, donde la fórmula vieja le daba 1 a 5 horas. **Decisión de Facu:** mover los canteros, bajar el paredón o aceptarlo. Va junto con el rebalanceo del paso 4.
+- **Sol del patio original.** El fondo sigue con `sol: 'v04'` (la fórmula del prototipo). Con geometría real, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, donde la fórmula vieja le daba 1 a 5 horas. **Decisión de Facu:** mover los canteros, bajar el paredón o aceptarlo. Va junto con el rebalanceo del paso 4.
 - **Balcón:** todos sus números son supuestos de Claude, sin revisión ni balance (bot: 12–37 puntos; estrellas 10/25/45).
 - **Almácigo protegido:** berenjena y batata no pueden germinar en su época (la almaciguera suma solo +2 °C y huertapp pide "almácigo protegido"). Test que documenta la contradicción.
 - **Babosas bajo techo** (herencia del prototipo; corregirlo cambia el dorado).
@@ -175,7 +175,7 @@ Después de crear los issues, la primera prueba real del skill es correrlo sobre
 
 ### c) El paso 3 ya está hecho (0.8). Lo que sigue: decidir #31 y arrancar el paso 4 (#28)
 
-Lo que quedó del paso 3, en `src/dominio/espacio.ts`, `datos/juego/especies.ts` y `tests/espacio.test.ts`: marco de plantación por especie, huella de 1, 2 o 4 celdas, densidad por celda (9 rabanitos, 4 lechugas, 1 tomate), `capacidad` de bandeja en las zonas de cría (50), sombra de las plantas altas y estado v3 con migración. **La regla está apagada**: prenderla cambia rendimientos, azar y balance, y el test dorado se jubila recién en el paso 4.
+Lo que quedó del paso 3, en `src/dominio/espacio.ts`, `datos/juego/especies.ts` y `tests/espacio.test.ts`: marco de plantación por especie, huella de 1, 2 o 4 celdas, densidad por celda (9 rabanitos, 4 lechugas, 1 tomate), `capacidad` de bandeja en las zonas de cría (50), sombra de las plantas altas y estado v3 con migración. **La regla está apagada**: prenderla cambia rendimientos, azar y balance, y va con el rebalanceo del paso 4.
 
 Cuánto hay que rebalancear, medido con `npm run bot -- --espacio` (8 semillas, un año):
 
@@ -189,7 +189,7 @@ O sea: con el espacio real, una celda de 9 rabanitos rinde 9 veces. Los números
 El orden que queda, entonces:
 
 1. **#31, el sol del fondo** (decisión de diseño de Facu): fórmula v0.4, o geometría moviendo los canteros, o geometría bajando el paredón, o geometría y aguantarse el invierno oscuro. Con geometría, además, las plantas altas se sombrean entre sí. Todo el rebalanceo del paso 4 depende de esto.
-2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se jubila el test dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
+2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se regenera el dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
 3. Cuando el espacio real se prenda, dos cosas de interfaz que quedaron pendientes a propósito: mostrar el marco en la ficha ("ocupa 4 celdas", "entran 9 por celda") y dibujar una planta grande como una sola planta grande, no como la misma planta repetida — la escena ya marca cuál es la celda ancla (`ancla`), los renderers ya dibujan una sola vez, pero el sprite no crece con la huella. Va con #30.
 
 ### c bis) La reestructura: epic #39 — hecha (0.9, 24-9)
