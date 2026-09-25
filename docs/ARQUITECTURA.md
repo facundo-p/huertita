@@ -2,7 +2,7 @@
 
 Tres reglas sostienen todo lo demás.
 
-1. **Las dependencias van en un solo sentido.** El juego va `datos → dominio → aplicacion → vista`, con `infra` como adaptadores que la vista enchufa. La gráfica va `arte → render → vista`. El dominio no sabe que existe una pantalla. El renderer no conoce el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lee los `import` de cada archivo y falla si alguien cruza al revés.
+1. **Las dependencias van en un solo sentido.** El juego va `datos → dominio → aplicacion → vista`, con `infra` como adaptadores que la vista enchufa. La gráfica va `arte → render → vista`, y el sonido `sonido → vista`. El dominio no sabe que existe una pantalla. El renderer no conoce el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lee los `import` de cada archivo y falla si alguien cruza al revés.
 2. **El estado es un JSON y el azar tiene semilla.** De ahí salen gratis el guardado, las partidas reproducibles, los tests sin navegador y el bot. Todo cambio de forma del estado sube `v` y agrega un paso en `src/dominio/migraciones.ts`.
 3. **El juego puede simplificar, nunca contradecir a huertapp.** `[REPO]` y `[SUPUESTO]` marcan de dónde sale cada número, y `tests/catalogo.test.ts` lo vigila.
 
@@ -14,9 +14,10 @@ Tres reglas sostienen todo lo demás.
 | `src/dominio/` | La simulación: estado, acciones, el paso del tiempo, textos del cuaderno. Sin DOM, sin reloj, sin `Math.random` | `datos/` |
 | `src/aplicacion/` | Casos de uso de las partidas y consultas que arman lo que muestra la pantalla, como objetos planos | `datos/`, `dominio/` |
 | `src/infra/` | Adaptadores: dónde se guarda (dispositivo, nube, archivo) y el reloj | `dominio/` |
-| `src/vista/` | Componentes Preact con signals: los paneles, la barra, el patio | todo lo anterior, `render/`, `arte/` |
+| `src/vista/` | Componentes Preact con signals: los paneles, la barra, el patio | todo lo anterior, `render/`, `arte/`, `sonido/` |
 | `src/arte/` | Los dibujos pixel-art de cada especie y estadío | nada |
 | `src/render/` | Renderers intercambiables. Reciben una escena plana, nunca el estado | `arte/` |
+| `src/sonido/` | Los sonidos, sintetizados con Web Audio, y la mezcla del ambiente según el clima | nada |
 
 Los `import type` no cuentan: se borran al compilar y no acoplan nada en ejecución.
 
@@ -72,6 +73,12 @@ Los números del balance (probabilidades, daños, ratos, arranque, épocas de pl
 `src/render/pixel/` recorre la cámara elegida. Una `Camara` (`camaras/tipos.ts`) arma su geometría, pinta su fondo y, si quiere, algo antes y después de las plantas; lo que cambia de las plantas según desde dónde se las mire (sombra en el piso, avisos, dónde apoyan) es un dato de su geometría. Hay tres: `cenital`, `oblicua` y `cerca` (un cantero de frente con el suelo cortado). **Una cámara nueva es un archivo.** Plantas, capas de información, efectos y clima son comunes.
 
 `src/arte/` dibuja cada especie en cada etapa con un pincel de píxel gordo: `estilos.ts` dice qué forma y qué colores lleva cada una, y cada forma está en `formas/`. Una especie nueva de huertapp sin estilo propio usa la forma de su grupo.
+
+## El sonido
+
+`src/sonido/` no sabe nada del juego: sintetiza con Web Audio (sin archivos) unos pocos sonidos cortos (el pop de la cosecha, la tierra, el agua, la campanita de un logro) y un ambiente continuo (lluvia, pájaros, chicharras). `mezcla.ts` es la cuenta pura de qué suena de fondo según el clima de la década; con `prefers-reduced-motion` no hay ambiente continuo. Sin Web Audio no hace nada.
+
+`src/vista/sonido.ts` lo enchufa: cada animación que se encola (`efecto`) suena si tiene sonido, y el ambiente sigue a `E.tiempo.clima`. Arranca apagado; el botón del pie lo prende y el dispositivo lo recuerda, y si quedó prendido se vuelve a prender con el primer toque (antes el navegador no deja sonar).
 
 ## El patio es un dato
 

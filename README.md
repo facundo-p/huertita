@@ -24,6 +24,7 @@ npm run build:artifact   # dist-artifact/huertita-artifact.html, una sola págin
 | `src/dominio/` | La simulación: acciones, sistemas del paso del tiempo, textos del cuaderno. Sin DOM; estado JSON y azar con semilla | `datos/` |
 | `src/arte/` | Dibujos pixel-art de cada especie y estadío | nada |
 | `src/render/` | Renderers intercambiables (pixel-art por cámaras, y uno de texto). Reciben una escena plana, nunca el estado | `arte/` |
+| `src/sonido/` | Sonidos sintetizados con Web Audio y la mezcla del ambiente según el clima. Arranca apagado | nada |
 | `src/aplicacion/` | Consultas que arman lo que muestra la pantalla y casos de uso de las partidas | `datos/`, `src/dominio/` |
 | `src/infra/` | Adaptadores: dónde se guarda (dispositivo, nube, archivo) y el reloj | `src/dominio/` |
 | `src/vista/` | Componentes Preact con signals. Pregunta `puede()` al dominio y le pasa la escena al renderer | todo lo anterior |

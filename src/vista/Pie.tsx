@@ -1,7 +1,8 @@
-/** Abajo: la cámara y la gráfica, los logros, cómo se juega y el guardado. */
+/** Abajo: la cámara, la gráfica y el sonido, los logros, cómo se juega y el guardado. */
 import { activo, RENDERERS } from './efectos';
 import { camara, renderer } from './estado';
 import { hacer } from './mensajes';
+import { alternarSonido, sonido } from './sonido';
 
 export function Pie() {
   const r = activo.value,
@@ -13,6 +14,9 @@ export function Pie() {
       </button>
       <button id="hz-render" onClick={() => (renderer.value = (renderer.value + 1) % RENDERERS.length)}>
         Gráfica: {r?.nombre ?? ''}
+      </button>
+      <button id="hz-sonido" aria-pressed={sonido.value} onClick={alternarSonido}>
+        Sonido: {sonido.value ? 'sí' : 'no'}
       </button>
       <button data-modo="logros" onClick={() => hacer({ tipo: 'ir', modo: 'logros' })}>
         Logros

@@ -1,12 +1,13 @@
 /**
  * La gráfica: qué renderer se usa, sus cámaras, y las animaciones puntuales que piden las acciones
  * (sembrar, cosechar, trasplantar…). Las animaciones se encolan y el lienzo las dispara después de
- * dibujar la escena nueva.
+ * dibujar la escena nueva. Cada una suena, si el sonido está prendido (`sonido.ts`).
  */
 import { signal } from '@preact/signals';
 import type { DatosDeEfecto, Efecto, Renderer } from '../render/contrato';
 import { RenderPixel } from '../render/pixel';
 import { RenderTexto } from '../render/texto';
+import { sonar } from './sonido';
 
 export const RENDERERS: (new () => Renderer)[] = [RenderPixel, RenderTexto];
 
@@ -16,6 +17,7 @@ export const activo = signal<Renderer | null>(null);
 let cola: [Efecto, DatosDeEfecto][] = [];
 export function efecto(tipo: Efecto, datos: DatosDeEfecto = {}): void {
   cola.push([tipo, datos]);
+  sonar(tipo);
 }
 /** Dispara las animaciones encoladas en el renderer. */
 export function dispararEfectos(r: Renderer): void {

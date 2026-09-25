@@ -23,6 +23,10 @@ for (const [nombre, vp] of [
   p.on('pageerror', (e: Error) => errores.push(`${nombre}: ${e.message}`));
   await p.goto('file://' + resolve('dist-artifact/_humo.html'));
   await p.waitForTimeout(500);
+  // con el sonido prendido: todo lo que sigue suena, y al recargar se prende solo con el primer toque
+  await p.click('#hz-sonido');
+  if ((await p.textContent('#hz-sonido')) !== 'Sonido: sí') errores.push(`${nombre}: el sonido no se prendió`);
+  await p.evaluate(() => scrollTo(0, 0));
   await p.click('[data-modo="semillas"]');
   await p.click('[data-slug="rabanito"]');
   const bb = (await (await p.$('.hz-canvas'))!.boundingBox())!,

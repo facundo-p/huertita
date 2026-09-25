@@ -8,6 +8,7 @@ import { App } from '../../src/vista/App';
 import { arrancar } from '../../src/vista/arrancar';
 import { interaccion, partida, renderer, tocada } from '../../src/vista/estado';
 import { almacenes } from '../../src/vista/persistencia';
+import { prenderSonido, sonido } from '../../src/vista/sonido';
 
 beforeEach(() => {
   renderer.value = 1; // el renderer de texto: happy-dom no tiene canvas
@@ -52,6 +53,22 @@ describe('la carcasa', () => {
     fireEvent.click(document.querySelectorAll('.hz-tcelda.z-suelo')[0]);
     expect(interaccion.value.modo.modo).toBe('celda');
     expect(interaccion.value.sel).toBe(M.celdasDe(partida.value, 'suelo')[0]);
+  });
+});
+
+describe('el sonido', () => {
+  it('arranca apagado; el botón lo prende y el dispositivo lo recuerda', () => {
+    localStorage.clear();
+    prenderSonido(false);
+    render(<App />);
+    const b = document.getElementById('hz-sonido')!;
+    expect(b.textContent).toBe('Sonido: no');
+    fireEvent.click(b);
+    expect(sonido.value).toBe(true);
+    expect(b.textContent).toBe('Sonido: sí');
+    expect(localStorage.getItem('huertita-sonido')).toBe('si');
+    fireEvent.click(b);
+    expect(sonido.value).toBe(false);
   });
 });
 

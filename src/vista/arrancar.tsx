@@ -12,6 +12,7 @@ import { activo } from './efectos';
 import { escena } from './escena';
 import { cambiarPartida, guardar } from './mensajes';
 import { almacenes, conectar } from './persistencia';
+import { arrancarSonido } from './sonido';
 
 interface Hot {
   snapshot?(f: () => unknown): void;
@@ -35,6 +36,7 @@ async function empezar(raiz: HTMLElement, previa: unknown): Promise<void> {
   // una partida recién empezada queda guardada desde ya, como cualquier otra
   if (!guardada) guardar();
   render(<App />, raiz);
+  arrancarSonido();
   const remota = await conectar();
   // sin partida en este dispositivo, se sigue la de la nube si hay
   if (!guardada && remota && almacenes.nube && partida.value.tiempo.turno === 0) {
