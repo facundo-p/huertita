@@ -1,0 +1,293 @@
+/* Piezas que se repiten entre paneles: escalas, medidores, tira de estadíos, diario, eventos, almanaque. */
+.hz-vent {
+  font-family: var(--pix);
+  font-size: 12px;
+  padding: 1px 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.v-ideal.hz-vent {
+  background: var(--hoja);
+  color: #0c2a14;
+}
+.v-posible.hz-vent {
+  background: var(--maiz);
+  color: var(--anil);
+}
+.v-fuera.hz-vent {
+  background: var(--anil-3);
+}
+.hz-medidor {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 10px;
+  align-items: center;
+  font-family: var(--pix);
+  margin: 8px 0;
+}
+.hz-bar {
+  display: block;
+  height: 10px;
+  background: var(--anil);
+  min-width: 70px;
+}
+.hz-bar i {
+  display: block;
+  height: 100%;
+  background: var(--hoja);
+}
+.hz-bar.med i {
+  background: var(--maiz);
+}
+.hz-bar.bad i {
+  background: var(--ladrillo);
+}
+.hz-bar.avance i {
+  background: var(--acequia);
+}
+.hz-evs {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+.hz-evs li {
+  padding: 4px 8px;
+  border-left: 5px solid var(--anil-3);
+  background: var(--anil);
+}
+.hz-evs li[data-acc] {
+  cursor: pointer;
+}
+.hz-evs .ev-bien {
+  border-color: var(--hoja);
+}
+.hz-evs .ev-mal {
+  border-color: var(--ladrillo);
+}
+.hz-evs .ev-clima {
+  border-color: var(--acequia);
+  font-family: var(--pix);
+  font-size: 15px;
+}
+.hz-evs .ev-logro {
+  border-color: var(--maiz);
+  color: var(--maiz);
+}
+.hz-tira {
+  margin: 8px 0 10px;
+  max-width: 480px;
+}
+.hz-tira canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  box-shadow: 3px 3px 0 #0e0d2e;
+}
+.hz-tira figcaption {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  font-family: var(--pix);
+  font-size: 11px;
+  color: var(--tiza-2);
+  text-align: center;
+  margin-top: 4px;
+  line-height: 1.15;
+}
+.hz-tira figcaption span.on {
+  color: var(--maiz);
+}
+.hz-tira small {
+  display: block;
+  font-size: 10px;
+  opacity: 0.85;
+}
+.hz-esc {
+  position: relative;
+  display: block;
+  height: 12px;
+  background: var(--anil);
+  min-width: 96px;
+}
+.hz-esc b {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.hz-esc b.tol {
+  background: rgba(63, 194, 90, 0.28);
+}
+.hz-esc b.ideal {
+  background: rgba(63, 194, 90, 0.72);
+}
+.hz-esc u {
+  position: absolute;
+  top: 5px;
+  height: 2px;
+  background: var(--tiza-2);
+  text-decoration: none;
+}
+.hz-esc i {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 5px;
+  margin-left: -2px;
+  border: 1px solid var(--anil);
+  background: var(--hoja);
+}
+.hz-esc i.med {
+  background: var(--maiz);
+}
+.hz-esc i.bad {
+  background: var(--ladrillo);
+}
+.hz-esc-eje {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--pix);
+  font-size: 9px;
+  color: var(--tiza-2);
+  line-height: 1.3;
+}
+.hz-franja {
+  display: grid;
+  grid-template-columns: repeat(36, 1fr);
+  height: 16px;
+  background: var(--anil);
+}
+.hz-franja.grande {
+  height: 26px;
+}
+.hz-franja span {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  border-left: 1px solid transparent;
+}
+.hz-franja span.m {
+  border-left-color: var(--anil-3);
+}
+.hz-franja span.hoy {
+  outline: 2px solid var(--tiza);
+  outline-offset: -1px;
+  z-index: 1;
+}
+.si {
+  background: var(--hoja);
+}
+.sp {
+  background: #a08a2a;
+}
+.ti {
+  background: var(--acequia);
+}
+.tp {
+  background: #1f6f7a;
+}
+.hz-meses {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  font-family: var(--pix);
+  color: var(--tiza-2);
+}
+.hz-meses small {
+  font-size: 11px;
+  text-align: center;
+}
+.hz-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 12px;
+  color: var(--tiza-2);
+  font-family: var(--pix);
+}
+.hz-leyenda b {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+  vertical-align: -1px;
+}
+.hz-leyenda b.hoy {
+  outline: 2px solid var(--tiza);
+  outline-offset: -2px;
+}
+.hz-diario {
+  margin-top: 12px;
+  background: var(--anil);
+  border-left: 8px solid var(--acequia);
+}
+.hz-diario summary {
+  font-family: var(--pix);
+  padding: 8px 10px;
+  cursor: pointer;
+  list-style-position: inside;
+}
+.hz-diario summary:focus-visible {
+  outline: 3px solid var(--maiz);
+  outline-offset: -3px;
+}
+.hz-diario[open] summary {
+  border-bottom: 2px dotted var(--anil-3);
+}
+.hz-diario ol {
+  list-style: none;
+  margin: 0;
+  padding: 6px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.hz-diario ol > li > b {
+  font-family: var(--pix);
+  font-weight: 400;
+  font-size: 14px;
+}
+.hz-dsalud {
+  font-family: var(--pix);
+  font-size: 12px;
+  margin-left: 8px;
+  color: var(--tiza-2);
+}
+.hz-dsalud.baja {
+  color: var(--rosa);
+}
+.hz-dsalud.sube {
+  color: var(--hoja);
+}
+.hz-diario ul {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hz-diario ul li {
+  display: grid;
+  grid-template-columns: 14px 1fr;
+  gap: 4px;
+}
+.hz-diario ul li i {
+  font-style: normal;
+  font-family: var(--pix);
+  color: var(--tiza-2);
+}
+.hz-diario li.t-mal i {
+  color: var(--rosa);
+}
+.hz-diario li.t-bien i {
+  color: var(--hoja);
+}
+.hz-diario p {
+  padding: 0 10px 8px;
+  margin: 0;
+}

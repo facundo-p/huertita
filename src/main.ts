@@ -1,2 +1,5 @@
-import './estilos/juego.css';
-import './ui/ui';
+import './estilos/tokens.css';
+import './estilos/base.css';
+import { arrancar } from './vista/arrancar';
+
+arrancar(document.getElementById('app')!);

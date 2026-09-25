@@ -9,6 +9,12 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 export default defineConfig(({ mode }) => ({
   base: './',
   plugins: mode === 'artifact' ? [viteSingleFile()] : [],
-  build: { outDir: mode === 'artifact' ? 'dist-artifact' : 'dist', target: 'es2020', cssCodeSplit: false, assetsInlineLimit: mode === 'artifact' ? 100_000_000 : 4096 },
-  test: { include: ['tests/**/*.test.ts'] },
+  build: {
+    outDir: mode === 'artifact' ? 'dist-artifact' : 'dist',
+    target: 'es2020',
+    cssCodeSplit: false,
+    assetsInlineLimit: mode === 'artifact' ? 100_000_000 : 4096,
+  },
+  esbuild: { jsx: 'automatic', jsxImportSource: 'preact' },
+  test: { include: ['tests/**/*.test.{ts,tsx}'] },
 }));

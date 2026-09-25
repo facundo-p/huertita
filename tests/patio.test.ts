@@ -1,35 +1,52 @@
 /** El patio como dato: todos los patios son válidos y jugables, y las partidas viejas se migran. */
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { validarPatio } from '../datos/juego/patio';
-import * as M from '../src/motor';
+import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
-import type { Estado } from '../src/motor';
+import type { Estado } from '../src/dominio';
 
-const ids = Object.keys(M.PATIOS);
+const ids = Object.keys(M.PLANTILLAS);
 
 describe('todos los patios', () => {
-  it('el patio inicial existe', () => { expect(M.PATIOS[M.PATIO_INICIAL]).toBeTruthy(); });
+  it('el patio inicial existe', () => {
+    expect(M.PLANTILLAS[M.PLANTILLA_INICIAL]).toBeTruthy();
+  });
   for (const id of ids) {
-    const p = M.PATIOS[id];
-    it(`${id}: está bien armado`, () => { expect(validarPatio(p)).toEqual([]); expect(p.id).toBe(id); });
+    const p = M.PLANTILLAS[id];
+    it(`${id}: está bien armado`, () => {
+      expect(validarPatio(p)).toEqual([]);
+      expect(p.id).toBe(id);
+    });
     it(`${id}: la partida arranca con todas sus celdas, regadas y dentro del plano`, () => {
       const E = M.crearPartida(1, { patio: id });
-      expect(E.patio).toBe(id);
-      expect(Object.keys(E.riego).sort()).toEqual(p.zonas.map((z) => z.id).sort());
+      expect(E.meta.plantilla).toBe(id);
+      expect(E.mundo.patio).toEqual(p);
+      expect(E.mundo.patio).not.toBe(p);
+      expect(Object.keys(E.recursos.riego).sort()).toEqual(p.zonas.map((z) => z.id).sort());
       const total = p.zonas.reduce((n, z) => n + M.celdasDe(E, z.id).length, 0);
-      expect(Object.keys(E.celdas).length).toBe(total);
-      for (const c in E.celdas) { expect(M.zonaDeCelda(E, c)).toBe(E.celdas[c].zona); const h = M.horasSol(E, c); expect(h).toBeGreaterThanOrEqual(0); expect(h).toBeLessThanOrEqual(12); }
+      expect(Object.keys(E.mundo.celdas).length).toBe(total);
+      for (const c in E.mundo.celdas) {
+        expect(M.zonaDeCelda(E, c)).toBe(E.mundo.celdas[c].zona);
+        const h = M.horasSol(E, c);
+        expect(h).toBeGreaterThanOrEqual(0);
+        expect(h).toBeLessThanOrEqual(12);
+      }
     });
     it(`${id}: el bot juega un año entero, cosecha algo y el estado sigue siendo JSON`, () => {
       const E = jugarUnAnio(M, 7, undefined, { patio: id }) as Estado;
-      expect(E.terminado).toBe(true);
-      expect(E.porciones).toBeGreaterThan(0);
+      expect(E.tiempo.terminado).toBe(true);
+      expect(E.progreso.porciones).toBeGreaterThan(0);
       expect(JSON.parse(JSON.stringify(E))).toEqual(E);
-      for (const pl of Object.values(E.plantas)) expect(E.celdas[pl.celda].planta).toBe(pl.id);
+      for (const pl of Object.values(E.mundo.plantas)) expect(E.mundo.celdas[pl.celda].planta).toBe(pl.id);
     });
-    it(`${id}: es determinista`, () => { expect(jugarUnAnio(M, 11, undefined, { patio: id })).toEqual(jugarUnAnio(M, 11, undefined, { patio: id })); });
+    it(`${id}: es determinista`, () => {
+      expect(jugarUnAnio(M, 11, undefined, { patio: id })).toEqual(jugarUnAnio(M, 11, undefined, { patio: id }));
+    });
   }
-  it('un patio que no existe no arranca', () => { expect(() => M.crearPartida(1, { patio: 'terraza-que-no-hay' })).toThrow(); });
+  it('un patio que no existe no arranca', () => {
+    expect(() => M.crearPartida(1, { patio: 'terraza-que-no-hay' })).toThrow();
+  });
 });
 
 describe('el microtúnel va por zona', () => {
@@ -38,11 +55,13 @@ describe('el microtúnel va por zona', () => {
     expect(M.despachar(E, { tipo: 'tunel', zona: 'suelo' }).ok).toBe(false);
     expect(M.despachar(E, { tipo: 'tunel', zona: 'no-existe' }).ok).toBe(false);
     expect(M.despachar(E, { tipo: 'tunel' }).ok).toBe(true);
-    expect(E.tunel).toEqual({ elevado: true });
-    expect(M.bajoTunel(E, '0,4')).toBe(true); expect(M.bajoTunel(E, '0,1')).toBe(false);
+    expect(E.recursos.tunel).toEqual({ elevado: true });
+    expect(M.bajoTunel(E, '0,4')).toBe(true);
+    expect(M.bajoTunel(E, '0,1')).toBe(false);
     expect(M.abrigo(E, 'elevado').partes).toEqual(['microtúnel']);
-    E.ratosGastados = 0; expect(M.despachar(E, { tipo: 'tunel', zona: 'elevado' }).ok).toBe(true);
-    expect(E.tunel).toEqual({});
+    E.recursos.ratosGastados = 0;
+    expect(M.despachar(E, { tipo: 'tunel', zona: 'elevado' }).ok).toBe(true);
+    expect(E.recursos.tunel).toEqual({});
   });
   it('el reparo fijo de cada zona sale de los datos del patio', () => {
     const E = M.crearPartida(1);
@@ -54,28 +73,67 @@ describe('el microtúnel va por zona', () => {
 });
 
 describe('migración de partidas guardadas', () => {
-  const vieja = (tunel: boolean): any => { const E: any = JSON.parse(JSON.stringify(M.crearPartida(3))); delete E.patio; E.v = 1; E.tunel = tunel; return E; };
-  it('una partida v1 pasa a v2 en el fondo, y sigue jugando', () => {
-    const E = M.migrar(vieja(true))!;
-    expect(E).toBeTruthy(); expect(E.v).toBe(M.VERSION); expect(E.patio).toBe('fondo'); expect(E.tunel).toEqual({ elevado: true });
-    expect(M.despachar(E, { tipo: 'sembrar', slug: 'rabanito', celda: '0,4' }).ok).toBe(true);
-    expect(() => M.pasarDecada(E)).not.toThrow();
+  /** Partidas guardadas de verdad, con el motor de cada versión (ver tests/fixtures/). */
+  const guardada = (nombre: string): any => JSON.parse(readFileSync(`tests/fixtures/${nombre}.json`, 'utf8'));
+  it.each(['partida-v1', 'partida-v2-fondo', 'partida-v3-fondo', 'partida-v3-balcon'])(
+    '%s migra a la versión de hoy y sigue jugando',
+    (nombre) => {
+      const vieja = guardada(nombre),
+        E = M.migrar(guardada(nombre))!;
+      expect(E).toBeTruthy();
+      expect(E.meta.v).toBe(M.VERSION);
+      expect(E.meta.plantilla).toBe(vieja.patio ?? 'fondo');
+      expect(E.meta.semilla).toBe(vieja.semilla);
+      expect(E.tiempo.dec).toBe(vieja.dec);
+      expect(E.mundo.patio).toEqual(M.PLANTILLAS[E.meta.plantilla]);
+      expect(Object.keys(E.mundo.plantas)).toEqual(Object.keys(vieja.plantas));
+      expect(M.compostera(E)).toMatchObject({ dosis: vieja.compost.dosis, carga: vieja.compost.carga });
+      expect(M.compostera(E)!.tandas).toEqual(vieja.compost.tandas);
+      for (let i = 0; i < 12; i++) M.pasarDecada(E);
+      expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
+    },
+  );
+  it('el microtúnel de la v1 era un sí o un no: pasa a la zona elevada', () => {
+    const conTunel = { ...guardada('partida-v1'), tunel: true };
+    expect(M.migrar(conTunel)!.recursos.tunel).toEqual({ elevado: true });
+    expect(M.migrar(guardada('partida-v1'))!.recursos.tunel).toEqual({});
   });
-  it('sin túnel queda sin túnel', () => { expect(M.migrar(vieja(false))!.tunel).toEqual({}); });
+  it('las plantas de la v2 ocupan una celda, que es como se jugaron', () => {
+    const E = M.migrar(guardada('partida-v2-fondo'))!;
+    for (const pl of Object.values(E.mundo.plantas)) expect(M.celdasDePlanta(pl)).toEqual([pl.celda]);
+  });
+  it('una partida de hoy pasa tal cual', () => {
+    const E = M.crearPartida(3);
+    expect(M.migrar(JSON.parse(JSON.stringify(E)))).toEqual(E);
+  });
   it('lo que no es una partida, o es de un patio que ya no existe, no se carga', () => {
-    expect(M.migrar(null)).toBeNull(); expect(M.migrar({ v: 1 })).toBeNull(); expect(M.migrar('hola')).toBeNull();
-    const E: any = JSON.parse(JSON.stringify(M.crearPartida(3))); E.patio = 'demolido'; expect(M.migrar(E)).toBeNull();
-    const F: any = JSON.parse(JSON.stringify(M.crearPartida(3))); F.v = 99; expect(M.migrar(F)).toBeNull();
+    expect(M.migrar(null)).toBeNull();
+    expect(M.migrar({ v: 1 })).toBeNull();
+    expect(M.migrar('hola')).toBeNull();
+    expect(M.migrar({ ...guardada('partida-v3-fondo'), patio: 'demolido' })).toBeNull();
+    expect(M.migrar({ ...guardada('partida-v3-fondo'), v: 99 })).toBeNull();
+    const E: any = JSON.parse(JSON.stringify(M.crearPartida(3)));
+    E.meta.v = 99;
+    expect(M.migrar(E)).toBeNull();
+    const F: any = JSON.parse(JSON.stringify(M.crearPartida(3)));
+    F.mundo.patio.plano = [];
+    expect(M.migrar(F)).toBeNull();
   });
 });
 
 describe('nadie fuera de los datos conoce un patio en particular', () => {
-  it('ni el motor, ni los renderers, ni la interfaz nombran zonas del fondo', async () => {
+  it('ni el dominio, ni los renderers, ni la interfaz nombran zonas del fondo', async () => {
     const { readdirSync, readFileSync } = await import('node:fs');
     const culpables: string[] = [];
-    for (const dir of ['src/motor', 'src/render', 'src/ui', 'src/arte']) for (const f of readdirSync(dir)) {
-      if (f === 'migraciones.ts') continue; // las migraciones sí saben cómo era la v1
-      readFileSync(`${dir}/${f}`, 'utf8').split('\n').forEach((l, i) => { if (/['"](almacigo|elevado)['"]|['"]\d+,\d+['"]/.test(l) && !/^\s*(\/\/|\*)/.test(l)) culpables.push(`${dir}/${f}:${i + 1}`); });
+    const dir = 'src';
+    for (const f of readdirSync(dir, { recursive: true }) as string[]) {
+      if (!/\.tsx?$/.test(f) || f.endsWith('migraciones.ts')) continue; // las migraciones sí saben cómo era la v1
+      readFileSync(`${dir}/${f}`, 'utf8')
+        .split('\n')
+        .forEach((l, i) => {
+          if (/['"](almacigo|elevado)['"]|['"]\d+,\d+['"]/.test(l) && !/^\s*(\/\/|\*)/.test(l))
+            culpables.push(`${dir}/${f}:${i + 1}`);
+        });
     }
     expect(culpables).toEqual([]);
   });

@@ -31,6 +31,7 @@ button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3
 .leyenda{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--tiza-2);font-family:var(--pix)} .leyenda i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 .detalle{background:var(--anil-2);padding:14px 16px;box-shadow:6px 6px 0 #0e0d2e;min-height:170px}
 .detalle .num{font-family:var(--pix);color:var(--anil);background:var(--maiz);padding:0 7px;margin-right:6px}
+.detalle .issue{font-family:var(--pix);font-size:13px;color:var(--acequia)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0} .chip{font-family:var(--pix);font-size:13px;padding:1px 8px;background:var(--anil);white-space:nowrap}
 .chip.rab{background:var(--hoja);color:#0c2a14} .chip.zap{background:var(--maiz);color:var(--anil)} .chip.aro{background:var(--acequia);color:var(--anil)} .chip.yuy{background:var(--anil-3)} .chip.hecho{background:var(--tiza);color:var(--anil)}
 .lista{list-style:none;padding:0;margin:12px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 14px}
@@ -63,7 +64,8 @@ button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3
   <header>
     <h1>Mapa de ideas de Huertita</h1>
     <p>Todo lo que se podría hacer, ordenado por cuánto cuesta y cuánto le suma al juego. Tocá un punto o un nombre para ver de qué se trata.</p>
-    <p class="dim">Al 17 de septiembre de 2026, con el juego en la versión 0.4. Costo e impacto son estimaciones mías, de 1 a 10; el costo supone los cimientos ya hechos.</p>
+    <p class="dim">Al 24 de septiembre de 2026, con el juego en la versión 0.9. Costo e impacto son estimaciones mías, de 1 a 10; el costo supone los cimientos ya hechos.</p>
+    <p class="dim">Cada número de este mapa es ahora el número de un <a href="https://github.com/facundo-p/huertita/issues">issue en GitHub</a>: la idea 6 es el issue #6. Los cimientos y las deudas, que no están en el cuadro, son los issues #27 a #38.</p>
   </header>
   <nav aria-label="Secciones"><a href="#mapa">El cuadro</a><a href="#cuadrantes">Los 4 cuadrantes</a><a href="#propuestas">Mis 5 propuestas</a><a href="#eventos">Eventos sorpresa</a><a href="#orden">En qué orden</a></nav>
 
@@ -170,7 +172,7 @@ button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3
     document.getElementById('svg').innerHTML = s;
 
     var d = IDEAS.filter(function (x) { return x.n === est.sel; })[0], q = cuad(d);
-    document.getElementById('detalle').innerHTML = '<h3><span class="num">' + d.n + '</span>' + esc(d.t) + '</h3><p class="chips"><span class="chip ' + q + '">' + Q[q][0] + '</span><span class="chip">' + (d.de === 'vos' ? 'idea tuya' : 'idea mía') + '</span>' + (d.hecho ? '<span class="chip hecho">hecha en ' + d.hecho + '</span>' : '') + '<span class="chip">costo ' + d.c + ' · impacto ' + d.i + '</span></p><p>' + esc(d.por) + '</p>';
+    document.getElementById('detalle').innerHTML = '<h3><span class="num">' + d.n + '</span>' + esc(d.t) + '</h3><p class="chips"><span class="chip ' + q + '">' + Q[q][0] + '</span><span class="chip">' + (d.de === 'vos' ? 'idea tuya' : 'idea mía') + '</span>' + (d.hecho ? '<span class="chip hecho">hecha en ' + d.hecho + '</span>' : '') + '<span class="chip">costo ' + d.c + ' · impacto ' + d.i + '</span></p><p>' + esc(d.por) + '</p><p><a class="issue" href="https://github.com/facundo-p/huertita/issues/' + d.n + '" target="_blank" rel="noopener">Issue #' + d.n + ' en GitHub ↗</a></p>';
 
     var h = '';
     ['rab', 'zap', 'aro', 'yuy'].forEach(function (qq) {
@@ -202,7 +204,7 @@ button{font:inherit;color:inherit;cursor:pointer} button:focus-visible{outline:3
   document.getElementById('evs').innerHTML = '<thead><tr><th>Evento</th><th>Cuándo</th><th>Qué pasa</th><th>Respuesta que enseña</th></tr></thead><tbody>' + EVS.map(function (g) { return '<tr class="cab"><td colspan="4">' + g[0] + '</td></tr>' + g[1].map(function (e) { return '<tr><td>' + esc(e[0]) + (e[4] ? '<span class="r">repo</span>' : '') + '</td><td>' + esc(e[1]) + '</td><td>' + esc(e[2]) + '</td><td>' + esc(e[3]) + '</td></tr>'; }).join(''); }).join('') + '</tbody>';
 
   var PASOS = [
-    ['cim', 'Cimientos · 1 a 2 semanas', 'TypeScript y tests. El patio como dato. Plantas con tamaño propio. Tiempo por día. Eventos, logros y pedidos como tablas. Interfaz por componentes. Conviene hacerlo en Claude Code con repo propio, como huertapp.'],
+    ['cim', 'Cimientos · 1 a 2 semanas', 'Hechos los pasos 1 a 3: TypeScript y tests (v0.5), el patio como dato (v0.6) y plantas con tamaño propio (v0.8, todavía apagado). Hecha también la epic #39 (v0.9): el código reestructurado en capas, el estado con forma y el patio adentro de la partida, la región como dato, la interfaz por componentes y el renderer por cámaras, sin cambiar cómo se juega (el paso 6, salvo la PWA). Faltan el tiempo por día (#28, después de decidir el sol del fondo, #31) y el contenido como tablas (#29).'],
     ['rab', 'Tanda de rabanitos', 'Eventos sorpresa, pedidos de vecinos, vacaciones de enero, césped y poda para el compost, sonido, patios prediseñados.'],
     ['zap', 'Primer zapallo: jugar de a 1 a 10 días', 'Va primero porque condiciona el balance de todo lo demás: ratos por día con tope, pronóstico de 5 días, salto "hasta que pase algo".'],
     ['zap', 'Un zapallo por vez', 'Tamaño real de planta, después feria vecinal, después diagnóstico por síntomas. Editor y "mi patio" al final, apoyados en el patio como dato.'],

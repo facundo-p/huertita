@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Crea los issues de Huertita en orden, conservando la numeración del mapa de ideas.
-# Requisitos: gh instalado y autenticado (gh auth login), el repo SIN issues ni PRs previos.
-# Los 1 a 5 ya están hechos: se crean y se cierran en el acto.
+# Requisitos: gh instalado y autenticado (gh auth login), el repo SIN issues ni PRs previos
+# (los pull requests comparten la numeración: crear los issues ANTES de abrir cualquier PR).
+# Los ya hechos se crean y se cierran en el acto.
+# Generado desde issues.json.
 set -euo pipefail
 REPO=facundo-p/huertita
 
@@ -13,7 +15,7 @@ url=$(gh issue create -R $REPO --title 'Almaciguera con varios plantines, raleo 
 
 Mapa de ideas: `docs/mapa-ideas.html`.')
 echo "#1 → $url"
-gh issue close -R $REPO "$url" --comment 'Hecho antes de abrir el repo. Se crea cerrado para conservar la numeración del mapa de ideas.'
+gh issue close -R $REPO "$url" --comment 'Ya estaba hecho al crear los issues. Se crea cerrado para conservar la numeración del mapa de ideas.'
 sleep 1
 url=$(gh issue create -R $REPO --title 'Indicadores con el rango que pide cada especie' --label 'rabanito' --body 'La banda es lo que pide el catálogo, la marca lo que tiene la planta. La barra ahora explica el porqué.
 
@@ -23,7 +25,7 @@ url=$(gh issue create -R $REPO --title 'Indicadores con el rango que pide cada e
 
 Mapa de ideas: `docs/mapa-ideas.html`.')
 echo "#2 → $url"
-gh issue close -R $REPO "$url" --comment 'Hecho antes de abrir el repo. Se crea cerrado para conservar la numeración del mapa de ideas.'
+gh issue close -R $REPO "$url" --comment 'Ya estaba hecho al crear los issues. Se crea cerrado para conservar la numeración del mapa de ideas.'
 sleep 1
 url=$(gh issue create -R $REPO --title 'Almanaque de siembra y ficha completa' --label 'rabanito' --body 'Las 36 décadas por especie y todos los datos del catálogo, a un toque.
 
@@ -33,7 +35,7 @@ url=$(gh issue create -R $REPO --title 'Almanaque de siembra y ficha completa' -
 
 Mapa de ideas: `docs/mapa-ideas.html`.')
 echo "#3 → $url"
-gh issue close -R $REPO "$url" --comment 'Hecho antes de abrir el repo. Se crea cerrado para conservar la numeración del mapa de ideas.'
+gh issue close -R $REPO "$url" --comment 'Ya estaba hecho al crear los issues. Se crea cerrado para conservar la numeración del mapa de ideas.'
 sleep 1
 url=$(gh issue create -R $REPO --title 'Guardar y cargar la huerta' --label 'rabanito' --body 'Autoguardado visible, tres ranuras, nube privada para seguir en otro dispositivo, archivo y código.
 
@@ -43,7 +45,7 @@ url=$(gh issue create -R $REPO --title 'Guardar y cargar la huerta' --label 'rab
 
 Mapa de ideas: `docs/mapa-ideas.html`.')
 echo "#4 → $url"
-gh issue close -R $REPO "$url" --comment 'Hecho antes de abrir el repo. Se crea cerrado para conservar la numeración del mapa de ideas.'
+gh issue close -R $REPO "$url" --comment 'Ya estaba hecho al crear los issues. Se crea cerrado para conservar la numeración del mapa de ideas.'
 sleep 1
 url=$(gh issue create -R $REPO --title 'Protección de heladas que cumple lo que dice' --label 'rabanito' --body 'Cada abrigo suma grados y el juego dice hasta qué mínima aguanta. El cuaderno cuenta cuándo salvó y cuándo no alcanzó.
 
@@ -53,7 +55,7 @@ url=$(gh issue create -R $REPO --title 'Protección de heladas que cumple lo que
 
 Mapa de ideas: `docs/mapa-ideas.html`.')
 echo "#5 → $url"
-gh issue close -R $REPO "$url" --comment 'Hecho antes de abrir el repo. Se crea cerrado para conservar la numeración del mapa de ideas.'
+gh issue close -R $REPO "$url" --comment 'Ya estaba hecho al crear los issues. Se crea cerrado para conservar la numeración del mapa de ideas.'
 sleep 1
 url=$(gh issue create -R $REPO --title 'Eventos sorpresa' --label 'rabanito,enhancement' --body 'Regalos, clima, bichos, barrio. Con los eventos como tabla de datos, cada uno nuevo cuesta minutos. Es la mayor fuente de sorpresa por peso invertido.
 
@@ -142,7 +144,9 @@ Es el paso 3 de los cimientos (#27). Un zapallo ocupa 4 celdas, en una entran 9 
 
 **Cuadrante:** zapallo · costo 7 · impacto 9 (de 1 a 10, estimaciones). Idea propuesta por Claude.
 
-Mapa de ideas: `docs/mapa-ideas.html`.')
+Mapa de ideas: `docs/mapa-ideas.html`.
+
+Desde v0.8 el motor ya lo sabe hacer (#27); falta prenderlo y rebalancear (#28).')
 echo "#15 → $url"
 sleep 1
 url=$(gh issue create -R $REPO --title 'Diagnóstico por síntomas' --label 'zapallo,enhancement' --body 'La planta muestra el problema y vos elegís la causa. Pide dibujar síntomas por especie. Entrena el ojo.
@@ -248,14 +252,19 @@ url=$(gh issue create -R $REPO --title 'Cimientos, paso 3: plantas con huella pr
 
 **Cuadrante:** zapallo · costo 7 · impacto 9.
 
-Detalle y orden en docs/CIMIENTOS.md.')
+Detalle y orden en docs/CIMIENTOS.md.
+
+**Hecho en v0.8** (`src/motor/espacio.ts`, `datos/juego/especies.ts`, `tests/espacio.test.ts`): el motor ya sabe de huella, densidad, capacidad de bandeja y sombra entre plantas, y cada especie tiene su marco de plantación. La regla está APAGADA hasta el paso 4 (#28), que es donde se jubila el test dorado y se rebalancea. Se crea cerrado para conservar la numeración del mapa de ideas.')
 echo "#27 → $url"
+gh issue close -R $REPO "$url" --comment 'Ya estaba hecho al crear los issues. Se crea cerrado para conservar la numeración del mapa de ideas.'
 sleep 1
 url=$(gh issue create -R $REPO --title 'Cimientos, paso 4: tic diario y avanzar(estado, días); ratos por día; pronóstico de 5 días' --label 'cimientos,zapallo' --body 'El motor simula día por día y el jugador elige el salto (1 a 10 días). Ratos por día con tope, pronóstico de 5 días, salto "hasta que pase algo". Acá se jubila el test dorado y se rebalancea todo: es el momento de decidir #31. Es lo que hace real a #12.
 
 **Cuadrante:** zapallo · costo 8 · impacto 8,5.
 
-Detalle y orden en docs/CIMIENTOS.md.')
+Detalle y orden en docs/CIMIENTOS.md.
+
+Acá se prenden los marcos del paso 3 (#27). Cuánto hay que rebalancear: con `npm run bot -- --espacio` el fondo pasa de 112–141 puntos a 276–647, y el balcón de 12–37 a 87–175. Tres estrellas hoy son 120 en el fondo.')
 echo "#28 → $url"
 sleep 1
 url=$(gh issue create -R $REPO --title 'Cimientos, paso 5: contenido como tablas (eventos, logros, pedidos, ítems)' --label 'cimientos,zapallo' --body 'Eventos, logros, pedidos e ítems pasan a ser filas con condición y efecto, no código. Después de esto, #6, #8 y #11 son rabanitos.
@@ -272,7 +281,9 @@ url=$(gh issue create -R $REPO --title 'Cimientos, paso 6: interfaz por componen
 Detalle y orden en docs/CIMIENTOS.md.')
 echo "#30 → $url"
 sleep 1
-url=$(gh issue create -R $REPO --title 'Decidir el sol del patio original: fórmula v0.4 o geometría' --label 'deuda,cimientos' --body 'El fondo sigue con `sol: '"'"'v04'"'"'` para conservar el test dorado. Con geometría, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, y la fórmula vieja le daba entre 1 y 5 horas. Opciones: mover los canteros lejos del paredón, bajar el paredón, o aceptarlo como parte del desafío. Decisión de diseño de Facu; va junto con #28. Ver datos/juego/patios/fondo.ts y tests/sol.test.ts.')
+url=$(gh issue create -R $REPO --title 'Decidir el sol del patio original: fórmula v0.4 o geometría' --label 'deuda,cimientos' --body 'El fondo sigue con `sol: '\''v04'\''` para conservar el test dorado. Con geometría, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, y la fórmula vieja le daba entre 1 y 5 horas. Opciones: mover los canteros lejos del paredón, bajar el paredón, o aceptarlo como parte del desafío. Decisión de diseño de Facu; va junto con #28. Ver datos/juego/patios/fondo.ts y tests/sol.test.ts.
+
+Desde v0.8, con sol por geometría las plantas altas también hacen sombra: esta decisión cambia también cuánto se sombrean entre sí los canteros del fondo.')
 echo "#31 → $url"
 sleep 1
 url=$(gh issue create -R $REPO --title 'Revisar y balancear el balcón (patio en prueba)' --label 'deuda' --body 'Todos los números del balcón son supuestos de Claude: reparo por altura, techo del balcón, tamaños de maceta, horizonte, estrellas 10/25/45. El bot saca entre 12 y 37 puntos (en el fondo, 112 a 141). Falta la revisión de Facu y un balance propio. Ver datos/juego/patios/balcon.ts.')
@@ -296,3 +307,4 @@ sleep 1
 url=$(gh issue create -R $REPO --title 'Revisar los textos nuevos del diario por planta (0.7)' --label 'rabanito' --body 'Los textos que anota el diario ("Le faltó agua: pide riego parejo y tuvo menos", "Creció lento: lo que más la frenó fue…", "Sigue con pulgones…") los redactó Claude. Revisar que suenen a huerta y que sean verdad en cada caso. Ver src/motor/tiempo.ts y src/motor/diario.ts.')
 echo "#38 → $url"
 sleep 1
+echo 'Listos los 38 issues.'

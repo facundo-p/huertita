@@ -1,0 +1,179 @@
+/** Tipos del estado de una partida. Todo es JSON serializable: eso da guardado, tests y bot gratis. */
+import type { Especie } from '../../datos/juego/especies';
+import type { Patio } from '../../datos/juego/patio';
+
+import type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, ZonaId } from './vocabulario';
+
+export type { Especie };
+export type { Patio, ZonaDePatio } from '../../datos/juego/patio';
+export type { CaracterId, CeldaId, Etapa, NivelRiego, Plaga, TipoEvento, Ventana, ZonaId } from './vocabulario';
+
+export interface Planta {
+  id: string;
+  slug: string;
+  celda: CeldaId;
+  etapa: Etapa;
+  /** si ocupa más de una celda, todas las que ocupa: la primera es `celda`, el ancla. Falta cuando ocupa una sola */
+  celdas?: CeldaId[];
+  /** días desde la siembra */ edad: number;
+  /** días efectivos de crecimiento */ prog: number;
+  /** días efectivos de germinación acumulados */ germ: number;
+  salud: number;
+  vigor: number;
+  gen: number;
+  cosechas: number;
+  listoHace: number;
+  plaga: Plaga | null;
+  tutor: boolean;
+  shock: number;
+  dulce: boolean;
+  semillar: number;
+  /** ajuste de la maceta a lo que pide la especie, 0..1 */ pote: number;
+  reserva: number;
+  /** plantines vivos en esta siembra */ n: number;
+  /** semillas que se pusieron */ semillas: number;
+  avisoRaleo?: boolean;
+  avisoPasado?: boolean;
+  avisoListo?: boolean;
+  /** diario de esta planta: lo que le fue pasando, década por década. Lo más nuevo al final; se guardan las últimas 16 entradas */
+  hist?: Registro[];
+}
+/** Una entrada del diario de una planta. `s` es la salud con la que cerró; `n`, lo que le pasó: [tipo, texto]. */
+export interface Registro {
+  dec: number;
+  turno: number;
+  s: number;
+  /** [tipo, texto, código de la frase] */
+  n: [TipoEvento, string, string?][];
+}
+export interface Celda {
+  zona: ZonaId;
+  mo: number;
+  mulch: boolean;
+  fam: string | null;
+  planta: string | null;
+}
+export interface Tiempo {
+  dec: number;
+  tmed: number;
+  tmax: number;
+  tmin: number;
+  lluvia: number;
+  helada: boolean;
+  ola: boolean;
+  estacion: string;
+}
+export interface Pronostico {
+  tmin: number;
+  tmax: number;
+  pHelada: number;
+  lluvia: 'seca' | 'normal' | 'llovedora';
+}
+export interface Evento {
+  turno: number;
+  dec: number;
+  tipo: TipoEvento;
+  texto: string;
+  celda: CeldaId | null;
+  /** qué pasó, estable (ver `textos/frase.ts`); falta en las partidas guardadas antes de la 0.9 */
+  codigo?: string;
+}
+
+/** De qué está hecha una partida, más allá de lo que se juega: formato, azar, lugar. */
+export interface Meta {
+  /** versión del formato de guardado; subirla obliga a escribir una migración en `migraciones.ts` */
+  v: 4;
+  semilla: number;
+  rng: number;
+  /** la región del clima y el calendario (`datos/juego/regiones`) */
+  region: string;
+  /** de qué plantilla de patio salió (`datos/juego/patios`); el patio en sí vive en `mundo.patio` */
+  plantilla: string;
+  /** marca de tiempo del último guardado; la pone la interfaz, el motor no la mira */
+  guardado?: number;
+}
+
+/** Una compostera: lo que se le echa (`carga`) se vuelve tandas, y cada tanda madura en dosis de compost. */
+export interface Compostera {
+  tipo: 'compostera';
+  en: CeldaId;
+  carga: number;
+  tandas: { avance: number }[];
+  /** dosis de compost listas para usar */
+  dosis: number;
+}
+/** Lo que se construye en el patio y no es una zona de cultivo. Hoy, solo la compostera. */
+export type Estructura = Compostera;
+
+/** Lo que hay en el patio: el patio mismo (una copia de su plantilla), la tierra, las plantas y lo construido. */
+export interface Mundo {
+  patio: Patio;
+  celdas: Record<CeldaId, Celda>;
+  plantas: Record<string, Planta>;
+  estructuras: Estructura[];
+}
+
+/** Dónde está la partida en el calendario y qué tiempo hace. */
+export interface Momento {
+  /** década del año, 1..36 */
+  dec: number;
+  turno: number;
+  anio: number;
+  caracter: CaracterId;
+  /** el tiempo que va a hacer esta década */
+  clima: Tiempo;
+  /** lo que se pronosticó para esta década */
+  pronostico: Pronostico;
+  terminado: boolean;
+}
+
+/** Lo que se gasta y se reparte: el tiempo del jugador, el agua, los abrigos y las semillas. */
+export interface Recursos {
+  ratosGastados: number;
+  riego: Record<ZonaId, NivelRiego>;
+  /** zonas con el microtúnel armado */
+  tunel: Partial<Record<ZonaId, boolean>>;
+  manta: Partial<Record<ZonaId, boolean>>;
+  goteo: boolean;
+  sobres: Record<string, number>;
+  /** generaciones de semilla propia, por especie */
+  gen: Record<string, number>;
+}
+
+/** Lo que va quedando de la partida: cosechas, logros y el cuaderno. */
+export interface Progreso {
+  cosechado: Record<string, number>;
+  porciones: number;
+  semillasGuardadas: number;
+  visitas: number;
+  moInicial: number;
+  misiones: Record<string, number>;
+  cuaderno: Evento[];
+  /** el número de la próxima planta */
+  nextId: number;
+}
+
+export interface Estado {
+  meta: Meta;
+  mundo: Mundo;
+  tiempo: Momento;
+  recursos: Recursos;
+  progreso: Progreso;
+}
+
+export type Accion =
+  | { tipo: 'sembrar'; slug: string; celda: CeldaId }
+  | { tipo: 'trasplantar'; planta: string; celda: CeldaId }
+  | { tipo: 'cosechar'; planta: string }
+  | { tipo: 'semillar'; planta: string }
+  | { tipo: 'ralear'; planta: string }
+  | { tipo: 'arrancar'; planta: string }
+  | { tipo: 'tutorar'; planta: string }
+  | { tipo: 'tratar'; planta: string }
+  | { tipo: 'mulch'; celda: CeldaId }
+  | { tipo: 'compost'; celda: CeldaId }
+  | { tipo: 'riego'; zona: ZonaId; nivel: number }
+  | { tipo: 'manta'; zona: ZonaId }
+  | { tipo: 'tunel'; /** si falta, la primera zona del patio que lo admite */ zona?: ZonaId }
+  | { tipo: 'seguir' };
+export type Resultado = { ok: true; eventos: Evento[] } | { ok: false; error: string };

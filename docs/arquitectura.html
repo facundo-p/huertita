@@ -1,0 +1,336 @@
+<title>Arquitectura de Huertita</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Mismo mundo visual que el juego y el mapa de ideas: añil de noche, maíz, ladrillo, acequia, hoja. Una sola cara, a propósito. */
+:root{--anil:#1d1b4b;--anil-2:#2a2869;--anil-3:#3b3a8a;--sombra:#0e0d2e;--tiza:#fff1d0;--tiza-2:#cfc6e8;--maiz:#ffc233;--ladrillo:#e0502f;--hoja:#3fc25a;--acequia:#1fc2b8;--rosa:#ff7aa8;
+  --pix:'Pixelify Sans','Courier New',monospace;--txt:'Atkinson Hyperlegible','Trebuchet MS',Verdana,sans-serif}
+*{box-sizing:border-box}
+/* los hijos de una grilla no pueden ensanchar la página: lo ancho (pre, tablas) se desplaza adentro de su caja */
+.pg>*,.dos>*,.capas>*,.ejemplos>*,.tarjetas>*,.orden>*,.patrones>*,.decis>*,.cifras>*,.flujo>*,.pila>*{min-width:0}
+body{background:var(--anil);color:var(--tiza);font-family:var(--txt);font-size:16px;line-height:1.5;margin:0}
+.pg{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:40px}
+h1{font-family:var(--pix);font-size:clamp(30px,6vw,46px);line-height:1;margin:0;color:var(--maiz);text-shadow:3px 3px 0 var(--ladrillo);text-wrap:balance}
+h2{font-family:var(--pix);font-size:26px;margin:0 0 6px;color:var(--maiz);font-weight:600;text-wrap:balance}
+h3{font-family:var(--pix);font-size:18px;margin:0;font-weight:400;text-wrap:balance}
+h4{font-family:var(--pix);font-weight:400;font-size:15px;margin:0;color:var(--acequia);letter-spacing:1px;text-transform:uppercase}
+p{margin:6px 0;max-width:70ch} .dim{color:var(--tiza-2);font-size:14px}
+header p{font-size:18px}
+a{color:var(--acequia)}
+nav{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--anil);padding-block:8px}
+nav a{font-family:var(--pix);color:var(--tiza);text-decoration:none;background:var(--anil-2);padding:6px 10px;box-shadow:3px 3px 0 var(--sombra);font-size:15px}
+nav a:hover,nav a:focus-visible{background:var(--acequia);color:var(--anil);outline:none}
+code{font-family:var(--pix);font-size:.95em;background:var(--sombra);padding:0 5px;color:var(--tiza)}
+pre{background:var(--sombra);padding:12px 14px;overflow-x:auto;font-family:var(--pix);font-size:14px;line-height:1.45;margin:8px 0;color:var(--tiza)} pre code{background:none;padding:0}
+pre .k{color:var(--maiz)} pre .c{color:var(--tiza-2)} pre .m{color:var(--ladrillo)} pre .b{color:var(--hoja)}
+.tabla-w{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{font-family:var(--pix);font-weight:400;text-align:left;color:var(--tiza-2);padding:6px 10px 6px 0;border-bottom:2px dotted var(--anil-3);vertical-align:bottom}
+td{padding:8px 10px 8px 0;vertical-align:top;border-bottom:1px solid var(--anil-2)} td:first-child{font-family:var(--pix);font-size:15px;min-width:140px}
+td.si{color:var(--hoja)} td.no{color:var(--ladrillo)} .v{font-family:var(--pix);font-size:13px;padding:0 6px;white-space:nowrap} .v.ok{background:var(--hoja);color:#0c2a14} .v.no{background:var(--ladrillo);color:var(--tiza)} .v.parte{background:var(--maiz);color:var(--anil)}
+.n{font-family:var(--pix);font-size:12.5px;background:var(--anil-2);padding:0 5px;white-space:nowrap;color:var(--tiza)} .n.f{background:var(--rosa);color:var(--anil)}
+
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.cifra{background:var(--anil-2);padding:12px 12px 10px;border-left:6px solid var(--ladrillo)}
+.cifra b{font-family:var(--pix);font-size:34px;line-height:1;display:block;color:var(--maiz);font-variant-numeric:tabular-nums}
+.cifra span{font-size:13.5px;color:var(--tiza-2);display:block;margin-top:4px}
+.ejemplos{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:12px;margin-top:14px}
+.ej{background:var(--anil-2);padding:12px 14px;box-shadow:4px 4px 0 var(--sombra)} .ej h3{color:var(--tiza);font-size:16px;margin-bottom:4px} .ej p{font-size:14px;margin:0 0 6px;color:var(--tiza-2)} .ej pre{font-size:12.5px;margin:0}
+
+.capas{display:grid;grid-template-columns:1fr 1fr;gap:20px} @media (max-width:760px){.capas{grid-template-columns:1fr}}
+.pila{background:var(--anil-2);padding:12px;box-shadow:6px 6px 0 var(--sombra);display:flex;flex-direction:column;gap:6px}
+.pila h3{color:var(--acequia);margin-bottom:4px}
+.capa{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:8px 10px;background:var(--anil);align-items:baseline}
+@media (max-width:420px){.capa{grid-template-columns:1fr}}
+.capa b{font-family:var(--pix);font-weight:400;font-size:15px;color:var(--maiz)} .capa span{font-size:13.5px;color:var(--tiza-2)}
+.capa.mal b{color:var(--ladrillo)} .capa.nueva{outline:2px dashed var(--hoja);outline-offset:-2px}
+.flecha{text-align:center;font-family:var(--pix);color:var(--tiza-2);font-size:13px;padding:2px 0}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px} @media (max-width:700px){.dos{grid-template-columns:1fr}}
+.lista{background:var(--anil-2);padding:12px 14px} .lista h3{font-size:16px;margin-bottom:6px} .lista ul{margin:0;padding-left:18px;font-size:14.5px} .lista li{margin:3px 0}
+.lista.bien h3{color:var(--hoja)} .lista.mal h3{color:var(--ladrillo)}
+
+.patrones{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.pat{background:var(--anil-2);padding:14px 16px;box-shadow:5px 5px 0 var(--sombra);display:flex;flex-direction:column;gap:6px}
+.pat h3{color:var(--tiza);font-size:18px} .pat p{font-size:14.5px;margin:0} .pat .hoy{border-left:3px solid var(--acequia);padding-left:10px;color:var(--tiza-2);font-size:14px} .pat .toma{border-left:3px solid var(--hoja);padding-left:10px;font-size:14px}
+.pat small{font-family:var(--pix);color:var(--tiza-2);font-size:12px;letter-spacing:1px;text-transform:uppercase}
+
+.flujo{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;align-items:stretch;margin:10px 0}
+.paso-f{background:var(--anil-2);padding:10px;font-size:13.5px;position:relative} .paso-f b{display:block;font-family:var(--pix);font-weight:400;color:var(--maiz);font-size:15px} .paso-f.v b{color:var(--hoja)} .paso-f.r b{color:var(--acequia)}
+.estado{margin-top:10px;background:var(--anil);padding:10px 12px;font-size:14px}
+
+.fase{margin-top:18px} .fase h3{color:var(--acequia);font-size:19px;margin-bottom:4px} .fase>p{font-size:14.5px}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:10px}
+.t{background:var(--anil-2);padding:10px 12px;box-shadow:4px 4px 0 var(--sombra);display:flex;flex-direction:column;gap:4px;border-left:6px solid var(--anil-3)}
+.t.rab{border-color:var(--hoja)} .t.zap{border-color:var(--maiz)} .t.aro{border-color:var(--acequia)}
+.t a.num{font-family:var(--pix);font-size:13px;color:var(--anil);background:var(--tiza);padding:0 6px;align-self:flex-start;text-decoration:none} .t.feat a.num{background:var(--rosa)} .t a.num:hover{background:var(--maiz)}
+.t b{font-size:15.5px;line-height:1.25} .t p{font-size:13.5px;margin:0;color:var(--tiza-2)} .t .dep{font-family:var(--pix);font-size:12px;color:var(--acequia)}
+.leyenda{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--tiza-2);font-family:var(--pix);margin:8px 0} .leyenda i{display:inline-block;width:11px;height:11px;margin-right:5px;vertical-align:-1px}
+.orden{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px} @media (max-width:700px){.orden{grid-template-columns:1fr}}
+.carril{background:var(--anil-2);padding:10px 12px} .carril h4{margin-bottom:6px;color:var(--tiza-2)}
+.carril ol{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.carril li{font-size:14px;padding:4px 8px;background:var(--anil)} .carril li.rab{border-left:4px solid var(--hoja)} .carril li.zap{border-left:4px solid var(--maiz)} .carril li.otro{border-left:4px solid var(--ladrillo);color:var(--tiza-2)}
+.carril li i{font-family:var(--pix);font-style:normal;color:var(--maiz);margin-right:6px}
+.decis{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.dec{background:var(--anil-2);padding:12px 14px;border-top:6px solid var(--maiz)} .dec b{display:block;font-size:16px;margin-bottom:4px} .dec p{font-size:14px;margin:0;color:var(--tiza-2)}
+</style>
+
+<div class="pg">
+  <header>
+    <h1>Arquitectura de Huertita</h1>
+    <p>Cómo está armado el juego hoy, qué se usa para este tipo de problemas, qué alternativas hay y cuál conviene. Termina en la epic <a href="https://github.com/facundo-p/huertita/issues/39">#39</a>: diecisiete sub-issues que reordenan el código sin cambiar cómo se juega, para que las features que vienen entren sin que se vuelva inmanejable.</p>
+    <p class="dim">21 de septiembre de 2026, sobre la versión 0.8. La versión corta y durable está en el repo: <code>docs/REESTRUCTURA.md</code>. Todos los números de esta página salen de leer el código; los costos e impactos son estimaciones de 1 a 10.</p>
+  </header>
+  <nav aria-label="Secciones"><a href="#diagnostico">Diagnóstico</a><a href="#hoy">Cómo está hoy</a><a href="#patrones">Qué se usa</a><a href="#alternativas">Alternativas</a><a href="#propuesta">La propuesta</a><a href="#features">Features</a><a href="#epic">La epic</a><a href="#decisiones">Para Facu</a></nav>
+
+  <section id="diagnostico">
+    <h2>Diagnóstico, con números</h2>
+    <p>≈2.600 líneas de TypeScript sin contar el catálogo (5.900 líneas de JSON derivado) ni el prototipo de referencia. El motor ya es un "núcleo funcional" en capas y con estado JSON: eso es una arquitectura de verdad, y se conserva. El problema está en cómo está escrito el motor por dentro y en todo lo que no es motor.</p>
+    <div class="cifras">
+      <div class="cifra"><b>5</b><span>archivos con <code>@ts-nocheck</code>: toda la vista, el render y el arte</span></div>
+      <div class="cifra"><b>98/420</b><span>líneas de <code>ui.ts</code> con más de 200 caracteres (69/348 en <code>pixel.ts</code>)</span></div>
+      <div class="cifra"><b>154</b><span>ternarios en <code>ui.ts</code>; 103 en <code>pixel.ts</code>; 36 en <code>tiempo.ts</code></span></div>
+      <div class="cifra"><b>127</b><span>literales sueltos de etapa, zona o evento (53 en <code>tiempo.ts</code>, 41 en <code>pixel.ts</code>, 33 en <code>acciones.ts</code>)</span></div>
+      <div class="cifra"><b>30</b><span>ramas en <code>clic()</code> sobre strings <code>data-acc</code>; 13 modos en <code>ui.modo</code> más 6 banderas sueltas</span></div>
+      <div class="cifra"><b>5</b><span>mecanismos de guardado inline en la vista (local, ranuras, código, archivo, nube)</span></div>
+      <div class="cifra"><b>25</b><span>veces que <code>CeldaId</code> se parsea con <code>split(',')</code> o se arma con <code>+ ',' +</code></span></div>
+      <div class="cifra"><b>30</b><span>campos planos en <code>Estado</code>: mundo, tiempo, recursos y progreso mezclados</span></div>
+      <div class="cifra"><b>289</b><span><code>var</code> en el proyecto; 0 <code>any</code> explícitos (el tipado del motor está bien)</span></div>
+      <div class="cifra"><b>185</b><span>tests verdes, todos sobre el motor y los datos. La vista solo tiene el humo</span></div>
+    </div>
+    <div class="ejemplos">
+      <div class="ej"><h3>La vista repite las reglas del motor</h3><p><code>panelCelda</code> decide si mostrar "Trasplantar" con su propia copia de las condiciones de <code>trasplantar</code>. Si cambia una, la otra miente.</p><pre>// ui.ts
+movible = pl.etapa !== 'semilla' &amp;&amp; (deCria ||
+  (sp.dt &amp;&amp; (varios || pl.prog &lt; sp.dt.max + 40)))
+// acciones.ts
+if (!deCria &amp;&amp; !((pl.n||1) &gt; 1) &amp;&amp;
+  !(sp.dt &amp;&amp; pl.prog &lt; sp.dt.max + 40)) return 'Ya está grande…'</pre></div>
+      <div class="ej"><h3>Cada acción reimplementa la tubería</h3><p>Validar → cobrar ratos → mutar → narrar → misiones, a mano, trece veces. <code>return SIN_RATOS</code> aparece ocho.</p><pre>if (!pl || pl.tutor) return 'No hace falta.';
+if (!gastar(E, 1)) return SIN_RATOS;
+pl.tutor = true; evs.push(anotar(E, 'info', 'Le pusiste…'));</pre></div>
+      <div class="ej"><h3>La prosa vive dentro de las reglas</h3><p><code>tiempo.ts</code> es ~40 % texto. La frase "qué lo habría evitado" se arma con ternarios entre medio de la física de la helada. Revisar textos (#38) es leer fórmulas.</p><pre>falta = w.tmin + ABRIGO.manta &gt; 3 ? 'Una manta antihelada (+…'
+  : Z.admiteTunel &amp;&amp; w.tmin + … &gt; 3 ? 'Fue una helada fuerte: …'
+  : 'Fue una helada muy fuerte: …';</pre></div>
+      <div class="ej"><h3>Los números están sueltos</h3><p>Vigor por ventana (1 / 0.85 / 0.6), daño de helada (45), competencia (0.15), plagas (0.10, 0.15, 0.06), germinación (0.85 / 0.55)… Rebalancear es cazarlos.</p><pre>pl.salud -= 45;
+g *= Math.max(0.4, 1 - 0.15 * (pl.n - cabe));
+p &lt; 0.10 * prot * rot</pre></div>
+      <div class="ej"><h3>Tres cámaras en una clase</h3><p><code>if (G.cam === 'cerca')</code> en veinte lugares, y la geometría de "cerca" corregida con un parche sobre la función al final del archivo.</p><pre>// pixel.ts:305
+var _celdaCerca = geometria;
+geometria = function (es) { var G = _celdaCerca(es);
+  if (G.cam === 'cerca') { … } return G; };</pre></div>
+      <div class="ej"><h3>El patio es una referencia estática</h3><p><code>E.patio</code> es un id; el motor lee <code>PATIOS[id]</code> y cachea índices por id. La compostera es una letra <code>C</code> en el plano. Editor y "construir en partida" no tienen dónde escribir.</p><pre>export function patioDe(E) { return PATIOS[E.patio]; }
+const indices = new Map&lt;string, Indice&gt;();   // por id de patio</pre></div>
+      <div class="ej"><h3>El clima está clavado al GBA</h3><p><code>CLIMA</code>, <code>CARACTERES</code>, <code>LATITUD = -34.6</code>, <code>estacionDe</code> con hemisferio sur, "en el GBA" en los textos, y el calendario por especie tomado de <code>calendario.decadas.conurbano</code> sin capa entre medio.</p></div>
+      <div class="ej"><h3>La escena recalcula el sol en cada clic</h3><p><code>escena()</code> pide <code>horasSol</code> de todas las celdas en cada pintado. Con geometría y plantas altas (0.8) no hay caché: 96 pasos de sol por celda por obstáculo, por clic.</p></div>
+    </div>
+  </section>
+
+  <section id="hoy">
+    <h2>Cómo está armado hoy</h2>
+    <p>Las capas existen y van en un sentido. Lo que falta es que la vista y el render tengan estructura adentro, y que el motor separe decisión, texto y número.</p>
+    <div class="capas">
+      <div class="pila">
+        <h3>Las capas de hoy</h3>
+        <div class="capa"><b>datos/</b><span>catálogo derivado de huertapp con candado, contrato que lo valida, especies (supuestos), patios como dato</span></div>
+        <div class="flecha">↓</div>
+        <div class="capa"><b>src/motor/</b><span>17 módulos; reglas puras sobre un estado JSON con azar semillado. Textos, números y la tubería de acciones adentro</span></div>
+        <div class="flecha">↓ acciones y consultas</div>
+        <div class="capa mal"><b>src/ui/ui.ts</b><span>420 líneas: modos, guardado, nube, escena, HTML a mano, reglas repetidas</span></div>
+        <div class="flecha">↓ escena plana · ↑ celda tocada</div>
+        <div class="capa mal"><b>src/render/, src/arte/</b><span>sin tipos; pixel con tres cámaras en una clase; texto como prueba del contrato</span></div>
+        <div class="estado"><code>Estado</code> v3: 30 campos planos · patio por referencia · clima del GBA en constantes · el orden de <code>azar</code> es contrato (test dorado, 8 semillas contra el prototipo)</div>
+      </div>
+      <div class="dos" style="margin:0">
+        <div class="lista bien"><h3>Aguanta y se conserva</h3><ul>
+          <li>Dependencias en un sentido; el motor no toca DOM.</li>
+          <li>Estado JSON y azar con semilla: guardado, bot, tests y migraciones gratis.</li>
+          <li>El renderer recibe una <code>Escena</code> plana: cambiar la gráfica es otro archivo.</li>
+          <li>El patio es un dato, con test que vigila que nadie lo nombre.</li>
+          <li><code>[REPO]</code> / <code>[SUPUESTO]</code> y el contrato con huertapp.</li>
+          <li>El test dorado: la red para refactorizar el motor sin cambiar conducta.</li>
+          <li>Migraciones de partidas por versión.</li>
+        </ul></div>
+        <div class="lista mal"><h3>No aguanta</h3><ul>
+          <li>La interfaz como un solo archivo sin tipos, con reglas propias.</li>
+          <li>Reglas, prosa y números en la misma línea.</li>
+          <li>Trece acciones que repiten la misma tubería.</li>
+          <li>El estado como bolsa; el patio afuera de la partida.</li>
+          <li>Renderer sin estructura por cámaras.</li>
+          <li>Todo lo regional clavado en el código.</li>
+          <li>Ningún test de vista; ningún test de capas.</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="patrones">
+    <h2>Qué se usa para este tipo de problemas</h2>
+    <p>Un juego de simulación y gestión es, por dentro, un estado que evoluciona por reglas más una vista que lo muestra. Cinco ideas del oficio aplican; ninguna sola alcanza, y la buena noticia es que Huertita ya tiene la más importante.</p>
+    <div class="patrones">
+      <div class="pat"><small>la que ya está</small><h3>Núcleo funcional, cáscara imperativa</h3><p>Las reglas son funciones puras sobre datos planos; el mundo (DOM, disco, red, reloj) queda en una cáscara fina alrededor. Es lo que hace testeable a un simulador.</p><p class="hoy">Hoy: el motor entero es esto. <code>despachar(E, accion)</code> y <code>pasarDecada(E)</code>, sin DOM, con azar semillado.</p><p class="toma">Se toma: entera. Y se extiende: la cáscara (guardado, reloj, nube) también se ordena en adaptadores.</p></div>
+      <div class="pat"><small>para la vista</small><h3>Elm / MVU (modelo, vista, actualización)</h3><p>La vista es una función del estado; los eventos son mensajes tipados; una sola función los procesa. Es el patrón detrás de Redux y de los frameworks reactivos.</p><p class="hoy">Hoy: <code>pintar()</code> después de cada <code>clic()</code> es un MVU sin estructura: mensajes como strings, estado en un objeto de 20 campos, HTML a mano.</p><p class="toma">Se toma: para la vista. Mensajes tipados, máquina de modos, componentes con signals. El motor ya es el "update" de la partida.</p></div>
+      <div class="pat"><small>de los motores de juego</small><h3>ECS: entidades, componentes, sistemas</h3><p>Los motores (Unity DOTS, Bevy) separan los datos de las entidades de los sistemas que las recorren en un orden fijo. Escala a miles de entidades y a muchos tipos.</p><p class="hoy">Hoy: <code>pasarDecada</code> ya corre "sistemas" en orden sobre las plantas (germinar → helar → crecer…), sin llamarlos así.</p><p class="toma">Se toma solo la idea de sistemas con orden declarado. Un ECS entero sobra para 50 plantas y le cuesta legibilidad a un humano.</p></div>
+      <div class="pat"><small>de los juegos con mucho contenido</small><h3>Contenido como datos</h3><p>RimWorld define su contenido en XML (defs), Factorio carga el suyo en Lua antes de que arranque el motor, Stardew Valley lo lleva en archivos de contenido. El código sabe interpretar; el contenido es tablas.</p><p class="hoy">Hoy: especies y patios ya son datos. Logros, plagas, eventos, números y textos siguen en código (paso 5, #29).</p><p class="toma">Se toma y se extiende: números, textos, estructuras, regiones y precios como datos validados. Un evento nuevo tiene que costar minutos.</p></div>
+      <div class="pat"><small>de la ingeniería de software</small><h3>Capas y puertos (Clean / hexagonal)</h3><p>Dominio adentro, casos de uso alrededor, adaptadores afuera; el dominio no sabe de disco ni de pantalla. Lo que Facu llama "capas": vista, modelo, datos.</p><p class="hoy">Hoy: <code>datos → motor → ui</code> es exactamente esto, con dos capas que faltan: aplicación (casos de uso y consultas) e infraestructura (adaptadores de guardado).</p><p class="toma">Se toma como el mapa de carpetas. No como clases con inyección: acá los puertos son interfaces y funciones.</p></div>
+    </div>
+  </section>
+
+  <section id="alternativas">
+    <h2>Alternativas, con pros y contras</h2>
+    <p>Cinco decisiones. En cada una, la fila marcada es la que se eligió (las cuatro primeras las confirmó Facu el 18-9).</p>
+
+    <h3 style="margin-top:14px;color:var(--acequia)">1 · La arquitectura general</h3>
+    <div class="tabla-w"><table>
+      <tr><th>Opción</th><th>A favor</th><th>En contra</th><th>Veredicto</th></tr>
+      <tr><td>Capas sobre el núcleo funcional de hoy: dominio / aplicación / infra / vista</td><td>Evoluciona lo que ya funciona; el dorado sigue valiendo; cada capa se puede hacer por separado; es lo que un analista de sistemas espera encontrar.</td><td>Hay que disciplinar los imports (por eso #40 pone un test de capas).</td><td><span class="v ok">elegida</span></td></tr>
+      <tr><td>ECS puro</td><td>Escala a muchos tipos de entidad (estructuras, fauna, frutales); datos separados de la lógica.</td><td>Sobra a 50 plantas; peor legibilidad para un humano; sin tooling en TypeScript que lo justifique; rompe la forma del estado y el dorado.</td><td><span class="v parte">solo la idea de sistemas</span></td></tr>
+      <tr><td>Todo en un reducer estilo Redux</td><td>Un solo estado, viaje en el tiempo, vista = f(estado).</td><td>El motor ya es un reducer sobre la partida; meter la interfaz en el mismo reducer mezcla lo que hoy está bien separado.</td><td><span class="v parte">solo para la vista (MVU)</span></td></tr>
+      <tr><td>Dominio orientado a objetos: clases <code>Planta</code>, <code>Zona</code>, <code>Patio</code> con métodos</td><td>Familiar; encapsula.</td><td>Choca con "el estado es JSON" (innegociable 6): hace falta serializar y deserializar, las migraciones se complican y el dorado compara JSON. Funciones sobre datos planos dan lo mismo sin ese costo.</td><td><span class="v no">no</span></td></tr>
+    </table></div>
+
+    <h3 style="margin-top:22px;color:var(--acequia)">2 · Con qué se hace la vista</h3>
+    <div class="tabla-w"><table>
+      <tr><th>Opción</th><th>A favor</th><th>En contra</th><th>Veredicto</th></tr>
+      <tr><td>Preact + signals</td><td>≈4 KB; JSX en TypeScript estricto; componentes y reactividad fina; tests con <code>@testing-library/preact</code>; entra en el artifact de un solo archivo; el GDD ya lo proponía y es el camino de huertapp.</td><td>JSX es una sintaxis más; una dependencia que antes no había.</td><td><span class="v ok">elegida</span></td></tr>
+      <tr><td>Lit (lit-html)</td><td>Plantillas etiquetadas sin JSX; web components estándar.</td><td>Más pesado; el shadow DOM complica el CSS global del juego; menos ejemplos para tests.</td><td><span class="v no">no</span></td></tr>
+      <tr><td>Vanilla TS con una mini-vista propia</td><td>Cero dependencias.</td><td>Hay que escribir a mano la actualización del DOM sin perder foco ni scroll (hoy <code>pintar()</code> pisa todo con <code>innerHTML</code> y ya se nota en el textarea de importar); es reinventar Preact peor.</td><td><span class="v no">no</span></td></tr>
+      <tr><td>Solid</td><td>Reactividad fina, JSX, tamaño parecido.</td><td>Menos conocido, menos ejemplos, sin ventaja clara sobre Preact para paneles.</td><td><span class="v no">no</span></td></tr>
+    </table></div>
+
+    <h3 style="margin-top:22px;color:var(--acequia)">3 · El patio dentro de la partida</h3>
+    <div class="tabla-w"><table>
+      <tr><th>Opción</th><th>A favor</th><th>En contra</th><th>Veredicto</th></tr>
+      <tr><td>Copia editable del patio en el estado (<code>mundo.patio</code>); los patios de <code>datos/</code> pasan a ser plantillas</td><td>Simple; JSON; editor y construir escriben ahí; una partida no se rompe si cambia la plantilla; los índices se derivan del objeto.</td><td>Una corrección a una plantilla no llega a las partidas viejas (se puede ofrecer "actualizar desde la plantilla").</td><td><span class="v ok">elegida</span></td></tr>
+      <tr><td>Referencia a la plantilla más lista de cambios (event sourcing)</td><td>Las correcciones de la plantilla se propagan; el historial de obras queda.</td><td>Cada consulta tiene que reproducir los cambios; las migraciones se vuelven de dos niveles; más código para el mismo resultado.</td><td><span class="v no">no</span></td></tr>
+    </table></div>
+
+    <h3 style="margin-top:22px;color:var(--acequia)">4 · De dónde salen los datos de otra región</h3>
+    <div class="tabla-w"><table>
+      <tr><th>Opción</th><th>A favor</th><th>En contra</th><th>Veredicto</th></tr>
+      <tr><td>Híbrido: la especie es universal (huertapp); la región trae el clima; el calendario se deriva y se valida contra el GBA; capa regional opcional con la misma forma que huertapp</td><td>Una región nueva cuesta sus normales climáticas; no se repite lo que no cambia; "necesita invernadero" sale solo; el modelo funciona igual si mañana huertapp incorpora regiones.</td><td>La derivación es un modelo [SUPUESTO] y hay que calibrarlo (el test contra el conurbano es la calibración).</td><td><span class="v ok">elegida</span></td></tr>
+      <tr><td>Todo por huertapp: cada región es una sección nueva con sus calendarios por especie</td><td>Máxima fidelidad y fuentes; respeta el innegociable 1 al pie de la letra.</td><td>Cada región es un trabajo de investigación de 55 especies; huertapp hoy es del conurbano.</td><td><span class="v parte">a la larga, si Facu quiere</span></td></tr>
+      <tr><td>Datasets completos por región dentro del juego</td><td>Independiente de huertapp.</td><td>Duplica lo universal; contradice el innegociable 1; imposible de mantener.</td><td><span class="v no">no</span></td></tr>
+    </table></div>
+
+    <h3 style="margin-top:22px;color:var(--acequia)">5 · Cuándo va el paso 4 (tic diario, que jubila el test dorado)</h3>
+    <div class="tabla-w"><table>
+      <tr><th>Opción</th><th>A favor</th><th>En contra</th><th>Veredicto</th></tr>
+      <tr><td>La fase de dominio de la epic antes de #28 y #31</td><td>El dorado comprueba cada sub-issue del motor decimal por decimal; el tic diario se hace sobre sistemas separados con <code>DIAS</code> en un solo lugar; el rebalanceo es editar la tabla de #42. Vista y render no dependen del dorado y van en paralelo.</td><td>Facu tenía #31 y #28 como lo siguiente; se corren unas semanas.</td><td><span class="v ok">elegida</span></td></tr>
+      <tr><td>#28 primero, como decía el traspaso</td><td>Se juega antes de a un día.</td><td>Después, el motor se reestructura con los tests unitarios como única red: mucho más fino que un año entero comparado contra el prototipo.</td><td><span class="v no">no</span></td></tr>
+    </table></div>
+  </section>
+
+  <section id="propuesta">
+    <h2>La propuesta</h2>
+    <p>Las mismas capas, con dos nuevas, y un estado con forma. El flujo de una jugada queda así:</p>
+    <div class="flujo">
+      <div class="paso-f v"><b>vista</b>un componente emite un mensaje tipado</div>
+      <div class="paso-f"><b>aplicación</b><code>jugar(accion)</code> pregunta <code>puede()</code>, despacha, guarda</div>
+      <div class="paso-f"><b>dominio</b>la regla valida, cobra, aplica; los sistemas corren en orden; salen eventos con código y texto</div>
+      <div class="paso-f"><b>consultas</b><code>escena(E)</code>, <code>hud(E)</code>, <code>ficha(E, celda)</code>: objetos planos, con memo</div>
+      <div class="paso-f r"><b>render</b>una cámara dibuja la escena; devuelve la celda tocada</div>
+    </div>
+<pre><code><span class="k">datos/</span>            catálogo huertapp (derivado, con candado) · especies (supuestos) · patios (plantillas)
+                  <span class="b">+ regiones/ · reglas.ts (los números) · textos/ · estructuras.ts · precios.ts</span>
+<span class="k">src/dominio/</span>      hoy motor: vocabulario · sistemas/ (orden declarado) · acciones/ (puede / costo / aplicar) · clima · sol · patio · espacio
+<span class="k">src/aplicacion/</span>   <span class="b">nueva:</span> casos de uso (partidas, jugar, avanzar) · consultas/ (escena, hud, fichas, riesgo)
+<span class="k">src/infra/</span>        <span class="b">nueva:</span> puerto Almacen con adaptadores local · ranuras · codigo · archivo · nube · reloj
+<span class="k">src/vista/</span>        Preact + signals: App · modos (máquina) · mensajes · paneles/ · piezas/ · estilos con tokens
+<span class="k">src/render/</span>       contrato · pixel/ (paleta, geometria, fondo, plantas, capas, efectos, clima, camaras/) · texto
+<span class="k">src/arte/</span>         tipado: estilos · pincel · formas/ · planta
+<span class="k">tests/</span>            + arquitectura (capas y deuda) · vista (paneles ⇔ puede) · calendario (derivado vs huertapp)</code></pre>
+    <div class="dos">
+      <div class="lista"><h3>El estado con forma (v4)</h3><pre style="margin:0;font-size:13px"><code>meta      v · semilla · rng · region · plantilla
+mundo     patio (copia editable) · celdas · plantas · estructuras
+tiempo    dec · turno · anio · caracter · clima · pronostico · terminado
+recursos  ratos · riego · tunel · manta · goteo · sobres · gen · compost
+progreso  cosechado · porciones · semillas · visitas · misiones · cuaderno</code></pre><p class="dim" style="margin-top:8px">Migración v3 → v4. El dorado sigue valiendo: su proyección a la forma vieja es una función pura, como ya hace con <code>patio</code>, <code>tunel</code> e <code>hist</code>.</p></div>
+      <div class="lista"><h3>Lo universal y lo regional</h3><pre style="margin:0;font-size:13px"><code>Especie   tg · tc · dg · dc · helada · familia · marco   ← huertapp, igual en todo el planeta
+Region    clima · heladas · latitud · hemisferio · caracteres · textos
+          calendario?  (el GBA: el de huertapp; otra región: derivado)
+          especies?    (overrides y especies locales, misma forma que huertapp)</code></pre><p class="dim" style="margin-top:8px">"Acá va con invernadero" no es un dato: es la derivación con la ventana vacía afuera y no vacía bajo abrigo.</p></div>
+    </div>
+    <p style="margin-top:14px">Tres reglas nuevas para <code>CLAUDE.md</code> cuando esto esté: <b>los textos viven en <code>dominio/textos</code></b>, las reglas no arman frases; <b>los números [SUPUESTO] viven en <code>datos/juego/reglas.ts</code></b>; <b>la vista pregunta <code>puede()</code></b>, nunca repite una regla.</p>
+  </section>
+
+  <section id="features">
+    <h2>Qué necesita cada feature nueva</h2>
+    <p>Las que nombró Facu, y qué sub-issue de la epic las deja posibles. Cada una tiene su issue, fuera de la epic.</p>
+    <div class="tabla-w"><table>
+      <tr><th>Feature</th><th>Qué le pide al modelo</th><th>Lo habilita</th><th>Issue</th></tr>
+      <tr><td>Editor del espacio</td><td>El patio adentro de la partida, editable; los patios de hoy como plantillas; <code>validarPatio</code> al cargar.</td><td><span class="n">#47</span></td><td><a href="https://github.com/facundo-p/huertita/issues/14">#14</a></td></tr>
+      <tr><td>Construir y quitar en la partida</td><td>Estructuras como entidades con posición y estado; acciones <code>construir</code> / <code>demoler</code> con <code>puede / costo</code>; catálogo de estructuras como datos.</td><td><span class="n">#47</span> <span class="n">#44</span></td><td><a href="https://github.com/facundo-p/huertita/issues/59">#59</a></td></tr>
+      <tr><td>Dinero</td><td><code>recursos.dinero</code>; precios como tabla; lo que se vende sale del inventario.</td><td><span class="n">#47</span> <span class="n">#42</span></td><td><a href="https://github.com/facundo-p/huertita/issues/61">#61</a> · usa <a href="https://github.com/facundo-p/huertita/issues/8">#8</a> y <a href="https://github.com/facundo-p/huertita/issues/13">#13</a></td></tr>
+      <tr><td>Lo que tengo cosechado</td><td><code>inventario</code> (lo que hay) separado de <code>cosechado</code> (el acumulado); un panel más.</td><td><span class="n">#47</span> <span class="n">#53</span></td><td><a href="https://github.com/facundo-p/huertita/issues/58">#58</a></td></tr>
+      <tr><td>Vista de cerca por celda</td><td>Una cámara más del renderer pixel.</td><td><span class="n">#55</span></td><td><a href="https://github.com/facundo-p/huertita/issues/60">#60</a></td></tr>
+      <tr><td>Otras regiones y climas</td><td>Región como dato; especie universal más capa regional; calendario derivado del clima, validado contra huertapp.</td><td><span class="n">#48</span> <span class="n">#43</span></td><td><a href="https://github.com/facundo-p/huertita/issues/57">#57</a></td></tr>
+      <tr><td>Eventos sorpresa, pedidos, desafíos (paso 5)</td><td>Con números y textos ya como datos, una fila con condición y efecto es todo lo que falta.</td><td><span class="n">#42</span> <span class="n">#43</span> <span class="n">#44</span></td><td><a href="https://github.com/facundo-p/huertita/issues/29">#29</a></td></tr>
+      <tr><td>Jugar de a 1 a 10 días (paso 4)</td><td>Sistemas separados con <code>DIAS</code> en un solo lugar; el rebalanceo como edición de la tabla.</td><td><span class="n">#45</span> <span class="n">#42</span></td><td><a href="https://github.com/facundo-p/huertita/issues/28">#28</a></td></tr>
+    </table></div>
+  </section>
+
+  <section id="epic">
+    <h2>La epic <a href="https://github.com/facundo-p/huertita/issues/39">#39</a>: cuatro fases, diecisiete sub-issues</h2>
+    <p>Cada sub-issue cierra sola, con el juego andando y el gate verde (<code>tipos · lint · test · build:artifact · humo</code>). En la fase 1, además, el dorado sigue verde: misma conducta, decimal por decimal. Los tres carriles pueden avanzar a la vez; el único cruce es #52, que espera a #44.</p>
+    <p class="leyenda"><span><i style="background:var(--hoja)"></i>rabanito: corto</span><span><i style="background:var(--maiz)"></i>zapallo: una tanda larga</span><span><i style="background:var(--rosa)"></i>feature, fuera de la epic</span></p>
+
+    <div class="fase"><h3>Fase 0 · Andamiaje</h3>
+      <div class="tarjetas">
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/40">#40</a><b>Herramientas que vigilan la arquitectura</b><p>ESLint, Prettier, test de capas y de deuda que solo baja.</p></div>
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/41">#41</a><b>Vocabulario del dominio en un solo lugar</b><p>Uniones con nombre, <code>celda(x,y)</code> / <code>xy()</code> únicos, ayudantes de planta.</p></div>
+      </div></div>
+    <div class="fase"><h3>Fase 1 · Dominio legible, misma conducta</h3>
+      <div class="tarjetas">
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/42">#42</a><b>Balance y supuestos como tabla</b><p>Los números [SUPUESTO] a <code>datos/juego/reglas.ts</code>.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/43">#43</a><b>Textos fuera de las reglas</b><p>Cada frase, una función con nombre; eventos con código.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/44">#44</a><b>Acciones como reglas</b><p><code>puede / costo / aplicar</code>; la vista pregunta, no repite.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/45">#45</a><b>El tiempo como sistemas</b><p>Tubería declarada; <code>DIAS</code> en un solo lugar.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/46">#46</a><b>Consultas para la vista</b><p>Escena, hud, fichas: tipado y con memo.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/47">#47</a><b>El estado con forma (v4) y el patio adentro</b><p>Cinco partes; patio copia; estructuras.</p><span class="dep">habilita editor, construir, dinero, cosechado</span></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/48">#48</a><b>Región como dato</b><p>GBA como única región; conducta idéntica.</p><span class="dep">habilita otras regiones</span></div>
+      </div></div>
+    <div class="fase"><h3>Fase 2 · Vista por componentes</h3>
+      <div class="tarjetas">
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/49">#49</a><b>Esqueleto con Preact + signals</b><p>Carcasa, mensajes tipados, strangler para los paneles viejos.</p></div>
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/50">#50</a><b>La interfaz como máquina de modos</b><p>Unión discriminada, transiciones en un lugar.</p></div>
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/51">#51</a><b>Persistencia como puerto</b><p><code>Almacen</code> con cinco adaptadores y fakes.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/52">#52</a><b>Paneles, tanda 1</b><p>Sembrar, celda, riego, proteger, con tests.</p><span class="dep">espera #44</span></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/53">#53</a><b>Paneles, tanda 2</b><p>El resto, CSS con tokens; desaparece <code>ui.ts</code>.</p></div>
+      </div></div>
+    <div class="fase"><h3>Fase 3 · Render y arte tipados</h3>
+      <div class="tarjetas">
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/54">#54</a><b>Arte tipado</b><p><code>Estilo</code> tipado, sprites por forma.</p></div>
+        <div class="t zap"><a class="num" href="https://github.com/facundo-p/huertita/issues/55">#55</a><b>Renderer pixel por cámaras</b><p>Una cámara por archivo; fuera el parche.</p><span class="dep">habilita la vista por celda</span></div>
+      </div></div>
+    <div class="fase"><h3>Fase 4 · Cierre</h3>
+      <div class="tarjetas">
+        <div class="t rab"><a class="num" href="https://github.com/facundo-p/huertita/issues/56">#56</a><b>Documentos y reglas al día</b><p>ARQUITECTURA, CLAUDE.md, CIMIENTOS, README, mapa.</p></div>
+      </div></div>
+    <div class="fase"><h3>Las features, fuera de la epic</h3>
+      <div class="tarjetas">
+        <div class="t zap feat"><a class="num" href="https://github.com/facundo-p/huertita/issues/57">#57</a><b>Otras regiones y climas</b><span class="dep">depende de #48</span></div>
+        <div class="t rab feat"><a class="num" href="https://github.com/facundo-p/huertita/issues/58">#58</a><b>Pantalla "lo que tengo cosechado"</b><span class="dep">depende de #47 y #53</span></div>
+        <div class="t zap feat"><a class="num" href="https://github.com/facundo-p/huertita/issues/59">#59</a><b>Construir y quitar en la partida</b><span class="dep">depende de #47 y #44</span></div>
+        <div class="t aro feat"><a class="num" href="https://github.com/facundo-p/huertita/issues/60">#60</a><b>Vista de cerca por celda</b><span class="dep">depende de #55</span></div>
+        <div class="t zap feat"><a class="num" href="https://github.com/facundo-p/huertita/issues/61">#61</a><b>Dinero como recurso</b><span class="dep">depende de #47</span></div>
+      </div></div>
+
+    <div class="fase"><h3>En qué orden</h3>
+      <div class="orden">
+        <div class="carril"><h4>Dominio</h4><ol>
+          <li class="rab"><i>#40</i>herramientas</li><li class="rab"><i>#41</i>vocabulario</li><li class="rab"><i>#42</i>números</li><li class="zap"><i>#43</i>textos</li><li class="zap"><i>#44</i>acciones</li><li class="zap"><i>#45</i>sistemas</li><li class="zap"><i>#46</i>consultas</li><li class="zap"><i>#47</i>estado v4</li><li class="zap"><i>#48</i>región</li>
+          <li class="otro"><i>#31</i>decidir el sol del fondo</li><li class="otro"><i>#28</i>paso 4: tic diario; se jubila el dorado</li></ol></div>
+        <div class="carril"><h4>Vista</h4><ol><li class="zap"><i>#49</i>esqueleto Preact</li><li class="rab"><i>#50</i>máquina de modos</li><li class="rab"><i>#51</i>persistencia</li><li class="zap"><i>#52</i>paneles 1 (espera #44)</li><li class="zap"><i>#53</i>paneles 2</li></ol></div>
+        <div class="carril"><h4>Render</h4><ol><li class="rab"><i>#54</i>arte tipado</li><li class="zap"><i>#55</i>cámaras</li><li class="rab"><i>#56</i>cierre, al final de todo</li></ol></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="decisiones">
+    <h2>Lo que queda para Facu</h2>
+    <div class="decis">
+      <div class="dec"><b>¿huertapp crece con regiones?</b><p>El modelo funciona igual si las regiones viven en el juego o si huertapp incorpora una sección <code>regiones</code> con fuentes. Lo segundo es lo natural según el innegociable 1, y es trabajo de investigación por región.</p></div>
+      <div class="dec"><b>Patio editado y plantilla</b><p>Cuando una plantilla se corrige, las partidas con su copia no cambian. Para las partidas sin editar se puede ofrecer "actualizar desde la plantilla". No hace falta decidirlo antes de #47.</p></div>
+      <div class="dec"><b>Presupuesto de tamaño</b><p>Preact suma ≈4 KB al artifact de un solo archivo (hoy ≈270 KB). Si más adelante entra sonido (#9) o sprites dibujados, conviene fijar un tope y medirlo en CI.</p></div>
+      <div class="dec"><b>PWA</b><p>#30 la mencionaba junto con los componentes. La epic la deja afuera: es un issue propio cuando la vista esté hecha.</p></div>
+    </div>
+  </section>
+</div>

@@ -5,10 +5,22 @@
 | 1 | TypeScript estricto, módulos, Vite, Vitest, bot, test dorado, CI | **Hecho** (v0.5) |
 | 1b | Datos sincronizados con huertapp: contrato, candado, reporte de cambios, huecos | **Hecho** (v0.5) |
 | 2 | El patio como dato: zonas con propiedades y obstáculos con altura; sol por geometría y fecha; segundo patio de prueba; estado v2 con migración | **Hecho** (v0.6) |
-| 3 | Plantas con huella propia y contenedores con capacidad (almacigueras de 50 celdas, zapallo de 4 celdas) | Pendiente |
+| 3 | Plantas con huella propia y contenedores con capacidad (almacigueras de 50 celdas, zapallo de 4 celdas) | **Hecho** (v0.8), con los marcos reales apagados hasta el paso 4 |
 | 4 | Tic diario y `avanzar(estado, días)`; ratos por día con tope; pronóstico de 5 días | Pendiente. Jubila el test dorado |
 | 5 | Contenido como tablas: eventos, logros, pedidos e ítems son filas con condición y efecto | Pendiente |
-| 6 | Interfaz por componentes y arte tipado; PWA | Pendiente |
+| 6 | Interfaz por componentes, arte y renderer tipados | **Hecho** (v0.9, epic #39). Falta la PWA instalable |
+
+**La epic #39 (reestructura) está hecha en la v0.9** y fue antes del paso 4, con el test dorado vivo:
+el dominio quedó en capas y sistemas, el estado en v4 con el patio adentro, la región como dato, la
+vista con Preact y el renderer por cámaras, sin cambiar cómo se juega. Lo que sigue es el paso 4, que
+jubila el dorado. El registro de la epic está en `docs/REESTRUCTURA.md`.
+
+**El paso 3 está hecho pero todavía no se juega.** El motor ya sabe de huella, densidad y sombra
+entre plantas, y cada especie tiene su marco de plantación en `datos/juego/especies.ts`. La regla
+está apagada (`src/dominio/espacio.ts`): mientras viva el test dorado el juego corre como venía —una
+planta, una celda—, porque prender los marcos reales cambia rendimientos, azar y balance. Se prende
+en el paso 4, que es donde el dorado se jubila y se rebalancea todo junto. `tests/espacio.test.ts`
+la prende a propósito y prueba las reglas nuevas.
 
 Deudas que aparecieron en el paso 1, ya con test que las vigila:
 

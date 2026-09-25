@@ -151,13 +151,13 @@
  {
   "n": 15,
   "title": "Tamaño real de cada planta y marcos de plantación",
-  "body": "Un zapallo ocupa 4 celdas, en una entran 9 rabanitos, el choclo sombrea al sur. El bancal se vuelve rompecabezas.\n\nEs el paso 3 de los cimientos (#27). Un zapallo ocupa 4 celdas, en una entran 9 rabanitos, el choclo sombrea al sur.\n\n**Cuadrante:** zapallo · costo 7 · impacto 9 (de 1 a 10, estimaciones). Idea propuesta por Claude.\n\nMapa de ideas: `docs/mapa-ideas.html`.",
+  "body": "Un zapallo ocupa 4 celdas, en una entran 9 rabanitos, el choclo sombrea al sur. El bancal se vuelve rompecabezas.\n\nEs el paso 3 de los cimientos (#27). Un zapallo ocupa 4 celdas, en una entran 9 rabanitos, el choclo sombrea al sur.\n\n**Cuadrante:** zapallo · costo 7 · impacto 9 (de 1 a 10, estimaciones). Idea propuesta por Claude.\n\nMapa de ideas: `docs/mapa-ideas.html`.\n\nDesde v0.8 el motor ya lo sabe hacer (#27); falta prenderlo y rebalancear (#28).",
   "labels": [
    "zapallo",
    "enhancement"
   ],
   "cerrar": false,
-  "url": "https://github.com/facundo-p/huertita/issues/new?title=Tama%C3%B1o+real+de+cada+planta+y+marcos+de+plantaci%C3%B3n&body=Un+zapallo+ocupa+4+celdas%2C+en+una+entran+9+rabanitos%2C+el+choclo+sombrea+al+sur.+El+bancal+se+vuelve+rompecabezas.%0A%0AEs+el+paso+3+de+los+cimientos+%28%2327%29.+Un+zapallo+ocupa+4+celdas%2C+en+una+entran+9+rabanitos%2C+el+choclo+sombrea+al+sur.%0A%0A%2A%2ACuadrante%3A%2A%2A+zapallo+%C2%B7+costo+7+%C2%B7+impacto+9+%28de+1+a+10%2C+estimaciones%29.+Idea+propuesta+por+Claude.%0A%0AMapa+de+ideas%3A+%60docs%2Fmapa-ideas.html%60.&labels=zapallo%2Cenhancement"
+  "url": "https://github.com/facundo-p/huertita/issues/new?title=Tama%C3%B1o+real+de+cada+planta+y+marcos+de+plantaci%C3%B3n&body=Un+zapallo+ocupa+4+celdas%2C+en+una+entran+9+rabanitos%2C+el+choclo+sombrea+al+sur.+El+bancal+se+vuelve+rompecabezas.%0A%0AEs+el+paso+3+de+los+cimientos+%28%2327%29.+Un+zapallo+ocupa+4+celdas%2C+en+una+entran+9+rabanitos%2C+el+choclo+sombrea+al+sur.%0A%0A%2A%2ACuadrante%3A%2A%2A+zapallo+%C2%B7+costo+7+%C2%B7+impacto+9+%28de+1+a+10%2C+estimaciones%29.+Idea+propuesta+por+Claude.%0A%0AMapa+de+ideas%3A+%60docs%2Fmapa-ideas.html%60.%0A%0ADesde+v0.8+el+motor+ya+lo+sabe+hacer+%28%2327%29%3B+falta+prenderlo+y+rebalancear+%28%2328%29.&labels=zapallo%2Cenhancement"
  },
  {
   "n": 16,
@@ -283,24 +283,24 @@
  {
   "n": 27,
   "title": "Cimientos, paso 3: plantas con huella propia y contenedores con capacidad",
-  "body": "Hoy una celda aloja igual a un zapallo que a un rabanito, y la almaciguera tiene tantas celdas como bandejas dibujadas. Con huella y capacidad: un zapallo invade 4 celdas, en una entran 9 rabanitos o 4 lechugas, la almaciguera cría 50 plantines, y las macetas tienen volumen de verdad. Es lo que hace jugable #15.\n\n**Cuadrante:** zapallo · costo 7 · impacto 9.\n\nDetalle y orden en docs/CIMIENTOS.md.",
+  "body": "Hoy una celda aloja igual a un zapallo que a un rabanito, y la almaciguera tiene tantas celdas como bandejas dibujadas. Con huella y capacidad: un zapallo invade 4 celdas, en una entran 9 rabanitos o 4 lechugas, la almaciguera cría 50 plantines, y las macetas tienen volumen de verdad. Es lo que hace jugable #15.\n\n**Cuadrante:** zapallo · costo 7 · impacto 9.\n\nDetalle y orden en docs/CIMIENTOS.md.\n\n**Hecho en v0.8** (`src/motor/espacio.ts`, `datos/juego/especies.ts`, `tests/espacio.test.ts`): el motor ya sabe de huella, densidad, capacidad de bandeja y sombra entre plantas, y cada especie tiene su marco de plantación. La regla está APAGADA hasta el paso 4 (#28), que es donde se jubila el test dorado y se rebalancea. Se crea cerrado para conservar la numeración del mapa de ideas.",
   "labels": [
    "cimientos",
    "zapallo"
   ],
-  "cerrar": false,
-  "url": "https://github.com/facundo-p/huertita/issues/new?title=Cimientos%2C+paso+3%3A+plantas+con+huella+propia+y+contenedores+con+capacidad&body=Hoy+una+celda+aloja+igual+a+un+zapallo+que+a+un+rabanito%2C+y+la+almaciguera+tiene+tantas+celdas+como+bandejas+dibujadas.+Con+huella+y+capacidad%3A+un+zapallo+invade+4+celdas%2C+en+una+entran+9+rabanitos+o+4+lechugas%2C+la+almaciguera+cr%C3%ADa+50+plantines%2C+y+las+macetas+tienen+volumen+de+verdad.+Es+lo+que+hace+jugable+%2315.%0A%0A%2A%2ACuadrante%3A%2A%2A+zapallo+%C2%B7+costo+7+%C2%B7+impacto+9.%0A%0ADetalle+y+orden+en+docs%2FCIMIENTOS.md.&labels=cimientos%2Czapallo"
+  "cerrar": true,
+  "url": "https://github.com/facundo-p/huertita/issues/new?title=Cimientos%2C+paso+3%3A+plantas+con+huella+propia+y+contenedores+con+capacidad&body=Hoy+una+celda+aloja+igual+a+un+zapallo+que+a+un+rabanito%2C+y+la+almaciguera+tiene+tantas+celdas+como+bandejas+dibujadas.+Con+huella+y+capacidad%3A+un+zapallo+invade+4+celdas%2C+en+una+entran+9+rabanitos+o+4+lechugas%2C+la+almaciguera+cr%C3%ADa+50+plantines%2C+y+las+macetas+tienen+volumen+de+verdad.+Es+lo+que+hace+jugable+%2315.%0A%0A%2A%2ACuadrante%3A%2A%2A+zapallo+%C2%B7+costo+7+%C2%B7+impacto+9.%0A%0ADetalle+y+orden+en+docs%2FCIMIENTOS.md.%0A%0A%2A%2AHecho+en+v0.8%2A%2A+%28%60src%2Fmotor%2Fespacio.ts%60%2C+%60datos%2Fjuego%2Fespecies.ts%60%2C+%60tests%2Fespacio.test.ts%60%29%3A+el+motor+ya+sabe+de+huella%2C+densidad%2C+capacidad+de+bandeja+y+sombra+entre+plantas%2C+y+cada+especie+tiene+su+marco+de+plantaci%C3%B3n.+La+regla+est%C3%A1+APAGADA+hasta+el+paso+4+%28%2328%29%2C+que+es+donde+se+jubila+el+test+dorado+y+se+rebalancea.+Se+crea+cerrado+para+conservar+la+numeraci%C3%B3n+del+mapa+de+ideas.&labels=cimientos%2Czapallo"
  },
  {
   "n": 28,
   "title": "Cimientos, paso 4: tic diario y avanzar(estado, días); ratos por día; pronóstico de 5 días",
-  "body": "El motor simula día por día y el jugador elige el salto (1 a 10 días). Ratos por día con tope, pronóstico de 5 días, salto \"hasta que pase algo\". Acá se jubila el test dorado y se rebalancea todo: es el momento de decidir #31. Es lo que hace real a #12.\n\n**Cuadrante:** zapallo · costo 8 · impacto 8,5.\n\nDetalle y orden en docs/CIMIENTOS.md.",
+  "body": "El motor simula día por día y el jugador elige el salto (1 a 10 días). Ratos por día con tope, pronóstico de 5 días, salto \"hasta que pase algo\". Acá se jubila el test dorado y se rebalancea todo: es el momento de decidir #31. Es lo que hace real a #12.\n\n**Cuadrante:** zapallo · costo 8 · impacto 8,5.\n\nDetalle y orden en docs/CIMIENTOS.md.\n\nAcá se prenden los marcos del paso 3 (#27). Cuánto hay que rebalancear: con `npm run bot -- --espacio` el fondo pasa de 112–141 puntos a 276–647, y el balcón de 12–37 a 87–175. Tres estrellas hoy son 120 en el fondo.",
   "labels": [
    "cimientos",
    "zapallo"
   ],
   "cerrar": false,
-  "url": "https://github.com/facundo-p/huertita/issues/new?title=Cimientos%2C+paso+4%3A+tic+diario+y+avanzar%28estado%2C+d%C3%ADas%29%3B+ratos+por+d%C3%ADa%3B+pron%C3%B3stico+de+5+d%C3%ADas&body=El+motor+simula+d%C3%ADa+por+d%C3%ADa+y+el+jugador+elige+el+salto+%281+a+10+d%C3%ADas%29.+Ratos+por+d%C3%ADa+con+tope%2C+pron%C3%B3stico+de+5+d%C3%ADas%2C+salto+%22hasta+que+pase+algo%22.+Ac%C3%A1+se+jubila+el+test+dorado+y+se+rebalancea+todo%3A+es+el+momento+de+decidir+%2331.+Es+lo+que+hace+real+a+%2312.%0A%0A%2A%2ACuadrante%3A%2A%2A+zapallo+%C2%B7+costo+8+%C2%B7+impacto+8%2C5.%0A%0ADetalle+y+orden+en+docs%2FCIMIENTOS.md.&labels=cimientos%2Czapallo"
+  "url": "https://github.com/facundo-p/huertita/issues/new?title=Cimientos%2C+paso+4%3A+tic+diario+y+avanzar%28estado%2C+d%C3%ADas%29%3B+ratos+por+d%C3%ADa%3B+pron%C3%B3stico+de+5+d%C3%ADas&body=El+motor+simula+d%C3%ADa+por+d%C3%ADa+y+el+jugador+elige+el+salto+%281+a+10+d%C3%ADas%29.+Ratos+por+d%C3%ADa+con+tope%2C+pron%C3%B3stico+de+5+d%C3%ADas%2C+salto+%22hasta+que+pase+algo%22.+Ac%C3%A1+se+jubila+el+test+dorado+y+se+rebalancea+todo%3A+es+el+momento+de+decidir+%2331.+Es+lo+que+hace+real+a+%2312.%0A%0A%2A%2ACuadrante%3A%2A%2A+zapallo+%C2%B7+costo+8+%C2%B7+impacto+8%2C5.%0A%0ADetalle+y+orden+en+docs%2FCIMIENTOS.md.%0A%0AAc%C3%A1+se+prenden+los+marcos+del+paso+3+%28%2327%29.+Cu%C3%A1nto+hay+que+rebalancear%3A+con+%60npm+run+bot+--+--espacio%60+el+fondo+pasa+de+112%E2%80%93141+puntos+a+276%E2%80%93647%2C+y+el+balc%C3%B3n+de+12%E2%80%9337+a+87%E2%80%93175.+Tres+estrellas+hoy+son+120+en+el+fondo.&labels=cimientos%2Czapallo"
  },
  {
   "n": 29,
@@ -327,13 +327,13 @@
  {
   "n": 31,
   "title": "Decidir el sol del patio original: fórmula v0.4 o geometría",
-  "body": "El fondo sigue con `sol: 'v04'` para conservar el test dorado. Con geometría, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, y la fórmula vieja le daba entre 1 y 5 horas. Opciones: mover los canteros lejos del paredón, bajar el paredón, o aceptarlo como parte del desafío. Decisión de diseño de Facu; va junto con #28. Ver datos/juego/patios/fondo.ts y tests/sol.test.ts.",
+  "body": "El fondo sigue con `sol: 'v04'` para conservar el test dorado. Con geometría, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, y la fórmula vieja le daba entre 1 y 5 horas. Opciones: mover los canteros lejos del paredón, bajar el paredón, o aceptarlo como parte del desafío. Decisión de diseño de Facu; va junto con #28. Ver datos/juego/patios/fondo.ts y tests/sol.test.ts.\n\nDesde v0.8, con sol por geometría las plantas altas también hacen sombra: esta decisión cambia también cuánto se sombrean entre sí los canteros del fondo.",
   "labels": [
    "deuda",
    "cimientos"
   ],
   "cerrar": false,
-  "url": "https://github.com/facundo-p/huertita/issues/new?title=Decidir+el+sol+del+patio+original%3A+f%C3%B3rmula+v0.4+o+geometr%C3%ADa&body=El+fondo+sigue+con+%60sol%3A+%27v04%27%60+para+conservar+el+test+dorado.+Con+geometr%C3%ADa%2C+un+pared%C3%B3n+de+1%2C8+m+al+norte+deja+sin+sol+directo+en+pleno+invierno+todo+lo+que+est%C3%A9+a+menos+de+~2%2C6+m+%28cinco+celdas%29%3A+el+bancal+a+suelo+queda+a+oscuras+de+mayo+a+agosto%2C+y+la+f%C3%B3rmula+vieja+le+daba+entre+1+y+5+horas.+Opciones%3A+mover+los+canteros+lejos+del+pared%C3%B3n%2C+bajar+el+pared%C3%B3n%2C+o+aceptarlo+como+parte+del+desaf%C3%ADo.+Decisi%C3%B3n+de+dise%C3%B1o+de+Facu%3B+va+junto+con+%2328.+Ver+datos%2Fjuego%2Fpatios%2Ffondo.ts+y+tests%2Fsol.test.ts.&labels=deuda%2Ccimientos"
+  "url": "https://github.com/facundo-p/huertita/issues/new?title=Decidir+el+sol+del+patio+original%3A+f%C3%B3rmula+v0.4+o+geometr%C3%ADa&body=El+fondo+sigue+con+%60sol%3A+%27v04%27%60+para+conservar+el+test+dorado.+Con+geometr%C3%ADa%2C+un+pared%C3%B3n+de+1%2C8+m+al+norte+deja+sin+sol+directo+en+pleno+invierno+todo+lo+que+est%C3%A9+a+menos+de+~2%2C6+m+%28cinco+celdas%29%3A+el+bancal+a+suelo+queda+a+oscuras+de+mayo+a+agosto%2C+y+la+f%C3%B3rmula+vieja+le+daba+entre+1+y+5+horas.+Opciones%3A+mover+los+canteros+lejos+del+pared%C3%B3n%2C+bajar+el+pared%C3%B3n%2C+o+aceptarlo+como+parte+del+desaf%C3%ADo.+Decisi%C3%B3n+de+dise%C3%B1o+de+Facu%3B+va+junto+con+%2328.+Ver+datos%2Fjuego%2Fpatios%2Ffondo.ts+y+tests%2Fsol.test.ts.%0A%0ADesde+v0.8%2C+con+sol+por+geometr%C3%ADa+las+plantas+altas+tambi%C3%A9n+hacen+sombra%3A+esta+decisi%C3%B3n+cambia+tambi%C3%A9n+cu%C3%A1nto+se+sombrean+entre+s%C3%AD+los+canteros+del+fondo.&labels=deuda%2Ccimientos"
  },
  {
   "n": 32,

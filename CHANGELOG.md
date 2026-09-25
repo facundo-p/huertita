@@ -1,5 +1,28 @@
 # Cambios
 
+## 0.9.0 · 2026-09-24 · La reestructura (epic #39)
+
+El mismo juego, con el código reordenado para que siga creciendo: capas en un solo sentido
+(`datos → dominio → aplicacion → vista`, `arte → render → vista`), acciones como reglas
+`puede / costo / aplicar`, el paso del tiempo como sistemas de orden declarado, textos y números fuera
+de las reglas, la interfaz con Preact por componentes, arte y renderer tipados y por cámaras. Nada con
+`@ts-nocheck`. El test dorado siguió verde en cada paso y el bot da los mismos puntajes. Detalle en
+`docs/ARQUITECTURA.md`; registro en `docs/REESTRUCTURA.md`. Lo que conviene saber:
+
+- Las acciones son reglas con `puede / costo / aplicar` (`src/dominio/acciones/`). La interfaz ya no repite condiciones: pregunta `puede()`. Cuatro condiciones que antes aplicaba solo la interfaz ahora las aplica el dominio, con su explicación: en la almaciguera no se ralea ni se pone tutor ni compost, el tutor va solo en especies que lo piden y ya germinadas, y se trasplanta solo un plantín o una planta que está creciendo. El juego se ve igual; lo que cambia es que ya no se puede esquivar desde afuera.
+- Partidas guardadas: formato v4, con migración automática desde v1, v2 y v3 (probada con partidas guardadas de verdad por cada versión, en `tests/fixtures/`, y en navegador). El estado va en cinco partes (`meta`, `mundo`, `tiempo`, `recursos`, `progreso`); la partida lleva una copia de su patio, y la compostera pasa a ser una estructura del patio en vez de una letra del plano. Los patios de `datos/juego/patios/` pasan a llamarse plantillas. Se juega igual: el test dorado y el bot dan lo mismo que antes.
+- La región es un dato (`datos/juego/regiones/`): clima, heladas, latitud, años típicos, caducos, calendario y cómo se nombra el lugar. Hoy solo el GBA, con los mismos números; el código ya no supone el hemisferio sur (hay un test con una región espejada en el norte). Los patios declaran su región.
+- La vista de cerca no mostraba la manta sobre el bancal elevado ni sobre la almaciguera: la buscaba por el tipo de la zona y no por su id. Ahora se ve en todas.
+- Arreglos de la revisión del PR: los botones que piden confirmación (cargar una ranura, traer de la nube, empezar en otro patio) vuelven a preguntar después de usarse; la partida nueva queda guardada desde que arranca; el renderer de texto vuelve a mostrar la compostera; con el año terminado la ficha ya no ofrece trasplantar; "seguir otro año" solo vale cuando el año terminó; una planta de varias celdas puede correrse sobre sus propias celdas; la animación de una planta que se pierde sale del código del evento y no de la prosa.
+
+## 0.8.0 · 2026-09-18 · Cimientos, paso 3: cada planta ocupa lo que ocupa
+- Marco de plantación por especie en `datos/juego/especies.ts` ([SUPUESTO], huertapp todavía no lo trae): centímetros entre plantas, y de ahí la huella en celdas, cuántas entran en una celda (9 rabanitos, 4 lechugas, 1 tomate) y cuánto levanta cada planta.
+- El motor lo usa entero (`src/motor/espacio.ts`): un zapallo se lleva 4 celdas y avisa cuando no entra, el raleo deja las que caben en vez de una sola, la cosecha rinde por planta, la competencia empieza cuando se pasa de la densidad, el fantasma de siembra marca las celdas donde no entra, y una planta alta le hace sombra a las de al lado (obstáculo temporal en el cálculo de sol por geometría).
+- Las zonas de cría tienen `capacidad`: la almaciguera siembra la bandeja entera (50 plantines).
+- **La regla está apagada:** mientras viva el test dorado el juego corre como venía —una planta, una celda—, porque prender los marcos reales cambia rendimientos, azar y balance. Se prende en el paso 4, junto con el rebalanceo. `tests/espacio.test.ts` la prende y prueba cada regla.
+- Partidas guardadas: formato v3 (una planta puede ocupar varias celdas), con migración automática desde v2.
+- Una planta que tapa varias celdas se dibuja una sola vez: la escena marca cuál es su celda ancla.
+
 ## 0.7.0 · 2026-09-17 · Diario por planta y plantines que avisan
 - Cada planta lleva su diario (`pl.hist`, últimas 16 anotaciones): qué le pasó cada década, con qué salud cerró y cuánto cambió. Incluye lo que antes bajaba la salud en silencio (sed leve, plaga que sigue) y qué factor la frenó cuando creció lento. Se ve en la ficha de la planta y se abre solo si la salud está por debajo de 70. El plantín repicado conserva la historia del almácigo. Hay un test que exige que toda baja de salud tenga explicación.
 - Plantines: la ficha dice si está chico (y cuántos días de crecimiento le faltan), listo o pasándose; la barra de avance va hacia el trasplante y no hacia la cosecha; en el patio, una flecha verde marca los listos y una roja los que se pasan.

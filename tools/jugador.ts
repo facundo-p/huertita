@@ -1,40 +1,108 @@
 /** Un jugador automático simple. Sirve de test de humo, de oráculo para el test dorado y para balancear. */
 export interface MotorJugable {
-  crearPartida(semilla: number, opciones?: { patio?: string }): any; despachar(E: any, a: any): { ok: boolean }; pasarDecada(E: any): { dec: number; tipo: string; texto: string }[];
-  ESPECIES: Record<string, any>; ventana(slug: string, dec: number, que?: any): string; metodoDe(slug: string, dec: number): string | null;
-  evaluarCelda(E: any, slug: string, celda: string): { puntaje: number } | null; ratosLibres(E: any): number;
+  crearPartida(semilla: number, opciones?: { patio?: string }): any;
+  despachar(E: any, a: any): { ok: boolean };
+  pasarDecada(E: any): { dec: number; tipo: string; texto: string }[];
+  ESPECIES: Record<string, any>;
+  /** el prototipo: (slug, dec, que). El motor nuevo, con la región adelante: (región, slug, dec, que) */
+  ventana(...args: any[]): string;
+  /** solo el motor nuevo: el calendario depende de la región de la partida */
+  regionDe?(E: any): unknown;
+  metodoDe(slug: string, dec: number): string | null;
+  evaluarCelda(E: any, slug: string, celda: string): { puntaje: number } | null;
+  ratosLibres(E: any): number;
   /** solo el motor nuevo: las zonas salen del patio de la partida. El prototipo tenía estas cuatro fijas. */
   zonasDe?(E: any): { id: string; cria?: boolean }[];
 }
+/** Lo que el jugador mira de una partida para decidir. */
+export interface Vistazo {
+  celdas: Record<string, { zona: string; planta: string | null }>;
+  plantas: Record<string, any>;
+  sobres: Record<string, number>;
+  misiones: Record<string, number>;
+  dec: number;
+  pronostico: { pHelada: number; tmax: number };
+}
+/** El estado del motor nuevo viene en partes (v4); el del prototipo, todo suelto. */
+function leer(E: any): Vistazo {
+  if (E.mundo)
+    return {
+      celdas: E.mundo.celdas,
+      plantas: E.mundo.plantas,
+      sobres: E.recursos.sobres,
+      misiones: E.progreso.misiones,
+      dec: E.tiempo.dec,
+      pronostico: E.tiempo.pronostico,
+    };
+  return {
+    celdas: E.celdas,
+    plantas: E.plantas,
+    sobres: E.sobres,
+    misiones: E.misiones,
+    dec: E.dec,
+    pronostico: E.prox.pron,
+  };
+}
 const ZONAS_V04 = [{ id: 'suelo' }, { id: 'elevado' }, { id: 'macetas' }, { id: 'almacigo', cria: true }];
-export function jugarUnAnio(M: MotorJugable, semilla: number, narrar?: (linea: string) => void, opciones?: { patio?: string }): any {
+export function jugarUnAnio(
+  M: MotorJugable,
+  semilla: number,
+  narrar?: (linea: string) => void,
+  opciones?: { patio?: string; decadas?: number },
+): any {
   const E = M.crearPartida(semilla, opciones);
-  const zonas = M.zonasDe ? M.zonasDe(E) : ZONAS_V04, deCria = new Set(zonas.filter((z) => z.cria).map((z) => z.id)), deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
-  const enCria = (celda: string): boolean => deCria.has(E.celdas[celda].zona);
-  for (let t = 0; t < 36; t++) {
-    for (const pl of Object.values<any>(E.plantas)) {
+  const ventana = (slug: string, dec: number, que?: 'trasplante'): string =>
+    M.regionDe ? M.ventana(M.regionDe(E), slug, dec, que) : M.ventana(slug, dec, que);
+  const zonas = M.zonasDe ? M.zonasDe(E) : ZONAS_V04,
+    deCria = new Set(zonas.filter((z) => z.cria).map((z) => z.id)),
+    deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
+  const enCria = (celda: string): boolean => deCria.has(leer(E).celdas[celda].zona);
+  for (let t = 0; t < (opciones?.decadas ?? 36); t++) {
+    const V = leer(E);
+    for (const pl of Object.values<any>(V.plantas)) {
       const sp = M.ESPECIES[pl.slug];
-      if (pl.etapa === 'cosechable' && !sp.flor) { if (!('semillas' in E.misiones) && pl.slug === 'rabanito') M.despachar(E, { tipo: 'semillar', planta: pl.id }); else M.despachar(E, { tipo: 'cosechar', planta: pl.id }); }
-      if (E.plantas[pl.id] && pl.plaga) M.despachar(E, { tipo: 'tratar', planta: pl.id });
-      if (E.plantas[pl.id] && pl.etapa === 'pasada') M.despachar(E, { tipo: 'arrancar', planta: pl.id });
-      if (E.plantas[pl.id] && !enCria(pl.celda) && pl.n > 1) M.despachar(E, { tipo: 'ralear', planta: pl.id });
+      if (pl.etapa === 'cosechable' && !sp.flor) {
+        if (!('semillas' in V.misiones) && pl.slug === 'rabanito') M.despachar(E, { tipo: 'semillar', planta: pl.id });
+        else M.despachar(E, { tipo: 'cosechar', planta: pl.id });
+      }
+      if (V.plantas[pl.id] && pl.plaga) M.despachar(E, { tipo: 'tratar', planta: pl.id });
+      if (V.plantas[pl.id] && pl.etapa === 'pasada') M.despachar(E, { tipo: 'arrancar', planta: pl.id });
+      if (V.plantas[pl.id] && !enCria(pl.celda) && pl.n > 1) M.despachar(E, { tipo: 'ralear', planta: pl.id });
       let vueltas = 0;
-      while (vueltas++ < 6 && E.plantas[pl.id] && enCria(pl.celda) && sp.dt && pl.prog >= sp.dt.min && M.ventana(pl.slug, E.dec, 'trasplante') !== 'fuera') {
+      while (
+        vueltas++ < 6 &&
+        V.plantas[pl.id] &&
+        enCria(pl.celda) &&
+        sp.dt &&
+        pl.prog >= sp.dt.min &&
+        ventana(pl.slug, V.dec, 'trasplante') !== 'fuera'
+      ) {
         let mejor: { c: string; p: number } | null = null;
-        for (const c in E.celdas) if (!E.celdas[c].planta && !enCria(c)) { const ev = M.evaluarCelda(E, pl.slug, c)!; if (!mejor || ev.puntaje > mejor.p) mejor = { c, p: ev.puntaje }; }
-        if (!mejor || mejor.p < 0.4 || !M.despachar(E, { tipo: 'trasplantar', planta: pl.id, celda: mejor.c }).ok) break;
+        for (const c in V.celdas)
+          if (!V.celdas[c].planta && !enCria(c)) {
+            const ev = M.evaluarCelda(E, pl.slug, c)!;
+            if (!mejor || ev.puntaje > mejor.p) mejor = { c, p: ev.puntaje };
+          }
+        if (!mejor || mejor.p < 0.4 || !M.despachar(E, { tipo: 'trasplantar', planta: pl.id, celda: mejor.c }).ok)
+          break;
       }
     }
-    if (E.prox.pron.pHelada > 40) for (const z of deCultivo) M.despachar(E, { tipo: 'manta', zona: z });
-    const calor = E.prox.pron.tmax > 29; for (const z of deCultivo) M.despachar(E, { tipo: 'riego', zona: z, nivel: calor ? 2 : 1 });
+    if (V.pronostico.pHelada > 40) for (const z of deCultivo) M.despachar(E, { tipo: 'manta', zona: z });
+    const calor = V.pronostico.tmax > 29;
+    for (const z of deCultivo) M.despachar(E, { tipo: 'riego', zona: z, nivel: calor ? 2 : 1 });
     let guarda = 0;
     while (M.ratosLibres(E) > 0 && guarda++ < 10) {
       let mejor: { s: string; c: string; p: number } | null = null;
-      for (const s in E.sobres) if (E.sobres[s] > 0 && M.ventana(s, E.dec) !== 'fuera') for (const c in E.celdas) if (!E.celdas[c].planta) {
-        const sp = M.ESPECIES[s], alm = enCria(c);
-        if (alm !== !!(sp.dt && /almacigo/.test(M.metodoDe(s, E.dec) || ''))) continue;
-        const ev = M.evaluarCelda(E, s, c)!; if (!mejor || ev.puntaje > mejor.p) mejor = { s, c, p: ev.puntaje };
-      }
+      for (const s in V.sobres)
+        if (V.sobres[s] > 0 && ventana(s, V.dec) !== 'fuera')
+          for (const c in V.celdas)
+            if (!V.celdas[c].planta) {
+              const sp = M.ESPECIES[s],
+                alm = enCria(c);
+              if (alm !== !!(sp.dt && /almacigo/.test(M.metodoDe(s, V.dec) || ''))) continue;
+              const ev = M.evaluarCelda(E, s, c)!;
+              if (!mejor || ev.puntaje > mejor.p) mejor = { s, c, p: ev.puntaje };
+            }
       if (!mejor || mejor.p < 0.45) break;
       M.despachar(E, { tipo: 'sembrar', slug: mejor.s, celda: mejor.c });
     }

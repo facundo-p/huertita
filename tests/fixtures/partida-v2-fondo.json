@@ -1,0 +1,3481 @@
+{
+ "v": 2,
+ "patio": "fondo",
+ "semilla": 3,
+ "rng": -1637200729,
+ "dec": 36,
+ "turno": 14,
+ "anio": 1,
+ "caracter": "tardia",
+ "ratosGastados": 0,
+ "riego": {
+  "suelo": 2,
+  "elevado": 2,
+  "macetas": 2,
+  "almacigo": 2
+ },
+ "tunel": {},
+ "manta": {},
+ "goteo": false,
+ "celdas": {
+  "0,1": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p39"
+  },
+  "1,1": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p37"
+  },
+  "2,1": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p38"
+  },
+  "3,1": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p40"
+  },
+  "4,1": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p41"
+  },
+  "5,1": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p42"
+  },
+  "0,2": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p36"
+  },
+  "1,2": {
+   "zona": "suelo",
+   "mo": 42,
+   "mulch": false,
+   "fam": null,
+   "planta": "p35"
+  },
+  "2,2": {
+   "zona": "suelo",
+   "mo": 36,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p46"
+  },
+  "3,2": {
+   "zona": "suelo",
+   "mo": 38,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p43"
+  },
+  "4,2": {
+   "zona": "suelo",
+   "mo": 38,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p31"
+  },
+  "5,2": {
+   "zona": "suelo",
+   "mo": 36,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p52"
+  },
+  "0,4": {
+   "zona": "elevado",
+   "mo": 56,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p44"
+  },
+  "1,4": {
+   "zona": "elevado",
+   "mo": 56,
+   "mulch": false,
+   "fam": "brasicacea",
+   "planta": "p45"
+  },
+  "2,4": {
+   "zona": "elevado",
+   "mo": 54,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p47"
+  },
+  "3,4": {
+   "zona": "elevado",
+   "mo": 54,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p51"
+  },
+  "0,5": {
+   "zona": "elevado",
+   "mo": 54,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p48"
+  },
+  "1,5": {
+   "zona": "elevado",
+   "mo": 54,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p49"
+  },
+  "2,5": {
+   "zona": "elevado",
+   "mo": 54,
+   "mulch": false,
+   "fam": null,
+   "planta": "p11"
+  },
+  "3,5": {
+   "zona": "elevado",
+   "mo": 60,
+   "mulch": false,
+   "fam": null,
+   "planta": "p30"
+  },
+  "5,4": {
+   "zona": "macetas",
+   "mo": 55,
+   "mulch": false,
+   "fam": null,
+   "planta": "p27"
+  },
+  "6,4": {
+   "zona": "macetas",
+   "mo": 49,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p32"
+  },
+  "5,5": {
+   "zona": "macetas",
+   "mo": 49,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p53"
+  },
+  "6,5": {
+   "zona": "macetas",
+   "mo": 49,
+   "mulch": false,
+   "fam": "asteracea",
+   "planta": "p54"
+  },
+  "0,7": {
+   "zona": "almacigo",
+   "mo": 70,
+   "mulch": false,
+   "fam": null,
+   "planta": null
+  },
+  "1,7": {
+   "zona": "almacigo",
+   "mo": 70,
+   "mulch": false,
+   "fam": null,
+   "planta": "p55"
+  },
+  "2,7": {
+   "zona": "almacigo",
+   "mo": 70,
+   "mulch": false,
+   "fam": null,
+   "planta": "p33"
+  },
+  "3,7": {
+   "zona": "almacigo",
+   "mo": 70,
+   "mulch": false,
+   "fam": null,
+   "planta": "p34"
+  }
+ },
+ "plantas": {
+  "p11": {
+   "id": "p11",
+   "slug": "rucula",
+   "celda": "2,5",
+   "etapa": "cosechable",
+   "edad": 130,
+   "prog": 37.621165,
+   "germ": 6,
+   "salud": 62.445,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 3,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 1,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 23,
+     "turno": 1,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste rúcula en bancal elevado: 4 semillas juntas."
+      ],
+      [
+       "mal",
+       "Rúcula: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar."
+      ]
+     ]
+    },
+    {
+     "dec": 24,
+     "turno": 2,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó rúcula! Nacieron 2 de 4: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 25,
+     "turno": 3,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste rúcula: dejaste la más fuerte y sacaste 1. Van a la compostera."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 84,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 84,
+     "n": [
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 84,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.8 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 73,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 73,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.7 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 62,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 62,
+     "n": [
+      [
+       "bien",
+       "Cosechaste rúcula: 0.6 porciones."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 62,
+     "n": [
+      [
+       "bien",
+       "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas)."
+      ]
+     ]
+    }
+   ]
+  },
+  "p27": {
+   "id": "p27",
+   "slug": "lechuga",
+   "celda": "5,4",
+   "etapa": "cosechable",
+   "edad": 140,
+   "prog": 79.63100026499998,
+   "germ": 12,
+   "salud": 15.947499999999982,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 1,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 22,
+     "turno": 0,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 23,
+     "turno": 1,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 2 de 6: con el suelo fuera del rango ideal nacen menos."
+      ]
+     ]
+    },
+    {
+     "dec": 26,
+     "turno": 4,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 27,
+     "turno": 5,
+     "s": 86,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ],
+      [
+       "mal",
+       "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 86,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 68,
+     "n": [
+      [
+       "mal",
+       "Lechuga pasa sed: las macetas se secan mucho más rápido que la tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 46,
+     "n": [
+      [
+       "mal",
+       "Lechuga pasa sed: las macetas se secan mucho más rápido que la tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 26,
+     "n": [
+      [
+       "mal",
+       "Lechuga pasa sed: las macetas se secan mucho más rápido que la tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 16,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 16,
+     "n": [
+      [
+       "bien",
+       "Lechuga está para cosechar. Hojas de tamaño de consumo o cabeza compacta y firme; cosechar antes de que la planta 'suba a flor' (emisión del tallo floral)."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p30": {
+   "id": "p30",
+   "slug": "remolacha",
+   "celda": "3,5",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 61.720994000000005,
+   "germ": 20,
+   "salud": 93.195,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste remolacha en bancal elevado: 4 semillas juntas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó remolacha! Nacieron 2 de 4."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste remolacha: dejaste la más fuerte y sacaste 1. Van a la compostera."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 88,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 93,
+     "n": [
+      [
+       "bien",
+       "Creció a gusto y recuperó salud."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 83,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 88,
+     "n": [
+      [
+       "bien",
+       "Creció a gusto y recuperó salud."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 93,
+     "n": [
+      [
+       "bien",
+       "Creció a gusto y recuperó salud."
+      ]
+     ]
+    }
+   ]
+  },
+  "p31": {
+   "id": "p31",
+   "slug": "lechuga",
+   "celda": "4,2",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 51.8365643,
+   "germ": 10,
+   "salud": 90.2175,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true
+  },
+  "p32": {
+   "id": "p32",
+   "slug": "lechuga",
+   "celda": "6,4",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 38.39701299728,
+   "germ": 10,
+   "salud": 80.5925,
+   "vigor": 0.68,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 6 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 81,
+     "n": [
+      [
+       "mal",
+       "El plantín de lechuga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 81,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga. Repetís familia en esa tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoPasado": true
+  },
+  "p33": {
+   "id": "p33",
+   "slug": "acelga",
+   "celda": "2,7",
+   "etapa": "plantin",
+   "edad": 80,
+   "prog": 41.15475059846154,
+   "germ": 20,
+   "salud": 70.49499999999999,
+   "vigor": 0.8,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste acelga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó acelga! Nacieron 4 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de acelga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 81,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 70,
+     "n": [
+      [
+       "mal",
+       "El plantín de acelga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoPasado": true
+  },
+  "p34": {
+   "id": "p34",
+   "slug": "acelga",
+   "celda": "3,7",
+   "etapa": "plantin",
+   "edad": 80,
+   "prog": 45.577251,
+   "germ": 20,
+   "salud": 70.49499999999999,
+   "vigor": 0.8,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 5,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste acelga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó acelga! Nacieron 5 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "mal",
+       "Pulgones en acelga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ],
+      [
+       "bien",
+       "Plantín de acelga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 81,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 70,
+     "n": [
+      [
+       "mal",
+       "El plantín de acelga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoPasado": true
+  },
+  "p35": {
+   "id": "p35",
+   "slug": "remolacha",
+   "celda": "1,2",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 45.528784867999995,
+   "germ": 20,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste remolacha en bancal a suelo: 4 semillas juntas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó remolacha! Nacieron 4 de 4."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste remolacha: dejaste la más fuerte y sacaste 3. Van a la compostera."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "Babosas en remolacha: con tanta lluvia salen de noche y se comen lo tierno."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Pusiste una trampa de cerveza: las babosas cayeron."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p36": {
+   "id": "p36",
+   "slug": "remolacha",
+   "celda": "0,2",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 43.269892399999996,
+   "germ": 20,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste remolacha en bancal a suelo: 4 semillas juntas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó remolacha! Nacieron 2 de 4."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste remolacha: dejaste la más fuerte y sacaste 1. Van a la compostera."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p37": {
+   "id": "p37",
+   "slug": "remolacha",
+   "celda": "1,1",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 45.528784867999995,
+   "germ": 20,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste remolacha en bancal a suelo: 4 semillas juntas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó remolacha! Nacieron 3 de 4."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste remolacha: dejaste la más fuerte y sacaste 2. Van a la compostera."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p38": {
+   "id": "p38",
+   "slug": "remolacha",
+   "celda": "2,1",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 46.67620664,
+   "germ": 20,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 4,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste remolacha en bancal a suelo: 4 semillas juntas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó remolacha! Nacieron 2 de 4."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste remolacha: dejaste la más fuerte y sacaste 1. Van a la compostera."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p39": {
+   "id": "p39",
+   "slug": "chaucha",
+   "celda": "0,1",
+   "etapa": "creciendo",
+   "edad": 70,
+   "prog": 41.94263600000001,
+   "germ": 10,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 3,
+   "hist": [
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste chaucha (poroto / judía) en bancal a suelo: 3 semillas juntas."
+      ],
+      [
+       "bien",
+       "¡Germinó chaucha (poroto / judía)! Nacieron 1 de 3."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ],
+      [
+       "mal",
+       "Pulgones en chaucha (poroto / judía). Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ],
+      [
+       "mal",
+       "Pulgones en chaucha (poroto / judía). Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p40": {
+   "id": "p40",
+   "slug": "chaucha",
+   "celda": "3,1",
+   "etapa": "creciendo",
+   "edad": 70,
+   "prog": 41.94263600000001,
+   "germ": 10,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 3,
+   "hist": [
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste chaucha (poroto / judía) en bancal a suelo: 3 semillas juntas."
+      ],
+      [
+       "bien",
+       "¡Germinó chaucha (poroto / judía)! Nacieron 2 de 3."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste chaucha (poroto / judía): dejaste la más fuerte y sacaste 1. Van a la compostera."
+      ],
+      [
+       "mal",
+       "Pulgones en chaucha (poroto / judía). Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p41": {
+   "id": "p41",
+   "slug": "chaucha",
+   "celda": "4,1",
+   "etapa": "creciendo",
+   "edad": 70,
+   "prog": 36.036326505314165,
+   "germ": 10,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 3,
+   "hist": [
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste chaucha (poroto / judía) en bancal a suelo: 3 semillas juntas."
+      ],
+      [
+       "bien",
+       "¡Germinó chaucha (poroto / judía)! Nacieron 2 de 3."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Raleaste chaucha (poroto / judía): dejaste la más fuerte y sacaste 1. Van a la compostera."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (5 h, pide 6 h o más)."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (5.5 h, pide 6 h o más)."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ]
+  },
+  "p42": {
+   "id": "p42",
+   "slug": "lechuga",
+   "celda": "5,1",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 47.808859891999994,
+   "germ": 10,
+   "salud": 90.2175,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue poca luz (4.4 h, pide 4–6 h)."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p43": {
+   "id": "p43",
+   "slug": "lechuga",
+   "celda": "3,2",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 52.013613128,
+   "germ": 10,
+   "salud": 90.2175,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p44": {
+   "id": "p44",
+   "slug": "lechuga",
+   "celda": "0,4",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 50.93080232,
+   "germ": 10,
+   "salud": 79.945,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p45": {
+   "id": "p45",
+   "slug": "lechuga",
+   "celda": "1,4",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 50.93080232,
+   "germ": 10,
+   "salud": 79.945,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 5 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "mal",
+       "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen."
+      ]
+     ]
+    },
+    {
+     "dec": 30,
+     "turno": 8,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "Rociaste jabón potásico: adiós pulgones."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p46": {
+   "id": "p46",
+   "slug": "lechuga",
+   "celda": "2,2",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 52.0944452258,
+   "germ": 10,
+   "salud": 90.2175,
+   "vigor": 0.85,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 6 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga. Repetís familia en esa tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p47": {
+   "id": "p47",
+   "slug": "lechuga",
+   "celda": "2,4",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 50.355447064130004,
+   "germ": 10,
+   "salud": 79.945,
+   "vigor": 0.85,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 6 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga. Repetís familia en esa tierra."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p48": {
+   "id": "p48",
+   "slug": "lechuga",
+   "celda": "0,5",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 49.5278791355,
+   "germ": 10,
+   "salud": 79.945,
+   "vigor": 0.85,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 6 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga. Repetís familia en esa tierra."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p49": {
+   "id": "p49",
+   "slug": "lechuga",
+   "celda": "1,5",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 49.5278791355,
+   "germ": 10,
+   "salud": 79.945,
+   "vigor": 0.85,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 6 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga. Repetís familia en esa tierra."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 80,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p51": {
+   "id": "p51",
+   "slug": "lechuga",
+   "celda": "3,4",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 45.1068340775,
+   "germ": 10,
+   "salud": 90.2175,
+   "vigor": 0.85,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste lechuga en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "bien",
+       "¡Germinó lechuga! Nacieron 6 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de lechuga listo para trasplantar."
+      ],
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 33,
+     "turno": 11,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el agua."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Trasplantaste lechuga. Repetís familia en esa tierra."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p52": {
+   "id": "p52",
+   "slug": "acelga",
+   "celda": "5,2",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 54.19155059846154,
+   "germ": 20,
+   "salud": 95.2175,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste acelga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó acelga! Nacieron 4 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de acelga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 90,
+     "n": [
+      [
+       "info",
+       "Trasplantaste acelga."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 95,
+     "n": [
+      [
+       "bien",
+       "Creció a gusto y recuperó salud."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p53": {
+   "id": "p53",
+   "slug": "acelga",
+   "celda": "5,5",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 45.57803519846154,
+   "germ": 20,
+   "salud": 80.5925,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste acelga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó acelga! Nacieron 4 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de acelga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 81,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 81,
+     "n": [
+      [
+       "info",
+       "Trasplantaste acelga."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p54": {
+   "id": "p54",
+   "slug": "acelga",
+   "celda": "6,5",
+   "etapa": "creciendo",
+   "edad": 80,
+   "prog": 45.57803519846154,
+   "germ": 20,
+   "salud": 80.5925,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 1,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 28,
+     "turno": 6,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste acelga en almaciguera: una tanda de 6 celdas."
+      ]
+     ]
+    },
+    {
+     "dec": 29,
+     "turno": 7,
+     "s": 100,
+     "n": [
+      [
+       "bien",
+       "¡Germinó acelga! Nacieron 4 de 6."
+      ]
+     ]
+    },
+    {
+     "dec": 31,
+     "turno": 9,
+     "s": 90,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 32,
+     "turno": 10,
+     "s": 90,
+     "n": [
+      [
+       "bien",
+       "Plantín de acelga listo para trasplantar."
+      ]
+     ]
+    },
+    {
+     "dec": 34,
+     "turno": 12,
+     "s": 81,
+     "n": [
+      [
+       "mal",
+       "Le faltó agua: pide riego parejo y tuvo menos. Perdió salud."
+      ]
+     ]
+    },
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 81,
+     "n": [
+      [
+       "info",
+       "Trasplantaste acelga."
+      ],
+      [
+       "info",
+       "Creció lento: lo que más la frenó fue el suelo."
+      ]
+     ]
+    }
+   ],
+   "avisoListo": true,
+   "avisoRaleo": false
+  },
+  "p55": {
+   "id": "p55",
+   "slug": "copete",
+   "celda": "1,7",
+   "etapa": "semilla",
+   "edad": 10,
+   "prog": 0,
+   "germ": 0,
+   "salud": 100,
+   "vigor": 1,
+   "gen": 0,
+   "cosechas": 0,
+   "listoHace": 0,
+   "plaga": null,
+   "tutor": false,
+   "shock": 0,
+   "dulce": false,
+   "semillar": 0,
+   "pote": 1,
+   "reserva": 0,
+   "n": 0,
+   "semillas": 6,
+   "hist": [
+    {
+     "dec": 35,
+     "turno": 13,
+     "s": 100,
+     "n": [
+      [
+       "info",
+       "Sembraste copete / tagetes en almaciguera: una tanda de 6 celdas."
+      ],
+      [
+       "mal",
+       "Copete / Tagetes: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar."
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "nextId": 56,
+ "sobres": {
+  "rabanito": 16,
+  "lechuga": 0,
+  "acelga": 1,
+  "arveja": 6,
+  "haba": 4,
+  "perejil": 0,
+  "calendula": 4,
+  "tomate": 4,
+  "albahaca": 4,
+  "zanahoria": 0,
+  "cebolla-de-verdeo": 4,
+  "rucula": 0,
+  "copete": 3,
+  "chaucha": 3,
+  "pimiento": 3,
+  "berenjena": 3,
+  "brocoli": 4,
+  "remolacha": 1,
+  "espinaca": 6,
+  "kale": 4,
+  "zapallito-de-tronco": 3,
+  "pepino": 3,
+  "borraja": 3,
+  "ajo": 6,
+  "puerro": 4,
+  "romero": 1,
+  "menta": 1,
+  "lavanda": 1
+ },
+ "gen": {
+  "rabanito": 1
+ },
+ "compost": {
+  "dosis": 2,
+  "carga": 3,
+  "tandas": [
+   {
+    "avance": 10.600000000000001
+   },
+   {
+    "avance": 6.8999999999999995
+   },
+   {
+    "avance": 4.8999999999999995
+   },
+   {
+    "avance": 3.9000000000000004
+   },
+   {
+    "avance": 2.6
+   },
+   {
+    "avance": 1.3
+   }
+  ]
+ },
+ "cosechado": {
+  "rucula": 2.1,
+  "lechuga": 13.5
+ },
+ "porciones": 15.6,
+ "semillasGuardadas": 16,
+ "visitas": 0,
+ "moInicial": 50.166666666666664,
+ "misiones": {
+  "germina": 1,
+  "plantin": 5,
+  "socios": 5,
+  "cosecha1": 8,
+  "semillas": 10
+ },
+ "cuaderno": [
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Lechuga está para cosechar. Hojas de tamaño de consumo o cabeza compacta y firme; cosechar antes de que la planta 'suba a flor' (emisión del tallo floral). (×4)",
+   "celda": "2,4"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Guardaste 4 sobres de rabanito (generación 1). Semilla criada en tu patio: se adapta un poco más cada año. (×4)",
+   "celda": "3,2"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "bien",
+   "texto": "Plantín de acelga listo para trasplantar. (×2)",
+   "celda": "2,7"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "mal",
+   "texto": "Babosas en remolacha: con tanta lluvia salen de noche y se comen lo tierno.",
+   "celda": "1,2"
+  },
+  {
+   "turno": 10,
+   "dec": 32,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 1.9 porciones.",
+   "celda": "2,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "2,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 1.8 porciones.",
+   "celda": "0,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "0,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 1.8 porciones.",
+   "celda": "1,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "1,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 2 porciones.",
+   "celda": "2,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "2,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga.",
+   "celda": "3,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga.",
+   "celda": "0,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga.",
+   "celda": "1,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga.",
+   "celda": "4,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga. Repetís familia en esa tierra.",
+   "celda": "2,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga. Repetís familia en esa tierra.",
+   "celda": "2,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga. Repetís familia en esa tierra.",
+   "celda": "0,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga. Repetís familia en esa tierra.",
+   "celda": "1,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Pusiste una trampa de cerveza: las babosas cayeron.",
+   "celda": "1,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Sembraste acelga en almaciguera: una tanda de 6 celdas.",
+   "celda": "0,7"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "clima",
+   "texto": "Fines de noviembre: máx 28.3 °C, mín 11 °C, 11 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Lechuga está para cosechar. Hojas de tamaño de consumo o cabeza compacta y firme; cosechar antes de que la planta 'suba a flor' (emisión del tallo floral). (×2)",
+   "celda": "5,2"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "mal",
+   "texto": "Pulgones en lechuga. Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen.",
+   "celda": "3,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas).",
+   "celda": "2,5"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "mal",
+   "texto": "Lechuga pasa sed: las macetas se secan mucho más rápido que la tierra.",
+   "celda": "5,4"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "mal",
+   "texto": "Pulgones en chaucha (poroto / judía). Flores y aromáticas cerca atraen vaquitas y crisopas que se los comen.",
+   "celda": "0,1"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "mal",
+   "texto": "Acelga: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar.",
+   "celda": "0,7"
+  },
+  {
+   "turno": 11,
+   "dec": 33,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 2 porciones.",
+   "celda": "5,2"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "5,2"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 1.6 porciones.",
+   "celda": "3,4"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "3,4"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Cosechaste rúcula: 0.6 porciones.",
+   "celda": "2,5"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga. Repetís familia en esa tierra.",
+   "celda": "3,4"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "info",
+   "texto": "Trasplantaste acelga.",
+   "celda": "5,2"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Rociaste jabón potásico: adiós pulgones.",
+   "celda": "0,1"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "clima",
+   "texto": "Principios de diciembre: máx 29 °C, mín 11.6 °C, 28 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "bien",
+   "texto": "Lechuga está para cosechar. Hojas de tamaño de consumo o cabeza compacta y firme; cosechar antes de que la planta 'suba a flor' (emisión del tallo floral). (×3)",
+   "celda": "6,4"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "mal",
+   "texto": "El plantín de lechuga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar.",
+   "celda": "1,7"
+  },
+  {
+   "turno": 12,
+   "dec": 34,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 0.8 porciones.",
+   "celda": "6,4"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "6,4"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 0.8 porciones.",
+   "celda": "5,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "5,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Cosechaste lechuga: 0.8 porciones.",
+   "celda": "6,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Lechuga terminó su ciclo. Los restos van a la compostera.",
+   "celda": "6,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Trasplantaste lechuga. Repetís familia en esa tierra.",
+   "celda": "6,4"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Trasplantaste acelga.",
+   "celda": "5,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Trasplantaste acelga.",
+   "celda": "6,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Sembraste copete / tagetes en almaciguera: una tanda de 6 celdas.",
+   "celda": "1,7"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "clima",
+   "texto": "Mediados de diciembre: máx 29.3 °C, mín 10.6 °C, 13 mm de lluvia.",
+   "celda": null
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Rúcula está para cosechar. Hojas tiernas de tamaño de consumo (aprox. 8-15 cm), cortadas antes de que la planta emita la vara floral (que amarga las hojas).",
+   "celda": "2,5"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "bien",
+   "texto": "Lechuga está para cosechar. Hojas de tamaño de consumo o cabeza compacta y firme; cosechar antes de que la planta 'suba a flor' (emisión del tallo floral).",
+   "celda": "5,4"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "El plantín de acelga se pasó en la almaciguera: raíces enruladas. Ya tendría que estar en su lugar. (×2)",
+   "celda": "2,7"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "La semilla de acelga se perdió: pasaron 30 días sin condiciones para germinar.",
+   "celda": "0,7"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "mal",
+   "texto": "Copete / Tagetes: la semilla está en tierra seca y no arranca. Necesita humedad pareja para germinar.",
+   "celda": "1,7"
+  },
+  {
+   "turno": 13,
+   "dec": 35,
+   "tipo": "info",
+   "texto": "Cerraste una tanda de compost. En unos 4 meses va a estar madura.",
+   "celda": null
+  }
+ ],
+ "prox": {
+  "real": {
+   "dec": 36,
+   "tmed": 21.6,
+   "tmax": 29.8,
+   "tmin": 11.2,
+   "lluvia": 19,
+   "helada": false,
+   "ola": false,
+   "estacion": "verano"
+  },
+  "pron": {
+   "tmin": 10,
+   "tmax": 32,
+   "pHelada": 0,
+   "lluvia": "seca"
+  }
+ },
+ "terminado": false,
+ "guardado": 1789000000000
+}
