@@ -2,9 +2,9 @@
 import { compost, type Compost as DatosDelCompost } from '../../aplicacion/consultas';
 import type { Mezcla } from '../../dominio';
 import { usarPartida } from '../estado';
+import { numero as n } from '../formato';
 import { jugar } from '../mensajes';
 
-const n = (v: number): string => String(Math.round(v * 10) / 10).replace('.', ',');
 const MEZCLA: Record<Mezcla, string> = { pareja: 'bien tapada', humeda: 'húmeda: le faltan secos', seca: 'muy seca' };
 
 function Abierta({ C }: { C: DatosDelCompost }) {

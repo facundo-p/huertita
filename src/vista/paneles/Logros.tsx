@@ -2,7 +2,7 @@
 import { pedidos } from '../../aplicacion/consultas';
 import * as M from '../../dominio';
 import { usarPartida } from '../estado';
-import { corto } from '../formato';
+import { corto, numero } from '../formato';
 import { hacer, seguirOtroAnio } from '../mensajes';
 
 /** Los pedidos abiertos: quién, qué, cuánto llevás, para cuándo y qué da. Cuándo sembrar, lo cuenta el que juega. */
@@ -20,7 +20,7 @@ function Pedidos() {
                 {p.porciones} de {p.especie} para {p.fecha}
               </b>
               <span>
-                {p.quien}, {p.para}. Llevás {p.llevas} de {p.porciones}
+                {p.quien}, {p.para}. Llevás {numero(p.llevas)} de {p.porciones}
                 {p.faltan > 0
                   ? '; faltan ' + p.faltan + (p.faltan === 1 ? ' década.' : ' décadas.')
                   : '; es esta década.'}

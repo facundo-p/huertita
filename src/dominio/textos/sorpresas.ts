@@ -3,9 +3,9 @@
  * sus frases, con el mismo id: un test lo exige. Una amenaza se anuncia diciendo qué la frena, y
  * cuando pasa dice a quién le pegó y qué lo habría evitado; si no le pegó a nadie, dice por qué.
  */
+import { numero as n } from '../util';
 import { frase, type Frase } from './frase';
 
-const n = (v: number): string => String(Math.round(v * 10) / 10).replace('.', ',');
 /** "tomate", "tomate y arveja", "tomate, arveja y haba" */
 function lista(xs: string[]): string {
   if (xs.length < 2) return xs.join('');

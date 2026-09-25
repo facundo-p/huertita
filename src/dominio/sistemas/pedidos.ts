@@ -11,8 +11,9 @@ export const vencerPedidos: SistemaDelPatio = ({ E, ev }) => {
   for (const f of vencidos(E)) ev('mal', f);
 };
 
-/** Al empezar la década que viene: puede llegar un pedido. */
+/** Al empezar la década que viene: puede llegar un pedido. Con el año terminado, no: nadie lo vería llegar. */
 export const llegaPedido: SistemaDelPatio = ({ E, ev }) => {
+  if (E.tiempo.terminado) return;
   const p = pedidoQueLlega(E);
   if (p) ev('info', abrir(E, p));
 };

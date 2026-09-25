@@ -4,10 +4,9 @@
  * y hasta cuándo había que sembrar: los días de la ficha son con buen tiempo, y fuera de su temperatura
  * la planta tarda más, así que la fecha límite se cuenta con el crecimiento de un año normal.
  */
-import { cap } from '../util';
+import { cap, numero as n } from '../util';
 import { frase, type Frase } from './frase';
 
-const n = (v: number): string => String(Math.round(v * 10) / 10).replace('.', ',');
 /** "tomate", "tomate y arveja", "tomate, arveja y haba" */
 function lista(xs: string[]): string {
   if (xs.length < 2) return xs.join('');

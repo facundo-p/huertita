@@ -24,6 +24,8 @@ import {
   vencidos,
 } from '../src/dominio/pedidos';
 import { enTramo } from '../src/dominio/region';
+import { crearContexto } from '../src/dominio/sistemas/contexto';
+import { llegaPedido } from '../src/dominio/sistemas/pedidos';
 import { pedidoADestiempo } from '../src/dominio/textos/pedidos';
 import { jugarUnAnio } from '../tools/jugador';
 import v4 from './fixtures/partida-v4-fondo.json';
@@ -97,6 +99,20 @@ describe('cuándo llega un pedido', () => {
       ).toBe(true);
     }
     expect(llegaron).toBeGreaterThan(0);
+  });
+  it('con el año terminado no llega ninguno: nadie lo vería llegar', () => {
+    let probados = 0;
+    for (let s = 1; s <= 40; s++) {
+      const E = partida(5, s);
+      if (!pedidoQueLlega(E)) continue;
+      probados++;
+      E.tiempo.terminado = true;
+      const ctx = crearContexto(E);
+      llegaPedido(ctx);
+      expect(ctx.evs).toEqual([]);
+      expect(E.progreso.pedidos.abiertos).toEqual([]);
+    }
+    expect(probados).toBeGreaterThan(0);
   });
   it('nunca más de los que caben abiertos, ni dos de la misma especie', () => {
     const E = partida(5);

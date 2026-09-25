@@ -212,4 +212,13 @@ describe('los pedidos de los vecinos', () => {
     expect(li.textContent).toMatch(/compost maduro/);
     expect(document.querySelector('.hz-pedido')!.textContent).toMatch(/0\/6 acelga/);
   });
+  it('lo cosechado con decimales se lee con coma', () => {
+    const E = M.crearPartida(3, { decInicio: 5 });
+    E.progreso.pedidos.abiertos.push({ id: 'acelga-del-comedor', desde: 0, vence: 14, base: 0, sembrado: null });
+    E.progreso.cosechado.acelga = 2.5;
+    con(E);
+    hacer({ tipo: 'ir', modo: 'logros' });
+    expect(document.querySelector('.hz-pedidos li')!.textContent).toMatch(/Llevás 2,5 de 6/);
+    expect(document.querySelector('.hz-pedido')!.textContent).toMatch(/2,5\/6 acelga/);
+  });
 });

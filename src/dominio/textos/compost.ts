@@ -3,9 +3,8 @@
  * hojas y poda. [REPO] compostaje.json: la receta de secos y verdes y sus señales.
  */
 import type { Mezcla } from '../tipos';
+import { numero as n } from '../util';
 import { frase, type Frase } from './frase';
-
-const n = (v: number): string => String(Math.round(v * 10) / 10).replace('.', ',');
 
 export function tandaCerrada(mezcla: Mezcla, secosPorVerde: number): Frase {
   const receta = n(secosPorVerde) + ' de secos por cada verde';
