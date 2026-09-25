@@ -189,7 +189,8 @@ export interface PedidoAbierto {
   /**
    * Cuántas décadas tardaba en llegar a cosecha cada siembra posible, contado cuando llegó: `cuenta[i]`
    * es sembrando en el turno `desde + i`, y `null` si no llegaba a dar cosecha. Lo que dice el cuaderno si
-   * vence sale de acá, así no cambia con lo que pase después en el patio.
+   * vence sale de acá, así no cambia con lo que pase después en el patio. Es lo que tarda en un año
+   * normal, sin margen: el margen se aplica al leerla (`llegaba`, `limiteDe`).
    */
   cuenta: (number | null)[];
 }

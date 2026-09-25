@@ -147,6 +147,28 @@ describe('migración de partidas guardadas', () => {
     vieja.progreso.pedidos.abiertos[0].id = 'el-que-ya-no-esta';
     expect(M.migrar(vieja)!.progreso.pedidos.abiertos).toEqual([]);
   });
+  it('un pedido v5 sin fechas se deja de lado, y la cuenta se hace de nuevo aunque viniera', () => {
+    const vieja = guardada('partida-v5-balcon'),
+      [pd] = vieja.progreso.pedidos.abiertos;
+    vieja.progreso.pedidos.abiertos.push({ ...pd, id: 'acelga-del-comedor', desde: undefined });
+    pd.cuenta = [99];
+    const [p] = M.migrar(vieja)!.progreso.pedidos.abiertos;
+    expect(p.cuenta).toHaveLength(pd.vence - pd.desde + 1);
+    expect(p.cuenta).not.toContain(99);
+    expect(M.migrar(guardada('partida-v5-balcon'))!.progreso.pedidos.abiertos).toHaveLength(1);
+  });
+  it('una partida v5 rota no se carga, aunque la cuenta de los pedidos no pueda hacerse', () => {
+    const sinPedidos = guardada('partida-v5-balcon');
+    delete sinPedidos.progreso.pedidos;
+    expect(M.migrar(sinPedidos)).toBeNull();
+    const sinProgreso = guardada('partida-v5-balcon');
+    delete sinProgreso.progreso;
+    expect(M.migrar(sinProgreso)).toBeNull();
+    const zonaRara = guardada('partida-v5-balcon');
+    for (const c of Object.values(zonaRara.mundo.celdas) as any[]) c.zona = 'no-existe';
+    expect(() => M.migrar(zonaRara)).not.toThrow();
+    expect(M.migrar(zonaRara)).toBeNull();
+  });
   it('una partida de hoy pasa tal cual', () => {
     const E = M.crearPartida(3);
     expect(M.migrar(JSON.parse(JSON.stringify(E)))).toEqual(E);

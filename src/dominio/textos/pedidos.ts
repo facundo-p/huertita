@@ -69,18 +69,18 @@ export interface Cuenta {
   decadas: number;
   /** si en esa época tarda al menos una década más de lo que dice la ficha */
   masLento: boolean;
-  /** la última fecha de siembra que llegaba, en un año normal */
+  /** la última fecha de siembra que llegaba con margen, en un año normal */
   limite: string;
   /** lo cosechado desde que llegó el pedido */
   llevas: number;
 }
-function noLlegaste(p: DeUnPedido, c: Cuenta): string {
+function noLlegaste(p: DeUnPedido, llevas: number): string {
   return (
     'Ya es ' +
     p.fecha +
     ' y no llegaste con el pedido de ' +
     p.quien +
-    (c.llevas > 0 ? ': cosechaste ' + n(c.llevas) + ' de ' + porciones(p.porciones) + '. ' : '. ')
+    (llevas > 0 ? ': cosechaste ' + n(llevas) + ' de ' + porciones(p.porciones) + '. ' : '. ')
   );
 }
 const cuenta = (p: DeUnPedido, c: Cuenta): string =>
@@ -92,41 +92,74 @@ const cuenta = (p: DeUnPedido, c: Cuenta): string =>
   (c.masLento
     ? ', pero en esa época crece más lento: un año normal son unas ' +
       c.decadas +
-      ' décadas, y para ' +
+      ' décadas, y para llegar con margen a ' +
       p.fecha +
       ' había que sembrar a más tardar a '
-    : ': para ' + p.fecha + ' había que sembrar a más tardar a ') +
+    : ': para llegar con margen a ' + p.fecha + ' había que sembrar a más tardar a ') +
   c.limite +
   '.';
+/** Cómo le iba a la siembra que se hizo, en un año normal, según la cuenta de cuando llegó el pedido. */
+export interface Sembrado {
+  /** cuándo se sembró, como "fines de septiembre" */
+  cuando: string;
+  /** décadas de la siembra a la cosecha; `Infinity` si no daba cosecha */
+  decadas: number;
+  /** si llegaba a la fecha, aunque fuera sin margen */
+  justo: boolean;
+  /** si la especie se sube a flor con calor */
+  puedeEspigar: boolean;
+}
+/** Por qué la siembra no llegaba con margen, como sigue a "Sembraste lechuga a fines de agosto". */
+function porQueNoLlegaba(s: Sembrado, tarde: boolean): string {
+  if (s.justo)
+    return (
+      (tarde ? ', pasado el límite: ' : ': con el tiempo de esa época tardaba unas ' + s.decadas + ' décadas, y ') +
+      'en un año normal llegaba, pero sin margen: un año más fresco, o un plantín que no llega a la época ' +
+      'de trasplante, la podía dejar afuera. '
+    );
+  if (!Number.isFinite(s.decadas))
+    return (
+      (tarde ? ', pasado el límite, y' : ', pero') +
+      ' con el tiempo de esa época no llegaba a dar cosecha' +
+      (s.puedeEspigar ? ', o se arriesgaba a espigar antes. ' : '. ')
+    );
+  return tarde
+    ? ' y ya era tarde: en un año normal no llegaba a la fecha. '
+    : ', pero con el tiempo de esa época tardaba unas ' + s.decadas + ' décadas y no llegaba. ';
+}
 
 export const pedidoSinSembrar = (p: DeUnPedido, c: Cuenta): Frase =>
   frase(
     'pedido.sin-sembrar',
-    noLlegaste(p, c) + 'Desde que te lo pidió no sembraste ' + p.especie + '. ' + cuenta(p, c),
+    noLlegaste(p, c.llevas) + 'Desde que te lo pidió no sembraste ' + p.especie + '. ' + cuenta(p, c),
   );
-export const pedidoTarde = (p: DeUnPedido, c: Cuenta, sembraste: string): Frase =>
+/** Sembró después del límite. */
+export const pedidoTarde = (p: DeUnPedido, c: Cuenta, s: Sembrado): Frase =>
   frase(
     'pedido.tarde',
-    noLlegaste(p, c) + 'Sembraste ' + p.especie + ' a ' + sembraste + ' y ya era tarde. ' + cuenta(p, c),
+    noLlegaste(p, c.llevas) + 'Sembraste ' + p.especie + ' a ' + s.cuando + porQueNoLlegaba(s, true) + cuenta(p, c),
   );
-/** Sembró antes de la fecha límite, pero en una época en que tardaba tanto que no llegaba. */
-export const pedidoADestiempo = (p: DeUnPedido, c: Cuenta, sembraste: string, decadas: number): Frase =>
+/** Sembró antes de la fecha límite, pero en una época en que no llegaba, o llegaba sin margen. */
+export const pedidoADestiempo = (p: DeUnPedido, c: Cuenta, s: Sembrado): Frase =>
   frase(
     'pedido.a-destiempo',
-    noLlegaste(p, c) +
-      'Sembraste ' +
+    noLlegaste(p, c.llevas) + 'Sembraste ' + p.especie + ' a ' + s.cuando + porQueNoLlegaba(s, false) + cuenta(p, c),
+  );
+/** Ninguna siembra llegaba con margen: pasa con un pedido de una partida vieja, contado al cargarla. */
+export const pedidoSinFecha = (p: DeUnPedido, llevas: number): Frase =>
+  frase(
+    'pedido.sin-fecha',
+    noLlegaste(p, llevas) +
+      'Con el tiempo de un año normal, en tu patio ninguna siembra de ' +
       p.especie +
-      ' a ' +
-      sembraste +
-      (Number.isFinite(decadas)
-        ? ', pero con el tiempo de esa época tardaba unas ' + decadas + ' décadas y no llegaba. '
-        : ', pero con el tiempo de esa época no llegaba a dar cosecha. ') +
-      cuenta(p, c),
+      ' llegaba con margen a ' +
+      p.fecha +
+      ': no había fecha segura para sembrar, y el pedido era muy difícil de cumplir.',
   );
 export const pedidoNoAlcanzo = (p: DeUnPedido, c: Cuenta, sembraste: string): Frase =>
   frase(
     'pedido.no-alcanzo',
-    noLlegaste(p, c) +
+    noLlegaste(p, c.llevas) +
       'Sembraste ' +
       p.especie +
       ' a tiempo, a ' +

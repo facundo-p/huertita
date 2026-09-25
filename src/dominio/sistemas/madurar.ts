@@ -35,13 +35,12 @@ export const semillarOSecarse: SistemaDePlanta = ({ E, ev, evs }, { pl, sp }) =>
   return 'sigue';
 };
 
-/**
- * [REPO] riesgos de la ficha: las hojas (no las brasicáceas) se suben a flor con calor. [SUPUESTO] la
- * probabilidad por década, que también usa la cuenta de los pedidos.
- */
+/** [REPO] riesgos de la ficha: las hojas (no las brasicáceas) se suben a flor con calor. */
+export const puedeEspigar = (sp: Especie): boolean => sp.grupo === 'Hortaliza de hoja' && sp.familia !== 'brasicacea';
+
+/** [SUPUESTO] la probabilidad de espigar por década, que también usa la cuenta de los pedidos. */
 export function probEspigar(sp: Especie, prog: number, tmed: number, horas: number): number {
-  if (sp.grupo !== 'Hortaliza de hoja' || sp.familia === 'brasicacea' || prog <= objetivoCosecha(sp) * ESPIGA.desde)
-    return 0;
+  if (!puedeEspigar(sp) || prog <= objetivoCosecha(sp) * ESPIGA.desde) return 0;
   const aMediaSombra = horas <= ESPIGA.horasDeMediaSombra;
   return (tmed - (sp.tc.ideal_max + ESPIGA.margen)) * ESPIGA.probPorGrado * (aMediaSombra ? ESPIGA.aMediaSombra : 1);
 }

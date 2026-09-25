@@ -4,7 +4,7 @@
  * se cuenta lo que se coseche de la especie desde que llegó.
  *
  * Solo llega un pedido que se puede cumplir: entre que llega y la fecha tiene que haber una década
- * ideal de siembra desde la que, en un año normal, se llega a cosechar. Tira con `tirada`, no con `azar`.
+ * ideal de siembra desde la que, en un año normal, se llega a cosechar con margen. Tira con `tirada`, no con `azar`.
  */
 import { PEDIDOS, type Pedido, type PremioDePedido } from '../../datos/juego/pedidos';
 import { REGLAS } from '../../datos/juego/reglas';
@@ -18,7 +18,7 @@ import { horasSol, zonaDe, zonasDe } from './patio';
 import { nombreDe } from './planta';
 import { decadaEstacional, enTramo, regionDe } from './region';
 import { DIAS_POR_TURNO } from './sistemas/contexto';
-import { probEspigar } from './sistemas/madurar';
+import { probEspigar, puedeEspigar } from './sistemas/madurar';
 import * as T from './textos/pedidos';
 import type { Frase } from './textos/frase';
 import type { CeldaId, Especie, Estado, Evento, PedidoAbierto } from './tipos';
@@ -146,17 +146,11 @@ interface Brote {
   shock: boolean;
 }
 
-/**
- * El plantín hecho se trasplanta recién cuando es época de trasplante. Con margen: en un año más
- * fresco está hecho unas décadas después, así que se cuenta que llega a esta época solo si sigue
- * abierta `REGLAS.pedidos.margen` décadas más; si no, espera la próxima.
- */
+/** El plantín hecho se trasplanta recién cuando es época de trasplante; si no, espera la próxima. */
 function trasplantaSiEsEpoca(s: Siembra, b: Brote, t: number): void {
-  const dt = s.sp.dt,
-    esEpoca = (turno: number): boolean =>
-      ventana(regionDe(s.E), s.sp.slug, decadaDelTurno(s.E, turno), 'trasplante') !== 'fuera';
+  const dt = s.sp.dt;
   if (!b.enAlmacigo || !dt || b.prog < dt.min) return;
-  if (!esEpoca(t) || !esEpoca(t + P.margen)) return;
+  if (ventana(regionDe(s.E), s.sp.slug, decadaDelTurno(s.E, t), 'trasplante') === 'fuera') return;
   b.enAlmacigo = false;
   b.shock = true;
 }
@@ -204,9 +198,26 @@ function decadasHastaCrecer(s: Siembra, desde: number, tope: number): number {
   return t - desde;
 }
 
-/** Si una siembra en `turno` llega a cosecharse para `vence`, en un año normal y con margen (`REGLAS.pedidos.margen`). */
+/**
+ * Si una siembra en `s` llega a `vence` con margen (`REGLAS.pedidos.margen`), según lo que tarda cada
+ * siembra en un año normal: cosecha `margen` décadas antes de la fecha y, si se atrasa hasta `margen`
+ * décadas, todavía llega. Un año fresco atrasa la planta como sembrarla unas décadas después, así que
+ * se mira lo que tardan esas siembras: eso ve el plantín que en un año normal está hecho justo antes de
+ * que cierre la época de trasplante, y en uno fresco se la pierde. Si una de esas siembras no da cosecha
+ * (espiga, no nace), no cuenta: un año fresco no hace espigar más.
+ */
+function llegaConMargen(tarda: (turno: number) => number, s: number, vence: number): boolean {
+  if (s + tarda(s) > vence - P.margen) return false;
+  for (let j = 1; j <= P.margen; j++) {
+    const d = tarda(s + j);
+    if (Number.isFinite(d) && s + j + d > vence) return false;
+  }
+  return true;
+}
+
+/** Si una siembra en `turno` llega a cosecharse para `vence`, en un año normal y con margen (`llegaConMargen`). */
 export const llegaA = (E: Estado, slug: string, turno: number, vence: number): boolean =>
-  turno + decadasHastaCosecha(E, slug, turno) <= vence - P.margen;
+  llegaConMargen((t) => decadasHastaCosecha(E, slug, t), turno, vence);
 
 /** Cuánto tarda cada siembra posible entre que llega el pedido y la fecha (`PedidoAbierto.cuenta`). */
 export function cuentaDe(E: Estado, slug: string, desde: number, vence: number): (number | null)[] {
@@ -215,30 +226,40 @@ export function cuentaDe(E: Estado, slug: string, desde: number, vence: number):
     return Number.isFinite(d) ? d : null;
   });
 }
-/** Lo que tardaba una siembra en ese turno, según la cuenta de cuando llegó el pedido. */
+/** Lo que tardaba una siembra en ese turno, en un año normal, según la cuenta de cuando llegó el pedido. */
 export const tardaba = (pd: PedidoAbierto, turno: number): number => pd.cuenta[turno - pd.desde] ?? Infinity;
-/** Si una siembra en ese turno llegaba a la fecha con margen, según la cuenta de cuando llegó el pedido. */
-export const llegaba = (pd: PedidoAbierto, turno: number): boolean => turno + tardaba(pd, turno) <= pd.vence - P.margen;
-/** La última siembra que llegaba a la fecha, según la cuenta de cuando llegó el pedido, o `null`. */
+/** Si una siembra en ese turno llegaba a la fecha en un año normal, aunque fuera sin margen. */
+export const llegabaJusto = (pd: PedidoAbierto, turno: number): boolean => turno + tardaba(pd, turno) <= pd.vence;
+/**
+ * Si una siembra en ese turno llegaba a la fecha con margen, según la cuenta de cuando llegó el pedido.
+ * El margen es el de las reglas de hoy: la cuenta guarda lo que tarda cada siembra, no el margen.
+ */
+export const llegaba = (pd: PedidoAbierto, turno: number): boolean =>
+  llegaConMargen((t) => tardaba(pd, t), turno, pd.vence);
+/** La última siembra que llegaba a la fecha con margen, según la cuenta de cuando llegó el pedido, o `null`. */
 export function limiteDe(pd: PedidoAbierto): number | null {
   for (let s = pd.vence; s >= pd.desde; s--) if (llegaba(pd, s)) return s;
   return null;
 }
 
 /**
- * El último turno en que una siembra todavía llega a cosecharse para la fecha, en un año normal, o
- * `null` si ninguna llega. Un pedido solo llega si hay alguna (`hayFechaDeSiembra`).
+ * El último turno en que una siembra todavía llega a cosecharse para la fecha, en un año normal y con
+ * margen, o `null` si ninguna llega. Un pedido solo llega si hay alguna (`hayFechaDeSiembra`).
  */
 export function ultimaSiembra(E: Estado, pd: Pick<PedidoAbierto, 'desde' | 'vence'>, p: Pedido): number | null {
-  for (let s = pd.vence; s >= pd.desde; s--) if (llegaA(E, p.especie, s, pd.vence)) return s;
-  return null;
+  return limiteDe({ ...pd, id: p.id, base: 0, sembrado: null, cuenta: cuentaDe(E, p.especie, pd.desde, pd.vence) });
 }
 
-/** Si entre `desde` y `vence` hay una década ideal para sembrar la especie que llegue a cosecharse. */
+/** Si entre `desde` y `vence` hay una década ideal para sembrar la especie que llegue a cosecharse con margen. */
 export function hayFechaDeSiembra(E: Estado, slug: string, desde: number, vence: number): boolean {
-  const R = regionDe(E);
+  const R = regionDe(E),
+    cuenta = new Map<number, number>(),
+    tarda = (t: number): number => {
+      if (!cuenta.has(t)) cuenta.set(t, t > vence ? Infinity : decadasHastaCosecha(E, slug, t));
+      return cuenta.get(t)!;
+    };
   for (let s = desde; s <= vence; s++)
-    if (ventana(R, slug, decadaDelTurno(E, s)) === 'ideal' && llegaA(E, slug, s, vence)) return true;
+    if (ventana(R, slug, decadaDelTurno(E, s)) === 'ideal' && llegaConMargen(tarda, s, vence)) return true;
   return false;
 }
 
@@ -344,24 +365,34 @@ export function cumplirPedidos(E: Estado, evs: Evento[]): void {
   }
 }
 
-/** Por qué no se llegó: no se sembró, se sembró tarde, se sembró en una época en que no llegaba, o no alcanzó. */
+/**
+ * Por qué no se llegó: no se sembró, se sembró tarde, se sembró en una época en que no llegaba (o
+ * llegaba sin margen), o no alcanzó. Si ninguna siembra llegaba con margen (un pedido de una partida
+ * vieja, contado al cargarla), lo dice.
+ */
 function porQueNo(E: Estado, pd: PedidoAbierto, p: Pedido): Frase {
   const de = deUnPedido(E, pd, p),
-    ultima = limiteDe(pd) ?? pd.desde,
-    dias = diasHastaCosecha(p.especie),
+    ultima = limiteDe(pd),
+    lleva = Math.max(0, llevas(E, pd, p));
+  if (ultima == null) return T.pedidoSinFecha(de, lleva);
+  const dias = diasHastaCosecha(p.especie),
     decadas = tardaba(pd, ultima),
     c: T.Cuenta = {
       dias,
       decadas,
-      masLento: Number.isFinite(decadas) && decadas * DIAS_POR_TURNO >= dias + DIAS_POR_TURNO,
+      masLento: decadas * DIAS_POR_TURNO >= dias + DIAS_POR_TURNO,
       limite: fechaDe(decadaDelTurno(E, ultima)),
-      llevas: Math.max(0, llevas(E, pd, p)),
+      llevas: lleva,
     };
   if (pd.sembrado == null) return T.pedidoSinSembrar(de, c);
-  const cuando = fechaDe(decadaDelTurno(E, pd.sembrado));
-  if (llegaba(pd, pd.sembrado)) return T.pedidoNoAlcanzo(de, c, cuando);
-  if (pd.sembrado > ultima) return T.pedidoTarde(de, c, cuando);
-  return T.pedidoADestiempo(de, c, cuando, tardaba(pd, pd.sembrado));
+  if (llegaba(pd, pd.sembrado)) return T.pedidoNoAlcanzo(de, c, fechaDe(decadaDelTurno(E, pd.sembrado)));
+  const s: T.Sembrado = {
+    cuando: fechaDe(decadaDelTurno(E, pd.sembrado)),
+    decadas: tardaba(pd, pd.sembrado),
+    justo: llegabaJusto(pd, pd.sembrado),
+    puedeEspigar: puedeEspigar(ESPECIES[p.especie]),
+  };
+  return pd.sembrado > ultima ? T.pedidoTarde(de, c, s) : T.pedidoADestiempo(de, c, s);
 }
 
 /** Al terminar la década de la fecha: los pedidos que no se cumplieron vencen, y el cuaderno dice por qué. */

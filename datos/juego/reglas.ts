@@ -507,9 +507,9 @@ export const REGLAS = {
     /**
      * décadas de margen entre la cosecha de la cuenta y la fecha: la cuenta es la de un año normal, y de
      * un año a otro la cosecha se corre una década o dos. Con esto, sembrando a más tardar en el límite
-     * que se dice se llega la mayoría de los años (tests/pedidos.test.ts). El mismo margen se deja antes
-     * de que cierre la época de trasplante: un plantín que en un año normal está hecho justo al final,
-     * en uno fresco se la pierde
+     * que se dice se llega la mayoría de los años (tests/pedidos.test.ts). Además, sembrando hasta tantas
+     * décadas después (lo que atrasa un año fresco) todavía se tiene que llegar a la fecha: así se ve el
+     * plantín que en un año normal está hecho justo antes de que cierre la época de trasplante
      */
     margen: 2,
     /**

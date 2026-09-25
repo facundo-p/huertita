@@ -101,15 +101,17 @@ const PASOS: Record<number, (e: Guardada) => void> = {
   },
   // v5 → v6 (0.10): un pedido abierto guarda lo que tardaba cada siembra posible (`cuenta`) en vez del
   // último turno para sembrar. Se cuenta con el patio de cuando se carga, que es lo más parecido que
-  // queda al de cuando llegó; un pedido que ya no existe se deja de lado.
+  // queda al de cuando llegó, y con las reglas de hoy aunque ya trajera una; un pedido que ya no existe,
+  // o sin fechas, se deja de lado.
   5: (e) => {
-    const P = e.progreso.pedidos;
-    P.abiertos = P.abiertos.flatMap((pd: Guardada) => {
-      const p = pedidoPorId(pd.id);
-      if (!p) return [];
-      const { limite: _, ...resto } = pd;
-      return [{ ...resto, cuenta: pd.cuenta ?? cuentaDe(e as Estado, p.especie, pd.desde, pd.vence) }];
-    });
+    const P = e.progreso?.pedidos;
+    if (Array.isArray(P?.abiertos))
+      P.abiertos = P.abiertos.flatMap((pd: Guardada) => {
+        const p = pedidoPorId(pd?.id);
+        if (!p || !Number.isInteger(pd.desde) || !Number.isInteger(pd.vence) || pd.vence < pd.desde) return [];
+        const { limite: _, cuenta: __, ...resto } = pd;
+        return [{ ...resto, cuenta: cuentaDe(e as Estado, p.especie, pd.desde, pd.vence) }];
+      });
     e.meta.v = 6;
   },
 };
@@ -169,10 +171,15 @@ export function migrar(E: unknown): Estado | null {
   const e = E as Guardada | null;
   if (!e || typeof e !== 'object') return null;
   if (!e.meta && !desplegar(e)) return null;
-  while (typeof e.meta?.v === 'number' && e.meta.v < VERSION && e.mundo?.estructuras) {
-    const paso = PASOS[e.meta.v];
-    if (!paso) return null;
-    paso(e);
+  try {
+    while (typeof e.meta?.v === 'number' && e.meta.v < VERSION && e.mundo?.estructuras) {
+      const paso = PASOS[e.meta.v];
+      if (!paso) return null;
+      paso(e);
+    }
+  } catch {
+    // un paso que usa el dominio (la cuenta de los pedidos) con una partida rota: no se carga
+    return null;
   }
   return esPartidaValida(e) ? e : null;
 }

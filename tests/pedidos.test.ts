@@ -22,12 +22,15 @@ import {
   hayFechaDeSiembra,
   limiteDe,
   llegaA,
+  llegabaJusto,
+  tardaba,
   pedidoQueLlega,
   ultimaSiembra,
   vencidos,
 } from '../src/dominio/pedidos';
 import { enTramo } from '../src/dominio/region';
 import { crearContexto } from '../src/dominio/sistemas/contexto';
+import { puedeEspigar } from '../src/dominio/sistemas/madurar';
 import { llegaPedido } from '../src/dominio/sistemas/pedidos';
 import { pedidoADestiempo } from '../src/dominio/textos/pedidos';
 import { jugarUnAnio } from '../tools/jugador';
@@ -233,18 +236,61 @@ describe('cuando vence', () => {
       p = pedido('albahaca-de-la-pizzeria');
     expect(ultimaSiembra(E, { desde: E.tiempo.turno, vence: E.tiempo.turno + 1 }, p)).toBeNull();
   });
-  it('si se sembró después del límite, dice que fue tarde', () => {
+  it('si se sembró después del límite, dice que fue sin margen o que ya era tarde, según llegaba o no', () => {
+    const p = pedido('acelga-del-comedor'),
+      vence = (sembrar: (pd: M.PedidoAbierto) => number) => {
+        const E = partida(5),
+          pd = abierto(E, p.id),
+          s = sembrar(pd);
+        avanzar(E, s - E.tiempo.turno);
+        alSembrar(E, 'acelga');
+        expect(pd.sembrado).toBe(s);
+        avanzar(E, pd.vence - E.tiempo.turno);
+        return vencidos(E)[0];
+      };
     const E = partida(5),
-      pd = abierto(E, 'acelga-del-comedor'),
-      p = pedido('acelga-del-comedor');
+      pd = abierto(E, p.id);
     expect(limiteDe(pd)).toBe(ultimaSiembra(E, pd, p));
-    avanzar(E, limiteDe(pd)! - E.tiempo.turno + 1);
-    alSembrar(E, 'acelga');
-    expect(pd.sembrado).toBe(E.tiempo.turno);
+    expect(llegabaJusto(pd, limiteDe(pd)! + 1)).toBe(true);
+    const justo = vence((pd) => limiteDe(pd)! + 1);
+    expect(justo.codigo).toBe('pedido.tarde');
+    expect(justo.texto).toMatch(/pasado el límite: en un año normal llegaba, pero sin margen/);
+    const tarde = vence((pd) => {
+      let s = pd.vence;
+      while (!llegabaJusto(pd, s)) s--;
+      return s + 1;
+    });
+    expect(tarde.codigo).toBe('pedido.tarde');
+    expect(tarde.texto).toMatch(/ya era tarde: en un año normal no llegaba/);
+  });
+  it('la cuenta dice lo que tarda en un año normal: el margen se deja al leerla, no se suma', () => {
+    // la albahaca que llega a fines de agosto al fondo: sembrada a fines de septiembre llega justo
+    const E = partida(24),
+      pd = abierto(E, 'albahaca-de-la-pizzeria'),
+      s = limiteDe(pd)! + 1;
+    expect(llegabaJusto(pd, s)).toBe(true);
+    expect(tardaba(pd, s)).toBeLessThan(15);
+    avanzar(E, s - E.tiempo.turno);
+    alSembrar(E, 'albahaca');
     avanzar(E, pd.vence - E.tiempo.turno);
     const [f] = vencidos(E);
     expect(f.codigo).toBe('pedido.tarde');
-    expect(f.texto).toMatch(/ya era tarde/);
+    expect(f.texto).toMatch(/sin margen/);
+    expect(f.texto).not.toMatch(/ya era tarde/);
+  });
+  it('si ninguna siembra llegaba con margen, lo dice y no inventa un límite', () => {
+    // la lechuga que llega a fines de agosto al balcón: con el calor, espiga; no llega como pedido nuevo
+    const E = M.crearPartida(1, { decInicio: 24, patio: 'balcon' }),
+      p = pedido('ensalada-de-rosa');
+    expect(hayFechaDeSiembra(E, p.especie, E.tiempo.turno, E.tiempo.turno + p.plazo)).toBe(false);
+    const pd = abierto(E, p.id);
+    expect(limiteDe(pd)).toBeNull();
+    alSembrar(E, 'lechuga');
+    avanzar(E, pd.vence - E.tiempo.turno);
+    const [f] = vencidos(E);
+    expect(f.codigo).toBe('pedido.sin-fecha');
+    expect(f.texto).toMatch(/ninguna siembra de lechuga llegaba con margen/);
+    expect(f.texto).not.toMatch(/a más tardar/);
   });
   it('si se sembró a tiempo y no alcanzó, dice cuánto se llevó y que conviene sembrar de más', () => {
     const E = partida(5),
@@ -295,8 +341,14 @@ describe('cuando vence', () => {
     );
     expect(f.texto).toMatch(/crece más lento: un año normal son unas \d+ décadas/);
     const c = { dias: 94, decadas: 14, masLento: true, limite: 'fines de septiembre', llevas: 0 };
-    expect(pedidoADestiempo(deUnPedido(E, pd, pedido(pd.id)), c, 'agosto', 20).texto).toMatch(
-      /tardaba unas 20 décadas y no llegaba/,
+    const de = deUnPedido(E, pd, pedido(pd.id)),
+      s = { cuando: 'agosto', decadas: 20, justo: false, puedeEspigar: false };
+    expect(pedidoADestiempo(de, c, s).texto).toMatch(/tardaba unas 20 décadas y no llegaba/);
+    expect(pedidoADestiempo(de, c, { ...s, decadas: 16, justo: true }).texto).toMatch(
+      /tardaba unas 16 décadas, y en un año normal llegaba, pero sin margen/,
+    );
+    expect(pedidoADestiempo(de, c, { ...s, decadas: Infinity, puedeEspigar: true }).texto).toMatch(
+      /no llegaba a dar cosecha, o se arriesgaba a espigar antes/,
     );
   });
   it('el límite es el último turno que llega: después ya no llega ninguno', () => {
@@ -343,7 +395,7 @@ function riegoCuidadoso(E: Estado, zona: string, slug: string): number {
  * siembra cinco lugares, riega según el pronóstico, cubre, trata, raleá, tutora, trasplanta cuando es época y
  * vuelve a sembrar si pierde la siembra. Dice si llega a la primera cosecha antes de la fecha.
  */
-function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'limite' | 'tarde'): boolean {
+function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'limite' | 'tarde'): boolean | null {
   const E = structuredClone(E0),
     R = M.regionDe(E),
     sp = M.ESPECIES[p.especie];
@@ -352,8 +404,15 @@ function primeraCosechaATiempo(E0: Estado, p: M.Pedido, cuando: 'temprano' | 'li
   E.progreso.pedidos.abiertos = [];
   const ajenas = new Set(Object.keys(E.mundo.plantas)),
     pd = abierto(E, p.id);
-  // tarde: una década después de lo que tarda en un año normal, sin el margen
-  let siembra = limiteDe(pd)! + (cuando === 'tarde' ? REGLAS.pedidos.margen + 1 : 0);
+  // tarde: una década después de la última siembra que llega en un año normal, sin el margen. Si ahí
+  // el cuaderno solo dice que una hoja se arriesgaba a espigar, no dice que no llegaba: no se cuenta
+  let siembra = limiteDe(pd)!;
+  if (cuando === 'tarde') {
+    siembra = pd.vence;
+    while (!llegabaJusto(pd, siembra)) siembra--;
+    siembra++;
+    if (!Number.isFinite(tardaba(pd, siembra)) && puedeEspigar(sp)) return null;
+  }
   if (cuando === 'temprano')
     for (let s = pd.desde; s <= pd.vence; s++)
       if (M.ventana(R, p.especie, M.decadaDelTurno(E, s)) === 'ideal' && llegaA(E, p.especie, s, pd.vence)) {
@@ -432,10 +491,10 @@ const puedeCumplirse = (E: Estado, p: M.Pedido): boolean =>
 function esVerdad(llegadas: Estado[], p: M.Pedido, que: string): void {
   const temprano = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'temprano')).length,
     enElLimite = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'limite')).length,
-    tarde = llegadas.filter((E) => primeraCosechaATiempo(E, p, 'tarde')).length;
+    tarde = llegadas.map((E) => primeraCosechaATiempo(E, p, 'tarde')).filter((x) => x !== null);
   expect(temprano, `${que}: sembrando temprano`).toBeGreaterThan(llegadas.length / 2);
   expect(enElLimite, `${que}: sembrando en el límite`).toBeGreaterThan(llegadas.length / 2);
-  expect(tarde, `${que}: sembrando tarde`).toBeLessThan(llegadas.length / 2);
+  expect(tarde.filter(Boolean).length, `${que}: sembrando tarde`).toBeLessThan(tarde.length / 2 || 1);
 }
 
 describe.each(Object.keys(M.PLANTILLAS))('la cuenta es verdad en el patio %s', (patio) => {
