@@ -20,11 +20,14 @@ import {
   ajustarRiego,
   avisarSalvadas,
   cerrarTurno,
+  crecerElJardin,
   logroDeSocios,
   pronosticar,
   suelosYCompost,
 } from './patio';
+import { llegaPedido, vencerPedidos } from './pedidos';
 import { plagas } from './plagas';
+import { anunciarSorpresa, llegaSorpresa } from './sorpresas';
 
 export { DIAS_POR_TURNO } from './contexto';
 
@@ -47,10 +50,16 @@ export const SISTEMAS_DEL_PATIO: SistemaDelPatio[] = [
   anotarAvisos,
   logroDeSocios,
   suelosYCompost,
+  crecerElJardin,
+  llegaSorpresa,
+  vencerPedidos,
   anotarAvisos,
   cerrarTurno,
   anotarAvisos,
   pronosticar,
+  anunciarSorpresa,
+  llegaPedido,
+  anotarAvisos,
   ajustarRiego,
 ];
 

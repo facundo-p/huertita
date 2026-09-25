@@ -1,5 +1,9 @@
 export const clamp = (v: number, a: number, b: number): number => Math.max(a, Math.min(b, v));
-export const r1 = (v: number): number => Math.round(v * 10) / 10;
+/** redondeos que nunca dan -0: JSON lo guarda como 0 y la partida cargada no sería la misma */
+export const r1 = (v: number): number => Math.round(v * 10) / 10 || 0;
+export const entero = (v: number): number => Math.round(v) || 0;
+/** Un número para leer: a lo sumo un decimal, y con coma decimal, como se escribe acá. */
+export const numero = (v: number): string => String(r1(v)).replace('.', ',');
 export const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
 /** normal acumulada */
 export function phi(z: number): number {

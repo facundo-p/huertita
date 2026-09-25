@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { validarPatio } from '../datos/juego/patio';
+import { REGLAS } from '../datos/juego/reglas';
 import * as M from '../src/dominio';
 import { jugarUnAnio } from '../tools/jugador';
 import type { Estado } from '../src/dominio';
@@ -87,8 +88,13 @@ describe('migración de partidas guardadas', () => {
       expect(E.tiempo.dec).toBe(vieja.dec);
       expect(E.mundo.patio).toEqual(M.PLANTILLAS[E.meta.plantilla]);
       expect(Object.keys(E.mundo.plantas)).toEqual(Object.keys(vieja.plantas));
-      expect(M.compostera(E)).toMatchObject({ dosis: vieja.compost.dosis, carga: vieja.compost.carga });
-      expect(M.compostera(E)!.tandas).toEqual(vieja.compost.tandas);
+      // lo que había en la compostera se toma como bien tapado: dos secos por cada verde
+      expect(M.compostera(E)).toMatchObject({
+        dosis: vieja.compost.dosis,
+        verdes: vieja.compost.carga,
+        secos: vieja.compost.carga * 2,
+      });
+      expect(M.compostera(E)!.tandas).toEqual(vieja.compost.tandas.map((t: any) => ({ ...t, mezcla: 'pareja' })));
       for (let i = 0; i < 12; i++) M.pasarDecada(E);
       expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
     },
@@ -101,6 +107,79 @@ describe('migración de partidas guardadas', () => {
   it('las plantas de la v2 ocupan una celda, que es como se jugaron', () => {
     const E = M.migrar(guardada('partida-v2-fondo'))!;
     for (const pl of Object.values(E.mundo.plantas)) expect(M.celdasDePlanta(pl)).toEqual([pl.celda]);
+  });
+  it.each(['partida-v4-fondo', 'partida-v4-balcon'])('%s gana jardín y bolsa de secos y sigue jugando', (nombre) => {
+    const vieja = guardada(nombre),
+      E = M.migrar(guardada(nombre))!;
+    expect(E.meta.v).toBe(M.VERSION);
+    expect(E.mundo.patio).toEqual(M.PLANTILLAS[E.meta.plantilla]);
+    expect(Object.keys(E.mundo.plantas)).toEqual(Object.keys(vieja.mundo.plantas));
+    const k = vieja.mundo.estructuras[0];
+    expect(M.compostera(E)).toEqual({
+      tipo: 'compostera',
+      en: k.en,
+      verdes: k.carga,
+      secos: k.carga * 2,
+      tandas: k.tandas.map((t: any) => ({ avance: t.avance, mezcla: 'pareja' })),
+      dosis: k.dosis,
+    });
+    expect(E.recursos.secos).toBe(REGLAS.jardin.bolsaInicial);
+    expect(E.mundo.jardin).toEqual(M.jardinInicial(E.mundo.patio, E.tiempo.dec));
+    for (let i = 0; i < 12; i++) M.pasarDecada(E);
+    expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
+  });
+  it('un pedido abierto de la v5 gana su cuenta y, al vencer, el cuaderno dice por qué', () => {
+    const vieja = guardada('partida-v5-balcon'),
+      [pv] = vieja.progreso.pedidos.abiertos,
+      E = M.migrar(guardada('partida-v5-balcon'))!;
+    expect(E.meta.v).toBe(M.VERSION);
+    const [pd] = E.progreso.pedidos.abiertos as any[];
+    expect(pd.limite).toBeUndefined();
+    expect(pd).toMatchObject({ id: pv.id, desde: pv.desde, vence: pv.vence, base: pv.base });
+    expect(pd.cuenta).toHaveLength(pv.vence - pv.desde + 1);
+    while (E.tiempo.turno <= pv.vence) M.pasarDecada(E);
+    expect(E.progreso.pedidos.abiertos).toEqual([]);
+    expect(E.progreso.cuaderno.some((e) => e.codigo === 'pedido.sin-sembrar')).toBe(true);
+    expect(M.esPartidaValida(JSON.parse(JSON.stringify(E)))).toBe(true);
+  });
+  it('un pedido que ya no existe se deja de lado al migrar', () => {
+    const vieja = guardada('partida-v5-balcon');
+    vieja.progreso.pedidos.abiertos[0].id = 'el-que-ya-no-esta';
+    expect(M.migrar(vieja)!.progreso.pedidos.abiertos).toEqual([]);
+  });
+  it('un pedido v5 sin fechas se deja de lado, y la cuenta se hace de nuevo aunque viniera', () => {
+    const vieja = guardada('partida-v5-balcon'),
+      [pd] = vieja.progreso.pedidos.abiertos;
+    vieja.progreso.pedidos.abiertos.push({ ...pd, id: 'acelga-del-comedor', desde: undefined });
+    // sin lo cosechado al llegar, lo que llevás sería NaN y el pedido se daría por cumplido
+    vieja.progreso.pedidos.abiertos.push({ ...pd, id: 'verdeo-de-la-feria', base: undefined });
+    pd.cuenta = [99];
+    const abiertos = M.migrar(vieja)!.progreso.pedidos.abiertos,
+      [p] = abiertos;
+    expect(abiertos.map((x) => x.id)).toEqual([pd.id]);
+    expect(p.cuenta).toHaveLength(pd.vence - pd.desde + 1);
+    expect(p.cuenta).not.toContain(99);
+    expect(M.migrar(guardada('partida-v5-balcon'))!.progreso.pedidos.abiertos).toHaveLength(1);
+  });
+  it('una partida v5 rota no se carga, aunque la cuenta de los pedidos no pueda hacerse', () => {
+    const sinPedidos = guardada('partida-v5-balcon');
+    delete sinPedidos.progreso.pedidos;
+    expect(M.migrar(sinPedidos)).toBeNull();
+    const sinProgreso = guardada('partida-v5-balcon');
+    delete sinProgreso.progreso;
+    expect(M.migrar(sinProgreso)).toBeNull();
+    const zonaRara = guardada('partida-v5-balcon');
+    for (const c of Object.values(zonaRara.mundo.celdas) as any[]) c.zona = 'no-existe';
+    expect(() => M.migrar(zonaRara)).not.toThrow();
+    expect(M.migrar(zonaRara)).toBeNull();
+  });
+  it('una partida de antes de v4 rota no se carga, y no rompe la carga', () => {
+    for (const nombre of ['partida-v1', 'partida-v2-fondo', 'partida-v3-fondo', 'partida-v3-balcon']) {
+      const vieja = guardada(nombre);
+      delete vieja.compost;
+      expect(() => M.migrar(vieja), nombre).not.toThrow();
+      expect(M.migrar(vieja), nombre).toBeNull();
+    }
   });
   it('una partida de hoy pasa tal cual', () => {
     const E = M.crearPartida(3);

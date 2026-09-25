@@ -147,6 +147,9 @@ export function aliadosCerca(E: Estado, celda: CeldaId): number {
   }
   return n;
 }
+/** Cuánto del riesgo de una plaga queda con los aliados que hay cerca: 1 sin ninguno, hasta `proteccionMaxima`. */
+export const riesgoConAliados = (E: Estado, celda: CeldaId): number =>
+  clamp(1 - REGLAS.plagas.proteccionPorAliado * aliadosCerca(E, celda), REGLAS.plagas.proteccionMaxima, 1);
 export function floresAbiertas(E: Estado): number {
   let n = 0;
   for (const id in E.mundo.plantas) {

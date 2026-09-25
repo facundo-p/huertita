@@ -6,6 +6,8 @@ Escrito el 18 de septiembre de 2026 por Claude, al cierre de una sesión larga d
 
 **Actualizado el 24 de septiembre de 2026**: se ejecutó la epic #39 entera (reestructura, 0.9.0). El código cambió de lugar y de forma sin cambiar cómo se juega; §4 lo resume y `docs/ARQUITECTURA.md` lo cuenta entero. Lo que sigue es #31 y el paso 4 (§7c).
 
+**Actualizado el 25 de septiembre de 2026**: 0.10.0. Se sumó la sección Proceso a `CLAUDE.md` (toda tarea es un issue, cada issue se cierra con un PR), se jubiló el dorado v0.4 (#68) y entró la primera tanda del cuadro: compost con secos y verdes (#7), eventos sorpresa (#6), pedidos de vecinos (#8) y sonido (#9). Todo en un PR que espera la revisión de Facu (§7e).
+
 **Todo lo de este traspaso vive en el repo, en `docs/traspaso/`:**
 
 | Archivo | Qué es |
@@ -37,8 +39,8 @@ Para que una instancia nueva arranque con todo: "Leé `docs/traspaso/TRASPASO-hu
 | Copia local en la Mac | `~/Desarrollos/Personales/App-info-huerta/huertita/` (rama `main`, remoto HTTPS) |
 | huertapp (fuente de datos) | https://github.com/facundo-p/huertapp · local: `~/Desarrollos/Personales/App-info-huerta/info-huerta/` |
 | Prototipo viejo v0.4 (referencia, no se toca) | `~/Desarrollos/Personales/App-info-huerta/huertita-juego/` |
-| Juego publicado (artifact de Claude) | https://claude.ai/artifact/4qfBdRJGaRFdEjczwVLq4q — versión 7 = v0.7. Capacidades `db`, `user`, `downloads` (guardado en la nube por persona). Se republica con `npm run build:artifact` y publicando `dist-artifact/huertita-artifact.html` pasando ese `url`; las capacidades se conservan si no se pasa el campo. |
-| Mapa de ideas (cuadro 2×2 interactivo, 26 ideas) | https://claude.ai/artifact/SeF5Jr9GeytaMYqMmzbkwQ — versión 2, con enlace al issue de cada idea. Fuente `docs/mapa-ideas.html` en el repo. Al cerrar una idea: marcarla `hecho: 'vX'` y republicar con ese `url`. |
+| Juego publicado (artifact de Claude) | https://claude.ai/artifact/4qfBdRJGaRFdEjczwVLq4q — versión 9 = v0.10 (25-9, desde la rama del PR #69, con la cuenta de pedidos de la tercera revisión). Capacidades `db`, `user`, `downloads` (guardado en la nube por persona). Se republica con `npm run build:artifact` y publicando `dist-artifact/huertita-artifact.html` pasando ese `url`; las capacidades se conservan si no se pasa el campo. |
+| Mapa de ideas (cuadro 2×2 interactivo, 31 ideas) | https://claude.ai/artifact/SeF5Jr9GeytaMYqMmzbkwQ — versión 5, al día con 0.10 (25-9), con enlace al issue de cada idea. Fuente `docs/mapa-ideas.html` en el repo. Se pone al día con el skill `mapa-de-ideas` (`.claude/skills/mapa-de-ideas/SKILL.md`): ideas hechas, ideas nuevas, orden, y republicar con ese `url`. |
 | GDD (Claude Docs) | https://claude.ai/code/artifact/19fb4257-8c56-40ea-97d5-f804bba4bde3 — exportado a `docs/traspaso/GDD-documento-de-diseno.md`. A Facu le resultó poco visible; no seguir engordándolo. |
 | Doc de estado en el Project "Desarrollo De Soft" | `claude/huertita-juego-estado.md` (actualizado a v0.7) |
 
@@ -71,7 +73,7 @@ Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 - TypeScript estricto, Vite 5, Vitest 2, tsx, Preact + signals, ESLint + Prettier. `npm run dev|build|build:artifact|test|tipos|lint|formato|bot|humo|capturas|datos:sync|datos:check`.
 - Capas en un solo sentido: `datos → dominio → aplicacion → vista`, con `infra` como adaptadores (guardado, reloj); `arte → render → vista`. El dominio no toca DOM. El renderer no importa el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lo vigila leyendo los `import`.
 - **Estado v4**, JSON, azar con semilla (mulberry32): `meta` (v, semilla, rng, región, plantilla), `mundo` (el patio copiado de su plantilla, celdas, plantas, `estructuras` con la compostera), `tiempo` (década, turno, año, carácter, clima y pronóstico), `recursos` (ratos, riego, túnel, manta, sobres), `progreso` (cosechas, logros, cuaderno). Migra desde v1, v2 y v3; `tests/fixtures/` tiene una partida real de cada versión.
-- **El orden de las llamadas a `azar` es contrato mientras viva el test dorado** (`tests/dorado.test.ts`: el dominio juega 8 años con el motor v0.4 y exige estado idéntico; `aFormaV04` proyecta el estado v4 a la forma vieja antes de comparar). El orden vive declarado en `src/dominio/sistemas/index.ts`.
+- **El orden de las llamadas a `azar` es contrato** y lo vigila el test dorado (`tests/dorado.test.ts`: el bot juega 8 años en cada patio y tiene que dar la foto guardada en `tests/fixtures/dorado.json`, balance y huella del estado). Si una regla cambia a propósito, `npm run dorado -- --guardar` y el diff va en el PR. El orden vive declarado en `src/dominio/sistemas/index.ts`. La comparación con el motor v0.4 se jubiló en la 0.10 (#68).
 - `src/dominio/`: `acciones/` (cada acción es `puede / costo / aplicar`; la vista pregunta `puede()`), `sistemas/` (el paso del tiempo como dos tuberías: por planta y del patio), `textos/` (cada frase del cuaderno es una función con código), clima, región, patio, sol, espacio, factores, abrigo, diario, misiones, balance, migraciones. Los números del balance, en `datos/juego/reglas.ts`.
 - `src/aplicacion/`: consultas para la pantalla (escena, HUD, fichas, almanaque) y casos de uso de la partida sobre el puerto `Almacen`. `src/infra/`: dispositivo (autoguardado y tres ranuras), nube del artifact, archivo, reloj.
 - `src/vista/`: Preact. Máquina de modos (`modos.ts`, `transicion` pura), un componente por panel con su CSS al lado, tokens de color en `src/estilos/tokens.css`.
@@ -91,10 +93,11 @@ Falta mergearla a `main` (por PR o directo, como prefiera Facu).
 - Skill global `mapa-de-pendientes` propuesto (ver §7).
 - **0.8 (sesión de Claude Code en la nube, 18-9):** paso 3 de los cimientos, con la regla de espacio apagada; `--espacio` en el bot; estado v3 con migración; `docs/traspaso/instalar-skill.sh`; `crear-issues.sh` regenerado desde `issues.json` (ahora también cierra el #27).
 - **0.9 (24-9): la epic #39 entera**, #40 a #56. Registro, números de antes y después, y lo que quedó anotado para después, en `docs/REESTRUCTURA.md`. Se juega igual: el dorado siguió verde en cada commit y el bot da los mismos puntajes.
+- **0.10 (25-9):** #63–#65 (arreglos de la revisión de la epic), #67 (Proceso en `CLAUDE.md`), #68 (dorado propio), y las ideas #7 compost, #6 sorpresas, #8 pedidos, #9 sonido. Estado v6 (migración desde v4 y v5). Detalle en el CHANGELOG.
 
 ## 6. Decisiones y deudas abiertas
 
-- **Sol del patio original.** El fondo sigue con `sol: 'v04'` (la fórmula del prototipo) para que el test dorado siga valiendo. Con geometría real, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, donde la fórmula vieja le daba 1 a 5 horas. **Decisión de Facu:** mover los canteros, bajar el paredón o aceptarlo. Va junto con el rebalanceo del paso 4.
+- **Sol del patio original.** El fondo sigue con `sol: 'v04'` (la fórmula del prototipo). Con geometría real, un paredón de 1,8 m al norte deja sin sol directo en pleno invierno todo lo que esté a menos de ~2,6 m (cinco celdas): el bancal a suelo queda a oscuras de mayo a agosto, donde la fórmula vieja le daba 1 a 5 horas. **Decisión de Facu:** mover los canteros, bajar el paredón o aceptarlo. Va junto con el rebalanceo del paso 4.
 - **Balcón:** todos sus números son supuestos de Claude, sin revisión ni balance (bot: 12–37 puntos; estrellas 10/25/45).
 - **Almácigo protegido:** berenjena y batata no pueden germinar en su época (la almaciguera suma solo +2 °C y huertapp pide "almácigo protegido"). Test que documenta la contradicción.
 - **Babosas bajo techo** (herencia del prototipo; corregirlo cambia el dorado).
@@ -175,7 +178,7 @@ Después de crear los issues, la primera prueba real del skill es correrlo sobre
 
 ### c) El paso 3 ya está hecho (0.8). Lo que sigue: decidir #31 y arrancar el paso 4 (#28)
 
-Lo que quedó del paso 3, en `src/dominio/espacio.ts`, `datos/juego/especies.ts` y `tests/espacio.test.ts`: marco de plantación por especie, huella de 1, 2 o 4 celdas, densidad por celda (9 rabanitos, 4 lechugas, 1 tomate), `capacidad` de bandeja en las zonas de cría (50), sombra de las plantas altas y estado v3 con migración. **La regla está apagada**: prenderla cambia rendimientos, azar y balance, y el test dorado se jubila recién en el paso 4.
+Lo que quedó del paso 3, en `src/dominio/espacio.ts`, `datos/juego/especies.ts` y `tests/espacio.test.ts`: marco de plantación por especie, huella de 1, 2 o 4 celdas, densidad por celda (9 rabanitos, 4 lechugas, 1 tomate), `capacidad` de bandeja en las zonas de cría (50), sombra de las plantas altas y estado v3 con migración. **La regla está apagada**: prenderla cambia rendimientos, azar y balance, y va con el rebalanceo del paso 4.
 
 Cuánto hay que rebalancear, medido con `npm run bot -- --espacio` (8 semillas, un año):
 
@@ -189,7 +192,7 @@ O sea: con el espacio real, una celda de 9 rabanitos rinde 9 veces. Los números
 El orden que queda, entonces:
 
 1. **#31, el sol del fondo** (decisión de diseño de Facu): fórmula v0.4, o geometría moviendo los canteros, o geometría bajando el paredón, o geometría y aguantarse el invierno oscuro. Con geometría, además, las plantas altas se sombrean entre sí. Todo el rebalanceo del paso 4 depende de esto.
-2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se jubila el test dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
+2. **#28, paso 4:** tic diario y `avanzar(estado, días)` de 1 a 10 días, ratos por día con tope, pronóstico de 5 días. Ahí se regenera el dorado (y se anota en CHANGELOG, innegociable 7), se prende el espacio real, se arregla lo de las babosas bajo techo (#34) y se rebalancea todo junto.
 3. Cuando el espacio real se prenda, dos cosas de interfaz que quedaron pendientes a propósito: mostrar el marco en la ficha ("ocupa 4 celdas", "entran 9 por celda") y dibujar una planta grande como una sola planta grande, no como la misma planta repetida — la escena ya marca cuál es la celda ancla (`ancla`), los renderers ya dibujan una sola vez, pero el sprite no crece con la huella. Va con #30.
 
 ### c bis) La reestructura: epic #39 — hecha (0.9, 24-9)
@@ -205,15 +208,23 @@ Quedan fuera de la epic, como issues propios: #57 otras regiones, #58 pantalla d
 construir y quitar en la partida, #60 vista de cerca por celda, #61 dinero. La base para cada uno ya
 está (región como dato, estado v4 con `estructuras`, cámaras como archivos, consultas).
 
+### e) La primera tanda del cuadro: #6, #7, #8, #9 — hecha (0.10, 25-9), esperando revisión
+
+Un PR con un commit por issue. Todo lo que no sale de huertapp va [SUPUESTO] y el PR lo lista aparte
+para Facu: las filas de `datos/juego/sorpresas.ts` y `datos/juego/pedidos.ts`, `REGLAS.sorpresas`,
+`REGLAS.pedidos` y `REGLAS.jardin` (cuántos secos y verdes da cada cosa). El bot todavía no mira los
+pedidos. #29 (contenido como tablas) sigue abierto: faltan logros e ítems. Lo que sigue en el cuadro,
+por costo e impacto: #11 vacaciones de enero y #10 patios prediseñados.
+
 ### d) Chequeos rápidos cuando se retome
 
 - ¿Guardó el skill (§7b)? ¿Activó Pages (#37)? ¿Mergeó la rama del paso 3 a `main`?
 - ¿Decidió el sol del fondo (#31)? Sin eso, el paso 4 no arranca bien.
-- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (468 tests) y
+- Reproducir el estado: clonar, `npm ci`, `npm run tipos && npm run lint && npm test` (595 tests) y
   `npm run humo` (necesita Playwright: se usa el del proyecto o, si no hay, el global; no hace falta
   symlink). Antes de tocar la gráfica, `npm run build:artifact && npm run capturas -- --guardar`.
-- ¿Mergeó la rama de la epic #39? ¿Republicar el juego (el artifact sigue en 0.7)? La 0.9 no cambia
-  lo que se ve salvo la manta en la vista de cerca, así que puede esperar al paso 4.
+- El juego publicado está en 0.10 (versión 9 del artifact, desde la rama del PR #69): Facu lo está
+  probando. Si pide cambios de lo que ve, van en issues nuevos.
 
 ## 8. Cosas que Facu ya dijo y no hay que volver a preguntar
 

@@ -1,7 +1,7 @@
 /** Arriba de todo: la fecha, el estado del guardado, los ratos de la década y el pronóstico. */
 import { hud } from '../aplicacion/consultas';
 import { sinStorage, usarPartida } from './estado';
-import { cuando } from './formato';
+import { cuando, numero } from './formato';
 import { hacer } from './mensajes';
 import { nube } from './persistencia';
 import './Hud.css';
@@ -37,6 +37,17 @@ export function Hud() {
           ))}
         </span>
       </div>
+      {h.pedido && (
+        <button
+          class="hz-pedido"
+          data-modo="logros"
+          title="Pedidos de los vecinos"
+          onClick={() => hacer({ tipo: 'ir', modo: 'logros' })}
+        >
+          <span class="hz-eti">{h.pedido.abiertos > 1 ? h.pedido.abiertos + ' pedidos' : 'Pedido'}</span>
+          {numero(h.pedido.llevas)}/{h.pedido.porciones} {h.pedido.especie} · {h.pedido.fecha}
+        </button>
+      )}
       <div class="hz-pron">
         <span class="hz-eti">Pronóstico de la década</span>
         <span>
@@ -44,6 +55,11 @@ export function Hud() {
         </span>
         <span class={h.alertaDeHelada ? CLASE_DE_HELADA[h.alertaDeHelada] : ''}>helada {p.pHelada} %</span>
         <span>{p.lluvia}</span>
+        {h.amenaza && (
+          <span class="hz-amenaza" title={h.amenaza.queHacer}>
+            {h.amenaza.titulo}: {h.amenaza.queHacer}
+          </span>
+        )}
       </div>
     </>
   );

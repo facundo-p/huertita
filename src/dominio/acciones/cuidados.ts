@@ -4,8 +4,9 @@ import { anotar } from '../estado';
 import { zona } from '../patio';
 import { especieDe } from '../planta';
 import type { CeldaId, Estado } from '../tipos';
-import { clamp } from '../util';
+import { clamp, r1 } from '../util';
 import * as T from '../textos/acciones';
+import * as TC from '../textos/compost';
 import { tratada } from '../textos/plagas';
 import type { De, Regla } from './regla';
 
@@ -45,11 +46,13 @@ export const mulch: Regla<De<'mulch'>> = {
     const c = E.mundo.celdas[a.celda];
     if (!c || zona(E, c.zona).cria) return T.mulchNoVa();
     if (c.mulch) return T.yaTieneMulch();
+    if (E.recursos.secos < REGLAS.jardin.secosPorMulch) return TC.sinSecosParaMulch();
     return null;
   },
   costo: RATO,
   aplicar(E, a, evs) {
     E.mundo.celdas[a.celda].mulch = true;
+    E.recursos.secos = r1(E.recursos.secos - REGLAS.jardin.secosPorMulch);
     evs.push(anotar(E, 'info', T.mulch(), a.celda));
   },
 };

@@ -8,6 +8,7 @@ import { App } from '../../src/vista/App';
 import { arrancar } from '../../src/vista/arrancar';
 import { interaccion, partida, renderer, tocada } from '../../src/vista/estado';
 import { almacenes } from '../../src/vista/persistencia';
+import { arrancarSonido, prenderSonido, sonido } from '../../src/vista/sonido';
 
 beforeEach(() => {
   renderer.value = 1; // el renderer de texto: happy-dom no tiene canvas
@@ -52,6 +53,51 @@ describe('la carcasa', () => {
     fireEvent.click(document.querySelectorAll('.hz-tcelda.z-suelo')[0]);
     expect(interaccion.value.modo.modo).toBe('celda');
     expect(interaccion.value.sel).toBe(M.celdasDe(partida.value, 'suelo')[0]);
+  });
+});
+
+describe('el sonido', () => {
+  it('arranca apagado; el botón lo prende y el dispositivo lo recuerda', () => {
+    localStorage.clear();
+    prenderSonido(false);
+    render(<App />);
+    const b = document.getElementById('hz-sonido')!;
+    expect(b.textContent).toBe('Sonido: no');
+    fireEvent.click(b);
+    expect(sonido.value).toBe(true);
+    expect(b.textContent).toBe('Sonido: sí');
+    expect(localStorage.getItem('huertita-sonido')).toBe('si');
+    fireEvent.click(b);
+    expect(sonido.value).toBe(false);
+  });
+  it('si quedó prendido, se prende con el primer gesto, del mouse o del teclado', () => {
+    for (const gesto of ['pointerDown', 'keyDown'] as const) {
+      prenderSonido(true);
+      sonido.value = false;
+      arrancarSonido();
+      fireEvent[gesto](document.body);
+      expect(sonido.value, gesto).toBe(true);
+    }
+  });
+  it('Escape no cuenta como primer gesto: el navegador no deja sonar con esa tecla', () => {
+    prenderSonido(true);
+    sonido.value = false;
+    arrancarSonido();
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    expect(sonido.value).toBe(false);
+    fireEvent.keyDown(document.body, { key: 'a' });
+    expect(sonido.value).toBe(true);
+  });
+  it('si el primer gesto es el botón de sonido, manda el botón: un toque lo prende, no lo prende y lo apaga', () => {
+    prenderSonido(true);
+    sonido.value = false;
+    arrancarSonido();
+    render(<App />);
+    const b = document.getElementById('hz-sonido')!;
+    fireEvent.pointerDown(b);
+    fireEvent.click(b);
+    expect(sonido.value).toBe(true);
+    expect(b.textContent).toBe('Sonido: sí');
   });
 });
 

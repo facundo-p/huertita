@@ -13,6 +13,7 @@ export type ModoUI =
   | { modo: 'almanaque' }
   | { modo: 'riego' }
   | { modo: 'proteger' }
+  | { modo: 'compost' }
   | { modo: 'cuaderno' }
   | { modo: 'logros' }
   | { modo: 'partidas'; verCodigo: boolean }

@@ -99,6 +99,10 @@ export interface Patio {
    * siga protegiendo los refactors. Se va cuando se jubile el test dorado (paso 4 de los cimientos).
    */
   sol: 'geometria' | 'v04';
+  /** m² de pasto que se corta: da verdes para el compost, o secos si se deja secar. Sin pasto, 0 */
+  pastoM2?: number;
+  /** si en la vereda hay árboles caducos: en otoño se pueden juntar sus hojas */
+  vereda?: boolean;
   /** puntos del balance de fin de año que dan una, dos y tres estrellas: un patio chico no compite con uno grande */
   estrellas: [number, number, number];
   /** solo para dibujar: el piso que no es cantero y lo que cierra el lado norte */

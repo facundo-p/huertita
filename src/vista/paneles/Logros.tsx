@@ -1,8 +1,48 @@
-/** Logros y cosecha: lo juntado en el año y los logros, con su premio. Y el balance de fin de año. */
+/** Logros y cosecha: lo juntado en el año, los pedidos de los vecinos y los logros, con su premio. Y el balance de fin de año. */
+import { pedidos } from '../../aplicacion/consultas';
 import * as M from '../../dominio';
 import { usarPartida } from '../estado';
-import { corto } from '../formato';
+import { corto, numero } from '../formato';
 import { hacer, seguirOtroAnio } from '../mensajes';
+
+/** Los pedidos abiertos: quién, qué, cuánto llevás, para cuándo y qué da. Cuándo sembrar, lo cuenta el que juega. */
+function Pedidos() {
+  const E = usarPartida(),
+    ps = pedidos(E);
+  return (
+    <>
+      <h3>Pedidos de los vecinos</h3>
+      {ps.abiertos.length ? (
+        <ul class="hz-logros hz-pedidos">
+          {ps.abiertos.map((p) => (
+            <li key={p.id} class={p.llevas >= p.porciones ? 'ok' : ''}>
+              <b>
+                {p.porciones} de {p.especie} para {p.fecha}
+              </b>
+              <span>
+                {p.quien}, {p.para}. Llevás {numero(p.llevas)} de {p.porciones}
+                {p.faltan > 0
+                  ? '; faltan ' + p.faltan + (p.faltan === 1 ? ' década.' : ' décadas.')
+                  : '; es esta década.'}
+              </span>
+              <small>A cambio: {p.premio}</small>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="hz-nota">
+          Ninguno abierto. Cuando ven que cosechás, los vecinos piden: vienen con fecha, y cuándo sembrar lo contás vos
+          con la ficha.
+        </p>
+      )}
+      {ps.cumplidos > 0 && (
+        <p class="hz-nota">
+          Cumpliste {ps.cumplidos} {ps.cumplidos === 1 ? 'pedido' : 'pedidos'}.
+        </p>
+      )}
+    </>
+  );
+}
 
 export function Logros() {
   const E = usarPartida(),
@@ -14,6 +54,8 @@ export function Logros() {
         <b>{b.porciones}</b> porciones · <b>{b.especies}</b> especies · <b>{b.semillas}</b> sobres propios ·{' '}
         <b>{b.visitas}</b> visitas de polinizadores
       </p>
+      <Pedidos />
+      <h3>Logros</h3>
       <ul class="hz-logros">
         {M.MISIONES.map((m) => (
           <li key={m.id} class={m.id in E.progreso.misiones ? 'ok' : ''}>

@@ -370,16 +370,26 @@ export const REGLAS = {
     techo: 1.2,
   },
 
-  /** [REPO] compostaje.json: listo desde ~120 días, más rápido en verano; [SUPUESTO] las cantidades */
+  /**
+   * [REPO] compostaje.json: la receta (1 a 3 secos por cada verde; la más repetida, 2 a 1), qué es
+   * verde y qué es seco, las señales (huele y hay mosquitas: faltan secos; no pasa nada: sobran) y
+   * que está lista desde ~120 días, más rápido en verano. [SUPUESTO] las cantidades y los ritmos.
+   * La unidad es la carga: más o menos un balde de restos de cocina.
+   */
   compost: {
-    /** restos de cocina por década */
-    restosDeCocina: 1,
-    /** lo que suma cada cosa que va a la compostera */
+    /** lo que echa la cocina por década: yerba y cáscaras (verdes); cartón y papel (secos) */
+    cocina: { verdes: 1, secos: 0.5 },
+    /** lo que suma cada cosa que va a la compostera: una planta entera, los restos de una cosecha, un raleo */
     porPlanta: 1,
     porCosecha: 0.5,
     porRaleo: 0.5,
-    /** carga que cierra una tanda */
+    /** [REPO] secos por cada verde: la receta. Al echar verdes se tapan con secos de la bolsa hasta `ideal` */
+    receta: { min: 1, ideal: 2, max: 3 },
+    /** verdes que cierran una tanda */
     tanda: 6,
+    /** muy húmeda (menos secos que `receta.min`) se pudre y avanza a este ritmo; muy seca (más que `max`), a este */
+    ritmoHumeda: 0.5,
+    ritmoSeca: 0.6,
     /** avance por década según la temperatura media */
     avanceConCalor: 1.3,
     calorDesde: 20,
@@ -387,6 +397,44 @@ export const REGLAS = {
     frioDesde: 12,
     madura: 12,
     dosisPorTanda: 3,
+  },
+
+  /**
+   * [SUPUESTO] el patio como fuente de verdes y secos para el compost y el mulch. [REPO] compostaje.json:
+   * el pasto recién cortado es verde; el pasto seco, las hojas secas y la poda picada son secos.
+   * Los caducos pierden la hoja cuando la región dice que se les termina (`caducos.hasta`).
+   * En carga, como el compost.
+   */
+  jardin: {
+    /** pasto que crece por m² y década: el césped del GBA casi no crece con frío */
+    pastoPorM2: { calor: 0.15, templado: 0.08, frio: 0.02 },
+    pastoCalorDesde: 18,
+    pastoFrioBajo: 12,
+    /** sin cortar, el pasto llega como mucho a lo que crece en tantas décadas de calor */
+    pastoTopeDecadas: 3,
+    /** con menos pasto crecido que esto no hay nada que cortar */
+    pastoMinimo: 0.5,
+    /** lo que queda del pasto cuando se seca al sol */
+    pastoSeco: 0.5,
+    /** décadas que tardan en caer las hojas de los caducos */
+    caidaDecadas: 5,
+    /** hojas por década de caída: por cada celda de radio de copa de un caduco del patio, y de la vereda */
+    hojasPorCopa: 1.2,
+    hojasDeVereda: 2,
+    /** las hojas que no se juntan se vuelan o se deshacen: lo que queda cada década fuera de la caída */
+    hojasQuedan: 0.5,
+    /** menos que esto ya no se junta: se deshizo */
+    hojasMinimas: 0.2,
+    /** ramas de la poda de invierno, por celda de radio de copa */
+    podaPorCopa: 1,
+    /** ratos: cortar el pasto, juntar hojas, podar */
+    ratosCortar: 1,
+    ratosJuntar: 1,
+    ratosPodar: 2,
+    /** los secos con los que arranca la bolsa */
+    bolsaInicial: 6,
+    /** secos que se lleva cubrir una celda de mulch */
+    secosPorMulch: 1,
   },
 
   /** [SUPUESTO] polinizadores */
@@ -421,6 +469,54 @@ export const REGLAS = {
     porSobreGuardado: 0.5,
     visitasPorPunto: 10,
     topeDeVisitas: 20,
+  },
+
+  /** [SUPUESTO] cada cuánto hay eventos sorpresa (las filas están en `sorpresas.ts`) */
+  sorpresas: {
+    /** probabilidad por década de que llegue un regalo, si hay alguno que pueda llegar */
+    probRegalo: 0.3,
+    /** probabilidad por década de que se anuncie una amenaza para la que viene, si hay alguna que pueda pasar */
+    probAmenaza: 0.25,
+    /** décadas sin amenazas después de una: nunca dos seguidas */
+    respiro: 3,
+    /** décadas antes de que el mismo evento pueda repetirse */
+    mismaCada: 12,
+    /** un golpe lastima pero no mata de una: la salud no baja de esto */
+    saludMinima: 1,
+  },
+
+  /** [SUPUESTO] los pedidos de los vecinos (`datos/juego/pedidos.ts`) */
+  pedidos: {
+    /** probabilidad por década de que llegue un pedido, si hay alguno que pueda llegar */
+    prob: 0.35,
+    /** pedidos abiertos a la vez, como mucho */
+    maxAbiertos: 2,
+    /** logros cumplidos antes del primer pedido: los vecinos piden cuando ven que ya cosechás */
+    desdeLogros: 2,
+    /** décadas desde que se cerró antes de que el mismo pedido pueda volver: el año que viene, no antes */
+    mismoCada: 24,
+    /**
+     * cuánto crece una huerta bien cuidada respecto de lo que da el tiempo, como factor de 0 a 1. Con
+     * esto, la temperatura normal y la luz y el suelo del patio se cuenta hasta cuándo se puede sembrar
+     * para llegar a la fecha. Es 1 porque quien riega según el pronóstico, trata y resiembra crece eso:
+     * con menos, en el balcón se llegaba sembrando después de «a más tardar» (tests/pedidos.test.ts)
+     */
+    cuidado: 1,
+    /** la máxima, en °C, con la que se cuenta la luz de media sombra al estimar */
+    temperaturaDeReferencia: 20,
+    /**
+     * décadas de margen entre la cosecha de la cuenta y la fecha: la cuenta es la de un año normal, y de
+     * un año a otro la cosecha se corre una década o dos. Con esto, sembrando a más tardar en el límite
+     * que se dice se llega la mayoría de los años (tests/pedidos.test.ts). Además, sembrando hasta tantas
+     * décadas después (lo que atrasa un año fresco) todavía se tiene que llegar a la fecha: así se ve el
+     * plantín que en un año normal está hecho justo antes de que cierre la época de trasplante
+     */
+    margen: 2,
+    /**
+     * una siembra de hoja no llega si, en un año normal, espiga antes de la cosecha más de esta parte de
+     * las veces (`probEspigar`)
+     */
+    espigaComoMucho: 0.05,
   },
 
   /** [SUPUESTO] el trasplante */

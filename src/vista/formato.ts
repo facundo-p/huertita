@@ -1,6 +1,6 @@
 /** Formatos chicos que usa la vista. */
 export { nombreCorto as corto } from '../aplicacion/consultas';
-export { cap } from '../dominio/util';
+export { cap, numero } from '../dominio/util';
 
 const dos = (n: number): string => (n < 10 ? '0' : '') + n;
 /** "18/09 14:05" */

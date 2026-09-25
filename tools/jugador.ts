@@ -1,18 +1,19 @@
-/** Un jugador automático simple. Sirve de test de humo, de oráculo para el test dorado y para balancear. */
+/** Un jugador automático simple. Sirve de test de humo, para la foto del test dorado y para balancear. */
 export interface MotorJugable {
   crearPartida(semilla: number, opciones?: { patio?: string }): any;
   despachar(E: any, a: any): { ok: boolean };
   pasarDecada(E: any): { dec: number; tipo: string; texto: string }[];
   ESPECIES: Record<string, any>;
-  /** el prototipo: (slug, dec, que). El motor nuevo, con la región adelante: (región, slug, dec, que) */
-  ventana(...args: any[]): string;
-  /** solo el motor nuevo: el calendario depende de la región de la partida */
-  regionDe?(E: any): unknown;
+  ventana(region: any, slug: string, dec: number, que?: 'trasplante'): string;
+  /** el calendario depende de la región de la partida */
+  regionDe(E: any): any;
   metodoDe(slug: string, dec: number): string | null;
   evaluarCelda(E: any, slug: string, celda: string): { puntaje: number } | null;
   ratosLibres(E: any): number;
-  /** solo el motor nuevo: las zonas salen del patio de la partida. El prototipo tenía estas cuatro fijas. */
-  zonasDe?(E: any): { id: string; cria?: boolean }[];
+  /** las zonas salen del patio de la partida */
+  zonasDe(E: any): { id: string; cria?: boolean }[];
+  /** lo que previene la amenaza anunciada, si hay */
+  prevenciones(E: any): any[];
 }
 /** Lo que el jugador mira de una partida para decidir. */
 export interface Vistazo {
@@ -23,41 +24,32 @@ export interface Vistazo {
   dec: number;
   pronostico: { pHelada: number; tmax: number };
 }
-/** El estado del motor nuevo viene en partes (v4); el del prototipo, todo suelto. */
 function leer(E: any): Vistazo {
-  if (E.mundo)
-    return {
-      celdas: E.mundo.celdas,
-      plantas: E.mundo.plantas,
-      sobres: E.recursos.sobres,
-      misiones: E.progreso.misiones,
-      dec: E.tiempo.dec,
-      pronostico: E.tiempo.pronostico,
-    };
   return {
-    celdas: E.celdas,
-    plantas: E.plantas,
-    sobres: E.sobres,
-    misiones: E.misiones,
-    dec: E.dec,
-    pronostico: E.prox.pron,
+    celdas: E.mundo.celdas,
+    plantas: E.mundo.plantas,
+    sobres: E.recursos.sobres,
+    misiones: E.progreso.misiones,
+    dec: E.tiempo.dec,
+    pronostico: E.tiempo.pronostico,
   };
 }
-const ZONAS_V04 = [{ id: 'suelo' }, { id: 'elevado' }, { id: 'macetas' }, { id: 'almacigo', cria: true }];
 export function jugarUnAnio(
   M: MotorJugable,
   semilla: number,
   narrar?: (linea: string) => void,
-  opciones?: { patio?: string; decadas?: number },
+  opciones?: { patio?: string; decadas?: number; alEmpezarLaDecada?: (E: any) => void },
 ): any {
   const E = M.crearPartida(semilla, opciones);
-  const ventana = (slug: string, dec: number, que?: 'trasplante'): string =>
-    M.regionDe ? M.ventana(M.regionDe(E), slug, dec, que) : M.ventana(slug, dec, que);
-  const zonas = M.zonasDe ? M.zonasDe(E) : ZONAS_V04,
+  const ventana = (slug: string, dec: number, que?: 'trasplante'): string => M.ventana(M.regionDe(E), slug, dec, que);
+  const zonas = M.zonasDe(E),
     deCria = new Set(zonas.filter((z) => z.cria).map((z) => z.id)),
     deCultivo = zonas.filter((z) => !z.cria).map((z) => z.id);
   const enCria = (celda: string): boolean => deCria.has(leer(E).celdas[celda].zona);
   for (let t = 0; t < (opciones?.decadas ?? 36); t++) {
+    // con más de un año, al terminar cada uno se sigue en el mismo patio
+    if (t > 0 && t % 36 === 0) M.despachar(E, { tipo: 'seguir' });
+    opciones?.alEmpezarLaDecada?.(E);
     const V = leer(E);
     for (const pl of Object.values<any>(V.plantas)) {
       const sp = M.ESPECIES[pl.slug];
@@ -88,6 +80,7 @@ export function jugarUnAnio(
       }
     }
     if (V.pronostico.pHelada > 40) for (const z of deCultivo) M.despachar(E, { tipo: 'manta', zona: z });
+    for (const a of M.prevenciones(E)) M.despachar(E, a);
     const calor = V.pronostico.tmax > 29;
     for (const z of deCultivo) M.despachar(E, { tipo: 'riego', zona: z, nivel: calor ? 2 : 1 });
     let guarda = 0;
@@ -105,6 +98,20 @@ export function jugarUnAnio(
             }
       if (!mejor || mejor.p < 0.45) break;
       M.despachar(E, { tipo: 'sembrar', slug: mejor.s, celda: mejor.c });
+    }
+    // con lo que sobra: juntar secos para el compost y el mulch, y repartir el compost maduro
+    for (const a of [
+      { tipo: 'juntarHojas' },
+      { tipo: 'podar' },
+      { tipo: 'revolver' },
+      { tipo: 'cortarPasto', destino: 'secar' },
+    ])
+      M.despachar(E, a);
+    for (let dosis = 0; dosis < 3; dosis++) {
+      const pobre = Object.keys(V.celdas)
+        .filter((c) => !enCria(c))
+        .sort((a, b) => E.mundo.celdas[a].mo - E.mundo.celdas[b].mo)[0];
+      if (!pobre || !M.despachar(E, { tipo: 'compost', celda: pobre }).ok) break;
     }
     const evs = M.pasarDecada(E);
     if (narrar) for (const e of evs) narrar(String(e.dec).padStart(2) + ' ' + e.tipo.padEnd(6) + ' ' + e.texto);

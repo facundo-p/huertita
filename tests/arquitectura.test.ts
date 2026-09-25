@@ -32,9 +32,10 @@ const PERMITIDAS: Record<string, string[]> = {
   dominio: ['datos'],
   aplicacion: ['datos', 'dominio'],
   infra: ['dominio'],
-  vista: ['datos', 'dominio', 'aplicacion', 'infra', 'render', 'arte', 'estilos'],
+  vista: ['datos', 'dominio', 'aplicacion', 'infra', 'render', 'arte', 'sonido', 'estilos'],
   arte: [],
   render: ['arte'],
+  sonido: [],
   estilos: [],
   raiz: ['vista', 'estilos'],
 };

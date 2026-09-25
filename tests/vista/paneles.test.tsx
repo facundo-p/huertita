@@ -179,3 +179,60 @@ describe('los botones que piden confirmación', () => {
     expect(veces).toBe(1);
   });
 });
+
+describe('compost', () => {
+  it('los botones del patio son los que el dominio deja, y juntar hojas llena la bolsa', () => {
+    const E = M.crearPartida(2, { decInicio: M.regionPorId('gba').caducos.hasta + 1 });
+    M.pasarDecada(E);
+    con(E);
+    hacer({ tipo: 'ir', modo: 'compost' });
+    for (const b of document.querySelectorAll<HTMLButtonElement>('#hz-panel [data-acc]')) {
+      const tipo = b.getAttribute('data-acc')!,
+        a = (tipo === 'cortarPasto' ? { tipo, destino: 'secar' } : { tipo }) as M.Accion;
+      expect(b.disabled, tipo).toBe(M.puede(E, a, { sinMirarRatos: true }) !== null);
+    }
+    const bolsa = E.recursos.secos,
+      hojas = E.mundo.jardin.hojas;
+    expect(hojas).toBeGreaterThan(0);
+    fireEvent.click(document.querySelector('[data-acc="juntarHojas"]')!);
+    expect(E.recursos.secos).toBeCloseTo(bolsa + hojas, 5);
+    expect(document.querySelector('.hz-bolsa')!.textContent).toBe(String(E.recursos.secos).replace('.', ','));
+  });
+});
+
+describe('los pedidos de los vecinos', () => {
+  it('el panel de logros muestra el pedido abierto: cuánto, de qué, para cuándo y qué da', () => {
+    const E = M.crearPartida(3, { decInicio: 5 });
+    E.progreso.pedidos.abiertos.push({
+      id: 'acelga-del-comedor',
+      desde: 0,
+      vence: 14,
+      base: 0,
+      sembrado: null,
+      cuenta: [],
+    });
+    con(E);
+    hacer({ tipo: 'ir', modo: 'logros' });
+    const li = document.querySelector('.hz-pedidos li')!;
+    expect(li.textContent).toMatch(/6 de acelga para/);
+    expect(li.textContent).toMatch(/Llevás 0 de 6; faltan 14 décadas/);
+    expect(li.textContent).toMatch(/compost maduro/);
+    expect(document.querySelector('.hz-pedido')!.textContent).toMatch(/0\/6 acelga/);
+  });
+  it('lo cosechado con decimales se lee con coma', () => {
+    const E = M.crearPartida(3, { decInicio: 5 });
+    E.progreso.pedidos.abiertos.push({
+      id: 'acelga-del-comedor',
+      desde: 0,
+      vence: 14,
+      base: 0,
+      sembrado: null,
+      cuenta: [],
+    });
+    E.progreso.cosechado.acelga = 2.5;
+    con(E);
+    hacer({ tipo: 'ir', modo: 'logros' });
+    expect(document.querySelector('.hz-pedidos li')!.textContent).toMatch(/Llevás 2,5 de 6/);
+    expect(document.querySelector('.hz-pedido')!.textContent).toMatch(/2,5\/6 acelga/);
+  });
+});

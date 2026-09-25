@@ -135,6 +135,10 @@ body {
   font-size: 13px;
   padding: 4px 8px;
 }
+.hz-pie button[aria-pressed='true'] {
+  border-color: var(--maiz);
+  color: var(--maiz);
+}
 .hz-panel {
   background: var(--anil-2);
   padding: 14px 16px 18px;

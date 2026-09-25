@@ -1,5 +1,5 @@
 /** Lo que pasa en el patio entero al final de cada turno, después de recorrer las plantas. */
-import { compostera } from '../estructuras';
+import { alCompost, compostera, mezclaDe, ritmoDe, secosPorVerde, tapar } from '../estructuras';
 import { REGLAS } from '../../../datos/juego/reglas';
 import { abrigo } from '../abrigo';
 import { DECADAS_DEL_ANIO } from '../calendario';
@@ -7,11 +7,13 @@ import { generarTiempo } from '../clima';
 import { ratosLibres } from '../estado';
 import { fVecinos, floresAbiertas } from '../factores';
 import { cumplir } from '../misiones';
+import { pasarJardin } from '../jardin';
 import { idsDeZonas, zona } from '../patio';
+import * as TC from '../textos/compost';
 import * as TH from '../textos/heladas';
 import * as TT from '../textos/temporada';
 import type { ZonaId } from '../tipos';
-import { clamp } from '../util';
+import { clamp, r1 } from '../util';
 import type { SistemaDelPatio } from './contexto';
 
 const { compost: COMPOST, polinizadores: POLI } = REGLAS;
@@ -41,26 +43,42 @@ function avanceDelCompost(tmed: number): number {
   return tmed < COMPOST.frioDesde ? COMPOST.avanceConFrio : 1;
 }
 
-/** [REPO] compostaje.json: listo desde ~120 días, más rápido en verano. El mulch se hace tierra; las flores atraen visitas. */
+/**
+ * [REPO] compostaje.json: listo desde ~120 días, más rápido en verano; los verdes se tapan con secos y
+ * una pila con pocos secos se pudre y tarda, con demasiados no arranca. El mulch se hace tierra; las
+ * flores atraen visitas.
+ */
 export const suelosYCompost: SistemaDelPatio = ({ E, w, ev }) => {
   for (const c of Object.values(E.mundo.celdas)) if (c.mulch) c.mo = clamp(c.mo + REGLAS.suelo.moPorMulch, 0, 100);
   const k = compostera(E);
   if (k) {
-    k.carga += COMPOST.restosDeCocina;
-    if (k.carga >= COMPOST.tanda) {
-      k.carga -= COMPOST.tanda;
-      k.tandas.push({ avance: 0 });
-      ev('info', TT.tandaCerrada());
+    const antes = mezclaDe(k.verdes, k.secos);
+    alCompost(E, COMPOST.cocina.verdes, 'verde');
+    alCompost(E, COMPOST.cocina.secos, 'seco');
+    tapar(E);
+    // tapar llega a la receta mientras haya secos: si la tanda queda húmeda, es que la bolsa se vació
+    if (antes !== 'humeda' && mezclaDe(k.verdes, k.secos) === 'humeda') ev('mal', TC.seAcabaronLosSecos());
+    if (k.verdes >= COMPOST.tanda) {
+      const mezcla = mezclaDe(k.verdes, k.secos);
+      ev(mezcla === 'pareja' ? 'info' : 'mal', TC.tandaCerrada(mezcla, secosPorVerde(k.verdes, k.secos)));
+      k.tandas.push({ avance: 0, mezcla });
+      k.verdes = 0;
+      k.secos = 0;
     }
     k.tandas = k.tandas.filter((t) => {
-      t.avance += avanceDelCompost(w.tmed);
+      t.avance = r1(t.avance + avanceDelCompost(w.tmed) * ritmoDe(t.mezcla));
       if (t.avance < COMPOST.madura) return true;
       k.dosis += COMPOST.dosisPorTanda;
-      ev('bien', TT.tandaMadura(COMPOST.dosisPorTanda));
+      ev('bien', TC.tandaMadura(COMPOST.dosisPorTanda));
       return false;
     });
   }
   E.progreso.visitas += Math.round(floresAbiertas(E) * (w.tmed > POLI.calorDesde ? POLI.visitasConCalor : 1));
+};
+
+/** Crece el pasto, caen las hojas, llega la poda. No tira dados. */
+export const crecerElJardin: SistemaDelPatio = ({ E, w }) => {
+  pasarJardin(E.mundo.jardin, E.mundo.patio, E.tiempo.dec, w.tmed);
 };
 
 /** Se sacan las mantas, se devuelven los ratos y avanza el calendario. A las 36 décadas, termina el año. */

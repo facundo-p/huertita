@@ -83,7 +83,9 @@ export const balcon: Patio = {
     { tipo: 'losa', nombre: 'Balcón de arriba', desde: [0, 0.6], hasta: [6, 4], alto: 2.6 },
   ],
   horizonte: 8,
+  /** [SUPUESTO] sin pasto, pero abajo hay vereda con árboles: en otoño se juntan hojas */
+  vereda: true,
   sol: 'geometria',
-  estrellas: [10, 25, 45], // sin balancear: el bot saca entre 12 y 37 puntos
+  estrellas: [10, 25, 45], // sin balancear: el bot saca entre 35 y 65 puntos
   aspecto: { piso: 'baldosa', norte: 'baranda' },
 };

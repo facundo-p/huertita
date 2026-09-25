@@ -2,7 +2,7 @@
 
 Tres reglas sostienen todo lo demás.
 
-1. **Las dependencias van en un solo sentido.** El juego va `datos → dominio → aplicacion → vista`, con `infra` como adaptadores que la vista enchufa. La gráfica va `arte → render → vista`. El dominio no sabe que existe una pantalla. El renderer no conoce el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lee los `import` de cada archivo y falla si alguien cruza al revés.
+1. **Las dependencias van en un solo sentido.** El juego va `datos → dominio → aplicacion → vista`, con `infra` como adaptadores que la vista enchufa. La gráfica va `arte → render → vista`, y el sonido `sonido → vista`. El dominio no sabe que existe una pantalla. El renderer no conoce el dominio: recibe una `Escena` plana (`src/render/contrato.ts`). `tests/arquitectura.test.ts` lee los `import` de cada archivo y falla si alguien cruza al revés.
 2. **El estado es un JSON y el azar tiene semilla.** De ahí salen gratis el guardado, las partidas reproducibles, los tests sin navegador y el bot. Todo cambio de forma del estado sube `v` y agrega un paso en `src/dominio/migraciones.ts`.
 3. **El juego puede simplificar, nunca contradecir a huertapp.** `[REPO]` y `[SUPUESTO]` marcan de dónde sale cada número, y `tests/catalogo.test.ts` lo vigila.
 
@@ -14,15 +14,16 @@ Tres reglas sostienen todo lo demás.
 | `src/dominio/` | La simulación: estado, acciones, el paso del tiempo, textos del cuaderno. Sin DOM, sin reloj, sin `Math.random` | `datos/` |
 | `src/aplicacion/` | Casos de uso de las partidas y consultas que arman lo que muestra la pantalla, como objetos planos | `datos/`, `dominio/` |
 | `src/infra/` | Adaptadores: dónde se guarda (dispositivo, nube, archivo) y el reloj | `dominio/` |
-| `src/vista/` | Componentes Preact con signals: los paneles, la barra, el patio | todo lo anterior, `render/`, `arte/` |
+| `src/vista/` | Componentes Preact con signals: los paneles, la barra, el patio | todo lo anterior, `render/`, `arte/`, `sonido/` |
 | `src/arte/` | Los dibujos pixel-art de cada especie y estadío | nada |
 | `src/render/` | Renderers intercambiables. Reciben una escena plana, nunca el estado | `arte/` |
+| `src/sonido/` | Los sonidos, sintetizados con Web Audio, y la mezcla del ambiente según el clima | nada |
 
 Los `import type` no cuentan: se borran al compilar y no acoplan nada en ejecución.
 
 ## El estado
 
-`Estado` (`src/dominio/tipos.ts`, formato v4) tiene cinco partes y ningún campo suelto:
+`Estado` (`src/dominio/tipos.ts`, formato v6) tiene cinco partes y ningún campo suelto:
 
 | Parte | Qué guarda |
 | --- | --- |
@@ -46,7 +47,7 @@ Las partidas guardadas en v1, v2 y v3 migran solas al cargarse. `tests/fixtures/
 | `textos/` | Cada frase del cuaderno y del diario es una función con nombre que devuelve `{ codigo, texto }`. Las reglas no arman frases |
 | `calendario.ts`, `clima.ts`, `region.ts` | El calendario (décadas, meses, la estación y cuánto es invierno); el tiempo de cada década y su pronóstico, sorteados alrededor de las normales de la región con el modelo de `REGLAS.clima` |
 | `patio.ts`, `estructuras.ts` | Lo que el dominio le pregunta al patio de la partida (qué zona es cada celda, cuánto sol le da) y a la compostera |
-| `sol.ts` | Horas de sol por geometría: latitud de la región, fecha y obstáculos. Y la fórmula vieja del fondo, mientras viva el test dorado |
+| `sol.ts` | Horas de sol por geometría: latitud de la región, fecha y obstáculos. Y la fórmula vieja del fondo, hasta que se decida #31 |
 | `espacio.ts` | Cuánto lugar ocupa cada planta: huella en celdas, cuántas entran en una celda, qué sombra hace. Apagado hasta el paso 4 |
 | `factores.ts`, `abrigo.ts` | Luz, agua, temperatura, suelo, vecinos, el fantasma de siembra; manta, microtúnel y reparo fijo contra la helada |
 | `diario.ts`, `misiones.ts`, `balance.ts`, `migraciones.ts` | El diario de cada planta, los logros, el puntaje, las partidas viejas |
@@ -72,6 +73,12 @@ Los números del balance (probabilidades, daños, ratos, arranque, épocas de pl
 `src/render/pixel/` recorre la cámara elegida. Una `Camara` (`camaras/tipos.ts`) arma su geometría, pinta su fondo y, si quiere, algo antes y después de las plantas; lo que cambia de las plantas según desde dónde se las mire (sombra en el piso, avisos, dónde apoyan) es un dato de su geometría. Hay tres: `cenital`, `oblicua` y `cerca` (un cantero de frente con el suelo cortado). **Una cámara nueva es un archivo.** Plantas, capas de información, efectos y clima son comunes.
 
 `src/arte/` dibuja cada especie en cada etapa con un pincel de píxel gordo: `estilos.ts` dice qué forma y qué colores lleva cada una, y cada forma está en `formas/`. Una especie nueva de huertapp sin estilo propio usa la forma de su grupo.
+
+## El sonido
+
+`src/sonido/` no sabe nada del juego: sintetiza con Web Audio (sin archivos) unos pocos sonidos cortos (el pop de la cosecha, la tierra, el agua, la campanita de un logro) y un ambiente continuo (lluvia, pájaros, chicharras). `mezcla.ts` es la cuenta pura de qué suena de fondo según el clima de la década; con `prefers-reduced-motion` no hay ambiente continuo. Sin Web Audio no hace nada.
+
+`src/vista/sonido.ts` lo enchufa: cada animación que se encola (`efecto`) suena si tiene sonido, y el ambiente sigue a `E.tiempo.clima`. Arranca apagado; el botón del pie lo prende y el dispositivo lo recuerda, y si quedó prendido se vuelve a prender con el primer toque (antes el navegador no deja sonar).
 
 ## El patio es un dato
 
@@ -106,13 +113,13 @@ El dominio lo usa entero: sembrar y trasplantar toman el bloque de celdas y avis
 el raleo deja las que caben, la cosecha rinde por planta, la competencia empieza cuando se pasa de
 la densidad, y las plantas altas entran como obstáculos temporales en el cálculo de sol.
 
-**Está apagado** (`src/dominio/espacio.ts`): mientras viva el test dorado, el juego corre con huella 1
+**Está apagado** (`src/dominio/espacio.ts`): hasta el rebalanceo del paso 4, el juego corre con huella 1
 y una planta por celda, que es como venía jugando. Se prende en el paso 4 (ver `docs/CIMIENTOS.md`).
 `conEspacioReal(fn)` lo prende para los tests.
 
 ## Lo que vigila todo esto
 
-- **El test dorado** (`tests/dorado.test.ts`) hace jugar al bot un año entero con 8 semillas en el dominio y en el motor del prototipo (`tests/legado/motor-v04.cjs`) y exige el mismo estado final, decimal por decimal (proyectando el estado v4 a la forma vieja). Mientras esté verde, mover código es seguro. Cuando una regla cambie a propósito, el test se jubila en el mismo PR y el cambio se anota en el CHANGELOG.
+- **El test dorado** (`tests/dorado.test.ts`) hace jugar al bot un año entero con 8 semillas en cada patio y exige lo mismo que la foto guardada en `tests/fixtures/dorado.json`: el balance de cada partida y una huella del estado final. Mientras esté verde, mover código es seguro. Cuando una regla cambia a propósito, la foto se regenera en el mismo PR (`npm run dorado -- --guardar`; `npm run dorado` solo compara y dice qué partidas cambiaron), el diff se revisa y el cambio se anota en el CHANGELOG. Hasta la 0.9 comparaba contra el motor del prototipo v0.4; se jubiló en la 0.10 (#68).
 - **Las capturas** (`npm run capturas -- --guardar | --comparar`) toman la huella de los píxeles de cada lienzo: el patio en las tres cámaras y las cuatro estaciones, cada cantero de cerca, el tinte de siembra, la tira de estadíos de las 55 especies y cuadro por cuadro de todos los efectos animados, con el reloj del navegador quieto. Si un cambio no debería tocar la gráfica, tienen que dar iguales.
 - **El humo** (`npm run humo`) juega en un navegador de verdad, en celular y escritorio, incluida una partida guardada con el formato de la v1.
 - **La arquitectura** (`tests/arquitectura.test.ts`): capas, que nadie repita el vocabulario del dominio, que las reglas (acciones, sistemas y modelo de clima) no tengan números sueltos, y la deuda que solo baja (líneas larguísimas por carpeta). `npm run lint` tiene un tope de avisos (complejidad, anidamiento, funciones largas) que solo baja.

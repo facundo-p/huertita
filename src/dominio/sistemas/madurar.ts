@@ -6,6 +6,7 @@ import { quitarPlanta } from '../estado';
 import { cumplir } from '../misiones';
 import { zona } from '../patio';
 import * as TC from '../textos/crecimiento';
+import type { Especie } from '../tipos';
 import type { SistemaDePlanta } from './contexto';
 
 const { madurez: MADUREZ, espigado: ESPIGA, cosecha: COSECHA } = REGLAS;
@@ -34,19 +35,21 @@ export const semillarOSecarse: SistemaDePlanta = ({ E, ev, evs }, { pl, sp }) =>
   return 'sigue';
 };
 
-/** [REPO] riesgos de la ficha: las hojas (no las brasicáceas) se suben a flor con calor. [SUPUESTO] la probabilidad. */
+/** [REPO] riesgos de la ficha: las hojas (no las brasicáceas) se suben a flor con calor. */
+export const puedeEspigar = (sp: Especie): boolean => sp.grupo === 'Hortaliza de hoja' && sp.familia !== 'brasicacea';
+
+/** [SUPUESTO] la probabilidad de espigar por década, que también usa la cuenta de los pedidos. */
+export function probEspigar(sp: Especie, prog: number, tmed: number, horas: number): number {
+  if (!puedeEspigar(sp) || prog <= objetivoCosecha(sp) * ESPIGA.desde) return 0;
+  const aMediaSombra = horas <= ESPIGA.horasDeMediaSombra;
+  return (tmed - (sp.tc.ideal_max + ESPIGA.margen)) * ESPIGA.probPorGrado * (aMediaSombra ? ESPIGA.aMediaSombra : 1);
+}
+
 export const espigar: SistemaDePlanta = ({ E, w, ev }, t) => {
   const { pl, sp } = t,
-    F = t.F!;
-  if (!(
-    sp.grupo === 'Hortaliza de hoja' &&
-    sp.familia !== 'brasicacea' &&
-    pl.prog > objetivoCosecha(sp) * ESPIGA.desde
-  ))
-    return 'sigue';
-  const aMediaSombra = F.luz.horas <= ESPIGA.horasDeMediaSombra;
-  const prob =
-    (w.tmed - (sp.tc.ideal_max + ESPIGA.margen)) * ESPIGA.probPorGrado * (aMediaSombra ? ESPIGA.aMediaSombra : 1);
+    F = t.F!,
+    aMediaSombra = F.luz.horas <= ESPIGA.horasDeMediaSombra,
+    prob = probEspigar(sp, pl.prog, w.tmed, F.luz.horas);
   if (prob > 0 && azar(E) < prob) {
     pl.etapa = 'pasada';
     pl.listoHace = 0;

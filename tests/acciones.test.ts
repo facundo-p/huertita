@@ -29,6 +29,13 @@ function candidatas(E: Estado): Accion[] {
     out.push({ tipo: 'manta', zona: z }, { tipo: 'tunel', zona: z });
   }
   out.push({ tipo: 'tunel' }, { tipo: 'manta', zona: 'no-existe' }, { tipo: 'cosechar', planta: 'p999' });
+  out.push(
+    { tipo: 'cortarPasto', destino: 'compost' },
+    { tipo: 'cortarPasto', destino: 'secar' },
+    { tipo: 'juntarHojas' },
+    { tipo: 'podar' },
+    { tipo: 'revolver' },
+  );
   return out;
 }
 

@@ -131,7 +131,10 @@ export const sacaste = (sp: Especie): Frase =>
   frase('accion.arrancar', 'Sacaste ' + nombreDe(sp) + '. Va a la compostera.');
 export const tutor = (sp: Especie): Frase => frase('accion.tutorar', 'Le pusiste tutor a ' + nombreDe(sp) + '.');
 export const mulch = (): Frase =>
-  frase('accion.mulch', 'Cubriste el suelo con pasto seco. Guarda humedad, frena yuyos y de a poco se hace tierra.');
+  frase(
+    'accion.mulch',
+    'Cubriste el suelo con secos de la bolsa: hojas, pasto seco, poda picada. Guarda humedad, frena yuyos y de a poco se hace tierra.',
+  );
 export const compost = (mo: number): Frase =>
   frase('accion.compost', 'Incorporaste compost: la materia orgánica sube a ' + Math.round(mo) + ' %.');
 export const armasteTunel = (z: ZonaDePatio, grados: number, deDia: number): Frase =>

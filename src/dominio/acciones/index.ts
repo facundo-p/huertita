@@ -8,6 +8,7 @@ import type { Accion, Estado, Evento, Resultado } from '../tipos';
 import * as T from '../textos/acciones';
 import { arrancar, cosechar, ralear, semillar } from './cosechar';
 import { compost, mulch, recibeCompost, tratar, tutorar } from './cuidados';
+import { cortarPasto, juntarHojas, podar, revolver } from './jardin';
 import type { Regla } from './regla';
 import { sembrar } from './sembrar';
 import { puedeMoverse, trasplantar } from './trasplantar';
@@ -27,6 +28,10 @@ const ACCIONES: { [T in Accion['tipo']]: Regla<Extract<Accion, { tipo: T }>> } =
   tratar,
   mulch,
   compost,
+  cortarPasto,
+  juntarHojas,
+  podar,
+  revolver,
   riego,
   tunel,
   manta,

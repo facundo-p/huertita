@@ -4,6 +4,7 @@ import { ESPECIES, semillasPorSiembra, ventana } from '../catalogo';
 import { bloqueDe, ocupadaEn, semillasDeSiembra } from '../espacio';
 import { anotar } from '../estado';
 import { fMaceta } from '../factores';
+import { alSembrar } from '../pedidos';
 import { zona } from '../patio';
 import type { Estado, Planta } from '../tipos';
 import { r1 } from '../util';
@@ -43,6 +44,7 @@ export const sembrar: Regla<De<'sembrar'>> = {
     const pl = nuevaPlanta(E, a.slug, a.celda, r1(vigor * 100) / 100, gen, fMaceta(E, sp, a.celda), semillas);
     if (bloque.length > 1) pl.celdas = bloque;
     for (const k of bloque) E.mundo.celdas[k].planta = pl.id;
+    alSembrar(E, a.slug);
     evs.push(anotar(E, 'info', T.sembraste(sp, Z, semillas, bloque.length, vent === 'fuera', repite), a.celda));
   },
 };
