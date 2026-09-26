@@ -1,5 +1,5 @@
 /**
- * HUERTITA — renderer pixel-art (canvas, baldosas de 32 px), con cámaras intercambiables.
+ * HUERTITA — renderer pixel-art (canvas, baldosas de 32 unidades de dibujo, cada una `RES` píxeles), con cámaras intercambiables.
  *
  * Cumple el contrato de `../contrato.ts`: montar, dibujar una escena plana, avisar qué celda se tocó
  * y desmontar; ofrece sus cámaras y los efectos de las acciones. No importa el motor ni lee el

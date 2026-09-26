@@ -1,5 +1,5 @@
 /**
- * HUERTITA — ilustraciones pixel-art de las plantas (caja de 32 px).
+ * HUERTITA — ilustraciones pixel-art de las plantas (caja de 32 unidades de dibujo).
  *
  * Capa de arte compartida: la usan el renderer del patio, la vista de cerca y la tira de estadíos
  * de las fichas. No sabe nada del motor: recibe una planta plana (`PlantaParaDibujar`, que la

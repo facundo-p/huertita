@@ -1,5 +1,9 @@
 # Cambios
 
+## Sin publicar
+
+- Un nivel más de resolución de píxel (#72). El arte sigue contado en unidades de dibujo (la baldosa mide 32) y cada unidad son ahora 2 píxeles del lienzo (`RES` en `src/arte/pincel.ts`): el pincel redondea a medio píxel, las elipses y los discos (hojas, flores, macetas) salen más redondos, y lo que se dibuja a escala fraccionaria (bandejas, plantines) más fino. Todo lo demás se ve igual. Con `RES = 1` las 293 capturas daban idénticas (#73); con `RES = 2` cambia entre el 0,1 y el 2 % de los píxeles de cada vista (#74). Un cuadro del patio hace un 58 % más de rectángulos (unos 5,6 ms contra 3,9 en una compu, con 90 ms entre cuadros). El retoque del arte con medios píxeles sigue en #75–#78.
+
 ## 0.10.0 · 2026-09-25 · Compost, sorpresas, pedidos y sonido
 
 La primera tanda del cuadro de ideas (#6, #7, #8, #9) sobre la arquitectura nueva, más los tres arreglos que salieron de la revisión del PR de la reestructura (#63, #64, #65). Los arreglos no cambian cómo se juega; las ideas sí, a propósito: el test dorado dejó de compararse con el motor v0.4 y pasó a ser una foto propia del bot, regenerada en cada commit que cambia una regla (#68). Todo lo nuevo que no sale de huertapp está marcado [SUPUESTO] y espera la revisión de Facu. Partidas guardadas: formato v6, con migración desde v4 y v5.

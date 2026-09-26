@@ -13,7 +13,7 @@
 import type { Paleta } from './paleta';
 
 /** Píxeles del lienzo por unidad de dibujo. Quien escala un lienzo lo hace por un múltiplo de esto. */
-export const RES = 1;
+export const RES = 2;
 
 /** Una escala de lienzo entera, múltiplo de `RES` y lo más cerca posible de la pedida. */
 export const escalaDeLienzo = (pedida: number, res = RES): number => res * Math.max(1, Math.round(pedida / res));
@@ -42,14 +42,20 @@ export function pincel(g: Lienzo2D, ox: number, oy: number, escala?: number, res
     if (c !== undefined) g.fillStyle = c;
     g.fillRect(q(ox + x * s), q(oy + y * s), Math.max(1 / res, q(w * s)), Math.max(1 / res, q(h * s)));
   }
-  /** Fila por fila de píxel del lienzo; el ancho se mide en el centro de cada fila. */
+  /**
+   * Fila por fila de píxel del lienzo; el ancho se mide en el centro de cada fila. Dentro de una
+   * unidad, las filas del mismo ancho van en un solo rectángulo (el redibujo es cada 90 ms).
+   */
   function elipse(cx: number, cy: number, rx: number, ry: number, c: Color): void {
+    const ancho = (yc: number): number =>
+      ry === 0 ? rx : q(rx * Math.sqrt(Math.max(0, 1 - (yc * yc) / (ry * ry + 0.01))));
     for (let y = -ry; y <= ry; y++)
-      for (let k = 0; k < res; k++) {
-        const yc = y + (k + 0.5) / res - 0.5;
-        let w = q(rx * Math.sqrt(Math.max(0, 1 - (yc * yc) / (ry * ry + 0.01))));
-        if (ry === 0) w = rx;
-        r(cx - w, cy + y + k / res, w * 2 + 1, 1 / res, c);
+      for (let k = 0; k < res;) {
+        const w = ancho(y + (k + 0.5) / res - 0.5);
+        let n = 1;
+        while (k + n < res && ancho(y + (k + n + 0.5) / res - 0.5) === w) n++;
+        r(cx - w, cy + y + k / res, w * 2 + 1, n / res, c);
+        k += n;
       }
   }
   const disco = (cx: number, cy: number, rad: number, c: Color): void => elipse(cx, cy, rad, rad, c);

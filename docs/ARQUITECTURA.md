@@ -74,6 +74,8 @@ Los números del balance (probabilidades, daños, ratos, arranque, épocas de pl
 
 `src/arte/` dibuja cada especie en cada etapa con un pincel de píxel gordo: `estilos.ts` dice qué forma y qué colores lleva cada una, y cada forma está en `formas/`. Una especie nueva de huertapp sin estilo propio usa la forma de su grupo.
 
+Todo se dibuja en **unidades de dibujo**: la baldosa mide 32 y las cámaras, los fondos y las plantas cuentan en esas unidades. Cada unidad son `RES` píxeles del lienzo (`src/arte/pincel.ts`, hoy 2): el pincel redondea a `1/RES`, así que un dibujo con números enteros sale igual a cualquier resolución y uno con medios gana detalle, y los lienzos (el del patio y la tira de etapas) escalan por un múltiplo entero de `RES` (`escalaDeLienzo`). Para subir otro nivel se sube `RES` y se retoca el arte con fracciones más finas; geometría, clics y patios no se enteran.
+
 ## El sonido
 
 `src/sonido/` no sabe nada del juego: sintetiza con Web Audio (sin archivos) unos pocos sonidos cortos (el pop de la cosecha, la tierra, el agua, la campanita de un logro) y un ambiente continuo (lluvia, pájaros, chicharras). `mezcla.ts` es la cuenta pura de qué suena de fondo según el clima de la década; con `prefers-reduced-motion` no hay ambiente continuo. Sin Web Audio no hace nada.
