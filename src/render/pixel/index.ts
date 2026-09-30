@@ -1,12 +1,12 @@
 /**
- * HUERTITA — renderer pixel-art (canvas, baldosas de 32 px), con cámaras intercambiables.
+ * HUERTITA — renderer pixel-art (canvas, baldosas de 32 unidades de dibujo, cada una `RES` píxeles), con cámaras intercambiables.
  *
  * Cumple el contrato de `../contrato.ts`: montar, dibujar una escena plana, avisar qué celda se tocó
  * y desmontar; ofrece sus cámaras y los efectos de las acciones. No importa el motor ni lee el
  * estado. Cada cámara es un archivo en `camaras/`: arma su geometría, pinta su fondo y, si quiere,
  * algo antes y después de las plantas. Lo demás (plantas, capas, efectos, clima) es común.
  */
-import { pincel } from '../../arte';
+import { escalaDeLienzo, pincel } from '../../arte';
 import type { CeldaId, DatosDeEfecto, Efecto, Escena, Renderer } from '../contrato';
 import { CAMARAS, camaraDe, type Camara } from './camaras';
 import { capas } from './capas';
@@ -114,7 +114,7 @@ export class RenderPixel implements Renderer {
     this.camara = camaraDe(es.camara);
     const G = (this.G = this.camara.geometria(es));
     const cssW = this.el.clientWidth || 320,
-      S = Math.max(1, Math.round((cssW * (window.devicePixelRatio || 1)) / G.W));
+      S = escalaDeLienzo((cssW * (window.devicePixelRatio || 1)) / G.W);
     if (this.cv.width !== G.W * S || this.cv.height !== G.H * S) {
       this.cv.width = G.W * S;
       this.cv.height = G.H * S;

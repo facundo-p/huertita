@@ -1,5 +1,5 @@
 /**
- * HUERTITA — ilustraciones pixel-art de las plantas (caja de 32 px).
+ * HUERTITA — ilustraciones pixel-art de las plantas (caja de 32 unidades de dibujo).
  *
  * Capa de arte compartida: la usan el renderer del patio, la vista de cerca y la tira de estadíos
  * de las fichas. No sabe nada del motor: recibe una planta plana (`PlantaParaDibujar`, que la
@@ -8,7 +8,7 @@
 import { estiloDe, type Estilo } from './estilos';
 import { FORMAS, type Postura } from './formas';
 import { mezcla, PAJA, TIERRA, V, type Paleta } from './paleta';
-import { pincel, type Lienzo2D, type Pincel } from './pincel';
+import { escalaDeLienzo, pincel, type Lienzo2D, type Pincel } from './pincel';
 
 /** Lo que el arte necesita saber de una planta para dibujarla. */
 export interface PlantaParaDibujar {
@@ -245,15 +245,16 @@ export function tira(
     ancho = 36,
     alto = 50,
     n = ETAPAS.length,
-    dpr = Math.min(3, opciones.dpr || 1);
-  cv.width = ancho * n * S * dpr;
-  cv.height = alto * S * dpr;
+    dpr = Math.min(3, opciones.dpr || 1),
+    E = escalaDeLienzo(S * dpr);
+  cv.width = ancho * n * E;
+  cv.height = alto * E;
   cv.style.width = '100%';
   cv.style.maxWidth = ancho * n * S + 'px';
   cv.style.aspectRatio = ancho * n + ' / ' + alto;
   const g = cv.getContext('2d')!;
   g.imageSmoothingEnabled = false;
-  g.setTransform(S * dpr, 0, 0, S * dpr, 0, 0);
+  g.setTransform(E, 0, 0, E, 0, 0);
   fondoDeTira(g, ancho * n, alto);
   ETAPAS.forEach(([etapa, avance], i) => {
     const x = i * ancho + ancho / 2;

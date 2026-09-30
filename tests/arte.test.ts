@@ -4,7 +4,18 @@
  * capturas (`npm run capturas`), píxel a píxel.
  */
 import { describe, expect, it } from 'vitest';
-import { ESTILO, FORMAS, FORMAS_DE_PLANTA, estiloDe, etapaDeTira, pincel, planta, raiz, tira } from '../src/arte';
+import {
+  ESTILO,
+  FORMAS,
+  FORMAS_DE_PLANTA,
+  escalaDeLienzo,
+  estiloDe,
+  etapaDeTira,
+  pincel,
+  planta,
+  raiz,
+  tira,
+} from '../src/arte';
 import type { Lienzo2D, PlantaParaDibujar } from '../src/arte';
 import { ESPECIES } from '../src/dominio';
 
@@ -19,6 +30,59 @@ function lienzoFalso(): Lienzo2D & { rects: number; malos: number } {
     },
   };
 }
+
+/** Los píxeles del lienzo que pinta un dibujo a resolución `res`, en coordenadas de lienzo. */
+function pixeles(res: number, dibujo: (B: ReturnType<typeof pincel>) => void): Set<string> {
+  const px = new Set<string>();
+  dibujo(
+    pincel(
+      {
+        fillStyle: '',
+        fillRect(x, y, w, h) {
+          for (let i = 0; i < w * res; i++) for (let j = 0; j < h * res; j++) px.add(x * res + i + ',' + (y * res + j));
+        },
+      },
+      10,
+      20,
+      1,
+      res,
+    ),
+  );
+  return px;
+}
+const caja = (px: Set<string>) => {
+  const xy = [...px].map((k) => k.split(',').map(Number));
+  return [0, 1].flatMap((e) => [Math.min(...xy.map((p) => p[e])), Math.max(...xy.map((p) => p[e]))]);
+};
+
+describe('la resolución del pincel', () => {
+  it('cada píxel cae entero en el lienzo, aunque el dibujo use fracciones', () => {
+    for (const res of [1, 2, 4])
+      for (const k of pixeles(res, (B) => {
+        B.r(0.3, 1.7, 2.2, 0.4, '#000');
+        B.elipse(0.5, 0, 3.3, 2, '#000');
+        B.linea(0, 0, 7, 3.5, '#000');
+      }))
+        expect(k.split(',').map(Number).every(Number.isInteger), k).toBe(true);
+  });
+  it('un dibujo en unidades enteras ocupa el mismo lugar a cualquier resolución', () => {
+    const d = (B: ReturnType<typeof pincel>) => B.r(-2, -5, 4, 3, '#000');
+    expect(pixeles(2, d).size).toBe(pixeles(1, d).size * 4);
+    const disco = (B: ReturnType<typeof pincel>) => B.disco(0, 0, 5, '#000');
+    expect(caja(pixeles(2, disco))).toEqual(caja(pixeles(1, disco)).map((v, i) => (i % 2 ? v * 2 + 1 : v * 2)));
+  });
+  it('los medios se ven a partir de RES = 2', () => {
+    const d = (B: ReturnType<typeof pincel>) => B.r(0, 0, 0.5, 1, '#000');
+    expect(pixeles(1, d).size).toBe(1);
+    expect(pixeles(2, d).size).toBe(2);
+  });
+  it('la escala del lienzo es entera y múltiplo de la resolución', () => {
+    expect(escalaDeLienzo(3, 1)).toBe(3);
+    expect(escalaDeLienzo(3, 2)).toBe(4);
+    expect(escalaDeLienzo(0.4, 2)).toBe(2);
+    expect(escalaDeLienzo(2.5, 1)).toBe(3);
+  });
+});
 
 const ETAPAS = ['semilla', 'plantin', 'creciendo', 'cosechable', 'semillando', 'pasada'];
 
