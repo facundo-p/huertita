@@ -122,6 +122,8 @@ export class RenderPixel implements Renderer {
       this.cv.height = G.H * S;
     }
     this.S = S;
+    // con más píxeles que la pantalla se suaviza al achicar (el CSS, `pixelated`, descartaría detalle)
+    this.cv.style.imageRendering = G.W * S > cssW * (window.devicePixelRatio || 1) * 1.05 ? 'auto' : '';
     this.bg.width = G.W * S;
     this.bg.height = G.H * S;
     const bg = this.bg.getContext('2d')!;

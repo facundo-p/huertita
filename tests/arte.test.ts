@@ -141,7 +141,7 @@ describe('el arte', () => {
     expect(tira(cv, { slug: 'tomate', grupo: 'Hortaliza de fruto', familia: 'solanacea', tutor: true })).toHaveLength(
       6,
     );
-    expect(cv.width).toBe(36 * 6 * 2);
+    expect(cv.width).toBe(36 * 6 * escalaDeLienzo(2));
   });
   it('cada planta cae en su columna de la tira', () => {
     expect(etapaDeTira({ etapa: 'semilla', avance: 0 })).toBe(0);

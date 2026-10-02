@@ -249,7 +249,7 @@ export const ETAPAS: [string, number, string][] = [
 export interface LienzoDeTira {
   width: number;
   height: number;
-  style: { width: string; maxWidth: string; aspectRatio: string };
+  style: { width: string; maxWidth: string; aspectRatio: string; imageRendering?: string };
   getContext(tipo: '2d'): (Lienzo2D & { imageSmoothingEnabled: boolean; setTransform(...m: number[]): void }) | null;
 }
 
@@ -284,6 +284,8 @@ export function tira(
   cv.style.width = '100%';
   cv.style.maxWidth = ancho * n * S + 'px';
   cv.style.aspectRatio = ancho * n + ' / ' + alto;
+  // con más píxeles que la pantalla se suaviza al achicar; si no, píxeles nítidos (lo que dice el CSS)
+  cv.style.imageRendering = E > S * dpr * 1.05 ? 'auto' : '';
   const g = cv.getContext('2d')!;
   g.imageSmoothingEnabled = false;
   g.setTransform(E, 0, 0, E, 0, 0);

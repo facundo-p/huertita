@@ -13,7 +13,7 @@
 import type { Paleta } from './paleta';
 
 /** Píxeles del lienzo por unidad de dibujo. Quien escala un lienzo lo hace por un múltiplo de esto. */
-export const RES = 2;
+export const RES = 4;
 
 /** Una escala de lienzo entera, múltiplo de `RES` y lo más cerca posible de la pedida. */
 export const escalaDeLienzo = (pedida: number, res = RES): number => res * Math.max(1, Math.round(pedida / res));
