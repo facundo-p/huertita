@@ -58,6 +58,33 @@ describe('la caché de plantas', () => {
     expect(y + h).toBeGreaterThan(41);
   });
 
+  it('dibuja pocos sprites nuevos por cuadro y deja los demás para el siguiente', () => {
+    const c = new SpritesDePlantas(fabrica, undefined, 6),
+      { g, pegados } = destino();
+    c.nuevoCuadro();
+    for (let i = 0; i < 10; i++) c.pegar(g, 4, 30, 40, 1, { ...tomate, avance: 0.1 + i * 0.08 }, 0, 'celda' + i);
+    expect(c.dibujados).toBe(6);
+    expect(c.pendientes).toBe(4);
+    expect(pegados).toHaveLength(6);
+    c.nuevoCuadro();
+    for (let i = 0; i < 10; i++) c.pegar(g, 4, 30, 40, 1, { ...tomate, avance: 0.1 + i * 0.08 }, 0, 'celda' + i);
+    expect(c.dibujados).toBe(10);
+    expect(c.pendientes).toBe(0);
+  });
+
+  it('mientras llega el sprite nuevo de un lugar se sigue viendo el anterior', () => {
+    const c = new SpritesDePlantas(fabrica, undefined, 1),
+      { g, pegados } = destino();
+    c.nuevoCuadro();
+    c.pegar(g, 4, 30, 40, 1, { ...tomate, avance: 0.2 }, 0, 'a');
+    c.nuevoCuadro();
+    c.pegar(g, 4, 90, 40, 1, { ...tomate, avance: 0.3 }, 0, 'b'); // gasta el cupo del cuadro
+    c.pegar(g, 4, 30, 40, 1, { ...tomate, avance: 0.6 }, 0, 'a'); // el nuevo de 'a' espera
+    expect(pegados).toHaveLength(3);
+    expect(pegados[2][0]).toBe(pegados[0][0]);
+    expect(c.pendientes).toBe(1);
+  });
+
   it('la clave cambia con todo lo que cambia el dibujo', () => {
     const k = (p: Partial<PlantaParaDibujar>, viento = 0, esc = 1, S = 4) =>
       SpritesDePlantas.clave({ ...tomate, ...p }, viento, esc, S);

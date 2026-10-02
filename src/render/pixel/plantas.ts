@@ -45,6 +45,8 @@ function avanceAnimado(k: string, p: PlantaDeEscena, anim: Animaciones, ahora: n
 }
 
 interface Lugar {
+  /** la celda */
+  k: string;
   q: CeldaEnPantalla;
   by: number;
   a: number;
@@ -64,7 +66,7 @@ function manojo(
   L: Lugar,
   t: number,
 ): void {
-  const { q, by, esc, salto } = L,
+  const { k, q, by, esc, salto } = L,
     enBandeja = c.tipo === 'almaciguera',
     paso = enBandeja ? G.plantas.bandeja.paso : 6 * esc,
     ee = enBandeja ? G.plantas.bandeja.escala : esc * 0.78,
@@ -79,6 +81,7 @@ function manojo(
       vista,
       t,
       q.bx * 0.13 + ni * 1.7,
+      k + ':' + ni,
     );
   letras(g, q.bx + Math.round(q.w / 2) - 9, G.plantas.numeroAbajo ? by + 4 : q.y + 2, String(n), C.blanco, 1);
 }
@@ -93,8 +96,9 @@ function pegarPlanta(
   vista: PlantaParaDibujar,
   t: number,
   fase: number,
+  ranura: string,
 ): void {
-  sprites.pegar(g, g.getTransform().a, x, y, escala, vista, vientoDe(t, fase));
+  sprites.pegar(g, g.getTransform().a, x, y, escala, vista, vientoDe(t, fase), ranura);
   if (vista.plaga) bichosDePlanta(pincel(g, x, y, escala), vista, t);
 }
 
@@ -204,12 +208,12 @@ function unaPlanta(
     esc = q.s,
     salto = p.etapa === 'cosechable' && !p.flor ? Math.max(0, Math.sin(t * 0.5 + q.bx) - 0.8) * 8 : 0,
     by = G.plantas.apoyo(c, q),
-    L: Lugar = { q, by, a, esc, chica: G.plantas.chica(c), salto },
+    L: Lugar = { k, q, by, a, esc, chica: G.plantas.chica(c), salto },
     vista = vistaDe(p, a, brotando);
   if (G.plantas.sombra && p.etapa !== 'semilla') sombraEnElPiso(g, L);
   const n = p.etapa === 'semilla' ? 1 : Math.min(6, p.n || 1);
   if (n > 1) manojo(g, sprites, G, c, vista, n, L, t);
-  else pegarPlanta(g, sprites, q.bx, by - Math.round(salto), L.chica ? 0.8 : esc, vista, t, q.bx * 0.13 + by * 0.07);
+  else pegarPlanta(g, sprites, q.bx, by - Math.round(salto), L.chica ? 0.8 : esc, vista, t, q.bx * 0.13 + by * 0.07, k);
   avisos(r, G, p, L, t);
 }
 

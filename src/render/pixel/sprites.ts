@@ -46,16 +46,42 @@ const aPasos = (v: number, paso: number): number => Math.round(v / paso) * paso;
 const alPixel = (v: number): number => Math.round(v * RES) / RES;
 const haciaArriba = (v: number): number => Math.ceil(v * RES - 1e-9) / RES;
 
+/** Un sprite y dónde está su base dentro de él, para poder pegarlo aunque la caja cambie de tamaño. */
+interface Sprite {
+  cv: LienzoDeSprite;
+  /** la base de la planta, a esta distancia del borde izquierdo y del superior (unidades de dibujo) */
+  ox: number;
+  oy: number;
+  /** el ancho y el alto de la caja (unidades de dibujo) */
+  w: number;
+  h: number;
+}
+
+/** cuántos sprites nuevos se dibujan como máximo en un cuadro: el resto espera al siguiente */
+const SPRITES_POR_CUADRO = 6;
+
 export class SpritesDePlantas {
-  private mapa = new Map<string, LienzoDeSprite>();
+  private mapa = new Map<string, Sprite>();
+  /** el último sprite que se pegó en cada lugar: se sigue mostrando mientras llega el nuevo */
+  private ultimo = new Map<string, Sprite>();
   private bytes = 0;
+  private creadosEnElCuadro = 0;
   /** cuántos sprites se dibujaron (para los tests y para medir) */
   dibujados = 0;
+  /** cuántas plantas del último cuadro esperan su sprite: quien dibuja tiene que volver a llamar pronto */
+  pendientes = 0;
 
   constructor(
     private fabrica: () => LienzoDeSprite = () => document.createElement('canvas'),
     private tope = TOPE_DE_BYTES,
+    private porCuadro = SPRITES_POR_CUADRO,
   ) {}
+
+  /** Arranca un cuadro: vuelve a contar cuántos sprites nuevos se pueden dibujar. */
+  nuevoCuadro(): void {
+    this.creadosEnElCuadro = 0;
+    this.pendientes = 0;
+  }
 
   /** La planta con el avance, la salud y el viento ya redondeados: lo que de verdad se dibuja. */
   static redondeada(p: PlantaParaDibujar, viento: number): { p: PlantaParaDibujar; viento: number } {
@@ -88,7 +114,10 @@ export class SpritesDePlantas {
     ].join('|');
   }
 
-  /** Pega la planta con su base en (x, y). `g` ya está escalado por `S`. */
+  /**
+   * Pega la planta con su base en (x, y); `g` ya está escalado por `S`. `ranura` es el lugar donde está
+   * (una celda): si el sprite nuevo no se alcanza a dibujar en este cuadro, se muestra el anterior de ese lugar.
+   */
   pegar(
     g: CanvasRenderingContext2D & DondePegar,
     S: number,
@@ -97,53 +126,54 @@ export class SpritesDePlantas {
     escala: number,
     p: PlantaParaDibujar,
     viento: number,
+    ranura = '',
   ): void {
-    const k = SpritesDePlantas.clave(p, viento, escala, S),
-      ox = haciaArriba(IZQUIERDA * escala),
-      oy = haciaArriba(ARRIBA * escala),
-      w = haciaArriba(ANCHO * escala),
-      h = haciaArriba(ALTO * escala);
-    let cv = this.mapa.get(k);
-    if (cv) {
+    const k = SpritesDePlantas.clave(p, viento, escala, S);
+    let sp = this.mapa.get(k);
+    if (sp) {
       this.mapa.delete(k);
-      this.mapa.set(k, cv);
-    } else {
-      cv = this.dibujar(p, viento, escala, S, ox, oy, w, h);
-      this.mapa.set(k, cv);
-      this.bytes += cv.width * cv.height * 4;
+      this.mapa.set(k, sp);
+    } else if (this.creadosEnElCuadro < this.porCuadro) {
+      sp = this.dibujar(p, viento, escala, S);
+      this.mapa.set(k, sp);
+      this.bytes += sp.cv.width * sp.cv.height * 4;
+      this.creadosEnElCuadro++;
       this.recortar();
+    } else {
+      this.pendientes++;
+      sp = this.ultimo.get(ranura);
     }
-    g.drawImage(cv as never, alPixel(x) - ox, alPixel(y) - oy, w, h);
+    if (!sp) return;
+    if (ranura) this.ultimo.set(ranura, sp);
+    g.drawImage(sp.cv as never, alPixel(x) - sp.ox, alPixel(y) - sp.oy, sp.w, sp.h);
   }
 
-  private dibujar(
-    p: PlantaParaDibujar,
-    viento: number,
-    escala: number,
-    S: number,
-    ox: number,
-    oy: number,
-    w: number,
-    h: number,
-  ): LienzoDeSprite {
+  private dibujar(p: PlantaParaDibujar, viento: number, escala: number, S: number): Sprite {
     const cv = this.fabrica(),
-      r = SpritesDePlantas.redondeada(p, viento);
-    cv.width = Math.round(w * S);
-    cv.height = Math.round(h * S);
+      r = SpritesDePlantas.redondeada(p, viento),
+      sp = {
+        cv,
+        ox: haciaArriba(IZQUIERDA * escala),
+        oy: haciaArriba(ARRIBA * escala),
+        w: haciaArriba(ANCHO * escala),
+        h: haciaArriba(ALTO * escala),
+      };
+    cv.width = Math.round(sp.w * S);
+    cv.height = Math.round(sp.h * S);
     const c = cv.getContext('2d')!;
     c.setTransform(S, 0, 0, S, 0, 0);
     c.imageSmoothingEnabled = false;
-    dibujarPlanta(pincel(c, ox, oy, escala), r.p, r.viento);
+    dibujarPlanta(pincel(c, sp.ox, sp.oy, escala), r.p, r.viento);
     this.dibujados++;
-    return cv;
+    return sp;
   }
 
   /** Tira las que hace más que no se usan hasta volver al tope. */
   private recortar(): void {
-    for (const [k, cv] of this.mapa) {
+    for (const [k, sp] of this.mapa) {
       if (this.bytes <= this.tope || this.mapa.size <= 1) break;
       this.mapa.delete(k);
-      this.bytes -= cv.width * cv.height * 4;
+      this.bytes -= sp.cv.width * sp.cv.height * 4;
     }
   }
 

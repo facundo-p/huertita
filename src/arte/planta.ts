@@ -7,7 +7,8 @@
  */
 import { estiloDe, type Estilo } from './estilos';
 import { FORMAS, type Postura } from './formas';
-import { mezcla, PAJA, TIERRA, V, type Paleta } from './paleta';
+import { PERFIL, hojaV, nervadura } from './hojas';
+import { mezcla, PAJA, rampaDe, rampaDeHoja, V, type Paleta } from './paleta';
 import { escalaDeLienzo, pincel, type Lienzo2D, type Pincel } from './pincel';
 
 /** Lo que el arte necesita saber de una planta para dibujarla. */
@@ -38,45 +39,69 @@ function paletaConSalud(pal: Paleta, salud: number): Paleta {
 }
 
 function semilla(B: Pincel): void {
-  B.elipse(0, -1, 5, 2, TIERRA);
-  B.elipse(0, -2, 4, 1, '#6b4326');
-  B.r(-2, -3, 1, 1, PAJA);
-  B.r(1, -2, 1, 1, PAJA);
-  B.r(3, -3, 1, 1, '#fff1d0');
+  // un montoncito de tierra removida y tres semillas asomando
+  B.volumen(B.mascara().elipse(0, -1.2, 5, 2.1), rampaDe('#5a3820'));
+  for (const [x, y, an] of [
+    [-2.2, -2.6, 20],
+    [1, -2.2, -35],
+    [3, -3, 60],
+  ])
+    hojaV(B, x, y, 1.6, 0.9, an, rampaDe(PAJA), PERFIL.oval);
+  B.r(-3.5, -1.6, 0.5, 0.25, '#2a160c');
+  B.r(2.2, -0.9, 0.75, 0.25, '#2a160c');
 }
 
 function plantin(B: Pincel, a: number, pal: Paleta, st: Postura): void {
   const h = Math.round(3 + a * 7),
-    x = st.dx(-h * 2);
-  B.linea(0, 0, x, -h, pal.c, 1);
-  B.elipse(x - 3, -h, 2, 1, pal.v);
-  B.elipse(x + 3, -h - 1, 2, 1, pal.v);
-  B.r(x - 3, -h - 1, 2, 1, pal.c);
-  B.r(x + 2, -h - 2, 2, 1, pal.c);
+    x = st.dx(-h * 2),
+    clara = rampaDeHoja({ v: pal.c, c: mezcla(pal.c, '#fff6b8', 0.45), o: pal.v, oo: pal.o }),
+    rampa = rampaDeHoja(pal);
+  B.linea(0, 0, x, -h, clara[3], 0.5);
+  B.linea(-0.25, 0, x - 0.25, -h, clara[5], 0.25);
+  // los dos cotiledones, y las primeras hojas de verdad cuando ya tiene fuerza
+  hojaV(B, x, -h, 3.6, 2, -160, clara, PERFIL.oval);
+  hojaV(B, x, -h, 3.6, 2, -20, clara, PERFIL.oval);
+  nervadura(B, x, -h, 3, -160, clara[2], 0);
+  nervadura(B, x, -h, 3, -20, clara[2], 0);
   if (a > 0.55) {
-    B.elipse(x - 1, -h - 3, 1, 2, pal.c);
-    B.elipse(x + 2, -h - 4, 1, 2, pal.v);
+    hojaV(B, x, -h - 0.5, 3.4, 2, -112, rampa, PERFIL.oval);
+    hojaV(B, x, -h - 0.5, 3.8, 2.2, -70, clara, PERFIL.oval);
   }
 }
 
 /** La vara floral de una planta que semilla, o la planta seca si ya pasó. */
 function semillandoOPasada(B: Pincel, sec: boolean, pal: Paleta, st: Postura): void {
-  const tallo = sec ? '#b89a4a' : pal.o,
+  const tallo = rampaDe(sec ? '#b89a4a' : pal.o),
+    flor = rampaDe(sec ? '#f2e27a' : PAJA),
     xx = st.dx(-26);
-  B.elipse(0, -3, 7, 3, sec ? '#8a7a3a' : pal.oo);
-  B.elipse(0, -4, 5, 2, sec ? '#b8a04a' : pal.v);
-  B.linea(0, -3, xx, -27, tallo, 2);
+  B.volumen(B.mascara().elipse(0, -3.4, 7, 3), sec ? rampaDe('#8a7a3a') : rampaDeHoja(pal));
+  // la vara, de abajo hacia arriba
+  B.volumen(
+    B.mascara().poligono([
+      [-1.1, -3],
+      [1.1, -3],
+      [xx + 0.6, -27],
+      [xx - 0.6, -27],
+    ]),
+    tallo,
+  );
   for (const [x, y] of [
     [-5, -16],
     [5, -20],
     [-4, -24],
     [3, -12],
   ]) {
-    B.linea(Math.round(xx * (-y / 27)), y + 3, x + xx, y, tallo);
-    B.disco(x + xx, y - 1, 2, sec ? '#f2e27a' : PAJA);
-    B.r(x + xx, y - 2, 1, 1, sec ? '#fff6c0' : '#8a5526');
+    B.linea(Math.round(xx * (-y / 27)), y + 3, x + xx, y, tallo[3], 0.25);
+    // la umbela: un racimito de florcitas apretadas con su centro
+    B.volumen(B.mascara().elipse(x + xx, y - 1, 2.4, 2.2), flor);
+    for (const [dx, dy] of [
+      [-0.9, -0.7],
+      [0.8, -0.2],
+      [-0.1, 0.8],
+    ])
+      B.r(x + xx + dx, y - 1 + dy, 0.5, 0.5, sec ? '#fff6c0' : '#8a5526');
   }
-  B.disco(xx, -28, 2, sec ? '#f2e27a' : PAJA);
+  B.volumen(B.mascara().elipse(xx, -28, 2.7, 2.5), flor);
 }
 
 const COLOR_DE_PLAGA: Record<string, string> = { pulgon: '#16161a', oruga: '#d6ff3a' };

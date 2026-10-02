@@ -1,7 +1,8 @@
 /** Hojas desde el suelo: lechuga (rizada), espinaca (lanza), acelga y apio (penca), rúcula y perejil (pluma). */
-import { hojaOval, type Pincel } from '../pincel';
+import { PERFIL, hojaV, nervadura } from '../hojas';
 import type { Estilo } from '../estilos';
-import type { Paleta } from '../paleta';
+import { mezcla, rampaDe, rampaDeHoja, type Paleta, type Rampa } from '../paleta';
+import type { Pincel } from '../pincel';
 import type { DibujoDeForma, Postura } from './tipos';
 
 interface Medidas {
@@ -11,57 +12,101 @@ interface Medidas {
 }
 type Variante = (B: Pincel, m: Medidas, e: Estilo, pal: Paleta, st: Postura) => void;
 
+/** una rampa más clara que la de la hoja: el corazón de la lechuga, los brotes nuevos */
+const rampaClara = (pal: Paleta): Rampa =>
+  rampaDeHoja({ v: pal.c, c: mezcla(pal.c, '#fff6b8', 0.45), o: pal.v, oo: pal.o });
+
 const rizada: Variante = (B, { R, H }, _e, pal, st) => {
-  B.elipse(0, -2, R, Math.max(2, Math.round(R * 0.45)), pal.oo);
-  for (let i = -2; i <= 2; i++)
-    hojaOval(
-      B,
-      Math.round(i * R * 0.42) + st.dx(-H * 0.5),
-      -Math.round(H * 0.45) + Math.abs(i),
-      Math.max(2, Math.round(R * 0.5)),
-      Math.max(2, Math.round(H * 0.5)),
-      pal,
-    );
-  B.elipse(st.dx(-H), -Math.round(H * 0.75), Math.max(1, Math.round(R * 0.4)), Math.max(1, Math.round(H * 0.3)), pal.c);
-  for (let i = -R + 1; i < R; i += 3) B.r(i + st.dx(-H), -Math.round(H * 0.6) - ((i + 40) % 2), 1, 1, pal.c);
+  const oscura = rampaDeHoja({ v: pal.o, c: pal.v, o: pal.oo, oo: mezcla(pal.oo, '#0c1a3a', 0.4) }),
+    media = rampaDeHoja(pal),
+    clara = rampaClara(pal),
+    capas = [oscura, media, clara],
+    y0 = -R * 0.2,
+    x0 = st.dx(-H * 0.5);
+  // de atrás hacia adelante: las que apuntan arriba (más oscuras), las de los costados y, al frente, las que caen (más claras)
+  const hojas: [number, number, number][] = [
+    [-90, 1, 0],
+    [-128, 0.95, 0],
+    [-52, 0.95, 0],
+    [-152, 1, 1],
+    [-28, 1, 1],
+    [-172, 0.9, 2],
+    [-8, 0.9, 2],
+  ];
+  hojas.forEach(([ang, sz, capa], i) => {
+    // las que apuntan arriba son más cortas que las que caen a los lados: la lechuga es ancha y baja
+    const rad = (ang * Math.PI) / 180,
+      L = sz * (R * 1.25 * Math.abs(Math.cos(rad)) + H * 1.1 * Math.abs(Math.sin(rad))),
+      bx = x0 + Math.cos(rad) * R * 0.08,
+      rampa = capas[capa];
+    hojaV(B, bx, y0, L, L * 0.95, ang, rampa, capa ? { ...PERFIL.ancha, festones: 3 } : PERFIL.redonda, (i % 3) / 3);
+    nervadura(B, bx, y0, L * 0.78, ang, rampa[2], 4);
+  });
+  for (const [ang, sz] of [
+    [-104, 0.5],
+    [-76, 0.5],
+    [-90, 0.38],
+  ]) {
+    hojaV(B, x0, y0 - R * 0.12, H * sz * 1.7, H * sz * 1.5, ang, clara, { ...PERFIL.ancha, festones: 2 });
+    nervadura(B, x0, y0 - R * 0.12, H * sz * 1.3, ang, clara[2], 2);
+  }
 };
 
 const penca: Variante = (B, { a, H }, e, pal, st) => {
-  const n = 2 + Math.round(a * 3);
+  const rampa = rampaDeHoja(pal),
+    rpenca = rampaDe(e.tinta || pal.c),
+    n = 2 + Math.round(a * 3);
   for (let i = 0; i < n; i++) {
-    const ang = (i - (n - 1) / 2) * 0.42,
-      tx = Math.round(Math.sin(ang) * H * 0.9) + st.dx(-H),
-      ty = -Math.round(Math.cos(ang) * H);
-    B.linea(0, -1, Math.round(tx * 0.5), Math.round(ty * 0.55), e.tinta || pal.c, a > 0.5 ? 2 : 1);
-    hojaOval(B, tx, ty + 2, Math.max(1, Math.round(2 + a * 2)), Math.max(2, Math.round(2 + a * 4)), pal);
+    const ang = (i - (n - 1) / 2) * 24,
+      rad = (ang * Math.PI) / 180,
+      tx = Math.sin(rad) * H * 0.9 + st.dx(-H),
+      ty = -Math.cos(rad) * H,
+      dir = (Math.atan2(ty + 1, tx) * 180) / Math.PI,
+      largo = Math.hypot(tx, ty + 1);
+    // la penca clara y, encima, la hoja
+    hojaV(B, 0, -1, largo * 0.86, a > 0.5 ? 1.7 : 1.1, dir, rpenca, PERFIL.fina);
+    const bx = tx * 0.42,
+      by = -1 + (ty + 1) * 0.42,
+      bl = largo * 0.62 + 1,
+      bw = 3 + a * 5.5;
+    hojaV(B, bx, by, bl, bw, dir, rampa, { p: 0.85, filo: 0.7 });
+    nervadura(B, bx, by, bl * 0.85, dir, rampa[2], 3);
   }
 };
 
 const lanza: Variante = (B, { a, R, H }, _e, pal, st) => {
-  const n = 3 + Math.round(a * 4);
+  const rampa = rampaDeHoja(pal),
+    n = 3 + Math.round(a * 4);
   for (let i = 0; i < n; i++) {
-    const an = (i - (n - 1) / 2) * 0.5,
-      x2 = Math.round(Math.sin(an) * R) + st.dx(-H),
-      y2 = -Math.round(Math.cos(an) * H * 0.9) - 1;
-    B.linea(0, -1, x2, y2, pal.o);
-    hojaOval(B, x2, y2, Math.max(1, Math.round(1 + a * 2)), Math.max(1, Math.round(1 + a * 3)), pal);
+    const rad = ((i - (n - 1) / 2) * 28.6 * Math.PI) / 180,
+      tx = Math.sin(rad) * R + st.dx(-H),
+      ty = -Math.cos(rad) * H * 0.9 - 1,
+      dir = (Math.atan2(ty + 1, tx) * 180) / Math.PI,
+      largo = Math.hypot(tx, ty + 1);
+    B.linea(0, -1, tx * 0.4, -1 + (ty + 1) * 0.4, rampa[2], 0.25);
+    hojaV(B, tx * 0.35, -1 + (ty + 1) * 0.35, largo * 0.7 + 1, 2.2 + a * 3.4, dir, rampa, PERFIL.oval);
+    nervadura(B, tx * 0.35, -1 + (ty + 1) * 0.35, largo * 0.6, dir, rampa[2], 2);
   }
 };
 
 /** tallitos finos con foliolos */
 const pluma: Variante = (B, { a, R, H }, _e, pal, st) => {
-  const n = 4 + Math.round(a * 5);
+  const rampa = rampaDeHoja(pal),
+    clara = rampaClara(pal),
+    n = 4 + Math.round(a * 5);
   for (let i = 0; i < n; i++) {
-    const an = (i - (n - 1) / 2) * 0.36,
-      x3 = Math.round(Math.sin(an) * R * 0.9) + st.dx(-H),
-      y3 = -Math.round(Math.cos(an) * H);
-    B.linea(0, -1, x3, y3, pal.o);
-    for (let k = 0.45; k <= 1; k += 0.27) {
-      const lx = Math.round(x3 * k),
-        ly = Math.round(y3 * k);
-      B.r(lx - 1, ly, 3, 2, i % 2 ? pal.v : pal.c);
-      B.r(lx, ly - 1, 1, 1, pal.c);
+    const rad = ((i - (n - 1) / 2) * 20.6 * Math.PI) / 180,
+      tx = Math.sin(rad) * R * 0.9 + st.dx(-H),
+      ty = -Math.cos(rad) * H,
+      dir = (Math.atan2(ty + 1, tx) * 180) / Math.PI,
+      r = i % 2 ? rampa : clara;
+    B.linea(0, -1, tx, ty, rampa[2], 0.25);
+    for (let k = 0.45; k <= 1.01; k += 0.27) {
+      const lx = tx * k,
+        ly = -1 + (ty + 1) * k;
+      for (const lado of [1, -1]) hojaV(B, lx, ly, 3, 1.7, dir + lado * 55, r, PERFIL.lanza);
     }
+    hojaV(B, tx, ty, 2.8, 1.6, dir, r, PERFIL.lanza);
   }
 };
 

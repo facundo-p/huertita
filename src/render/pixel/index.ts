@@ -50,6 +50,7 @@ export class RenderPixel implements Renderer {
   private ctx!: CanvasRenderingContext2D;
   private bg!: HTMLCanvasElement;
   private timer = 0;
+  private reintento = 0;
   private alHacerClick = (e: MouseEvent): void => {
     if (!this.G || !this.cb) return;
     const r = this.cv.getBoundingClientRect();
@@ -83,6 +84,7 @@ export class RenderPixel implements Renderer {
 
   desmontar(): void {
     clearInterval(this.timer);
+    clearTimeout(this.reintento);
     window.removeEventListener('resize', this.alCambiarDeTamanio);
     this.cv.removeEventListener('click', this.alHacerClick);
     if (this.cv.parentNode) this.cv.parentNode.removeChild(this.cv);
@@ -139,6 +141,7 @@ export class RenderPixel implements Renderer {
       G = this.G!,
       g = this.ctx,
       t = this.t;
+    this.sprites.nuevoCuadro();
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.imageSmoothingEnabled = false;
     g.drawImage(this.bg, 0, 0);
@@ -158,6 +161,12 @@ export class RenderPixel implements Renderer {
     capas(g, es, G, claves, t);
     this.efectos.dibujar(g, r);
     clima(g, r, es, G, t);
+    // quedaron plantas sin su sprite (se dibujan pocos por cuadro): otro cuadro enseguida, sin esperar al reloj
+    if (this.sprites.pendientes && !this.reintento)
+      this.reintento = window.setTimeout(() => {
+        this.reintento = 0;
+        if (this.escena) this.cuadro();
+      }, 16);
   }
 
   efecto(tipo: Efecto, datos: DatosDeEfecto = {}): void {
