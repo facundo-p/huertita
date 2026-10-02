@@ -18,15 +18,20 @@ function baldosa(r: R, x: number, y: number, Y: number, h: number, send: boolean
   for (let i = 0; i < 12; i++) {
     const nx = Math.floor(ruido(x * 7 + i, y * 3) * 30),
       ny = Math.floor(ruido(x + i * 5, y * 11) * (h - 2));
-    if (send) r(X + nx, Y + ny, i % 3 ? 2 : 3, 1, i % 2 ? C.sendero2 : C.sendero3);
-    else {
+    if (send) {
+      r(X + nx, Y + ny, i % 3 ? 2 : 3, 1, i % 2 ? C.sendero2 : C.sendero3);
+      r(X + nx + 0.5, Y + ny + 1, i % 3 ? 1 : 2, 0.5, C.sendero2);
+    } else {
       r(X + nx, Y + ny, 1, 3, i % 2 ? C.pasto2 : C.pasto3);
+      r(X + nx + 0.5, Y + ny - 0.5, 0.5, 0.5, C.pasto2);
       if (i % 5 === 0) r(X + nx + 1, Y + ny + 1, 1, 2, C.pasto2);
     }
   }
   if (!send && ruido(x * 3, y * 9) > 0.72) {
     r(X + 9, Y + Math.round(h / 2), 2, 2, '#fff6e0');
+    r(X + 9.5, Y + Math.round(h / 2) + 0.5, 1, 1, '#ffd23f');
     r(X + 22, Y + 5, 2, 2, '#ffd23f');
+    r(X + 22.5, Y + 5.5, 1, 1, '#f08a24');
   }
 }
 
@@ -48,7 +53,10 @@ function baranda(r: R, G: GeometriaPlana, m: number, y0: number, [arriba, horizo
       eh = 5 + Math.floor(ruido(i, 23) * (m * 0.35));
     r(ex, m - eh - 3, 22 + Math.floor(ruido(i, 25) * 16), eh, i % 2 ? '#8f86c8' : '#a59ad6');
   }
-  for (let x = 3; x < G.W; x += 8) r(x, y0 + 4, 2, m - y0 - 4, '#2a2869');
+  for (let x = 3; x < G.W; x += 8) {
+    r(x, y0 + 4, 2, m - y0 - 4, '#2a2869');
+    r(x, y0 + 4, 0.5, m - y0 - 4, '#4a48a0');
+  }
   r(0, y0 + 2, G.W, 3, '#1d1b4b');
   r(0, y0 + 2, G.W, 1, '#4a48a0');
   r(0, m - 3, G.W, 3, '#1d1b4b');
@@ -56,8 +64,11 @@ function baranda(r: R, G: GeometriaPlana, m: number, y0: number, [arriba, horizo
 
 function paredon(r: R, G: GeometriaPlana, m: number, y0: number): void {
   r(0, y0, G.W, m - y0, C.ladrillo);
+  const luz = mezcla(C.ladrillo, '#ffffff', 0.14);
   for (let f = 0; y0 + f * 6 < m; f++) {
     const yy = y0 + f * 6;
+    r(0, yy, G.W, 0.5, luz);
+    r(0, yy + 4.5, G.W, 0.5, C.ladrillo2);
     r(0, yy + 5, G.W, 1, C.junta);
     for (let x = (f % 2) * 8; x < G.W; x += 16) {
       r(x, yy, 1, 5, C.junta);
@@ -164,6 +175,7 @@ function maceta(
   B.disco(q.bx, Y + 15, R - 3, t2);
   B.disco(q.bx, Y + 16, R - 4, t);
   r(q.bx - 3, Y + 12, 3, 1, t3);
+  r(q.bx - R + 2, Y + 13, 0.5, 3, mezcla(C.terracota3, '#ffffff', 0.3));
 }
 
 function almaciguera(r: R, q: CeldaEnPantalla, obl: boolean, { t, t2 }: Tierras): void {
@@ -186,8 +198,15 @@ function grumos(r: R, c: CeldaDeEscena, k: string, q: CeldaEnPantalla, { t2, t3 
     const gx = x0 + Math.floor(ruido(cx * 5 + j, cy * 7) * (w - 3)),
       gy = y0 + Math.floor(ruido(cx + j * 3, cy * 13 + j) * (hh - 2));
     r(gx, gy, j % 3 ? 2 : 3, 1, j % 2 ? t2 : t3);
+    if (j % 2) r(gx + 0.5, gy + 1, j % 3 ? 1 : 2, 0.5, t2);
   }
-  if (c.humedo >= 3) for (let j = 0; j < 3; j++) r(x0 + 4 + j * 9, y0 + 3 + ((j * 7) % (hh - 5)), 2, 1, '#7fc8e8');
+  if (c.humedo >= 3)
+    for (let j = 0; j < 3; j++) {
+      const hx = x0 + 4 + j * 9,
+        hy = y0 + 3 + ((j * 7) % (hh - 5));
+      r(hx, hy, 2, 1, '#7fc8e8');
+      r(hx, hy - 0.5, 1, 0.5, '#d8f2ff');
+    }
 }
 
 function bordeDeCajon(r: R, c: CeldaDeEscena, q: CeldaEnPantalla, obl: boolean): void {
@@ -206,6 +225,8 @@ function bordeDeCajon(r: R, c: CeldaDeEscena, q: CeldaEnPantalla, obl: boolean):
   r(X, Y + h - 2, T, fa, C.madera);
   r(X, Y + h - 2, T, 1, C.madera3);
   r(X, Y + h + fa - 4, T, 2, C.madera2);
+  r(X + 5, Y + h + 0.5, 9, 0.5, C.madera2);
+  r(X + 19, Y + h + 1.5, 7, 0.5, C.madera3);
   if (obl) {
     r(X + 15, Y + h - 1, 1, fa - 1, C.madera2);
     r(X, Y + h + fa - 2, T, 2, 'rgba(0,0,0,0.2)');
@@ -226,6 +247,7 @@ function mulch(r: R, k: string, q: CeldaEnPantalla): void {
     const mx = q.x + 2 + Math.floor(ruido(i, cx + cy * 9) * 26),
       my = q.y + 3 + Math.floor(ruido(cy + i * 3, cx) * (q.h - 8));
     r(mx, my, 4, 1, i % 2 ? C.paja : C.paja2);
+    r(mx + 0.5, my + 1, 3, 0.5, C.paja2);
     if (i % 4 === 0) r(mx + 1, my + 1, 3, 1, C.paja2);
   }
 }

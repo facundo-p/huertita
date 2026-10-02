@@ -23,6 +23,7 @@ function copa(B: Pincel, es: Escena, ax: number, cy: number, sw: number): void {
     const lx = ax + Math.round(Math.sin(i * 2.4) * 22) + sw,
       ly = cy - 6 + Math.round(Math.cos(i * 1.3) * 18);
     r(lx, ly, 3, 2, i % 3 ? C.copa4 : C.copa3);
+    if (i % 3) r(lx + 0.5, ly - 0.5, 2, 0.5, C.copa4);
     if (es.estacion === 'otoño' && i % 2) r(lx + 1, ly + 3, 3, 2, i % 4 ? '#ffc233' : '#e0702f');
     if (es.estacion === 'primavera' && i % 5 === 0) r(lx, ly, 2, 2, '#e0c8ff');
   }
@@ -54,6 +55,7 @@ function arbol(g: CanvasRenderingContext2D, es: Escena, G: GeometriaPlana, t: nu
   }
   r(ax - 4, ay - alto, 8, alto, C.tronco);
   r(ax - 4, ay - alto, 3, alto, C.tronco2);
+  for (let i = 0; i < 5; i++) r(ax - 1.5 + (i % 2) * 3, ay - alto + 6 + i * Math.floor(alto / 6), 0.5, 4, C.tronco2);
   r(ax - 7, ay - 3, 14, 3, C.tronco);
   B.linea(ax, ay - alto + 8, ax - 16, ay - alto - 8, C.tronco, 3);
   B.linea(ax, ay - alto + 4, ax + 12, ay - alto - 12, C.tronco, 3);
