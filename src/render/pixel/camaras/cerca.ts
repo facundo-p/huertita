@@ -127,12 +127,15 @@ function cieloYSol(B: Pincel, es: Escena): void {
     sy = Math.round(14 + inv * 26);
   B.disco(206, sy, 9, '#fff3b0');
   B.disco(206, sy, 7, '#ffd23f');
+  B.r(202, sy - 5.5, 3, 0.5, '#fff3b0');
+  B.r(201.5, sy - 5, 0.5, 2, '#fff3b0');
   for (const [x, y] of [
     [30, 18],
     [120, 30],
   ]) {
     B.elipse(x, y, 16, 4, '#ffffff');
     B.elipse(x + 8, y - 4, 9, 4, '#ffffff');
+    B.r(x - 14, y + 3.5, 28, 0.5, mezcla(horizonte, '#ffffff', 0.5));
   }
 }
 
@@ -142,6 +145,8 @@ function detras(g: CanvasRenderingContext2D, B: Pincel, z: string): void {
   if (z === 'suelo' || z === 'cajon') {
     r(0, 58, ANCHO, 50, C.ladrillo);
     for (let f = 0; f < 9; f++) {
+      r(0, 58 + f * 6, ANCHO, 0.5, mezcla(C.ladrillo, '#ffffff', 0.14));
+      r(0, 58 + f * 6 + 4.5, ANCHO, 0.5, C.ladrillo2);
       r(0, 58 + f * 6 + 5, ANCHO, 1, C.junta);
       for (let x = (f % 2) * 10; x < ANCHO; x += 20) r(x, 58 + f * 6, 1, 5, C.junta);
     }
@@ -164,8 +169,12 @@ function piso(g: CanvasRenderingContext2D, r: R, es: Escena, z: string): void {
     for (let i = 108; i < ANCHO; i += 24) r(0, i, ANCHO, 1, C.sendero2);
   } else {
     r(0, 108, ANCHO, 148, C.pasto);
-    for (let i = 0; i < 90; i++)
-      r(Math.floor(ruido(i, 1) * ANCHO), 110 + Math.floor(ruido(i, 2) * 60), 1, 3, i % 2 ? C.pasto2 : C.pasto3);
+    for (let i = 0; i < 90; i++) {
+      const gx = Math.floor(ruido(i, 1) * ANCHO),
+        gy = 110 + Math.floor(ruido(i, 2) * 60);
+      r(gx, gy, 1, 3, i % 2 ? C.pasto2 : C.pasto3);
+      r(gx + 0.5, gy - 0.5, 0.5, 0.5, C.pasto2);
+    }
   }
   if (z === 'suelo' && es.sombraPared > 1) {
     g.fillStyle = C.sombra;
@@ -213,6 +222,14 @@ function fondo(g: CanvasRenderingContext2D, es: Escena, G: GeometriaCerca): void
       1,
       i % 2 ? mezcla(t, '#000000', 0.2) : mezcla(t, '#ffffff', 0.12),
     );
+  for (let i = 0; i < 60; i++)
+    r(
+      xa + Math.floor(ruido(i, 8) * (xb - xa - 3)) + 0.5,
+      120 + Math.floor(ruido(i, 10) * 50),
+      2,
+      0.5,
+      mezcla(t, '#000000', 0.3),
+    );
   r(xa, 138, xb - xa, 2, mezcla(t, '#000000', 0.25));
   perfil(g, es, G, xa, xb, 172, Math.round(es.cerca.hondo * PX_POR_CM), z);
 }
@@ -239,18 +256,26 @@ function columnaDelCorte(r: R, c: CeldaDeEscena, cx: number, X: number, cw: numb
   r(X, y0, cw, prof, mezcla(t, '#c9a070', 0.35));
   r(X, y0, cw, capa, osc);
   for (let i = 0; i < 6; i++) r(X + i * 10, y0 + capa - 1 + (i % 2), 10, 2, osc);
+  r(X, y0 + capa + 1.5, cw, 0.5, mezcla(t, '#c9a070', 0.5));
   for (let i = 0; i < 26; i++) {
     const px = X + Math.floor(ruido(i + cx, 11) * (cw - 3)),
       py = y0 + 2 + Math.floor(ruido(i, 13 + cx) * (prof - 4));
     r(px, py, i % 4 ? 2 : 3, i % 3 ? 1 : 2, py < y0 + capa ? mezcla(osc, '#000000', 0.3) : mezcla(t, '#ffffff', 0.25));
+    if (py >= y0 + capa) r(px + 0.5, py + (i % 3 ? 1 : 2), i % 4 ? 1 : 2, 0.5, mezcla(t, '#000000', 0.3));
   }
   for (let i = 0; i < c.humedo * 3; i++) {
     const wx = X + 4 + Math.floor(ruido(i, 17 + cx) * (cw - 8)),
       wy = y0 + 4 + Math.floor(ruido(i + cx, 19) * (prof - 8));
     r(wx, wy, 2, 3, '#6fc0e8');
+    r(wx + 0.5, wy - 0.5, 1, 0.5, '#6fc0e8');
     r(wx, wy, 1, 1, '#c8f0ff');
+    r(wx + 1, wy + 2, 1, 0.5, '#3a8ac0');
   }
-  if (c.mulch) for (let i = 0; i < 12; i++) r(X + i * 5, y0 - 3 + (i % 2), 6, 2, i % 2 ? C.paja : C.paja2);
+  if (c.mulch)
+    for (let i = 0; i < 12; i++) {
+      r(X + i * 5, y0 - 3 + (i % 2), 6, 2, i % 2 ? C.paja : C.paja2);
+      r(X + i * 5 + 0.5, y0 - 1 + (i % 2), 5, 0.5, C.paja2);
+    }
   r(X + cw - 1, y0, 1, prof, 'rgba(0,0,0,0.15)');
 }
 
@@ -273,6 +298,8 @@ function perfil(
   if (z === 'cajon') {
     r(xa, 112, 6, prof + 60, C.madera);
     r(xa, 112, 2, prof + 60, C.madera3);
+    r(xa + 3.5, 112, 0.5, prof + 60, C.madera2);
+    r(xb - 3.5, 112, 0.5, prof + 60, C.madera);
     r(xb - 6, 112, 6, prof + 60, C.madera2);
     r(xa, y0 + prof - 2, xb - xa, 4, C.madera2);
     for (let i = 0; i < 3; i++) r(xa, y0 + 10 + i * 14, 6, 1, C.madera2);
@@ -283,6 +310,7 @@ function perfil(
   }
   r(xa, y0, xb - xa, 2, 'rgba(0,0,0,0.3)');
   // regla: una marca cada 15 cm
+  for (let i = 1; i * 20 - 10 <= prof; i++) r(xb - 6, y0 + i * 20 - 10, 6, 0.5, C.blanco);
   for (let i = 1; i * 20 <= prof; i++) {
     r(xb - 12, y0 + i * 20, 12, 1, C.blanco);
     letras(g, xb - 12, y0 + i * 20 - 7, String(i * 15), C.blanco, 1);
@@ -327,6 +355,8 @@ function macetaEnCorte(
   }
   r(q.bx - Math.round(R - prof * 0.18), top + prof, Math.round(R - prof * 0.18) * 2, 3, C.terracota2);
   r(q.bx - R - 2, top - 3, R * 2 + 4, 4, C.terracota3);
+  r(q.bx - R - 2, top - 3, R * 2 + 4, 0.5, mezcla(C.terracota3, '#ffffff', 0.35));
+  r(q.bx - R - 2, top + 0.5, R * 2 + 4, 0.5, C.terracota2);
   r(q.bx - R + 1, top - 1, R * 2 - 2, 2, tt);
   for (let i = 0; i < c.humedo * 2; i++)
     r(
@@ -359,8 +389,11 @@ function bandejaEnCorte(g: CanvasRenderingContext2D, r: R, c: CeldaDeEscena, q: 
 function lombriz(r: R, q: CeldaEnPantalla, cx: number, t: number): void {
   const lx = q.x + 12 + Math.round(Math.sin(t * 0.2 + cx) * 6),
     ly = 180 + ((cx * 7) % 14);
-  for (let j = 0; j < 7; j++)
-    r(lx + j * 2, ly + Math.round(Math.sin(t * 0.6 + j * 0.9) * 1.5), 2, 2, j % 3 ? '#f08aa0' : '#d06a80');
+  for (let j = 0; j < 7; j++) {
+    const lj = ly + Math.round(Math.sin(t * 0.6 + j * 0.9) * 1.5);
+    r(lx + j * 2, lj, 2, 2, j % 3 ? '#f08aa0' : '#d06a80');
+    r(lx + j * 2, lj, 2, 0.5, '#ffc0d0');
+  }
 }
 
 /** Las raíces y los contenedores, antes de las plantas. */
