@@ -16,6 +16,7 @@ import type { Geometria } from './geometria';
 import { xyDe } from './geometria';
 import { ruido } from './paleta';
 import { plantas, type Tween } from './plantas';
+import { SpritesDePlantas } from './sprites';
 
 interface Previa {
   id: string;
@@ -42,6 +43,7 @@ export class RenderPixel implements Renderer {
   private S = 1;
   private tw: Record<string, Tween> = {};
   private prev: Record<string, Previa | null> = {};
+  private sprites = new SpritesDePlantas();
   private efectos = new Efectos(() => (this.G && this.escena ? { G: this.G, es: this.escena } : null));
   private el!: HTMLElement;
   private cv!: HTMLCanvasElement;
@@ -149,7 +151,7 @@ export class RenderPixel implements Renderer {
       oculta: this.efectos.oculta,
       efecto: (tipo: 'brote', d: { celda: string }) => this.efecto(tipo, d),
     };
-    plantas(g, es, G, claves, anim, t, Date.now());
+    plantas(g, this.sprites, es, G, claves, anim, t, Date.now());
     this.camara.delante?.(g, es, G, t);
     capas(g, es, G, claves, t);
     this.efectos.dibujar(g, r);

@@ -2,11 +2,12 @@
  * La pasada de plantas: cada una en su celda, animada si acaba de crecer, con sus avisos encima
  * (lista para cosechar, lista para trasplantar, salud baja, plaga) y las abejas en las flores.
  */
-import { pincel, planta, type Pincel, type PlantaParaDibujar } from '../../arte';
+import { bichosDePlanta, pincel, vientoDe, type Pincel, type PlantaParaDibujar } from '../../arte';
 import type { CeldaDeEscena, Escena, PlantaDeEscena } from '../contrato';
 import type { CeldaEnPantalla, Geometria } from './geometria';
 import { letras } from './letras';
 import { C, easeBack } from './paleta';
+import type { SpritesDePlantas } from './sprites';
 
 /** Una planta que crece de a poco entre dos fotos: de `de` a `a`, arrancando en `t0` y durando `dur` ms. */
 export interface Tween {
@@ -55,6 +56,7 @@ interface Lugar {
 /** Varios plantines juntos: en la bandeja, uno por celdita; en tierra, un manojo apretado. */
 function manojo(
   g: CanvasRenderingContext2D,
+  sprites: SpritesDePlantas,
   G: Geometria,
   c: CeldaDeEscena,
   vista: PlantaParaDibujar,
@@ -68,18 +70,32 @@ function manojo(
     ee = enBandeja ? G.plantas.bandeja.escala : esc * 0.78,
     m = enBandeja ? n : Math.min(4, n);
   for (let ni = 0; ni < m; ni++)
-    planta(
-      pincel(
-        g,
-        q.bx + Math.round((ni - (m - 1) / 2) * paso),
-        by - Math.round(salto) - (ni % 2 && !enBandeja ? 2 : 0),
-        ee,
-      ),
+    pegarPlanta(
+      g,
+      sprites,
+      q.bx + Math.round((ni - (m - 1) / 2) * paso),
+      by - Math.round(salto) - (ni % 2 && !enBandeja ? 2 : 0),
+      ee,
       vista,
       t,
       q.bx * 0.13 + ni * 1.7,
     );
   letras(g, q.bx + Math.round(q.w / 2) - 9, G.plantas.numeroAbajo ? by + 4 : q.y + 2, String(n), C.blanco, 1);
+}
+
+/** Una planta: su sprite de la caché y, encima, los bichos, que se mueven con el tiempo. */
+function pegarPlanta(
+  g: CanvasRenderingContext2D,
+  sprites: SpritesDePlantas,
+  x: number,
+  y: number,
+  escala: number,
+  vista: PlantaParaDibujar,
+  t: number,
+  fase: number,
+): void {
+  sprites.pegar(g, g.getTransform().a, x, y, escala, vista, vientoDe(t, fase));
+  if (vista.plaga) bichosDePlanta(pincel(g, x, y, escala), vista, t);
 }
 
 function listaParaCosechar(r: Pincel['r'], { q, by, a, esc }: Lugar, t: number): void {
@@ -172,6 +188,7 @@ function avisos(r: Pincel['r'], G: Geometria, p: PlantaDeEscena, L: Lugar, t: nu
 
 function unaPlanta(
   g: CanvasRenderingContext2D,
+  sprites: SpritesDePlantas,
   r: Pincel['r'],
   G: Geometria,
   k: string,
@@ -191,13 +208,14 @@ function unaPlanta(
     vista = vistaDe(p, a, brotando);
   if (G.plantas.sombra && p.etapa !== 'semilla') sombraEnElPiso(g, L);
   const n = p.etapa === 'semilla' ? 1 : Math.min(6, p.n || 1);
-  if (n > 1) manojo(g, G, c, vista, n, L, t);
-  else planta(pincel(g, q.bx, by - Math.round(salto), L.chica ? 0.8 : esc), vista, t, q.bx * 0.13 + by * 0.07);
+  if (n > 1) manojo(g, sprites, G, c, vista, n, L, t);
+  else pegarPlanta(g, sprites, q.bx, by - Math.round(salto), L.chica ? 0.8 : esc, vista, t, q.bx * 0.13 + by * 0.07);
   avisos(r, G, p, L, t);
 }
 
 export function plantas(
   g: CanvasRenderingContext2D,
+  sprites: SpritesDePlantas,
   es: Escena,
   G: Geometria,
   claves: string[],
@@ -216,6 +234,6 @@ export function plantas(
       g.fillRect(0, 58, G.W, 80);
     }
     if (!p || c.ancla === false || anim.oculta === k) continue;
-    unaPlanta(g, r, G, k, c, p, anim, t, ahora);
+    unaPlanta(g, sprites, r, G, k, c, p, anim, t, ahora);
   }
 }

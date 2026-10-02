@@ -102,15 +102,22 @@ function bichos(B: Pincel, plaga: string, a: number, t: number): void {
   }
 }
 
-/** Dibuja una planta. B = pincel anclado en su base; t = tiempo (para el viento y los bichos). */
-export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: number): void {
+/** Cuánto sopla el viento sobre una planta en el instante `t` (-1..1). `fase` desfasa una planta de otra. */
+export function vientoDe(t?: number, fase?: number): number {
   const tt = t || 0,
     f = fase || 0;
+  return Math.sin(tt * 0.55 + f) * (0.6 + 0.4 * Math.sin(tt * 0.13 + f * 2));
+}
+
+/** El avance, entre 0,1 y 1, que usan todas las formas. */
+const avanceDe = (p: PlantaParaDibujar): number => Math.max(0.1, Math.min(1, p.avance || 0));
+
+/** El cuerpo de la planta sin lo que se mueve con el tiempo (los bichos) ni las gotas de dulce. */
+function cuerpo(B: Pincel, p: PlantaParaDibujar, viento: number): void {
   const e = estiloDe(p),
-    a = Math.max(0.1, Math.min(1, p.avance || 0)),
+    a = avanceDe(p),
     pal = paletaConSalud(e.pal || V, p.salud == null ? 100 : p.salud);
   if (!pal.oo) pal.oo = pal.o;
-  const viento = Math.sin(tt * 0.55 + f) * (0.6 + 0.4 * Math.sin(tt * 0.13 + f * 2));
   const st: Postura = {
     madura: p.etapa === 'cosechable',
     tutor: !!p.tutor,
@@ -120,12 +127,35 @@ export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: numbe
   if (p.etapa === 'plantin') return plantin(B, a, pal, st);
   if (p.etapa === 'pasada' || p.etapa === 'semillando') return semillandoOPasada(B, p.etapa === 'pasada', pal, st);
   (FORMAS[e.f] || FORMAS.roseta)(B, a, e, pal, st);
-  if (p.plaga) bichos(B, p.plaga, a, tt);
-  if (p.dulce) {
-    B.r(-8, -Math.round(6 + a * 10), 1, 1, '#ffffff');
-    B.r(6, -Math.round(4 + a * 8), 1, 1, '#d6f0ff');
-    B.r(0, -Math.round(8 + a * 12), 1, 1, '#ffffff');
-  }
+}
+
+/** Las gotas brillantes de una planta dulce. */
+function dulce(B: Pincel, p: PlantaParaDibujar): void {
+  const a = avanceDe(p);
+  if (p.etapa === 'semilla' || p.etapa === 'plantin' || p.etapa === 'pasada' || p.etapa === 'semillando') return;
+  if (!p.dulce) return;
+  B.r(-8, -Math.round(6 + a * 10), 1, 1, '#ffffff');
+  B.r(6, -Math.round(4 + a * 8), 1, 1, '#d6f0ff');
+  B.r(0, -Math.round(8 + a * 12), 1, 1, '#ffffff');
+}
+
+/** Los bichos de una planta con plaga: se mueven con el tiempo `t`, así que no entran en la caché. */
+export function bichosDePlanta(B: Pincel, p: PlantaParaDibujar, t?: number): void {
+  if (p.plaga && !['semilla', 'plantin', 'pasada', 'semillando'].includes(p.etapa))
+    bichos(B, p.plaga, avanceDe(p), t || 0);
+}
+
+/** El dibujo de una planta que no cambia con el tiempo, con un viento dado: lo que se guarda en la caché. */
+export function dibujarPlanta(B: Pincel, p: PlantaParaDibujar, viento: number): void {
+  cuerpo(B, p, viento);
+  dulce(B, p);
+}
+
+/** Dibuja una planta. B = pincel anclado en su base; t = tiempo (para el viento y los bichos). */
+export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: number): void {
+  cuerpo(B, p, vientoDe(t, fase));
+  bichosDePlanta(B, p, t);
+  dulce(B, p);
 }
 
 /** Cuánto hunde la raíz cada forma, en píxeles, ya crecida. */
