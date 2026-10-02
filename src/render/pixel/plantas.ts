@@ -84,9 +84,11 @@ function manojo(
 
 function listaParaCosechar(r: Pincel['r'], { q, by, a, esc }: Lugar, t: number): void {
   const yy = by - Math.round((8 + a * 22) * esc) - 6 + Math.round(Math.sin(t * 0.4 + q.bx) * 1.5);
-  r(q.bx - 3, yy, 7, 7, C.anil);
+  r(q.bx - 3, yy + 0.5, 7, 6, C.anil);
+  r(q.bx - 2.5, yy, 6, 7, C.anil);
   r(q.bx - 2, yy + 1, 5, 5, C.maiz);
-  r(q.bx - 1, yy + 2, 1, 2, C.blanco);
+  r(q.bx - 1, yy + 1.5, 0.5, 2.5, C.blanco);
+  r(q.bx - 1, yy + 1.5, 1.5, 0.5, C.blanco);
   r(q.bx, yy + 7, 1, 2, C.anil);
 }
 
@@ -94,11 +96,14 @@ function listaParaCosechar(r: Pincel['r'], { q, by, a, esc }: Lugar, t: number):
 function flechaDeTrasplante(r: Pincel['r'], G: Geometria, p: PlantaDeEscena, { q, by, chica }: Lugar, t: number): void {
   const ty = by - Math.round((chica ? 14 : 20) * G.plantas.alturaDeFlecha) + Math.round(Math.sin(t * 0.4 + q.bx) * 1.5),
     tc = p.trasplante === 'listo' ? '#3fc25a' : '#e0502f';
-  r(q.bx - 4, ty, 9, 9, C.anil);
+  r(q.bx - 4, ty + 0.5, 9, 8, C.anil);
+  r(q.bx - 3.5, ty, 8, 9, C.anil);
   r(q.bx - 3, ty + 1, 7, 7, tc);
   r(q.bx, ty + 2, 1, 5, C.blanco);
   r(q.bx - 1, ty + 3, 3, 1, C.blanco);
   r(q.bx - 2, ty + 4, 5, 1, C.blanco);
+  r(q.bx - 0.5, ty + 2.5, 2, 0.5, C.blanco);
+  r(q.bx - 1.5, ty + 3.5, 4, 0.5, C.blanco);
 }
 
 /** salud baja: barrita bajo la planta, para verla sin abrir la ficha */
@@ -108,12 +113,15 @@ function barraDeSalud(r: Pincel['r'], salud: number, { q, by }: Lugar): void {
     sy2 = by + 2;
   r(sx - 1, sy2 - 1, sw2 + 2, 4, C.anil);
   r(sx, sy2, sw2, 2, '#4a2030');
-  r(sx, sy2, Math.max(1, Math.round((sw2 * salud) / 100)), 2, salud < 30 ? '#ff5a4a' : '#ffc233');
+  const lleno = Math.max(1, Math.round((sw2 * salud) / 100));
+  r(sx, sy2, lleno, 2, salud < 30 ? '#ff5a4a' : '#ffc233');
+  r(sx, sy2, lleno, 0.5, salud < 30 ? '#ff9a8a' : '#ffe9a0');
 }
 
 function avisoDePlaga(r: Pincel['r'], { q, by, a, esc }: Lugar): void {
   const py2 = by - Math.round((8 + a * 20) * esc) - 5;
-  r(q.bx + 6, py2, 7, 7, '#e0502f');
+  r(q.bx + 6, py2 + 0.5, 7, 6, '#e0502f');
+  r(q.bx + 6.5, py2, 6, 7, '#e0502f');
   r(q.bx + 9, py2 + 1, 1, 3, C.blanco);
   r(q.bx + 9, py2 + 5, 1, 1, C.blanco);
 }
@@ -125,7 +133,9 @@ function abejas(r: Pincel['r'], { q, by, esc }: Lugar, t: number): void {
       ay = by - Math.round(16 * esc) + Math.round(Math.cos(t * 0.53 + bb * 2) * 6 * esc);
     r(ax, ay, 3, 2, '#ffd23f');
     r(ax + 1, ay, 1, 2, '#16161a');
-    r(ax + (Math.floor(t * 2) % 2), ay - 1, 2, 1, 'rgba(255,255,255,0.85)');
+    r(ax - 0.5, ay + 0.5, 0.5, 1, '#16161a');
+    r(ax + (Math.floor(t * 2) % 2), ay - 1, 2, 0.5, 'rgba(255,255,255,0.85)');
+    r(ax + (Math.floor(t * 2) % 2) + 0.5, ay - 0.5, 1.5, 0.5, 'rgba(255,255,255,0.6)');
   }
 }
 

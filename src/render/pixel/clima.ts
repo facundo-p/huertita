@@ -11,7 +11,10 @@ function humo(g: CanvasRenderingContext2D, r: R, es: Escena, G: Geometria, t: nu
   for (let i = 0; i < 3; i++) {
     const u = (t * 0.12 + i * 0.33) % 1;
     g.globalAlpha = 0.5 * (1 - u);
-    r(q.bx - 4 + i * 4 + Math.sin(t * 0.3 + i) * 2, q.y + q.h - 28 - u * 14, 3, 3, '#ffffff');
+    const hx = q.bx - 4 + i * 4 + Math.sin(t * 0.3 + i) * 2,
+      hy = q.y + q.h - 28 - u * 14;
+    r(hx, hy + 0.5, 3, 2, '#ffffff');
+    r(hx + 0.5, hy, 2, 3, '#ffffff');
     g.globalAlpha = 1;
   }
 }
@@ -23,6 +26,7 @@ function lluvia(g: CanvasRenderingContext2D, r: R, W: number, H: number, t: numb
     const rx = (ruido(i, 1) * W + t * 5) % W,
       ry = (ruido(i, 2) * H + t * 34 + i * 9) % H;
     r(rx, ry, 1, 6, '#bfeaff');
+    r(rx, ry, 0.5, 6, '#ffffff');
     r(rx + 1, ry + 5, 1, 2, '#7fc8f0');
     if (i % 6 === 0) {
       const sx = ruido(i, 3) * W,
@@ -31,6 +35,8 @@ function lluvia(g: CanvasRenderingContext2D, r: R, W: number, H: number, t: numb
       r(sx - f, sy2, 1, 1, '#dff6ff');
       r(sx + f + 1, sy2, 1, 1, '#dff6ff');
       r(sx, sy2 - f, 1, 1, '#dff6ff');
+      r(sx - f - 0.5, sy2 - 0.5, 0.5, 0.5, '#dff6ff');
+      r(sx + f + 2, sy2 - 0.5, 0.5, 0.5, '#dff6ff');
     }
   }
 }
@@ -45,6 +51,10 @@ function helada(g: CanvasRenderingContext2D, r: R, W: number, H: number, t: numb
     if (i % 9 === 0) {
       r(hx - 1, hy, 3, 1, '#ffffff');
       r(hx, hy - 1, 1, 3, '#ffffff');
+      r(hx - 1, hy - 1, 0.5, 0.5, '#ffffff');
+      r(hx + 1.5, hy - 1, 0.5, 0.5, '#ffffff');
+      r(hx - 1, hy + 1.5, 0.5, 0.5, '#ffffff');
+      r(hx + 1.5, hy + 1.5, 0.5, 0.5, '#ffffff');
     }
   }
 }
@@ -56,6 +66,7 @@ function calor(g: CanvasRenderingContext2D, W: number, H: number, t: number): vo
     const cy2 = (i * 37 + t * 2) % H;
     g.fillStyle = 'rgba(255,230,160,0.16)';
     g.fillRect(Math.sin(t * 0.4 + i) * 8, cy2, W, 2);
+    g.fillRect(Math.sin(t * 0.4 + i) * 8, cy2 + 2.5, W, 0.5);
   }
 }
 

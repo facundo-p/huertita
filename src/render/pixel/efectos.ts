@@ -294,7 +294,11 @@ export class Efectos {
       p.vy += p.g;
       p.vida--;
       g.globalAlpha = Math.min(1, p.vida / (p.v0 * 0.4));
-      r(p.x, p.y, p.tam, p.tam, p.col);
+      if (p.tam >= 2) {
+        // esquinas comidas medio píxel: la partícula sale redonda
+        r(p.x + 0.5, p.y, p.tam - 1, p.tam, p.col);
+        r(p.x, p.y + 0.5, p.tam, p.tam - 1, p.col);
+      } else r(p.x, p.y, p.tam, p.tam, p.col);
       g.globalAlpha = 1;
       return p.vida > 0;
     });
