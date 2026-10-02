@@ -5,7 +5,7 @@
  * de las fichas. No sabe nada del motor: recibe una planta plana (`PlantaParaDibujar`, que la
  * `PlantaDeEscena` del renderer cumple).
  */
-import { estiloDe, type Estilo } from './estilos';
+import { estiloDe } from './estilos';
 import { FORMAS, type Postura } from './formas';
 import { floracion } from './formas/floracion';
 import { PERFIL, hojaV, nervadura } from './hojas';
@@ -150,83 +150,6 @@ export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: numbe
   cuerpo(B, p, vientoDe(t, fase));
   bichosDePlanta(B, p, t);
   dulce(B, p);
-}
-
-/** Cuánto hunde la raíz cada forma, en píxeles, ya crecida. */
-function hondoDeRaiz(e: Estilo): number {
-  if (e.f === 'raiz') return e.largo ? 30 : 16;
-  if (e.f === 'mata' || e.f === 'alta' || e.f === 'rastrera') return 34;
-  if (e.f === 'trepadora' || e.f === 'repollo') return 26;
-  return e.f === 'aromatica' ? 24 : 14;
-}
-
-const RAICILLA = '#e9d2a8',
-  RAICILLA_OSCURA = '#c9a878';
-
-/** La raíz carnosa (zanahoria, rabanito…) entera, bajo tierra. */
-function raizCarnosa(B: Pincel, e: Estilo, a: number, prof: number): void {
-  const t = e.tinta!,
-    w = Math.round(2 + a * (e.largo ? 3 : 3.5)),
-    L = Math.min(prof - 3, Math.round(e.largo ? 6 + a * 22 : 3 + a * 6));
-  if (e.largo)
-    for (let i = 0; i < L; i++) {
-      const ww = Math.max(1, Math.round(w * (1 - (i / L) * 0.85)));
-      B.r(-ww, i, ww * 2, 1, i % 5 === 4 ? mezcla(t, '#000000', 0.18) : t);
-      B.r(-ww, i, 1, 1, mezcla(t, '#ffffff', 0.35));
-    }
-  else {
-    B.elipse(0, Math.round(L / 2), w, Math.round(L / 2), mezcla(t, '#000000', 0.2));
-    B.elipse(-1, Math.round(L / 2) - 1, w - 1, Math.round(L / 2) - 1, t);
-    B.r(-w + 2, 2, 2, 2, mezcla(t, '#ffffff', 0.45));
-  }
-  B.linea(0, L, 0, Math.min(prof - 1, L + 6), RAICILLA_OSCURA);
-  for (let i = 0; i < 4; i++) B.linea(i % 2 ? w : -w, 3 + i * 2, i % 2 ? w + 4 : -w - 4, 5 + i * 3, RAICILLA_OSCURA);
-}
-
-function raicillas(B: Pincel, e: Estilo, a: number, d: number, prof: number, tope: boolean): void {
-  B.linea(0, 0, 0, d, RAICILLA);
-  for (let i = 1; i <= 5; i++) {
-    const y = Math.round((d * i) / 6),
-      s = i % 2 ? 1 : -1,
-      l = Math.round((3 + a * 9) * (1 - i / 8));
-    B.linea(0, y, s * l, Math.min(prof - 1, y + Math.round(l * 0.7)), i % 3 ? RAICILLA : RAICILLA_OSCURA);
-    B.linea(0, y + 1, -s * Math.round(l * 0.6), Math.min(prof - 1, y + 3 + Math.round(l * 0.4)), RAICILLA_OSCURA);
-  }
-  if (tope) B.linea(-7, prof - 2, 7, prof - 2, RAICILLA); // la raíz topa y se enrula contra el fondo
-  if (e.tuber && a > 0.6)
-    for (const [x, y] of [
-      [-7, 8],
-      [5, 11],
-      [-2, 15],
-      [9, 6],
-    ])
-      if (y + 3 < prof) {
-        B.elipse(x, y, 3, 2, mezcla(e.tuber, '#000000', 0.2));
-        B.elipse(x, y - 1, 2, 1, e.tuber);
-      }
-  if (e.bulbo && a > 0.6) {
-    B.elipse(0, 3, 4, 3, e.tinta);
-    B.r(-2, 1, 2, 1, '#ffffff');
-  }
-}
-
-/**
- * Lo que pasa bajo tierra, para la vista de cerca. B anclado al ras del suelo; prof = px de tierra
- * disponibles. Devuelve cuánto pide la raíz y si topa con el fondo.
- */
-export function raiz(B: Pincel, p: PlantaParaDibujar, prof: number): { pide: number; tope?: boolean } {
-  const e = estiloDe(p),
-    a = Math.max(0.1, Math.min(1, p.avance || 0));
-  if (p.etapa === 'semilla') {
-    B.r(-1, 3, 2, 2, PAJA);
-    return { pide: 0 };
-  }
-  const pide = hondoDeRaiz(e),
-    d = Math.min(prof - 2, Math.round(pide * (0.25 + 0.75 * a))),
-    tope = pide * (0.25 + 0.75 * a) > prof - 2;
-  if (e.f === 'raiz' && a > 0.3) raizCarnosa(B, e, a, prof);
-  else raicillas(B, e, a, d, prof, tope);
-  return { pide, tope };
 }
 
 /** Tira de estadíos para la ficha: semilla → plantín → creciendo → cosecha/flor → semilla. [etapa, avance, nombre] */

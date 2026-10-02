@@ -3,6 +3,7 @@ export { ESTILO, FORMAS_DE_PLANTA, estiloDe, type Estilo, type Forma } from './e
 export { FORMAS } from './formas';
 export { mezcla, rampaDe, rampaDeHoja, type Paleta, type Rampa } from './paleta';
 export { RES, escalaDeLienzo, pincel, type Lienzo2D, type Mascara, type Pincel } from './pincel';
+export { raiz } from './raices';
 export { PERFIL, contornoDeHoja, hojaV, nervadura, type PerfilDeHoja } from './hojas';
 export {
   ETAPAS,
@@ -10,7 +11,6 @@ export {
   dibujarPlanta,
   etapaDeTira,
   planta,
-  raiz,
   tira,
   vientoDe,
   type LienzoDeTira,

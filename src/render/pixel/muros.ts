@@ -13,7 +13,7 @@ import { empaquetar, hash, Superficie } from './superficie';
 const px = Superficie.px;
 
 /** El cielo: dos colores con una franja de damero en el medio y nubes de damero. */
-function cieloDeBanda(
+export function cieloDeBanda(
   s: Superficie,
   j0: number,
   j1: number,
@@ -55,7 +55,7 @@ function hiedra(s: Superficie, x: number, alto: number, base: number, semilla: n
 }
 
 /** El paredón de ladrillo: ladrillos de tonos distintos con luz y sombra, juntas, desportillados, musgo y humedad al pie. */
-function paredon(s: Superficie, y0: number, y1: number): void {
+export function paredon(s: Superficie, y0: number, y1: number): void {
   const ancho = px(16),
     alto = px(6),
     j0 = px(y0),

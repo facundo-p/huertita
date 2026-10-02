@@ -77,7 +77,7 @@ function elegirGrano(tabla: number[], nivel: number, r: number): number {
 
 /** Un terrón o una piedrita en la tierra: cuerpo, luz arriba a la izquierda, sombra abajo a la derecha. */
 const coloresDeTerron = new Map<string, [string, string, string]>();
-function terron(s: Superficie, cx: number, cy: number, rx: number, ry: number, base: string): void {
+export function terron(s: Superficie, cx: number, cy: number, rx: number, ry: number, base: string): void {
   let c = coloresDeTerron.get(base);
   if (!c) {
     c = [mezcla(base, '#1e0f08', 0.5), mezcla(base, '#c9a070', 0.18), mezcla(base, '#f0d0a0', 0.32)];
@@ -168,7 +168,7 @@ function labio(s: Superficie, z: Zona, c: CeldaDeEscena): void {
 }
 
 /** Un tablón con degradé de luz, vetas, nudos y clavos en las puntas. Largo en el lado más largo. */
-function tablon(s: Superficie, z: Zona, semilla: number): void {
+export function tablon(s: Superficie, z: Zona, semilla: number): void {
   const horizontal = z.w >= z.h,
     n = horizontal ? z.h : z.w,
     largo = horizontal ? z.w : z.h;
@@ -194,7 +194,7 @@ function tablon(s: Superficie, z: Zona, semilla: number): void {
 }
 
 /** Un clavo con su brillo. */
-function clavo(s: Superficie, i: number, j: number): void {
+export function clavo(s: Superficie, i: number, j: number): void {
   s.px(i, j, '#2a2222');
   s.px(i + 1, j, '#3a3030');
   s.px(i, j - 1, '#9a8a8a');

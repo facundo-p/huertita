@@ -2,7 +2,7 @@
 import { pincel, type Pincel } from '../../arte';
 import type { CeldaDeEscena, Escena } from '../contrato';
 import type { Geometria } from './geometria';
-import { letras } from './letras';
+import { anchoDeLetras, letras } from './letras';
 import { C } from './paleta';
 
 interface Marco {
@@ -15,14 +15,12 @@ interface Marco {
 function horasDeSol(g: CanvasRenderingContext2D, c: CeldaDeEscena, { x: X, y: Y, w, h }: Marco): void {
   g.fillStyle = 'rgba(255,' + Math.round(120 + c.sol * 12) + ',0,' + (0.18 + c.sol / 18) + ')';
   g.fillRect(X, Y, w, h);
-  letras(
-    g,
-    X + Math.round(w / 2) - (c.sol >= 9.5 ? 7 : 3),
-    Y + Math.round(h / 2) - 4,
-    String(Math.round(c.sol)),
-    c.sol >= 6 ? C.anil : C.blanco,
-    2,
-  );
+  const n = String(Math.round(c.sol)),
+    x = X + (w - anchoDeLetras(n, 2)) / 2,
+    y = Y + (h - 7 * 0.75 * 2) / 2,
+    clara = c.sol >= 6;
+  letras(g, x + 0.75, y + 0.75, n, clara ? 'rgba(255,246,224,0.5)' : 'rgba(24,20,70,0.5)', 2);
+  letras(g, x, y, n, clara ? C.anil : C.blanco, 2);
 }
 
 const ICONO: Record<string, string> = { bien: '#0c5a1c', mal: '#7a0c0c', regular: '#6a4a00' };
@@ -38,12 +36,18 @@ function tinte(
   const ic = ICONO[cual],
     cx = X + w / 2,
     cy = Y + h / 2;
-  if (cual === 'mal') {
-    B.linea(cx - 3, cy - 3, cx + 3, cy + 3, ic, 2);
-    B.linea(cx + 3, cy - 3, cx - 3, cy + 3, ic, 2);
-  } else if (cual === 'bien') {
-    B.linea(cx - 4, cy, cx - 1, cy + 3, ic, 2);
-    B.linea(cx - 1, cy + 3, cx + 5, cy - 3, ic, 2);
+  // el ícono, con una luz debajo para que se lea sobre el tinte
+  for (const [d, col] of [
+    [0.75, 'rgba(255,255,255,0.45)'],
+    [0, ic],
+  ] as const) {
+    if (cual === 'mal') {
+      B.linea(cx - 3 + d, cy - 3 + d, cx + 3 + d, cy + 3 + d, col, 1.25);
+      B.linea(cx + 3 + d, cy - 3 + d, cx - 3 + d, cy + 3 + d, col, 1.25);
+    } else if (cual === 'bien') {
+      B.linea(cx - 4 + d, cy + d, cx - 1 + d, cy + 3 + d, col, 1.25);
+      B.linea(cx - 1 + d, cy + 3 + d, cx + 5 + d, cy - 3 + d, col, 1.25);
+    }
   }
 }
 
@@ -51,6 +55,12 @@ function tinte(
 function seleccion(r: Pincel['r'], { x: X, y: Y, w, h }: Marco, t: number): void {
   const on = Math.floor(t) % 2 ? C.blanco : C.maiz,
     L = 7;
+  esquinas(r, { x: X + 0.5, y: Y + 0.5, w, h }, 'rgba(24,20,70,0.5)', L);
+  esquinas(r, { x: X, y: Y, w, h }, on, L);
+}
+
+/** Las cuatro esquinas de un marco, en L, de un color. */
+function esquinas(r: Pincel['r'], { x: X, y: Y, w, h }: Marco, on: string, L: number): void {
   for (const [ex, ey, dx, dy] of [
     [X, Y, 1, 1],
     [X + w - 1, Y, -1, 1],

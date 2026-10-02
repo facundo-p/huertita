@@ -10,7 +10,7 @@ import { C, T } from './paleta';
 import { empaquetar, hash, porBloques, Superficie } from './superficie';
 
 /** una región de píxeles */
-interface Zona {
+export interface Zona {
   i: number;
   j: number;
   w: number;
@@ -75,7 +75,7 @@ function mata(s: Superficie, i: number, j: number, k: number): void {
   }
 }
 
-function pasto(s: Superficie, z: Zona): void {
+export function pasto(s: Superficie, z: Zona): void {
   const { i, j, w, h } = z,
     oscuro = empaquetar(C.pasto3),
     claro = empaquetar(C.pasto2);
@@ -189,7 +189,7 @@ function paletaDeBaldosa(tx: number, ty: number): number[] {
 }
 
 /** Baldosas cerámicas de 16 × 16 unidades: cada una con su tono, junta, bisel y desgaste. */
-function baldosas(s: Superficie, z: Zona): void {
+export function baldosas(s: Superficie, z: Zona): void {
   const { i, j, w, h } = z,
     L = Superficie.px(16);
   for (let y = j; y < j + h; y++)
