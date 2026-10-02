@@ -7,6 +7,7 @@
  */
 import { estiloDe, type Estilo } from './estilos';
 import { FORMAS, type Postura } from './formas';
+import { floracion } from './formas/floracion';
 import { PERFIL, hojaV, nervadura } from './hojas';
 import { mezcla, PAJA, rampaDe, rampaDeHoja, V, type Paleta } from './paleta';
 import { escalaDeLienzo, pincel, type Lienzo2D, type Pincel } from './pincel';
@@ -69,41 +70,6 @@ function plantin(B: Pincel, a: number, pal: Paleta, st: Postura): void {
   }
 }
 
-/** La vara floral de una planta que semilla, o la planta seca si ya pasó. */
-function semillandoOPasada(B: Pincel, sec: boolean, pal: Paleta, st: Postura): void {
-  const tallo = rampaDe(sec ? '#b89a4a' : pal.o),
-    flor = rampaDe(sec ? '#f2e27a' : PAJA),
-    xx = st.dx(-26);
-  B.volumen(B.mascara().elipse(0, -3.4, 7, 3), sec ? rampaDe('#8a7a3a') : rampaDeHoja(pal));
-  // la vara, de abajo hacia arriba
-  B.volumen(
-    B.mascara().poligono([
-      [-1.1, -3],
-      [1.1, -3],
-      [xx + 0.6, -27],
-      [xx - 0.6, -27],
-    ]),
-    tallo,
-  );
-  for (const [x, y] of [
-    [-5, -16],
-    [5, -20],
-    [-4, -24],
-    [3, -12],
-  ]) {
-    B.linea(Math.round(xx * (-y / 27)), y + 3, x + xx, y, tallo[3], 0.25);
-    // la umbela: un racimito de florcitas apretadas con su centro
-    B.volumen(B.mascara().elipse(x + xx, y - 1, 2.4, 2.2), flor);
-    for (const [dx, dy] of [
-      [-0.9, -0.7],
-      [0.8, -0.2],
-      [-0.1, 0.8],
-    ])
-      B.r(x + xx + dx, y - 1 + dy, 0.5, 0.5, sec ? '#fff6c0' : '#8a5526');
-  }
-  B.volumen(B.mascara().elipse(xx, -28, 2.7, 2.5), flor);
-}
-
 const COLOR_DE_PLAGA: Record<string, string> = { pulgon: '#16161a', oruga: '#d6ff3a' };
 
 function bichos(B: Pincel, plaga: string, a: number, t: number): void {
@@ -150,7 +116,10 @@ function cuerpo(B: Pincel, p: PlantaParaDibujar, viento: number): void {
   };
   if (p.etapa === 'semilla') return semilla(B);
   if (p.etapa === 'plantin') return plantin(B, a, pal, st);
-  if (p.etapa === 'pasada' || p.etapa === 'semillando') return semillandoOPasada(B, p.etapa === 'pasada', pal, st);
+  if (p.etapa === 'pasada' || p.etapa === 'semillando') {
+    const seca = p.etapa === 'pasada';
+    return floracion(B, p.slug, p.familia, e, seca ? paletaConSalud(pal, 20) : pal, st, seca);
+  }
   (FORMAS[e.f] || FORMAS.roseta)(B, a, e, pal, st);
 }
 
