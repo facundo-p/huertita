@@ -29,3 +29,42 @@ export function mezcla(a: string, b: string, t: number): string {
   const [r, g, bl] = [16, 8, 0].map((s) => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t));
   return '#' + ((1 << 24) + (r << 16) + (g << 8) + bl).toString(16).slice(1);
 }
+
+/** Siete tonos de un material, del más oscuro al más claro: las sombras tiran a añil y las luces a maíz. */
+export type Rampa = readonly string[];
+
+const ANIL_OSCURO = '#0c1a3a';
+
+/** La rampa de una hoja, a partir de su paleta de cuatro tonos (así cada especie y la salud siguen mandando). */
+export function rampaDeHoja(pal: Paleta): Rampa {
+  const oo = pal.oo || pal.o;
+  return [
+    mezcla(oo, ANIL_OSCURO, 0.45),
+    oo,
+    pal.o,
+    pal.v,
+    mezcla(pal.v, pal.c, 0.55),
+    pal.c,
+    mezcla(pal.c, '#fff6b8', 0.55),
+  ];
+}
+
+/** La rampa de un color suelto (un fruto, una flor, una raíz): luces cálidas, o amarillo verdoso si es un verde. */
+export function rampaDe(base: string): Rampa {
+  const n = parseInt(base.slice(1), 16),
+    r = (n >> 16) & 255,
+    g = (n >> 8) & 255,
+    b = n & 255,
+    verde = g > r && g > b,
+    luz = verde ? '#e4f27a' : '#ffd9a0',
+    sombra = verde ? ANIL_OSCURO : '#241448';
+  return [
+    mezcla(base, sombra, 0.8),
+    mezcla(base, sombra, 0.6),
+    mezcla(base, sombra, 0.32),
+    base,
+    mezcla(base, luz, 0.28),
+    mezcla(base, luz, 0.55),
+    mezcla(base, '#fff6d0', 0.8),
+  ];
+}

@@ -5,9 +5,11 @@
  * de las fichas. No sabe nada del motor: recibe una planta plana (`PlantaParaDibujar`, que la
  * `PlantaDeEscena` del renderer cumple).
  */
-import { estiloDe, type Estilo } from './estilos';
+import { estiloDe } from './estilos';
 import { FORMAS, type Postura } from './formas';
-import { mezcla, PAJA, TIERRA, V, type Paleta } from './paleta';
+import { floracion } from './formas/floracion';
+import { PERFIL, hojaV, nervadura } from './hojas';
+import { mezcla, PAJA, rampaDe, rampaDeHoja, V, type Paleta } from './paleta';
 import { escalaDeLienzo, pincel, type Lienzo2D, type Pincel } from './pincel';
 
 /** Lo que el arte necesita saber de una planta para dibujarla. */
@@ -38,45 +40,34 @@ function paletaConSalud(pal: Paleta, salud: number): Paleta {
 }
 
 function semilla(B: Pincel): void {
-  B.elipse(0, -1, 5, 2, TIERRA);
-  B.elipse(0, -2, 4, 1, '#6b4326');
-  B.r(-2, -3, 1, 1, PAJA);
-  B.r(1, -2, 1, 1, PAJA);
-  B.r(3, -3, 1, 1, '#fff1d0');
+  // un montoncito de tierra removida y tres semillas asomando
+  B.volumen(B.mascara().elipse(0, -1.2, 5, 2.1), rampaDe('#5a3820'));
+  for (const [x, y, an] of [
+    [-2.2, -2.6, 20],
+    [1, -2.2, -35],
+    [3, -3, 60],
+  ])
+    hojaV(B, x, y, 1.6, 0.9, an, rampaDe(PAJA), PERFIL.oval);
+  B.r(-3.5, -1.6, 0.5, 0.25, '#2a160c');
+  B.r(2.2, -0.9, 0.75, 0.25, '#2a160c');
 }
 
 function plantin(B: Pincel, a: number, pal: Paleta, st: Postura): void {
   const h = Math.round(3 + a * 7),
-    x = st.dx(-h * 2);
-  B.linea(0, 0, x, -h, pal.c, 1);
-  B.elipse(x - 3, -h, 2, 1, pal.v);
-  B.elipse(x + 3, -h - 1, 2, 1, pal.v);
-  B.r(x - 3, -h - 1, 2, 1, pal.c);
-  B.r(x + 2, -h - 2, 2, 1, pal.c);
+    x = st.dx(-h * 2),
+    clara = rampaDeHoja({ v: pal.c, c: mezcla(pal.c, '#fff6b8', 0.45), o: pal.v, oo: pal.o }),
+    rampa = rampaDeHoja(pal);
+  B.linea(0, 0, x, -h, clara[3], 0.5);
+  B.linea(-0.25, 0, x - 0.25, -h, clara[5], 0.25);
+  // los dos cotiledones, y las primeras hojas de verdad cuando ya tiene fuerza
+  hojaV(B, x, -h, 3.6, 2, -160, clara, PERFIL.oval);
+  hojaV(B, x, -h, 3.6, 2, -20, clara, PERFIL.oval);
+  nervadura(B, x, -h, 3, -160, clara[2], 0);
+  nervadura(B, x, -h, 3, -20, clara[2], 0);
   if (a > 0.55) {
-    B.elipse(x - 1, -h - 3, 1, 2, pal.c);
-    B.elipse(x + 2, -h - 4, 1, 2, pal.v);
+    hojaV(B, x, -h - 0.5, 3.4, 2, -112, rampa, PERFIL.oval);
+    hojaV(B, x, -h - 0.5, 3.8, 2.2, -70, clara, PERFIL.oval);
   }
-}
-
-/** La vara floral de una planta que semilla, o la planta seca si ya pasó. */
-function semillandoOPasada(B: Pincel, sec: boolean, pal: Paleta, st: Postura): void {
-  const tallo = sec ? '#b89a4a' : pal.o,
-    xx = st.dx(-26);
-  B.elipse(0, -3, 7, 3, sec ? '#8a7a3a' : pal.oo);
-  B.elipse(0, -4, 5, 2, sec ? '#b8a04a' : pal.v);
-  B.linea(0, -3, xx, -27, tallo, 2);
-  for (const [x, y] of [
-    [-5, -16],
-    [5, -20],
-    [-4, -24],
-    [3, -12],
-  ]) {
-    B.linea(Math.round(xx * (-y / 27)), y + 3, x + xx, y, tallo);
-    B.disco(x + xx, y - 1, 2, sec ? '#f2e27a' : PAJA);
-    B.r(x + xx, y - 2, 1, 1, sec ? '#fff6c0' : '#8a5526');
-  }
-  B.disco(xx, -28, 2, sec ? '#f2e27a' : PAJA);
 }
 
 const COLOR_DE_PLAGA: Record<string, string> = { pulgon: '#16161a', oruga: '#d6ff3a' };
@@ -92,6 +83,8 @@ function bichos(B: Pincel, plaga: string, a: number, t: number): void {
       if (b < 2) {
         B.r(bx - 1, by, 4, 1, col);
         B.r(bx + (Math.floor(t) % 2), by - 1, 2, 1, col);
+        B.r(bx, by + 0.5, 0.5, 0.5, '#3a7a14');
+        B.r(bx + 1.5, by + 0.5, 0.5, 0.5, '#3a7a14');
       }
     } else if (b < 2) {
       B.r(bx * 2 - 2, -1, 5, 2, col);
@@ -100,15 +93,22 @@ function bichos(B: Pincel, plaga: string, a: number, t: number): void {
   }
 }
 
-/** Dibuja una planta. B = pincel anclado en su base; t = tiempo (para el viento y los bichos). */
-export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: number): void {
+/** Cuánto sopla el viento sobre una planta en el instante `t` (-1..1). `fase` desfasa una planta de otra. */
+export function vientoDe(t?: number, fase?: number): number {
   const tt = t || 0,
     f = fase || 0;
+  return Math.sin(tt * 0.55 + f) * (0.6 + 0.4 * Math.sin(tt * 0.13 + f * 2));
+}
+
+/** El avance, entre 0,1 y 1, que usan todas las formas. */
+const avanceDe = (p: PlantaParaDibujar): number => Math.max(0.1, Math.min(1, p.avance || 0));
+
+/** El cuerpo de la planta sin lo que se mueve con el tiempo (los bichos) ni las gotas de dulce. */
+function cuerpo(B: Pincel, p: PlantaParaDibujar, viento: number): void {
   const e = estiloDe(p),
-    a = Math.max(0.1, Math.min(1, p.avance || 0)),
+    a = avanceDe(p),
     pal = paletaConSalud(e.pal || V, p.salud == null ? 100 : p.salud);
   if (!pal.oo) pal.oo = pal.o;
-  const viento = Math.sin(tt * 0.55 + f) * (0.6 + 0.4 * Math.sin(tt * 0.13 + f * 2));
   const st: Postura = {
     madura: p.etapa === 'cosechable',
     tutor: !!p.tutor,
@@ -116,91 +116,40 @@ export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: numbe
   };
   if (p.etapa === 'semilla') return semilla(B);
   if (p.etapa === 'plantin') return plantin(B, a, pal, st);
-  if (p.etapa === 'pasada' || p.etapa === 'semillando') return semillandoOPasada(B, p.etapa === 'pasada', pal, st);
+  if (p.etapa === 'pasada' || p.etapa === 'semillando') {
+    const seca = p.etapa === 'pasada';
+    return floracion(B, p.slug, p.familia, e, seca ? paletaConSalud(pal, 20) : pal, st, seca);
+  }
   (FORMAS[e.f] || FORMAS.roseta)(B, a, e, pal, st);
-  if (p.plaga) bichos(B, p.plaga, a, tt);
-  if (p.dulce) {
-    B.r(-8, -Math.round(6 + a * 10), 1, 1, '#ffffff');
-    B.r(6, -Math.round(4 + a * 8), 1, 1, '#d6f0ff');
-    B.r(0, -Math.round(8 + a * 12), 1, 1, '#ffffff');
-  }
 }
 
-/** Cuánto hunde la raíz cada forma, en píxeles, ya crecida. */
-function hondoDeRaiz(e: Estilo): number {
-  if (e.f === 'raiz') return e.largo ? 30 : 16;
-  if (e.f === 'mata' || e.f === 'alta' || e.f === 'rastrera') return 34;
-  if (e.f === 'trepadora' || e.f === 'repollo') return 26;
-  return e.f === 'aromatica' ? 24 : 14;
+/** Las gotas brillantes de una planta dulce. */
+function dulce(B: Pincel, p: PlantaParaDibujar): void {
+  const a = avanceDe(p);
+  if (p.etapa === 'semilla' || p.etapa === 'plantin' || p.etapa === 'pasada' || p.etapa === 'semillando') return;
+  if (!p.dulce) return;
+  B.r(-8, -Math.round(6 + a * 10), 1, 1, '#ffffff');
+  B.r(6, -Math.round(4 + a * 8), 1, 1, '#d6f0ff');
+  B.r(0, -Math.round(8 + a * 12), 1, 1, '#ffffff');
 }
 
-const RAICILLA = '#e9d2a8',
-  RAICILLA_OSCURA = '#c9a878';
-
-/** La raíz carnosa (zanahoria, rabanito…) entera, bajo tierra. */
-function raizCarnosa(B: Pincel, e: Estilo, a: number, prof: number): void {
-  const t = e.tinta!,
-    w = Math.round(2 + a * (e.largo ? 3 : 3.5)),
-    L = Math.min(prof - 3, Math.round(e.largo ? 6 + a * 22 : 3 + a * 6));
-  if (e.largo)
-    for (let i = 0; i < L; i++) {
-      const ww = Math.max(1, Math.round(w * (1 - (i / L) * 0.85)));
-      B.r(-ww, i, ww * 2, 1, i % 5 === 4 ? mezcla(t, '#000000', 0.18) : t);
-      B.r(-ww, i, 1, 1, mezcla(t, '#ffffff', 0.35));
-    }
-  else {
-    B.elipse(0, Math.round(L / 2), w, Math.round(L / 2), mezcla(t, '#000000', 0.2));
-    B.elipse(-1, Math.round(L / 2) - 1, w - 1, Math.round(L / 2) - 1, t);
-    B.r(-w + 2, 2, 2, 2, mezcla(t, '#ffffff', 0.45));
-  }
-  B.linea(0, L, 0, Math.min(prof - 1, L + 6), RAICILLA_OSCURA);
-  for (let i = 0; i < 4; i++) B.linea(i % 2 ? w : -w, 3 + i * 2, i % 2 ? w + 4 : -w - 4, 5 + i * 3, RAICILLA_OSCURA);
+/** Los bichos de una planta con plaga: se mueven con el tiempo `t`, así que no entran en la caché. */
+export function bichosDePlanta(B: Pincel, p: PlantaParaDibujar, t?: number): void {
+  if (p.plaga && !['semilla', 'plantin', 'pasada', 'semillando'].includes(p.etapa))
+    bichos(B, p.plaga, avanceDe(p), t || 0);
 }
 
-function raicillas(B: Pincel, e: Estilo, a: number, d: number, prof: number, tope: boolean): void {
-  B.linea(0, 0, 0, d, RAICILLA);
-  for (let i = 1; i <= 5; i++) {
-    const y = Math.round((d * i) / 6),
-      s = i % 2 ? 1 : -1,
-      l = Math.round((3 + a * 9) * (1 - i / 8));
-    B.linea(0, y, s * l, Math.min(prof - 1, y + Math.round(l * 0.7)), i % 3 ? RAICILLA : RAICILLA_OSCURA);
-    B.linea(0, y + 1, -s * Math.round(l * 0.6), Math.min(prof - 1, y + 3 + Math.round(l * 0.4)), RAICILLA_OSCURA);
-  }
-  if (tope) B.linea(-7, prof - 2, 7, prof - 2, RAICILLA); // la raíz topa y se enrula contra el fondo
-  if (e.tuber && a > 0.6)
-    for (const [x, y] of [
-      [-7, 8],
-      [5, 11],
-      [-2, 15],
-      [9, 6],
-    ])
-      if (y + 3 < prof) {
-        B.elipse(x, y, 3, 2, mezcla(e.tuber, '#000000', 0.2));
-        B.elipse(x, y - 1, 2, 1, e.tuber);
-      }
-  if (e.bulbo && a > 0.6) {
-    B.elipse(0, 3, 4, 3, e.tinta);
-    B.r(-2, 1, 2, 1, '#ffffff');
-  }
+/** El dibujo de una planta que no cambia con el tiempo, con un viento dado: lo que se guarda en la caché. */
+export function dibujarPlanta(B: Pincel, p: PlantaParaDibujar, viento: number): void {
+  cuerpo(B, p, viento);
+  dulce(B, p);
 }
 
-/**
- * Lo que pasa bajo tierra, para la vista de cerca. B anclado al ras del suelo; prof = px de tierra
- * disponibles. Devuelve cuánto pide la raíz y si topa con el fondo.
- */
-export function raiz(B: Pincel, p: PlantaParaDibujar, prof: number): { pide: number; tope?: boolean } {
-  const e = estiloDe(p),
-    a = Math.max(0.1, Math.min(1, p.avance || 0));
-  if (p.etapa === 'semilla') {
-    B.r(-1, 3, 2, 2, PAJA);
-    return { pide: 0 };
-  }
-  const pide = hondoDeRaiz(e),
-    d = Math.min(prof - 2, Math.round(pide * (0.25 + 0.75 * a))),
-    tope = pide * (0.25 + 0.75 * a) > prof - 2;
-  if (e.f === 'raiz' && a > 0.3) raizCarnosa(B, e, a, prof);
-  else raicillas(B, e, a, d, prof, tope);
-  return { pide, tope };
+/** Dibuja una planta. B = pincel anclado en su base; t = tiempo (para el viento y los bichos). */
+export function planta(B: Pincel, p: PlantaParaDibujar, t?: number, fase?: number): void {
+  cuerpo(B, p, vientoDe(t, fase));
+  bichosDePlanta(B, p, t);
+  dulce(B, p);
 }
 
 /** Tira de estadíos para la ficha: semilla → plantín → creciendo → cosecha/flor → semilla. [etapa, avance, nombre] */
@@ -217,7 +166,7 @@ export const ETAPAS: [string, number, string][] = [
 export interface LienzoDeTira {
   width: number;
   height: number;
-  style: { width: string; maxWidth: string; aspectRatio: string };
+  style: { width: string; maxWidth: string; aspectRatio: string; imageRendering?: string };
   getContext(tipo: '2d'): (Lienzo2D & { imageSmoothingEnabled: boolean; setTransform(...m: number[]): void }) | null;
 }
 
@@ -252,6 +201,8 @@ export function tira(
   cv.style.width = '100%';
   cv.style.maxWidth = ancho * n * S + 'px';
   cv.style.aspectRatio = ancho * n + ' / ' + alto;
+  // con más píxeles que la pantalla se suaviza al achicar; si no, píxeles nítidos (lo que dice el CSS)
+  cv.style.imageRendering = E > S * dpr * 1.05 ? 'auto' : '';
   const g = cv.getContext('2d')!;
   g.imageSmoothingEnabled = false;
   g.setTransform(E, 0, 0, E, 0, 0);

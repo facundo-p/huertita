@@ -2,10 +2,10 @@
  * Las animaciones puntuales que dispara una acción: partículas (semillas, tierra, agua, hojas
  * secas, papel picado), plantas que vuelan (cosecha, trasplante) y textos que suben.
  */
-import { pincel, planta, type Pincel, type PlantaParaDibujar } from '../../arte';
+import { mezcla, pincel, planta, type Pincel, type PlantaParaDibujar } from '../../arte';
 import type { DatosDeEfecto, Efecto, Escena } from '../contrato';
 import type { Geometria } from './geometria';
-import { letras } from './letras';
+import { anchoDeLetras, letras } from './letras';
 import { C, ruido } from './paleta';
 
 interface Particula {
@@ -144,6 +144,23 @@ const EN_LA_CELDA: Partial<Record<Efecto, Receta>> = {
     for (let i = 0; i < 6; i++) P(q.bx + 7, q.by - 28 * s, (ruido(i, 13) - 0.5) * 2, -0.6, 10, '#d9b779', s, 0.2);
   },
 };
+
+/** Una partícula con volumen de un píxel de lienzo: el color, una luz arriba a la izquierda y una sombra abajo a la derecha. */
+function particula(r: Pincel['r'], p: Particula): void {
+  const { x, y, tam: w, col } = p;
+  if (w <= 1) {
+    r(x, y, 0.75, 0.75, col);
+    r(x, y, 0.25, 0.25, mezcla(col, '#ffffff', 0.55));
+    return;
+  }
+  // esquinas comidas: la partícula sale redonda
+  r(x + 0.5, y, w - 1, w, col);
+  r(x, y + 0.5, w, w - 1, col);
+  r(x + 0.5, y, w - 1.25, 0.5, mezcla(col, '#ffffff', 0.45));
+  r(x, y + 0.5, 0.5, w * 0.4, mezcla(col, '#ffffff', 0.3));
+  r(x + w - 0.75, y + w * 0.4, 0.75, w * 0.4, mezcla(col, '#0c1a3a', 0.3));
+  r(x + 0.5, y + w - 0.5, w - 1, 0.5, mezcla(col, '#0c1a3a', 0.35));
+}
 
 export class Efectos {
   parts: Particula[] = [];
@@ -294,7 +311,7 @@ export class Efectos {
       p.vy += p.g;
       p.vida--;
       g.globalAlpha = Math.min(1, p.vida / (p.v0 * 0.4));
-      r(p.x, p.y, p.tam, p.tam, p.col);
+      particula(r, p);
       g.globalAlpha = 1;
       return p.vida > 0;
     });
@@ -302,8 +319,9 @@ export class Efectos {
       t.y -= 0.9;
       t.vida--;
       g.globalAlpha = Math.min(1, t.vida / 8);
-      letras(g, Math.round(t.x - t.txt.length * 4), Math.round(t.y), t.txt, C.anil, 2, 1);
-      letras(g, Math.round(t.x - t.txt.length * 4), Math.round(t.y) - 1, t.txt, t.col, 2);
+      const x = t.x - anchoDeLetras(t.txt, 2) / 2;
+      letras(g, x + 0.75, t.y + 0.75, t.txt, 'rgba(24,20,70,0.85)', 2);
+      letras(g, x, t.y, t.txt, t.col, 2);
       g.globalAlpha = 1;
       return t.vida > 0;
     });

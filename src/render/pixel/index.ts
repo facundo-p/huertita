@@ -16,6 +16,7 @@ import type { Geometria } from './geometria';
 import { xyDe } from './geometria';
 import { ruido } from './paleta';
 import { plantas, type Tween } from './plantas';
+import { SpritesDePlantas } from './sprites';
 
 interface Previa {
   id: string;
@@ -42,12 +43,14 @@ export class RenderPixel implements Renderer {
   private S = 1;
   private tw: Record<string, Tween> = {};
   private prev: Record<string, Previa | null> = {};
+  private sprites = new SpritesDePlantas();
   private efectos = new Efectos(() => (this.G && this.escena ? { G: this.G, es: this.escena } : null));
   private el!: HTMLElement;
   private cv!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
   private bg!: HTMLCanvasElement;
   private timer = 0;
+  private reintento = 0;
   private alHacerClick = (e: MouseEvent): void => {
     if (!this.G || !this.cb) return;
     const r = this.cv.getBoundingClientRect();
@@ -81,6 +84,7 @@ export class RenderPixel implements Renderer {
 
   desmontar(): void {
     clearInterval(this.timer);
+    clearTimeout(this.reintento);
     window.removeEventListener('resize', this.alCambiarDeTamanio);
     this.cv.removeEventListener('click', this.alHacerClick);
     if (this.cv.parentNode) this.cv.parentNode.removeChild(this.cv);
@@ -120,6 +124,8 @@ export class RenderPixel implements Renderer {
       this.cv.height = G.H * S;
     }
     this.S = S;
+    // con más píxeles que la pantalla se suaviza al achicar (el CSS, `pixelated`, descartaría detalle)
+    this.cv.style.imageRendering = G.W * S > cssW * (window.devicePixelRatio || 1) * 1.05 ? 'auto' : '';
     this.bg.width = G.W * S;
     this.bg.height = G.H * S;
     const bg = this.bg.getContext('2d')!;
@@ -135,6 +141,7 @@ export class RenderPixel implements Renderer {
       G = this.G!,
       g = this.ctx,
       t = this.t;
+    this.sprites.nuevoCuadro();
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.imageSmoothingEnabled = false;
     g.drawImage(this.bg, 0, 0);
@@ -149,11 +156,17 @@ export class RenderPixel implements Renderer {
       oculta: this.efectos.oculta,
       efecto: (tipo: 'brote', d: { celda: string }) => this.efecto(tipo, d),
     };
-    plantas(g, es, G, claves, anim, t, Date.now());
+    plantas(g, this.sprites, es, G, claves, anim, t, Date.now());
     this.camara.delante?.(g, es, G, t);
     capas(g, es, G, claves, t);
     this.efectos.dibujar(g, r);
     clima(g, r, es, G, t);
+    // quedaron plantas sin su sprite (se dibujan pocos por cuadro): otro cuadro enseguida, sin esperar al reloj
+    if (this.sprites.pendientes && !this.reintento)
+      this.reintento = window.setTimeout(() => {
+        this.reintento = 0;
+        if (this.escena) this.cuadro();
+      }, 16);
   }
 
   efecto(tipo: Efecto, datos: DatosDeEfecto = {}): void {
