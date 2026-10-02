@@ -18,8 +18,10 @@ function fruto(B: Pincel, e: Estilo, pal: Paleta, fx: number, fy: number, j: num
   if (e.fr === 'bola') {
     B.disco(fx, fy, 3, os);
     B.disco(fx, fy - 1, 2, t);
-    B.r(fx - 1, fy - 2, 1, 1, '#ffffff');
-    B.r(fx, fy - 3, 1, 1, pal.o);
+    B.r(fx - 1.5, fy - 2.5, 1, 0.5, '#ffffff');
+    B.r(fx - 1.5, fy - 2, 0.5, 0.5, '#ffffff');
+    B.r(fx - 1, fy - 3.5, 2, 0.5, pal.o);
+    B.r(fx - 0.5, fy - 3.5, 1, 1, pal.o);
   } else if (e.fr === 'largo') {
     B.r(fx - 2, fy - 2, 4, 6, os);
     B.r(fx - 2, fy - 2, 3, 5, j % 2 ? t : '#d9482b');

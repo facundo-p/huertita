@@ -28,7 +28,8 @@ function agujas(B: Pincel, { a, H }: Medidas, e: Estilo, pal: Paleta, st: Postur
     for (let k = 0.25; k <= 1; k += 0.15) {
       const px = Math.round(sx * 0.5 + (tx - sx * 0.5) * k),
         py = Math.round(ty * k);
-      B.r(px - 2, py, 5, 1, (k * 10) % 2 < 1 ? pal.v : pal.c);
+      B.r(px - 2, py, 5, 0.5, (k * 10) % 2 < 1 ? pal.v : pal.c);
+      B.r(px - 1.5, py + 0.5, 4, 0.5, pal.o);
     }
     if (st.madura && i % 2) B.r(tx, ty + 2, 2, 2, e.florc);
   }
@@ -53,7 +54,10 @@ function espigas(B: Pincel, { a, H }: Medidas, e: Estilo, pal: Paleta, st: Postu
     const ex = i * 4 + st.dx(-H - 6),
       eh = Math.round(a * 9);
     B.linea(i * 2, -H + 2, ex, -H - eh, pal.c);
-    if (a > 0.7) B.r(ex - 1, -H - eh - 4, 2, 5, st.madura ? e.florc : pal.c);
+    if (a > 0.7) {
+      B.r(ex - 1, -H - eh - 4, 2, 5, st.madura ? e.florc : pal.c);
+      B.r(ex - 0.5, -H - eh - 4.5, 1, 0.5, st.madura ? e.florc : pal.c);
+    }
   }
 }
 

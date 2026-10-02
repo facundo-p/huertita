@@ -92,6 +92,8 @@ function bichos(B: Pincel, plaga: string, a: number, t: number): void {
       if (b < 2) {
         B.r(bx - 1, by, 4, 1, col);
         B.r(bx + (Math.floor(t) % 2), by - 1, 2, 1, col);
+        B.r(bx, by + 0.5, 0.5, 0.5, '#3a7a14');
+        B.r(bx + 1.5, by + 0.5, 0.5, 0.5, '#3a7a14');
       }
     } else if (b < 2) {
       B.r(bx * 2 - 2, -1, 5, 2, col);

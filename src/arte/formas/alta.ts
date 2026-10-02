@@ -17,6 +17,15 @@ function cabezaDeGirasol(B: Pincel, H: number, pal: Paleta, st: Postura): void {
         3,
         i % 2 ? '#ffd23f' : '#ffb01f',
       );
+  if (st.madura)
+    for (let i = 0; i < 12; i++)
+      B.r(
+        cx + Math.round(Math.cos(i * 0.524 + 0.262) * 7.5) - 0.5,
+        cy + Math.round(Math.sin(i * 0.524 + 0.262) * 7.5) - 0.5,
+        2,
+        2,
+        i % 2 ? '#ffb01f' : '#e89a12',
+      );
   B.disco(cx, cy, rr, st.madura ? '#6b3a12' : pal.v);
   if (st.madura) {
     B.disco(cx, cy, 3, '#8a5526');
@@ -35,6 +44,8 @@ function penachoYMazorcas(B: Pincel, a: number, H: number, e: Estilo, pal: Palet
         ey = -Math.round(H * h);
       B.elipse(ex, ey, 2, 4, pal.c);
       B.elipse(ex, ey, 1, 3, e.tinta);
+      B.r(ex - 0.5, ey - 1.5, 0.5, 0.5, '#fff3b0');
+      B.r(ex + 0.5, ey + 0.5, 0.5, 0.5, '#fff3b0');
       B.r(ex, ey - 6, 1, 2, '#c9603a');
     }
 }

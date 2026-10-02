@@ -22,6 +22,7 @@ export const raiz: DibujoDeForma = (B, a, e, pal, st) => {
     const w = Math.round(2 + (a - 0.5) * 6);
     B.elipse(0, 0, w, 2, mezcla(e.tinta, '#000000', 0.2));
     B.elipse(0, -1, w - 1, 1, e.tinta);
-    B.r(-w + 1, -2, 2, 1, mezcla(e.tinta, '#ffffff', 0.45));
+    B.r(-w + 1, -2, 2, 0.5, mezcla(e.tinta, '#ffffff', 0.45));
+    B.r(-w + 1, -1.5, 0.5, 1, mezcla(e.tinta, '#ffffff', 0.45));
   }
 };

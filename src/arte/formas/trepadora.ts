@@ -19,7 +19,7 @@ export const trepadora: DibujoDeForma = (B, a, e, palDeLaPlanta, st) => {
     if (a > 0.6 && !st.madura && i % 3 === 1) florcita(B, x - lado * 2, y - 1, 1, e.florc, '#1d1b4b');
     if (st.madura && i % 2 === 1) {
       B.linea(x - lado * 2, y, x - lado * 2, y + 5, e.tinta);
-      B.r(x - lado * 2 + 1, y + 1, 1, 3, mezcla(e.tinta!, '#000000', 0.25));
+      B.r(x - lado * 2 + 1, y + 1, 0.5, 3, mezcla(e.tinta!, '#000000', 0.25));
     }
   }
 };

@@ -67,7 +67,10 @@ export function pincel(g: Lienzo2D, ox: number, oy: number, escala?: number, res
   return { r, elipse, disco, linea, s };
 }
 
-/** Una hoja: elipse oscura, verde encima y un toque de luz arriba. */
+/**
+ * Una hoja: elipse oscura, verde encima (corrida medio píxel, así el borde de abajo queda más
+ * fino que antes), un toque de luz arriba y, en las grandes, la nervadura de medio píxel.
+ */
 export function hojaOval(
   B: Pincel,
   x: number,
@@ -78,8 +81,9 @@ export function hojaOval(
   luzArriba?: boolean,
 ): void {
   B.elipse(x, y, rx, ry, pal.o);
-  B.elipse(x, y - 1, Math.max(1, rx - 1), Math.max(1, ry - 1), pal.v);
-  if (luzArriba !== false && rx > 1) B.r(x - Math.floor(rx / 2), y - ry + 1, Math.max(1, rx - 1), 1, pal.c);
+  B.elipse(x, y - 0.5, Math.max(1, rx - 1), Math.max(1, ry - 1), pal.v);
+  if (luzArriba !== false && rx > 1) B.r(x - Math.floor(rx / 2), y - ry + 1, Math.max(1, rx - 1), 0.5, pal.c);
+  if (ry >= 3) B.r(x + 0.5, y - ry + 1.5, 0.5, ry * 1.6, pal.o);
 }
 
 /** Una flor chica: un disco, o una estrella de cinco píxeles. */
@@ -96,6 +100,7 @@ export function florcita(
     B.r(x - rad, y, rad * 2 + 1, 1, c);
     B.r(x, y - rad, 1, rad * 2 + 1, c);
     B.r(x - 1, y - 1, 3, 3, c);
+    B.r(x - rad + 0.5, y - 0.5, rad * 2, 0.5, c);
   } else B.disco(x, y, rad, c);
-  if (rad > 1) B.r(x, y, 1, 1, centro || '#ffd23f');
+  if (rad > 1) B.r(x + 0.5, y + 0.5, 1, 1, centro || '#ffd23f');
 }

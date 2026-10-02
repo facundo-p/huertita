@@ -27,5 +27,7 @@ export const baja: DibujoDeForma = (B, a, e, pal, st) => {
       B.r(x, y, 1, 1, e.tinta);
       B.r(x - 1, y - 3, 3, 1, pal.o);
       B.r(x, y - 2, 1, 1, '#ffd0a0');
+      B.r(x - 0.5, y - 1.5, 0.5, 0.5, '#ffe9a0');
+      B.r(x + 1, y - 0.5, 0.5, 0.5, '#ffe9a0');
     }
 };
