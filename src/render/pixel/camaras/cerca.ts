@@ -8,7 +8,7 @@ import type { CeldaDeEscena, Escena } from '../../contrato';
 import type { CeldaEnPantalla, Geometria } from '../geometria';
 import { xyDe } from '../geometria';
 import { letras } from '../letras';
-import { C, T, cielo, ruido, tierra } from '../paleta';
+import { C, cielo, ruido, tierra } from '../paleta';
 import type { Camara } from './tipos';
 
 export interface GeometriaCerca extends Geometria {
@@ -66,7 +66,8 @@ function geometria(es: Escena): GeometriaCerca {
     tipo = es.cerca.tipo;
   return {
     cam: 'cerca',
-    W: es.ancho * T,
+    /** la vista es una ventana de 4 columnas de ancho fijo, venga el patio que venga */
+    W: ANCHO,
     H: ANCHO,
     cols,
     filas: ys,
