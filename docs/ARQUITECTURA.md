@@ -70,6 +70,9 @@ Los números del balance (probabilidades, daños, ratos, arranque, épocas de pl
 
 `src/render/contrato.ts` es todo lo que la vista sabe de la gráfica: un `Renderer` monta, dibuja una `Escena`, avisa qué celda se tocó y, si quiere, ofrece cámaras y efectos. Hay dos: el pixel-art y uno de texto (una grilla de emojis) que existe para probar que son intercambiables.
 
+El fondo del patio (`src/render/pixel/fondo.ts`) se pinta en una `Superficie` (`superficie.ts`: buffer de píxeles que cumple `Lienzo2D`, así el pincel también dibuja en ella) con `piso.ts`, `muros.ts` y `bancales.ts`, y se cachea por `claveDelFondo`; el árbol (`arbol.ts`) y las plantas (`sprites.ts`) son sprites cacheados.
+
+
 `src/render/pixel/` recorre la cámara elegida. Una `Camara` (`camaras/tipos.ts`) arma su geometría, pinta su fondo y, si quiere, algo antes y después de las plantas; lo que cambia de las plantas según desde dónde se las mire (sombra en el piso, avisos, dónde apoyan) es un dato de su geometría. Hay tres: `cenital`, `oblicua` y `cerca` (un cantero de frente con el suelo cortado). **Una cámara nueva es un archivo.** Plantas, capas de información, efectos y clima son comunes.
 
 `src/arte/` dibuja cada especie en cada etapa con un pincel de píxel gordo: `estilos.ts` dice qué forma y qué colores lleva cada una, y cada forma está en `formas/`. Una especie nueva de huertapp sin estilo propio usa la forma de su grupo.
